@@ -13,6 +13,7 @@ from .models import ServiceTemplate, ServiceInstance
 from .serializers import (
     ServiceTemplateSerializer, ServiceInstanceSerializer, ServiceCreateSerializer
 )
+from .permissions import IsServiceOwnerForWrite
 from core.service_generator import generate_service_app
 
 from rest_framework.views import APIView
@@ -51,7 +52,7 @@ class ServiceInstanceViewSet(
     - DELETE: Per distruggere un servizio
     """
     serializer_class = ServiceInstanceSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsServiceOwnerForWrite]
 
     def get_queryset(self):
         """
@@ -61,20 +62,12 @@ class ServiceInstanceViewSet(
         - Filtering: Excludes hidden services unless 'include_hidden=true' is provided.
         """
         user = self.request.user
-        include_hidden = self.request.query_params.get('include_hidden', 'false').lower() == 'true'
-        
-        # Base filter for visibility
         if user.is_authenticated:
-            # Combine owned services OR free services
             queryset = ServiceInstance.objects.filter(
-                Q(owner=user) | Q(is_free_tier=True)
+                Q(owner=user) | Q(is_free_tier=True, is_hidden=False)
             )
         else:
-            # Only free services for anonymous
-            queryset = ServiceInstance.objects.filter(is_free_tier=True)
-
-        if not include_hidden:
-            queryset = queryset.filter(is_hidden=False)
+            queryset = ServiceInstance.objects.filter(is_free_tier=True, is_hidden=False)
 
         return queryset.select_related('template')
     
@@ -133,19 +126,6 @@ class ServiceInstanceViewSet(
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
     
-    def perform_destroy(self, instance):
-        """
-        Sovrascritto per gestire la cancellazione (DELETE /api/services/{id}/).
-        
-        MIGLIORAMENTO: È istantaneo. Non ci sono container (T1)
-        o file (T1) da pulire.
-        """
-        # Semplicemente cancelliamo l'oggetto (T3).
-        instance.delete()
-        
-        # Non c'è più bisogno di schedulare task T9.
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
 class CookieTokenObtainPairView(TokenObtainPairView):
     """
     View di Login custom: oltre a restituire il JSON, setta il cookie HttpOnly.
@@ -167,10 +147,10 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 'sf_access_token',  # Nome del cookie
                 access_token,
                 max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
-                httponly=True, 
-                samesite='Lax',
-                path='/', 
-                secure=False # Metti True in produzione (HTTPS)
+                httponly=True,
+                samesite=settings.AUTH_COOKIE_SAMESITE,
+                path=settings.AUTH_COOKIE_PATH,
+                secure=settings.AUTH_COOKIE_SECURE,
             )
             
         return response

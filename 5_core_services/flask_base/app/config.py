@@ -14,6 +14,10 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
     # Chiave segreta condivisa con Django per validare i JWT
     DJANGO_SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY')
+    DJANGO_JWT_ISSUER = os.environ.get('DJANGO_JWT_ISSUER', 'servicefabric-development')
+    DJANGO_JWT_AUDIENCE = os.environ.get('DJANGO_JWT_AUDIENCE', 'servicefabric-development')
+    DJANGO_JWT_TOKEN_TYPE = os.environ.get('DJANGO_JWT_TOKEN_TYPE', 'access')
+    DJANGO_JWT_ALGORITHMS = ('HS256',)
 
     if not SECRET_KEY or not DJANGO_SECRET_KEY:
         error_msg = "\n" + "!"*60 + "\n"
