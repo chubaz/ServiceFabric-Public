@@ -1,0 +1,99 @@
+[
+  {
+    "id": "LEGACY-DYNAMIC-IMPORT",
+    "status": "blocked_for_new_use",
+    "paths": [
+      "5_core_services/flask_base/app/services_loader.py",
+      "5_core_services/flask_base/app/routes.py"
+    ],
+    "notes": "Dynamic import and dynamic script execution remain legacy-only until a strangler replacement exists.",
+    "governing_prs": [
+      "P0-00"
+    ]
+  },
+  {
+    "id": "LEGACY-FLASK-CREATE-ALL",
+    "status": "removal_planned",
+    "paths": [
+      "5_core_services/flask_base/app/__init__.py",
+      "3_service_templates/react_base/routes.py",
+      "3_service_templates/vite_base/routes.py",
+      "3_service_templates/quant_vite_base/routes.py"
+    ],
+    "notes": "Implicit schema creation violates single schema ownership and must not spread.",
+    "governing_prs": [
+      "P0-00"
+    ]
+  },
+  {
+    "id": "INSECURE-INTERNAL-TOKEN",
+    "status": "p0",
+    "paths": [
+      "5_core_services/fastapi_base/app/api/dependencies/auth.py"
+    ],
+    "notes": "Hard-coded shared secret currently gates internal requests.",
+    "governing_prs": [
+      "P0-00",
+      "P0-01"
+    ]
+  },
+  {
+    "id": "UNAUTHENTICATED-VECTOR-ENDPOINTS",
+    "status": "p0",
+    "paths": [
+      "5_core_services/fastapi_base/app/api/endpoints/vector.py"
+    ],
+    "notes": "Vector endpoints are currently exposed without verified principal enforcement.",
+    "governing_prs": [
+      "P0-00",
+      "P0-01"
+    ]
+  },
+  {
+    "id": "UNAUTHENTICATED-RELOAD",
+    "status": "p0",
+    "paths": [
+      "5_core_services/flask_base/app/routes.py"
+    ],
+    "notes": "Legacy internal reload route is not protected by explicit authenticated governance.",
+    "governing_prs": [
+      "P0-00",
+      "P0-01"
+    ]
+  },
+  {
+    "id": "FALSE-PRODUCTION-PROFILE",
+    "status": "p0",
+    "paths": [
+      "docker-compose.prod.yml"
+    ],
+    "notes": "The production compose override still mounts source code and uses the Django dev server.",
+    "governing_prs": [
+      "P0-00",
+      "P0-01"
+    ]
+  },
+  {
+    "id": "FASTAPI-RELOAD-IN-CONTAINER",
+    "status": "p0",
+    "paths": [
+      "5_core_services/fastapi_base/Dockerfile"
+    ],
+    "notes": "The FastAPI image runs uvicorn with --reload and should be contained in the next PR.",
+    "governing_prs": [
+      "P0-00",
+      "P0-01"
+    ]
+  },
+  {
+    "id": "PLAINTEXT-PROVIDER-TOKENS",
+    "status": "removal_planned",
+    "paths": [
+      "2_backend_api/service_fabric/api/models.py"
+    ],
+    "notes": "Provider tokens are stored in plaintext model fields.",
+    "governing_prs": [
+      "P0-00"
+    ]
+  }
+]
