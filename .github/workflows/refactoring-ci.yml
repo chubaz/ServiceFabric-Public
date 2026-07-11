@@ -1,0 +1,26 @@
+name: Refactoring CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  architecture-guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run architecture guardrail script
+        run: python3 scripts/architecture/check_legacy_patterns.py
+
+      - name: Run architecture tests
+        run: python3 -m unittest discover -s tests/architecture -v
