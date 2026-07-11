@@ -6,22 +6,35 @@ setup:
 
 # Run local development without Cloudflare
 dev:
-	cp .env.example.dev .env
-	docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+	@test -f .env.dev || cp .env.example.dev .env.dev
+	SERVICEFABRIC_ENV_FILE=.env.dev docker compose --env-file .env.dev -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 
 # Run production with Cloudflare
 prod:
-	cp .env.example.prod .env
-	docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+	@$(MAKE) prod-preflight
+	SERVICEFABRIC_ENV_FILE=.env.prod docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+prod-preflight:
+	@test -f .env.prod || (echo "Refusing production start: create .env.prod from .env.example.prod and supply real secrets." >&2; exit 1)
+	@python3 scripts/compose/validate_production_env.py .env.prod
+	@SERVICEFABRIC_ENV_FILE=.env.prod docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml config >/dev/null
+
+prod-migrate:
+	@$(MAKE) prod-preflight
+	SERVICEFABRIC_ENV_FILE=.env.prod docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml run --rm backend_api python manage.py migrate --noinput
+
+prod-collectstatic:
+	@$(MAKE) prod-preflight
+	SERVICEFABRIC_ENV_FILE=.env.prod docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml run --rm backend_api python manage.py collectstatic --noinput
 
 up:
-	docker compose -f docker-compose.dev.yml up -d
+	$(MAKE) dev
 
 down:
-	docker compose -f docker-compose.dev.yml down
+	SERVICEFABRIC_ENV_FILE=.env.dev docker compose --env-file .env.dev -f docker-compose.yml -f docker-compose.dev.yml down
 
 logs:
-	docker compose -f docker-compose.dev.yml logs -f
+	SERVICEFABRIC_ENV_FILE=.env.dev docker compose --env-file .env.dev -f docker-compose.yml -f docker-compose.dev.yml logs -f
 
 backup:
 	docker exec -t db pg_dump -U postgres servicefabric > 8_backups/db_backup.sql

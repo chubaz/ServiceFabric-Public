@@ -1,35 +1,23 @@
 #!/bin/sh
-# /service-fabric-project/2_backend_api/entrypoint.sh
+set -eu
 
-# 1. Attendiamo che il Database (chiamato 'db', come da docker-compose)
-#    sia pronto ad accettare connessioni sulla porta 5432.
-#    (Questo richiede l'installazione di 'netcat' nel Dockerfile)
-# ripete il test fino a che la connessione nc (che non si ferma fino alla chiusura del network)
-# non è attiva.
-echo "Waiting for PostgreSQL..."
-while ! nc -z db 5432; do
-  sleep 0.1
-done
-echo "PostgreSQL started"
+if [ "${FABRIC_ENVIRONMENT:-development}" = "production" ]; then
+  for name in SECRET_KEY DJANGO_SECRET_KEY DATABASE_URL ALLOWED_HOSTS JWT_SECRET_KEY JWT_ISSUER JWT_AUDIENCE; do
+    value=$(printenv "$name" || true)
+    case "$value" in
+      ''|*change_me*|replace_*|*yourdomain.com*)
+        echo "Production configuration is invalid: $name must be explicitly configured" >&2
+        exit 1
+        ;;
+    esac
+  done
+fi
 
-# 2. Applichiamo le migrazioni del database Django
-echo "Applying database migrations..."
-python manage.py migrate --noinput
-
-echo "Seeding service templates..."
-# seed_templates.py should be idempotent
-python seed_templates.py
-
-echo "Creating superuser if it doesn't exist..."
-# Django's createsuperuser --noinput uses DJANGO_SUPERUSER_* env variables
-python manage.py createsuperuser --noinput || echo "Superuser might already exist."
-
-# 3. Raccogliamo tutti i file statici
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
-
-# 4. Avviamo il server di produzione Gunicorn.
-#    NON usiamo 'manage.py runserver' (come nel tuo 'run.py'),
-#    che è solo per lo sviluppo.
-echo "Starting Gunicorn..."
-gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+# Schema migration, static collection, and bootstrap are explicit release operations.
+exec gunicorn myproject.wsgi:application \
+  --bind 0.0.0.0:8000 \
+  --workers "${GUNICORN_WORKERS:-2}" \
+  --timeout "${GUNICORN_TIMEOUT:-60}" \
+  --graceful-timeout "${GUNICORN_GRACEFUL_TIMEOUT:-30}" \
+  --access-logfile - \
+  --error-logfile -

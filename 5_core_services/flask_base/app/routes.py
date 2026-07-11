@@ -15,6 +15,11 @@ core_bp = Blueprint('core', __name__)
 system_bp = Blueprint('system', __name__)
 
 
+@core_bp.route('/_healthz', methods=['GET'])
+def healthz():
+    return jsonify({'status': 'ok'}), 200
+
+
 def _async_surgical_reload(app, target):
     with app.app_context():
         try:

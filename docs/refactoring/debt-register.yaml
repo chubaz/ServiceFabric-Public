@@ -59,14 +59,13 @@
   },
   {
     "id": "FALSE-PRODUCTION-PROFILE",
-    "status": "p0",
-    "paths": [
-      "docker-compose.prod.yml"
-    ],
-    "notes": "The production compose override still mounts source code and uses the Django dev server.",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-05 makes the production Compose profile runtime-only: no source mounts, reload commands, builders, watcher, component lab, or direct internal host ports.",
     "governing_prs": [
       "P0-00",
-      "P0-01"
+      "P0-01",
+      "P0-05"
     ]
   },
   {
