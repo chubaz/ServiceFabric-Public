@@ -193,6 +193,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://dryfus.one',
     'https://dryfus.one',
     'https://proxy.dryfus.one',
+    'http://penguin.linux.test:8080'
 ]
 
 # Aggiunge dinamicamente la porta del proxy configurata nel .env
