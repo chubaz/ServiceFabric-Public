@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Fabric | Center Stage</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; } 
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .service-card { transition: all 0.2s ease-in-out; border: 1px solid #1e293b; }
+        .service-card:hover { border-color: #f59e0b; transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        
+        .add-new-card { transition: all 0.2s ease-in-out; border: 2px dashed #334155; }
+        .add-new-card:hover { border-color: #f59e0b; color: #f59e0b; background: rgba(245, 158, 11, 0.05); }
+
+        /* Loader Animation */
+        .htmx-indicator { display: none; }
+        .htmx-request .htmx-indicator { display: flex; }
+        .htmx-request.htmx-indicator { display: flex; }
+
+        /* Theater Mode */
+        body.is-theater #sidebar-left,
+        body.is-theater #sidebar-right {
+            display: none !important;
+        }
+    </style>
+    <style>
+        /* 1. Base State: Completely hidden and unclickable */
+        .htmx-indicator { 
+            opacity: 0; 
+            pointer-events: none; 
+            display: none !important; 
+        }
+
+        /* 2. Active State: HTMX adds this class when calling Flask */
+        .htmx-request .htmx-indicator,
+        .htmx-request.htmx-indicator { 
+            opacity: 1; 
+            pointer-events: auto; 
+            display: flex !important; /* Forces flexbox layout for the spinner */
+            transition: opacity 200ms ease-in; 
+        }
+    </style>
+</head>
+<body hx-ext="head-support" class="bg-slate-950 text-gray-300 antialiased h-screen flex flex-col overflow-hidden">
+
+    <header class="h-16 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 z-50 shrink-0">
+        <div class="flex items-center w-64 cursor-pointer" onclick="showDashboard()">
+            <svg class="w-8 h-8 text-amber-500 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+            <span class="text-lg font-bold text-white tracking-tight">Service Fabric</span>
+        </div>
+
+        <div class="flex-1 flex justify-center px-4">
+            <div class="flex items-center bg-slate-800/80 p-1 rounded-lg border border-slate-700/50 shadow-sm backdrop-blur-sm">
+                
+                <button onclick="showDashboard()" id="nav-grid-btn" class="px-3 py-1.5 rounded-md text-xs font-medium bg-slate-700 text-white shadow-sm flex items-center space-x-2 transition-all hover:bg-slate-600">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    <span>Hub</span>
+                </button>
+                
+                <div id="active-app-wrapper" class="hidden flex items-center transition-all duration-300">
+                    <div class="h-4 w-px bg-slate-600/50 mx-2"></div>
+                    
+                    <div class="flex items-center space-x-1 bg-slate-900/50 px-2 py-1 rounded-md border border-slate-700/50 shadow-inner">
+                        <div class="flex items-center px-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
+                            <span class="text-[11px] uppercase tracking-wider text-amber-500 font-bold" id="ribbon-app-name">App Name</span>
+                        </div>
+                        
+                        <div class="h-3 w-px bg-slate-700 mx-1"></div>
+                        
+                        <button onclick="refreshStage()" class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition-all group" title="Refresh Context">
+                            <svg class="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </button>
+                        
+                        <button onclick="toggleTheaterMode()" class="p-1.5 text-slate-400 hover:text-amber-400 hover:bg-slate-700 rounded transition-all group relative" title="Theater Mode (Esc to exit)">
+                            <svg id="icon-theater-enter" class="w-3.5 h-3.5 transform group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
+                            <svg id="icon-theater-exit" class="w-3.5 h-3.5 hidden transform group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V5m0 4H5m4 0l-5-5m11 5V5m0 4h4m-4 0l5-5m-5 15v4m0-4h4m-4 0l5 5M9 19v-4m0 0H5m4 0l-5 5" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end w-64 space-x-4">
+            <div class="text-right hidden sm:block">
+                <div class="text-xs font-medium text-white" id="user-email-display">Guest</div>
+                <div class="text-[10px] text-gray-500">Standard Access</div>
+            </div>
+            
+            <button id="signInButton" class="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center border border-slate-600 hover:ring-2 hover:ring-amber-500 transition-all">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden transition-all duration-300">
+
+        <aside id="sidebar-left" class="w-16 md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 transition-all duration-300">
+            <div class="p-4 border-b border-slate-800/50 hidden md:block">
+                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Environment</h2>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+                <a href="#" onclick="showDashboard()" class="bg-slate-800 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md md:justify-start justify-center">
+                    <svg class="text-amber-500 mr-0 md:mr-3 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    <span class="hidden md:block">Service Catalog</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 relative bg-slate-950 flex flex-col min-w-0 transition-all duration-300">
+            
+            <div id="view-dashboard" class="absolute inset-0 overflow-y-auto p-4 sm:p-8 scroll-smooth z-10 bg-slate-950">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h1 class="text-2xl font-bold text-white">Service Fabric Hub</h1>
+                        <span id="service-count" class="px-3 py-1 bg-slate-800 rounded-full text-xs text-gray-400 border border-slate-700 shadow-inner">Loading...</span>
+                    </div>
+                    <div id="service-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <div class="add-new-card rounded-xl bg-slate-900/30 min-h-[220px] flex flex-col items-center justify-center cursor-pointer group" onclick="document.querySelector('.add-new-card button').click()">
+                            <button class="focus:outline-none flex flex-col items-center">
+                                <svg class="w-12 h-12 mb-3 text-slate-600 group-hover:text-amber-500 transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                <span class="text-sm font-medium text-slate-500 group-hover:text-amber-500">Deploy New Service</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div id="view-stage" class="absolute inset-0 hidden flex flex-col bg-white z-20 transition-all duration-300">
+            <div id="stage-content" 
+                 class="flex-1 w-full h-full overflow-y-auto text-gray-800 relative"
+                 hx-boost="true" 
+                 hx-target="#stage-content" 
+                 hx-swap="innerHTML">
+            </div>
+
+            <div id="stage-loader" class="htmx-indicator absolute inset-0 bg-white/90 z-50 items-center justify-center">
+                <div class="flex flex-col items-center">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-600 mb-4"></div>
+                    <span class="text-sm text-gray-600 font-medium tracking-wide">Connecting to Flask...</span>
+                </div>
+            </div>
+        </div>
+
+        </main>
+
+        <aside id="sidebar-right" class="w-72 bg-slate-900 border-l border-slate-800 hidden xl:flex flex-col shrink-0 transition-all duration-300">
+            <div class="p-4 border-b border-slate-800/50">
+                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Context</h2>
+            </div>
+            <div class="p-4 space-y-6">
+                <div>
+                    <h3 class="text-sm font-medium text-white mb-2">System Health</h3>
+                    <div class="bg-slate-800 rounded p-3 space-y-2 text-xs border border-slate-700/50">
+                        <div class="flex justify-between"><span class="text-gray-500">CPU Load</span><span class="text-emerald-400">12%</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Memory</span><span class="text-emerald-400">4.2 GB</span></div>
+                    </div>
+                </div>
+                <div id="context-app-info" class="opacity-30 transition-opacity">
+                    <h3 class="text-sm font-medium text-white mb-2">Active Selection</h3>
+                    <p class="text-xs text-gray-500 italic" id="context-desc">Select a service to view details.</p>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <div id="authModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 hidden">
+        <div id="modalContent" class="bg-slate-800 rounded-lg shadow-2xl w-full max-w-md border border-slate-700 transform transition-all opacity-0 translate-y-4">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-white mb-4">Authentication</h3>
+                <form action="#" method="POST" class="space-y-4">
+                    <div><label class="block text-sm font-medium text-gray-400">Email</label><input id="email" type="email" class="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white focus:ring-amber-500 focus:border-amber-500 sm:text-sm"></div>
+                    <div><label class="block text-sm font-medium text-gray-400">Password</label><input id="password" type="password" class="mt-1 block w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded text-white focus:ring-amber-500 focus:border-amber-500 sm:text-sm"></div>
+                    <p id="login-error-message" class="text-sm text-rose-400 min-h-[20px]"></p>
+                    <div class="flex justify-end space-x-3 pt-2">
+                        <button type="button" id="closeModalButton" class="px-4 py-2 text-sm text-gray-400 hover:text-white">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded text-sm font-medium shadow-lg shadow-amber-900/20">Sign In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/apiClient.js"></script>
+    <script>
+        // --- DOM REFERENCES ---
+        const viewDashboard = document.getElementById('view-dashboard');
+        const viewStage = document.getElementById('view-stage');
+        const stageContent = document.getElementById('stage-content');
+        const serviceGrid = document.getElementById('service-grid');
+        
+        // Ribbon Elements
+        const activeAppWrapper = document.getElementById('active-app-wrapper');
+        const ribbonAppName = document.getElementById('ribbon-app-name');
+        const navGridBtn = document.getElementById('nav-grid-btn');
+
+        // Context Elements
+        const contextAppInfo = document.getElementById('context-app-info');
+        const contextDesc = document.getElementById('context-desc');
+
+        // Auth
+        const authModal = document.getElementById('authModal');
+        const modalContent = document.getElementById('modalContent');
+        const signInButton = document.getElementById('signInButton');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const loginForm = authModal.querySelector('form');
+        const loginErrorEl = document.getElementById('login-error-message');
+        const userEmailDisplay = document.getElementById('user-email-display');
+
+        // API Configuration
+        const API_URLS = {
+            login: '/api/token/',
+            refresh: '/api/token/refresh/',
+            services: '/api/services/',
+            create: '/api/services/create_service/'
+        };
+        const api = typeof ApiClient !== 'undefined' ? new ApiClient(API_URLS) : null;
+
+        // --- GLOBAL EVENT LISTENERS (ApiClient Integrations) ---
+        window.addEventListener('force-logout', () => {
+            console.warn("Received force-logout event. Invalidating session.");
+            handleLogout();
+            openModal();
+            loginErrorEl.textContent = 'Session expired. Please log in again.';
+        });
+
+        // HTMX Dynamic Token Config
+        document.body.addEventListener('htmx:configRequest', (evt) => {
+            if (api && api.token) {
+                evt.detail.headers['Authorization'] = 'Bearer ' + api.token;
+                console.log("🚀 Sending HTMX Request with Token:", api.token.substring(0, 15) + "...");
+            } else {
+                console.warn("⚠️ HTMX Request sent WITHOUT token!");
+                delete evt.detail.headers['Authorization'];
+            }
+        });
+        
+        document.body.addEventListener('htmx:responseError', (evt) => {
+            if (evt.detail.xhr.status === 401) {
+                console.warn("HTMX request unauthorized. Forcing logout...");
+
+                // This triggers the same logout/login-modal flow as your ApiClient
+                window.dispatchEvent(new Event('force-logout')); 
+
+                // Optional: Reset the view back to the dashboard if a stage load fails
+                showDashboard(); 
+            }
+        });
+
+        // --- NAVIGATION & HTMX LOGIC ---
+        let isTheaterMode = false;
+
+        function showDashboard() {
+            // Un-maximize if we return to the dashboard
+            if (isTheaterMode) toggleTheaterMode();
+
+            viewStage.classList.add('hidden');
+            viewDashboard.classList.remove('hidden');
+            
+            // UI Resets
+            activeAppWrapper.classList.add('hidden');
+            navGridBtn.classList.remove('bg-slate-800', 'text-gray-400');
+            navGridBtn.classList.add('bg-slate-700', 'text-white');
+        }
+
+        function openApp(name, partialUrl, desc) {
+            const fullUrl = `${partialUrl}`;
+            console.log(`HTMX Loading ${name} at ${fullUrl}`);
+
+            viewDashboard.classList.add('hidden');
+            viewStage.classList.remove('hidden');
+
+            activeAppWrapper.classList.remove('hidden');
+            ribbonAppName.textContent = name;
+            navGridBtn.classList.remove('bg-slate-700', 'text-white');
+            navGridBtn.classList.add('bg-slate-800', 'text-gray-400');
+            
+            contextAppInfo.classList.remove('opacity-30');
+            contextAppInfo.classList.add('opacity-100');
+            contextDesc.textContent = desc || "No description available.";
+
+            htmx.ajax('GET', fullUrl, {
+                target: '#stage-content',
+                swap: 'innerHTML',
+                indicator: '#stage-loader' 
+            }).then(() => {
+                console.log("App loaded via HTMX");
+            });
+        }
+
+        function refreshStage() {
+            htmx.trigger('#stage-content', 'refresh'); 
+        }
+
+        // --- THEATER MODE LOGIC ---
+        function toggleTheaterMode() {
+            isTheaterMode = !isTheaterMode;
+            
+            // Toggles CSS class on body to hide the sidebars cleanly
+            document.body.classList.toggle('is-theater', isTheaterMode);
+            
+            const enterIcon = document.getElementById('icon-theater-enter');
+            const exitIcon = document.getElementById('icon-theater-exit');
+            
+            if (isTheaterMode) {
+                enterIcon.classList.add('hidden');
+                exitIcon.classList.remove('hidden');
+            } else {
+                enterIcon.classList.remove('hidden');
+                exitIcon.classList.add('hidden');
+            }
+        }
+
+        // Bind Esc key to exit theater mode
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isTheaterMode) {
+                toggleTheaterMode();
+            }
+        });
+
+        // --- AUTH LOGIC ---
+        function setupAuthListeners() {
+            signInButton.addEventListener('click', () => {
+                const token = localStorage.getItem('accessToken');
+                if (token) handleLogout();
+                else openModal();
+            });
+            closeModalButton.addEventListener('click', closeModal);
+            loginForm.addEventListener('submit', handleLoginSubmit);
+        }
+
+        async function handleLoginSubmit(event) {
+            event.preventDefault();
+            if (!api) return;
+            loginErrorEl.textContent = '';
+            const email = loginForm.querySelector('#email').value;
+            const password = loginForm.querySelector('#password').value;
+
+            try {
+                const data = await api.login(email, password);
+                localStorage.setItem('accessToken', data.access);
+                localStorage.setItem('refreshToken', data.refresh);
+                api.token = data.access; // Ensure ApiClient token is updated instantly
+
+                updateUIForAuth(true, email);
+                closeModal();
+                fetchServices();
+            } catch (error) {
+                console.error("Login failed:", error);
+                // Utilizing the JSON error format thrown from ApiClient
+                loginErrorEl.textContent = error.detail || 'Invalid credentials or server error.';
+            }
+        }
+
+        function updateUIForAuth(isLoggedIn, email = 'Guest') {
+            if (isLoggedIn) {
+                userEmailDisplay.textContent = email.split('@')[0];
+                signInButton.classList.add('text-amber-500', 'border-amber-500/50');
+                const addNew = document.querySelector('.add-new-card');
+                if(addNew) addNew.style.display = 'flex';
+            } else {
+                userEmailDisplay.textContent = 'Guest';
+                signInButton.classList.remove('text-amber-500', 'border-amber-500/50');
+                const addNew = document.querySelector('.add-new-card');
+                if(addNew) addNew.style.display = 'none';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            if(api) api.token = null; // Clear ApiClient token
+            updateUIForAuth(false);
+            
+            const addNew = document.querySelector('.add-new-card');
+            serviceGrid.innerHTML = '';
+            if(addNew) serviceGrid.appendChild(addNew);
+            showDashboard();
+        }
+
+        function openModal() {
+            authModal.classList.remove('hidden');
+            setTimeout(() => modalContent.classList.remove('opacity-0', 'translate-y-4'), 10);
+        }
+        function closeModal() {
+            modalContent.classList.add('opacity-0', 'translate-y-4');
+            setTimeout(() => authModal.classList.add('hidden'), 300);
+        }
+
+        // --- SERVICE LOGIC ---
+        async function fetchServices() {
+            if (!api) return;
+            try {
+                const services = await api.getServices();
+                renderServices(services);
+            } catch (error) {
+                console.error("Fetch error", error);
+                document.getElementById('service-count').textContent = "Error Loading Services";
+            }
+        }
+
+        function renderServices(services) {
+            const addNewCard = document.querySelector('.add-new-card');
+            serviceGrid.innerHTML = '';
+            document.getElementById('service-count').textContent = `${services.length} Services`;
+
+            services.forEach(service => {
+                serviceGrid.insertAdjacentHTML('beforeend', createServiceCardHTML(service));
+            });
+
+            if (addNewCard) serviceGrid.appendChild(addNewCard);
+            setupCreationListeners();
+        }
+
+        function createServiceCardHTML(service) {
+            const escape = (str) => (str || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            const name = escape(service.name);
+            const status = escape(service.status);
+            const href_url = escape(service.href_url);
+            const desc = escape(service.description);
+            const safeName = name ? name.replace(/'/g, "\\'").replace(/"/g, "&quot;") : ''; 
+            const safeDesc = desc ? desc.replace(/'/g, "\\'").replace(/"/g, "&quot;") : ''; 
+
+            let statusColor = 'text-gray-400 bg-gray-900/50 border-gray-700';
+            if (status === 'Running') statusColor = 'text-emerald-400 bg-emerald-900/20 border-emerald-800/50';
+            if (status === 'Stopped') statusColor = 'text-rose-400 bg-rose-900/20 border-rose-800/50';
+            if (status === 'Provisioning') statusColor = 'text-blue-400 bg-blue-900/20 border-blue-800/50 animate-pulse';
+
+            return `
+                <div class="service-card bg-slate-800/50 rounded-xl p-5 relative group flex flex-col justify-between h-[220px]" data-id="${service.id}">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-slate-800 rounded-lg border border-slate-700 shadow-sm transition-colors group-hover:bg-slate-700 group-hover:border-amber-500/30">
+                                <svg class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${statusColor}">
+                                ${status}
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2 truncate" title="${name}">${name}</h3>
+                        <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed">
+                            ${desc || 'No description provided.'}
+                        </p>
+                    </div>
+                    
+                    <div class="pt-4 mt-2 border-t border-slate-700/50 flex space-x-2">
+                        <button onclick="openApp('${safeName}', '${href_url}', '${safeDesc}')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium py-2 rounded-lg transition-colors border border-slate-600 hover:border-slate-500 shadow-sm">
+                            Launch App
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setupCreationListeners() {
+            const btn = document.querySelector('.add-new-card button');
+            if(btn) {
+                btn.onclick = null; 
+                btn.onclick = handleCreationClickWrapper;
+            }
+        }
+        function handleCreationClickWrapper(e) {
+            e.stopPropagation();
+            if(!api) return;
+            const serviceName = prompt("New Service Name:");
+            if (!serviceName) return;
+            const templateKey = prompt("Template Key (e.g., flask_react_base):", "flask_react_base");
+            if (!templateKey) return;
+            
+            api.createService(serviceName, templateKey)
+                .then(newService => {
+                    const html = createServiceCardHTML(newService);
+                    const addNew = document.querySelector('.add-new-card');
+                    addNew.insertAdjacentHTML('beforebegin', html);
+                })
+                // Better error logging utilizing ApiClient response structure
+                .catch(err => alert(`Creation failed: ${err.detail || err.message || 'Unknown error'}`));
+        }
+
+        // --- GLOBAL INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setupAuthListeners();
+            setupCreationListeners();
+            
+            const token = localStorage.getItem('accessToken');
+            
+            if (token) {
+                updateUIForAuth(true);
+                fetchServices();
+            } else {
+                updateUIForAuth(false);
+            }
+        });
+    </script>
+</body>
+</html>

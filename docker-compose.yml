@@ -1,0 +1,163 @@
+# /service-fabric-project/docker-compose.yml
+# il Docker-in-Docker Socket Mounting introduce una falla di sicurezza che rende il backend api altamente riservato, le cui funzioni sono protette e innocue. L'effetto finale dei comandi docker e docker-compose (trattati dal backend_api) devono percio essere privi di ogni forma di attacco.
+
+services:
+  # --- 1. IL "VIGILE URBANO" (REVERSE PROXY) ---
+  proxy:
+    # Unica immagine con delle porte mappate sull'host
+    build:
+      context: ./1_proxy # Legge il Dockerfile in 1_proxy/
+    restart: always
+    ports:
+      - "${PROXY_PORT:-80}:80"
+    volumes:
+      # Monta la cartella degli statici di Django per Nginx
+      - static_volume:/static # Monta il volume nella root attesa da Nginx
+      - flask_static:/flask_static
+      - ./1_proxy/ssl:/etc/ssl:ro
+      - ./1_proxy/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - service_fabric_net
+    depends_on: [ backend_api, core_flask_service, core_vite_service ]
+
+  # --- 2. IL "CERVELLO" (DJANGO API) ---
+  backend_api:
+    build:
+      context: ./2_backend_api/ # Legge il Dockerfile in 2_backend_api/
+    restart: always
+    env_file:
+      - .env
+    user: "${UID:-0}:${GID:-0}"
+    volumes:
+      # Volume per i file statici, condiviso con Nginx
+      - static_volume:/app/staticfiles
+      - ./3_service_templates:/app/3_service_templates
+      - ./6_service_catalog:/app/6_service_catalog
+    networks:
+      - service_fabric_net
+    depends_on:
+      db:
+        condition: service_healthy
+    expose: [ "8000" ]
+
+  # --- 3. LA "MEMORIA" (POSTGRESQL) ---
+  db:
+    image: postgres:15-alpine # Come nel tuo file
+    restart: always
+    volumes:
+      # Rende i dati del DB permanenti
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d servicefabric" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - service_fabric_net
+    expose:
+      - "5432"
+
+  core_flask_service:
+    build: ./5_core_services/flask_base
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      # Mount del catalogo codice (per lo sviluppo)
+      - ./6_service_catalog:/app/services_catalog:cached
+      - flask_static:/app/flask_static
+      # Mount della cartella media (per file upload/download)
+      - ./7_user_media:/app/user_media
+      - ./2_backend_api/service_fabric/shared:/app/shared:ro,delegated
+      # Mount per il codice dell'app Core stessa (per dev live)
+      - ./5_core_services/flask_base/app:/app/app:cached
+      - ./5_core_services/flask_base/run.py:/app/run.py
+      - ./5_core_services/flask_base/app/run_celery.py:/app/run_celery.py
+      - ./tests:/app/tests
+    networks:
+      - service_fabric_net
+    environment:
+      - SERVICE_CATALOG_PATH=/app/services_catalog
+      - STATIC_ASSETS_PATH=/app/flask_static
+    depends_on:
+      db:
+        condition: service_healthy
+    expose: [ "5000" ]
+
+  core_vite_service:
+    image: node:20-alpine
+    working_dir: /app/builder
+    mem_limit: 8g # Increased memory limit to prevent OOM during builds
+    volumes:
+      # 1. The Builder Script
+      - ./5_core_services/vite_base:/app/builder
+      # 2. The Source Code (Frontends)
+      - ./6_service_catalog:/app/services_catalog
+      # 3. The Shared Volume (Output Target)
+      - flask_static:/app/dist
+    # Install shared deps and run the orchestrator
+    environment:
+      - BUILD_MODE=PERIODIC
+      - BUILD_INTERVAL=300
+      - MANAGEMENT_PORT=3000
+    command: sh -c "npm install --legacy-peer-deps && npm start"
+    expose: [ "3000" ]
+    networks:
+      - service_fabric_net
+
+  core_react_service:
+    build:
+      context: ./5_core_services/react_base
+    working_dir: /app/builder
+    volumes:
+      - ./5_core_services/react_base:/app/builder
+      - ./6_service_catalog:/app/services_catalog
+      - flask_static:/app/dist
+    environment:
+      - BUILD_MODE=ONCE
+      - BUILD_INTERVAL=300
+    command: sh -c "npm install --legacy-peer-deps && npm start"
+    restart: unless-stopped
+    networks:
+      - service_fabric_net
+
+  fabric_watcher:
+    build:
+      context: ./5_core_services/fabric_watcher
+    restart: always
+    volumes:
+      - ./6_service_catalog:/services_catalog:ro
+    networks:
+      - service_fabric_net
+    depends_on:
+      - core_flask_service
+      - core_vite_service
+      - core_react_service
+
+  fastapi_core:
+    build:
+      context: ./5_core_services/fastapi_base
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${FASTAPI_PORT:-8081}:8000"
+    environment:
+      - FLASK_SERVICE_URL=http://core_flask_service:5000
+      - DJANGO_SERVICE_URL=http://backend_api:8000
+    volumes:
+      - ./5_core_services/fastapi_base/app:/app/app
+    networks:
+      - service_fabric_net
+
+# Definiamo i volumi e la rete
+volumes:
+  postgres_data:
+  static_volume:
+  flask_static:
+
+
+networks:
+  service_fabric_net:
+    driver: bridge

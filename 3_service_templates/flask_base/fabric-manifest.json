@@ -1,0 +1,28 @@
+{
+  "app_name": "{{APP_NAME}}",
+  "app_slug": "{{APP_SLUG}}",
+  "template": "flask_base",
+  "description": "Standard Python Flask blueprint for Service Fabric.",
+  "core_services": {
+    "gateway_api": "http://core_fastapi_service:8000/api/v1",
+    "websockets": "ws://gateway:8000/api/v1/ws/events/",
+    "vector_store": "http://core_fastapi_service:8000/api/v1/vector",
+    "shared_utils": "/app/services_catalog/_shared/utils/"
+  },
+  "rules": {
+    "compilation": [
+      "No specialized build required; Flask hot-reloads via FabricWatcher."
+    ],
+    "execution": [
+      "Use 'smart_render' for all HTML responses to support HTMX.",
+      "Access user context via 'flask.g.user_id'.",
+      "Access global config via 'flask.g.state_config'.",
+      "Use 'fabric.broadcast' from '_shared.utils.fabric_sdk' for real-time events."
+    ],
+    "avoid": [
+      "Direct Socket.IO server implementation.",
+      "Hardcoded database credentials (use SQLAlchemy 'db' object).",
+      "Large blocking operations in routes (use Celery/BackgroundTasks)."
+    ]
+  }
+}

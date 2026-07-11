@@ -1,0 +1,71 @@
+# /docker-compose.dev.yml
+#
+# DEVELOPMENT OVERRIDES
+# - Loads .env.dev
+# - Mounts source code for live-reloading
+# - Runs the Django dev server
+#'
+services:
+  proxy:
+    # <-- ADD THIS NEW BLOCK
+    ports:
+      - "${PROXY_PORT:-80}:80"
+    volumes:
+      - ./2_backend_api/service_fabric/staticfiles:/static
+  backend_api:
+    env_file:
+      - .env.dev
+    volumes:
+      # Mount local source code for live-reloading
+      - ./2_backend_api/service_fabric:/app:cached
+      - ./2_backend_api/service_fabric/staticfiles:/app/static
+      - ./2_backend_api/service_fabric/templates/shared:/app/templates/shared
+      - ./3_service_templates:/app/3_service_templates:cached
+      - ./6_service_catalog:/app/6_service_catalog:cached
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      # Run the Django development server
+      # --nostatic: Disables Django's static file serving (Nginx handles it)
+      # --insecure: Allows serving with DEBUG=0 if needed (though DEBUG=1 is typical for dev)
+      python manage.py runserver 0.0.0.0:8000
+    ports:
+      # Optionally map the 8000 port for direct API access during dev
+      - "${BACKEND_API_PORT:-8002}:8000"
+
+  core_flask_service:
+    volumes:
+      - ./2_backend_api/service_fabric/templates/shared:/app/templates/shared
+      - ./2_backend_api/service_fabric/component_repo:/app/component_repo
+    env_file:
+      - .env.dev
+
+  core_react_service:
+    env_file:
+      - .env.dev
+
+  fastapi_core:
+    env_file:
+      - .env.dev
+
+  
+  db:
+    env_file:
+      - .env.dev
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d servicefabric" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  component_lab:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./9_component_lab:/app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "${VITE_PORT:-5173}:5173"
+    networks:
+      - service_fabric_net

@@ -1,0 +1,25 @@
+{
+  "app_name": "{{APP_NAME}}",
+  "app_slug": "{{APP_SLUG}}",
+  "template": "data_science_base",
+  "description": "Notebook-style Python application for data analysis and visualization.",
+  "core_services": {
+    "gateway_api": "http://core_fastapi_service:8000/api/v1",
+    "vector_store": "http://core_fastapi_service:8000/api/v1/vector",
+    "shared_utils": "/app/services_catalog/_shared/utils/"
+  },
+  "rules": {
+    "compilation": [
+      "Standard Python environment; ensure requirements.txt is up to date."
+    ],
+    "execution": [
+      "Focus on data processing scripts and visualization exports.",
+      "Integrate with Vector Store for document indexing.",
+      "Use shared utils for consistent data handling."
+    ],
+    "avoid": [
+      "Building complex UIs (use Flask/Vite shards for UI).",
+      "Direct database modifications without using established models."
+    ]
+  }
+}

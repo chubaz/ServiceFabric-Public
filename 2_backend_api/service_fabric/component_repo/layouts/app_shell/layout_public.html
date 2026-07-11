@@ -1,0 +1,25 @@
+{% extends "layouts/app_shell/layout_base.html" %}
+
+{% block main_content_area %}
+    <div class="flex items-center justify-center min-h-[calc(100vh_-_var(--header-h))] p-4 pt-12">
+        
+        <!-- Public Content Container -->
+        <div class="w-full max-w-md p-8 glass-panel rounded-xl shadow-2xl transition-all duration-300">
+            
+            <h1 class="text-3xl font-extrabold text-white mb-6 text-center">
+                {% block public_title %}Access ServiceFabric{% endblock %}
+            </h1>
+            
+            <!-- Message/Error Area (for login/register messages) -->
+            <div id="public-message-area" class="mb-4">
+                {% block messages %}{% endblock %}
+            </div>
+            
+            <!-- Specific Public Content (Login/Registration Form) -->
+            {% block public_content %}
+                <!-- Child templates (e.g., login.html) will place their form here -->
+            {% endblock %}
+
+        </div>
+    </div>
+{% endblock %}

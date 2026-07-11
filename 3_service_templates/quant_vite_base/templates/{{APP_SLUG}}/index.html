@@ -1,0 +1,18 @@
+<div id="sf-app-{{APP_SLUG}}-root" class="w-full h-full relative font-sans text-slate-200">
+    <!-- Idratazione Dati: Flask -> Svelte -->
+    <script>
+        window["SF_CONTEXT_{{APP_SLUG}}"] = {
+            name: "{{APP_NAME}}",
+            slug: "{{APP_SLUG}}",
+            state: {{ state_config | tojson | safe }},
+            data: {{ app_data | tojson | safe }}
+        };
+    </script>
+
+    <!-- Mount Target per Svelte -->
+    <div id="svelte-mount-{{APP_SLUG}}" class="w-full h-full"></div>
+
+    <!-- Assets prodotti da Vite (main.css e index.js) -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='assets/main.css') }}">
+    <script type="module" src="{{ url_for('.static', filename='assets/index.js') }}"></script>
+</div>

@@ -1,0 +1,28 @@
+{
+  "app_name": "{{APP_NAME}}",
+  "app_slug": "{{APP_SLUG}}",
+  "template": "quant_vite_base",
+  "description": "Advanced Quantitative Terminal with Svelte 5 and vectorized Python logic.",
+  "core_services": {
+    "gateway_api": "http://core_fastapi_service:8000/api/v1",
+    "websockets": "ws://gateway:8000/api/v1/ws/events/",
+    "vector_store": "http://core_fastapi_service:8000/api/v1/vector",
+    "shared_utils": "/app/services_catalog/_shared/utils/"
+  },
+  "rules": {
+    "compilation": [
+      "Must be compiled via 'core_vite_service'.",
+      "Python logic resides in 'service.py' for FaaS execution.",
+      "Background tasks reside in 'tasks.py'."
+    ],
+    "execution": [
+      "Use 'Polars' or 'NumPy' for heavy data processing in 'service.py'.",
+      "Broadcast financial ticks using 'fabric.broadcast' with 'pnl_update' event.",
+      "Use Svelte 5 runes for high-frequency dashboard updates."
+    ],
+    "avoid": [
+      "Standard Python 'lists' for financial calculations (use NumPy/Polars).",
+      "Blocking the main event loop with heavy calculations."
+    ]
+  }
+}

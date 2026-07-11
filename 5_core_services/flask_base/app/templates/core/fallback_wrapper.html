@@ -1,0 +1,8 @@
+{# Extend the SHARED base.html from Django #}
+{% extends "service_wrapper.html" %}
+
+{# In your base.html, you must have a block named 'content' #}
+{% block content %}
+    {# Render the specific service template #}
+    {% include partial_template %}
+{% endblock %}

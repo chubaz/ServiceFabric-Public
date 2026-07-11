@@ -1,0 +1,28 @@
+{
+  "app_name": "{{APP_NAME}}",
+  "app_slug": "{{APP_SLUG}}",
+  "template": "react_base",
+  "description": "Modern React 19 application with Tailwind CSS and Vite.",
+  "core_services": {
+    "gateway_api": "http://core_fastapi_service:8000/api/v1",
+    "websockets": "ws://gateway:8000/api/v1/ws/events/",
+    "vector_store": "http://core_fastapi_service:8000/api/v1/vector",
+    "shared_utils": "/app/services_catalog/_shared/utils/"
+  },
+  "rules": {
+    "compilation": [
+      "Must be compiled via 'core_react_service' (React Builder).",
+      "Entry point: 'src/main.jsx' or 'src/main.tsx'.",
+      "Output assets: 'static/assets/index.js'."
+    ],
+    "execution": [
+      "Use 'fabric-client.ts' via ESM import for Fabric Gateway interaction.",
+      "Initialize connection with 'fabric.connect()' in useEffect hook.",
+      "Prefer Functional Components and React Hooks."
+    ],
+    "avoid": [
+      "Global state libraries like Redux (prefer Fabric state config).",
+      "External CSS frameworks other than Tailwind."
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+/* 
+   HUB PRIME UNIFIED THEME
+   Based on main-3.html architecture
+*/
+
+:root {
+    --bg-main: #f8fafc;
+    --bg-stage: #ffffff;
+    --bg-modal: #ffffff;
+    --bg-card: #f1f5f9;
+    --text-main: #475569;
+    --text-bold: #1e293b;
+    --text-muted: #64748b;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --border-main: rgba(0, 0, 0, 0.05);
+    --nebula-opacity: 0.05;
+    --card-hover: rgba(0, 0, 0, 0.02);
+    --accent-primary: #f59e0b; /* Amber-500 */
+    --accent-secondary: #3b82f6; /* Blue-500 */
+}
+
+.dark {
+    --bg-main: #020617;
+    --bg-stage: #020617;
+    --bg-modal: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #94a3b8;
+    --text-bold: #f1f5f9;
+    --text-muted: #475569;
+    --glass-bg: rgba(15, 23, 42, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --border-main: rgba(255, 255, 255, 0.05);
+    --nebula-opacity: 0.03;
+    --card-hover: rgba(255, 255, 255, 0.02);
+    --accent-primary: #f59e0b;
+    --accent-secondary: #3b82f6;
+}
+
+/* Base Harmonization */
+.shard-root {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.shard-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-main);
+}
+
+.shard-text-bold {
+    color: var(--text-bold);
+}
+
+/* Glassmorphism Utilities */
+.glass {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+}
+
+.glass-hover {
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-hover:hover {
+    background-color: var(--card-hover);
+    border-color: rgba(245, 158, 11, 0.2);
+    transform: translateY(-4px);
+}
+
+/* Typography */
+.text-vibrant {
+    color: var(--text-bold) !important;
+}
+
+.text-muted {
+    color: var(--text-main) !important;
+}
+
+/* Ambient Physics */
+.nebula-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.02) 0%, transparent 40%);
+    filter: blur(80px);
+    z-index: -1;
+    opacity: var(--nebula-opacity);
+}

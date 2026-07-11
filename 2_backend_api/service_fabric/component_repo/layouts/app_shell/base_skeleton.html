@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Service Fabric{% endblock %}</title>
+    
+    <!-- 1. Global Setup (Tailwind, HTMX, Fonts) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- 2. Configuration for Dark Mode & Custom Colors -->
+    <!-- CRITICAL: Uses values injected from theme_manifest.json -->
+    <script>
+        // Use a default theme object if context processing fails
+        const theme = {{ theme|safe }}; 
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: [theme.typography.font_family, 'sans-serif'] },
+                    colors: {
+                        primary: theme.color_palette.primary,
+                        secondary: theme.color_palette.secondary,
+                        bg_dark: theme.color_palette.background_dark,
+                        bg_medium: theme.color_palette.background_medium
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 3. Global CSS Variables & Custom Styles (Including the glass effect) -->
+    <style type="text/tailwindcss">
+        :root {
+            /* Variables injected for use by Svelte/JS/Custom CSS */
+            --color-primary: {{ theme.color_palette.primary }};
+            --bg-dark: {{ theme.color_palette.background_dark }};
+            --sidebar-w: {{ theme.layout.sidebar_width_px }}px;
+            --header-h: {{ theme.layout.header_height_px }}px;
+        }
+
+        body { 
+            font-family: var(--font-body); 
+            font-size: {{ theme.typography.font_scale_base_px }}px;
+        }
+        
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.85); /* Use a shade of bg-dark */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+    
+    <!-- 4. HTMX & Auth Interceptor (from the previous prompt) -->
+    <script>
+        // Ensure the HTMX global is available before adding listeners
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                event.detail.headers['Authorization'] = 'Bearer ' + token;
+            }
+        });
+        document.body.addEventListener('htmx:responseError', (event) => {
+            if (event.detail.xhr.status === 401) {
+                // If 401, force the user back to the login page handled by Django
+                window.location.href = '/login'; 
+            }
+        });
+    </script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-bg_dark text-gray-300 antialiased min-h-screen">
+    
+    <!-- The single main block where all content from child templates is inserted -->
+    {% block page_shell %}{% endblock %}
+    
+    <!-- Global Scripts (like apiClient.js or theme_switcher.js) -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,16 @@
+<div id="sf-app-{{APP_SLUG}}-root" class="w-full h-full relative">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <script>
+        window["SF_CONTEXT_{{APP_SLUG}}"] = {
+            name: "{{APP_NAME}}",
+            slug: "{{APP_SLUG}}",
+            state: {{ state_config | tojson | safe }},
+            data: {{ app_data | tojson | safe }}
+        };
+    </script>
+
+    <div id="react-mount-{{APP_SLUG}}" class="w-full h-full"></div>
+
+    <script type="module" src="{{ url_for('.static', filename='assets/index.js') }}"></script>
+</div>

@@ -1,0 +1,20 @@
+tunnel: <tunnel-id>
+credentials-file: /home/cloudflared/.cloudflared/<tunnel-id>.json
+
+ingress:
+  # This rule points your public domain to your local Docker app
+  - hostname: dryfus.one
+    service: https://proxy:443
+
+    originRequest:
+      # Do NOT skip certificate validation
+      noTLSVerify: true 
+      
+      # This MUST match the 'server_name' in nginx.conf
+      # and the hostname on your Origin Certificate
+      originServerName: proxy.dryfus.one
+
+
+  # This is a required catch-all to stop the tunnel
+  - service: http_status:404
+

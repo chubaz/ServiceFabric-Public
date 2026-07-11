@@ -1,0 +1,460 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Service Fabric{% endblock %}
+{% block ribbon_content %}
+
+    <!-- DYNAMIC RIBBON: Adapts to user state (Grid vs Service View) -->
+    
+    <!-- Left: Breadcrumbs -->
+    <div id="ribbon-breadcrumbs" class="flex items-center text-sm text-gray-400">
+        <div class="flex items-center">
+            <svg class="w-4 h-4 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            <span class="text-white font-medium cursor-default">Dashboard</span>
+        </div>
+    </div>
+    
+    <!-- Right: Contextual Actions -->
+    <div id="ribbon-actions" class="flex items-center gap-3">
+        
+        <!-- Action Set A: Grid View Tools -->
+        <div id="actions-grid" class="flex items-center gap-2 transition-opacity duration-300">
+            <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                    <svg class="h-4 w-4 text-gray-500 group-focus-within:text-amber-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </div>
+                <input type="text" placeholder="Filter resources..." class="bg-slate-900/50 border-none text-xs rounded-md text-gray-300 placeholder-gray-600 focus:ring-1 focus:ring-amber-500 w-48 h-8 pl-9 transition-all">
+            </div>
+            <button id="btn-refresh-grid" class="p-1.5 text-gray-400 hover:text-white bg-slate-700/30 hover:bg-slate-700 rounded-md transition-colors" title="Refresh Grid">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            </button>
+        </div>
+
+        <!-- Action Set B: Service View Tools (Hidden by default) -->
+        <div id="actions-service" class="hidden flex items-center gap-3">
+            <button id="btn-close-overlay" class="flex items-center gap-2 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-md transition-all border border-slate-600 shadow-sm hover:shadow-md">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                Back to Grid
+            </button>
+            <div class="h-4 w-px bg-slate-700"></div>
+            <button class="text-xs text-amber-500 hover:text-amber-400 font-medium">Service Config</button>
+            <button class="text-xs text-gray-400 hover:text-white">View Logs</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <!-- SCENE 1: THE SERVICE GRID -->
+    <div id="scene-grid" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-500 ease-in-out transform opacity-100 scale-100 origin-top">
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white tracking-tight">Service Matrix</h1>
+                <p class="text-slate-400 text-sm mt-2 max-w-2xl">
+                    Manage your deployed microservices. Select a card to overlay the interface onto the base frame.
+                </p>
+            </div>
+            <!-- "Create New" Button acts as a trigger for modal or action -->
+            <button id="btn-create-service" class="hidden md:inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-amber-500 transition-all">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Deploy Service
+            </button>
+        </div>
+
+        <!-- The Grid Container -->
+        <div id="service-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Loading Skeleton (Initial State) -->
+            <div class="animate-pulse bg-slate-800 rounded-xl h-64 border border-slate-700"></div>
+            <div class="animate-pulse bg-slate-800 rounded-xl h-64 border border-slate-700"></div>
+            <div class="animate-pulse bg-slate-800 rounded-xl h-64 border border-slate-700"></div>
+        </div>
+    </div>
+
+    <!-- SCENE 2: SERVICE OVERLAY (THE BASE FRAME ADAPTATION) -->
+    <!-- This covers the main content area but leaves the header visible -->
+    <div id="scene-overlay" class="hidden absolute inset-0 z-10 bg-slate-900 pt-8 px-4 sm:px-6 lg:px-8 pb-0 flex flex-col h-full">
+        <!-- Overlay Container -->
+        <div class="w-full h-full bg-slate-950 rounded-t-2xl shadow-2xl border-t border-l border-r border-slate-700/50 relative overflow-hidden flex flex-col">
+            
+            <!-- Service Toolbar inside overlay -->
+            <div class="bg-slate-900 border-b border-slate-800 p-2 flex justify-between items-center px-4 h-10 shrink-0">
+                <span id="overlay-title" class="text-xs font-mono text-amber-500 uppercase tracking-wider">Loading...</span>
+                <div class="flex gap-1.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-rose-500/20 border border-rose-500/50"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/50"></div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/20 border border-emerald-500/50"></div>
+                </div>
+            </div>
+
+            <!-- Iframe host -->
+            <div class="relative flex-grow w-full bg-slate-950">
+                <div id="overlay-loader" class="absolute inset-0 flex items-center justify-center bg-slate-900/80 z-20 transition-opacity duration-500">
+                    <div class="flex flex-col items-center">
+                        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-amber-500 mb-4"></div>
+                        <span class="text-xs text-slate-400">Connecting to Service...</span>
+                    </div>
+                </div>
+                <!-- The iframe simulates the service html being "overlayed" -->
+                <iframe id="service-frame" src="about:blank" class="w-full h-full border-none opacity-0 transition-opacity duration-500"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: LOGIN / GUEST PROMPT -->
+    <!-- This renders immediately on top of the base layer -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity duration-500" aria-hidden="true"></div>
+
+        <!-- Modal Panel -->
+        <div id="auth-modal-content" class="glass-panel relative w-full max-w-md p-8 rounded-2xl shadow-2xl transform transition-all duration-500 scale-95 opacity-0 translate-y-8 border border-white/10">
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-500/20 to-orange-600/20 rounded-2xl mb-6 shadow-inner ring-1 ring-white/10">
+                    <svg class="w-8 h-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-white tracking-tight">Welcome Back</h2>
+                <p class="text-sm text-slate-400 mt-2">Log in to access the Service Fabric.</p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <div class="space-y-1">
+                    <label for="email" class="block text-xs font-semibold text-slate-300 uppercase tracking-wide">Email</label>
+                    <input type="email" id="email" required class="block w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all placeholder-slate-600 sm:text-sm shadow-inner" placeholder="admin@corelayer.io">
+                </div>
+                <div class="space-y-1">
+                    <label for="password" class="block text-xs font-semibold text-slate-300 uppercase tracking-wide">Password</label>
+                    <input type="password" id="password" required class="block w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all sm:text-sm shadow-inner">
+                </div>
+                
+                <p id="login-error-msg" class="text-rose-400 text-xs text-center min-h-[1.25rem] font-medium"></p>
+
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg shadow-amber-900/20 text-sm font-bold text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-amber-500 transition-all transform hover:scale-[1.02] active:scale-95">
+                    Secure Login
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-700/50">
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-transparent text-slate-500">Or continue without credentials</span>
+                </div>
+                <div class="mt-4 flex justify-center">
+                    <button id="btn-guest-login" class="text-sm text-slate-300 hover:text-white transition-colors font-medium flex items-center group">
+                        Enter as Guest
+                        <span class="ml-1 opacity-50 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    /**
+     * DASHBOARD CONTROLLER
+     * Manages the Flux: Modal -> Grid -> Service Overlay
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // 1. MOCK API CLIENT (Fallback if file is missing in preview)
+        // In production, the file included in base.html takes precedence.
+        const MockApi = {
+            async login(email, pass) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        if (email.includes('@') && pass.length > 0) {
+                            resolve({ access: 'mock_token_123', refresh: 'mock_refresh' });
+                        } else {
+                            reject({ detail: 'Invalid credentials.' });
+                        }
+                    }, 800);
+                });
+            },
+            async getServices() {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve([
+                        { id: 1, name: 'Auth Service', status: 'Running', description: 'Identity management and JWT issuance.' },
+                        { id: 2, name: 'Payment Gateway', status: 'Running', description: 'Stripe/PayPal payment processing.' },
+                        { id: 3, name: 'Analytics Engine', status: 'Stopped', description: 'Data aggregation pipeline.' },
+                        { id: 4, name: 'Notification Hub', status: 'Provisioning', description: 'Email and SMS dispatch queues.' }
+                    ]), 600);
+                });
+            }
+        };
+
+        // Use real ApiClient if available, otherwise Mock
+        const api = (typeof ApiClient !== 'undefined') 
+            ? new ApiClient({ login: '/api/token/', services: '/api/services/' }) 
+            : MockApi;
+
+
+        // 2. STATE & ELEMENTS
+        const state = {
+            user: null, // { email, role }
+            view: 'grid' // 'grid' | 'overlay'
+        };
+
+        const els = {
+            modal: document.getElementById('auth-modal'),
+            modalContent: document.getElementById('auth-modal-content'),
+            loginForm: document.getElementById('login-form'),
+            guestBtn: document.getElementById('btn-guest-login'),
+            errorMsg: document.getElementById('login-error-msg'),
+            
+            userStatus: document.getElementById('user-status-display'),
+            userName: document.getElementById('user-name-el'),
+            userRole: document.getElementById('user-role-el'),
+            authBtn: document.getElementById('auth-toggle-btn'),
+
+            sceneGrid: document.getElementById('scene-grid'),
+            gridContainer: document.getElementById('service-grid-container'),
+            
+            sceneOverlay: document.getElementById('scene-overlay'),
+            overlayTitle: document.getElementById('overlay-title'),
+            overlayFrame: document.getElementById('service-frame'),
+            overlayLoader: document.getElementById('overlay-loader'),
+            
+            ribbonBreadcrumbs: document.getElementById('ribbon-breadcrumbs'),
+            ribbonActionsGrid: document.getElementById('actions-grid'),
+            ribbonActionsService: document.getElementById('actions-service'),
+            btnCloseOverlay: document.getElementById('btn-close-overlay'),
+            btnRefreshGrid: document.getElementById('btn-refresh-grid')
+        };
+
+
+        // 3. FLUX: INITIALIZATION
+        function init() {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                // Assume valid token for demo (in real app, verify endpoint)
+                api.token = token;
+                setAuthState({ email: 'User', role: 'Admin' });
+                loadServices();
+            } else {
+                showModal();
+            }
+        }
+
+
+        // 4. FLUX: AUTHENTICATION
+        function showModal() {
+            els.modal.classList.remove('hidden');
+            setTimeout(() => {
+                els.modalContent.classList.remove('opacity-0', 'translate-y-8', 'scale-95');
+                els.modalContent.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+            }, 50);
+        }
+
+        function hideModal() {
+            els.modalContent.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+            els.modalContent.classList.add('opacity-0', 'translate-y-8', 'scale-95');
+            setTimeout(() => els.modal.classList.add('hidden'), 500);
+        }
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            els.errorMsg.textContent = '';
+            
+            try {
+                const data = await api.login(email, password);
+                if (data.access) {
+                    localStorage.setItem('accessToken', data.access);
+                    api.token = data.access;
+                    setAuthState({ email: email, role: 'Admin' });
+                    hideModal();
+                    loadServices();
+                }
+            } catch (err) {
+                els.errorMsg.textContent = err.detail || 'Login failed.';
+            }
+        }
+
+        function handleGuestClick() {
+            setAuthState({ email: 'Guest', role: 'Viewer' });
+            hideModal();
+            loadServices();
+        }
+
+        function setAuthState(user) {
+            state.user = user;
+            
+            // Update Header UI
+            els.userStatus.classList.remove('opacity-0');
+            els.userName.textContent = user.email.split('@')[0];
+            els.userRole.textContent = user.role;
+            
+            els.authBtn.textContent = 'Sign Out';
+            els.authBtn.classList.replace('bg-slate-800', 'bg-rose-900/50');
+            els.authBtn.classList.replace('border-slate-600', 'border-rose-800');
+        }
+
+        els.authBtn.addEventListener('click', () => {
+            if (state.user) {
+                // Logout Logic
+                localStorage.removeItem('accessToken');
+                location.reload();
+            } else {
+                showModal();
+            }
+        });
+
+
+        // 5. FLUX: GRID RENDER
+        async function loadServices() {
+            els.gridContainer.innerHTML = '<div class="col-span-full text-center text-slate-500">Loading services...</div>';
+            try {
+                const services = await api.getServices();
+                renderGrid(services);
+            } catch (e) {
+                els.gridContainer.innerHTML = '<div class="col-span-full text-center text-rose-500">Failed to load services.</div>';
+            }
+        }
+
+        function renderGrid(services) {
+            els.gridContainer.innerHTML = ''; // Clear
+
+            // "Create New" Card
+            const createCard = `
+                <div class="group relative rounded-xl border-2 border-dashed border-slate-700 bg-slate-800/20 hover:bg-slate-800/50 transition-all duration-300 flex flex-col items-center justify-center p-6 cursor-pointer h-64">
+                    <div class="p-4 bg-slate-800 rounded-full group-hover:scale-110 transition-transform mb-4 shadow-lg">
+                        <svg class="w-8 h-8 text-slate-500 group-hover:text-amber-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    </div>
+                    <span class="text-sm font-semibold text-slate-400 group-hover:text-white transition-colors">Deploy New Service</span>
+                </div>
+            `;
+            els.gridContainer.insertAdjacentHTML('beforeend', createCard);
+
+            // Service Cards
+            services.forEach(svc => {
+                const statusStyles = {
+                    'Running': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                    'Stopped': 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+                    'Provisioning': 'bg-blue-500/10 text-blue-400 border-blue-500/20 animate-pulse'
+                };
+                const badgeClass = statusStyles[svc.status] || 'bg-gray-700 text-gray-300';
+                const safeName = (svc.name || '').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+                const cardHTML = `
+                    <div class="bg-slate-800 rounded-xl border border-slate-700 p-6 hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-900/10 transition-all duration-300 flex flex-col h-64 relative overflow-hidden group">
+                        
+                        <!-- Top Row -->
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="p-2 bg-slate-700/50 rounded-lg group-hover:bg-amber-500/10 group-hover:text-amber-500 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${badgeClass}">${svc.status}</span>
+                        </div>
+                        
+                        <h3 class="text-lg font-bold text-white mb-2 truncate relative z-10">${svc.name}</h3>
+                        <p class="text-sm text-gray-400 line-clamp-2 mb-4 flex-grow relative z-10">${svc.description}</p>
+                        
+                        <!-- Actions -->
+                        <div class="relative z-10 flex gap-2 mt-auto opacity-80 group-hover:opacity-100 transition-opacity">
+                            <button onclick="app.openService(${svc.id}, '${safeName}')" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white text-sm font-semibold py-2 rounded-lg transition-colors shadow-lg shadow-amber-900/20">
+                                Open Interface
+                            </button>
+                            <button class="px-3 bg-slate-700 hover:bg-slate-600 text-gray-300 rounded-lg transition-colors">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                els.gridContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+
+        // 6. FLUX: SERVICE OVERLAY
+        // We expose this to the window so HTML 'onclick' attributes can find it
+        window.app = {
+            openService(id, name) {
+                // Update Ribbon
+                els.ribbonBreadcrumbs.innerHTML = `
+                    <div class="flex items-center group cursor-pointer" onclick="app.closeService()">
+                        <svg class="w-4 h-4 mr-2 text-gray-500 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        <span class="hover:text-white transition-colors">Dashboard</span>
+                    </div>
+                    <span class="mx-2 text-slate-600">/</span>
+                    <span class="text-amber-500 font-medium">${name}</span>
+                `;
+                
+                // Toggle Buttons
+                els.ribbonActionsGrid.classList.add('opacity-0', 'pointer-events-none', 'absolute'); // visual hide
+                els.ribbonActionsService.classList.remove('hidden');
+
+                // Toggle Scenes (Grid fades out, Overlay appears)
+                els.sceneGrid.classList.add('opacity-0', 'scale-95');
+                
+                setTimeout(() => {
+                    els.sceneGrid.classList.add('hidden');
+                    els.sceneOverlay.classList.remove('hidden');
+                    
+                    // Reset Iframe state
+                    els.overlayTitle.textContent = `${name} :: LIVE`;
+                    els.overlayLoader.classList.remove('opacity-0');
+                    els.overlayFrame.classList.add('opacity-0');
+
+                    // Simulate Load (In real app, src = `/services/${id}`)
+                    setTimeout(() => {
+                        els.overlayLoader.classList.add('opacity-0');
+                        els.overlayFrame.classList.remove('opacity-0');
+                        
+                        // Fake content for the iframe to show it works
+                        els.overlayFrame.srcdoc = `
+                            <body style="background:#020617; color:#94a3b8; font-family:sans-serif; height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; margin:0;">
+                                <h1 style="color:#f59e0b; margin-bottom:10px;">${name} Interface</h1>
+                                <p>This is the isolated service environment.</p>
+                                <button style="margin-top:20px; padding:10px 20px; background:#1e293b; border:1px solid #334155; color:white; border-radius:6px; cursor:pointer;">Interact</button>
+                            </body>
+                        `;
+                    }, 800);
+
+                }, 400); // Wait for grid transition
+            },
+
+            closeService() {
+                // Reset Ribbon
+                els.ribbonBreadcrumbs.innerHTML = `
+                     <div class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                        <span class="text-white font-medium cursor-default">Dashboard</span>
+                    </div>
+                `;
+                
+                els.ribbonActionsService.classList.add('hidden');
+                els.ribbonActionsGrid.classList.remove('opacity-0', 'pointer-events-none', 'absolute');
+
+                // Toggle Scenes
+                els.sceneOverlay.classList.add('hidden');
+                els.sceneGrid.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    els.sceneGrid.classList.remove('opacity-0', 'scale-95');
+                }, 50);
+
+                // Clean up iframe
+                els.overlayFrame.srcdoc = '';
+            }
+        };
+
+        // Event Listeners
+        els.loginForm.addEventListener('submit', handleLoginSubmit);
+        els.guestBtn.addEventListener('click', handleGuestClick);
+        els.btnCloseOverlay.addEventListener('click', window.app.closeService);
+        els.btnRefreshGrid.addEventListener('click', () => {
+             const icon = els.btnRefreshGrid.querySelector('svg');
+             icon.classList.add('animate-spin');
+             loadServices().then(() => setTimeout(() => icon.classList.remove('animate-spin'), 500));
+        });
+
+        // Run Init
+        init();
+    });
+</script>
+{% endblock %}

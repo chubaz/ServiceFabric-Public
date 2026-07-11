@@ -1,0 +1,28 @@
+{
+  "app_name": "{{APP_NAME}}",
+  "app_slug": "{{APP_SLUG}}",
+  "template": "vite_base",
+  "description": "High-performance Svelte 5 / Vite template for real-time dashboards.",
+  "core_services": {
+    "gateway_api": "http://core_fastapi_service:8000/api/v1",
+    "websockets": "ws://gateway:8000/api/v1/ws/events/",
+    "vector_store": "http://core_fastapi_service:8000/api/v1/vector",
+    "shared_utils": "/app/services_catalog/_shared/utils/"
+  },
+  "rules": {
+    "compilation": [
+      "Must be compiled via 'core_vite_service' (Vite Builder).",
+      "Entry point: 'src/main.ts'.",
+      "Output assets: 'static/assets/index.js' and 'static/assets/main.css'."
+    ],
+    "execution": [
+      "Use 'fabric-client.ts' for WebSocket communication.",
+      "Support 'Double Hydration': Flask injects initial state into 'window.SF_CONTEXT_{{APP_SLUG}}'.",
+      "Use Svelte 5 Runes ($state, $derived, $effect) for reactivity."
+    ],
+    "avoid": [
+      "Direct DOM manipulation (let Svelte handle the UI).",
+      "Standalone Node.js servers for frontend delivery."
+    ]
+  }
+}

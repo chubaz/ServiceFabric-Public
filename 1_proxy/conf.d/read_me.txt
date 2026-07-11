@@ -1,0 +1,1 @@
+Cartella vuota (ma tracciata) che verrà usata come volume per i servizi generati.

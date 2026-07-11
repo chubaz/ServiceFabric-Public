@@ -1,0 +1,5 @@
+claude-agent-sdk
+schedule
+python-dotenv
+rich          # pretty terminal output for reports
+websockets

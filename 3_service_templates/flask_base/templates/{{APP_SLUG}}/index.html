@@ -1,0 +1,59 @@
+<div id="sf-app-{{APP_SLUG}}-root" class="flex flex-col h-full min-h-[400px] bg-slate-50 rounded-3xl overflow-hidden border border-slate-200 font-sans">
+    
+    <!-- Local App Navbar: Navigazione interna allo Shard -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-6">
+            <span class="font-black text-{{theme_color}}-600 text-sm uppercase tracking-tighter">{{APP_NAME}}</span>
+            <div class="h-4 w-px bg-slate-200"></div>
+            
+            <div class="flex gap-2">
+                <button hx-get="/app/core/{{APP_SLUG}}/views/dashboard" 
+                        hx-target="#{{APP_SLUG}}-viewport" 
+                        class="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-slate-100 transition-all focus:bg-{{theme_color}}-50 focus:text-{{theme_color}}-700 border border-transparent focus:border-{{theme_color}}-200 outline-none">
+                    Dashboard
+                </button>
+                <button hx-get="/app/core/{{APP_SLUG}}/views/settings" 
+                        hx-target="#{{APP_SLUG}}-viewport" 
+                        class="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-slate-100 transition-all focus:bg-{{theme_color}}-50 focus:text-{{theme_color}}-700 border border-transparent focus:border-{{theme_color}}-200 outline-none">
+                    Settings
+                </button>
+            </div>
+        </div>
+        <div class="text-[9px] font-mono text-slate-400">SHARD_ID: {{APP_SLUG}}</div>
+    </nav>
+
+    <!-- Viewport: Area dove vengono iniettati i frammenti delle sottopagine -->
+    <main id="{{APP_SLUG}}-viewport" 
+          class="flex-1 p-8 overflow-y-auto no-scrollbar"
+          hx-get="/app/core/{{APP_SLUG}}/views/{{initial_view}}" 
+          hx-trigger="load">
+        
+        <!-- Stato di caricamento iniziale -->
+        <div class="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
+            <div class="w-8 h-8 border-4 border-{{theme_color}}-500 border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-[10px] font-black uppercase tracking-widest">Sincronizzazione Viste...</span>
+        </div>
+    </main>
+
+    <!-- Fabric Real-Time Integration -->
+    <script src="/app/core/_shared/utils/fabric-client.js"></script>
+    <script>
+        (function() {
+            if (window.fabric) {
+                // Connect to the central Gateway hub
+                window.fabric.connect();
+                
+                // Listen for global fabric events
+                window.fabric.onEvent((event) => {
+                    console.log(`[{{APP_SLUG}}] Received Fabric Event:`, event);
+                    
+                    // Example: Auto-refresh dashboard if a relevant update occurs
+                    if (event.event === '{{APP_SLUG}}_sync_completed') {
+                        htmx.trigger('#{{APP_SLUG}}-viewport', 'load');
+                    }
+                });
+            }
+        })();
+    </script>
+
+</div>

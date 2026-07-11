@@ -1,0 +1,24 @@
+{
+  "theme_name": "ServiceFabric - Dark Slate",
+  "version": "1.0",
+  "color_palette": {
+    "primary": "#f59e0b",
+    "secondary": "#3b82f6",
+    "background_dark": "#0f172a",
+    "background_medium": "#1e293b",
+    "text_light": "#e2e8f0"
+  },
+  "typography": {
+    "font_family": "'Inter', sans-serif",
+    "font_scale_base_px": 16,
+    "line_height_base": 1.6
+  },
+  "layout": {
+    "sidebar_width_px": 256,
+    "header_height_px": 64
+  },
+  "accessibility": {
+    "enable_motion": true,
+    "high_contrast_mode": false
+  }
+}

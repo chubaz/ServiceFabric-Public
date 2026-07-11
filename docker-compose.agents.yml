@@ -1,0 +1,58 @@
+# docker-compose.agents.yml
+#
+# Optional compose file that adds the agent scheduler as a background service.
+# Run alongside the main stack:
+#
+#   docker-compose -f docker-compose.yml -f docker-compose.agents.yml up -d
+#
+# Or run the scheduler standalone:
+#
+#   docker-compose -f docker-compose.agents.yml up agent_scheduler
+#
+# Run a task on demand without starting the scheduler:
+#
+#   docker-compose -f docker-compose.agents.yml run --rm agent_runner \
+#     python runner.py security_scan --service notes
+
+services:
+
+  # --- Persistent scheduler: runs agent tasks on a schedule ---
+  agent_scheduler:
+    build:
+      context: ./agents_sdk
+    restart: unless-stopped
+    env_file:
+      - ./.env.dev          # needs ANTHROPIC_API_KEY
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      # Mount the SDK source so edits take effect without rebuild
+      - ./agents_sdk:/agents_sdk
+      # Mount project root so agents can read all service files
+      - .:/project:ro
+      # Mount .claude/agents/ so agent definitions are always current
+      - ./.claude:/project/.claude:ro
+      # Persist reports across container restarts
+      - agents_reports:/agents_sdk/reports
+    working_dir: /agents_sdk
+    command: python scheduler.py
+
+  # --- One-shot runner: for on-demand tasks via `docker-compose run` ---
+  agent_runner:
+    build:
+      context: ./agents_sdk
+    env_file:
+      - ./.env.dev
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./agents_sdk:/agents_sdk
+      - .:/project:ro
+      - ./.claude:/project/.claude:ro
+      - agents_reports:/agents_sdk/reports
+    working_dir: /agents_sdk
+    profiles:
+      - tools   # only starts with --profile tools or via `run`
+
+volumes:
+  agents_reports:

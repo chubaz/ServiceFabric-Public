@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# Service Fabric - Command Line Interface (CLI)
+
+COMMAND=$1
+APP_NAME=$2
+TARGET=$3
+
+if [ -z "$COMMAND" ] || [ -z "$APP_NAME" ]; then
+    echo "Usage: ./fabric <command> <app_name> [target]"
+    echo "Commands:"
+    echo "  rebuild <app_name> [--flask|--vite|--react|--all]"
+    echo "  test    <app_name>"
+    echo "  logs    <app_name>"
+    echo "  diagnose <app_name>"
+    exit 1
+fi
+
+case $COMMAND in
+    rebuild)
+        TARGET=${TARGET:---all}
+        echo "🔨 Rebuilding '$APP_NAME' with target '$TARGET'..."
+        
+        if [[ "$TARGET" == "--flask" || "$TARGET" == "--all" ]]; then
+            echo "🚀 Reloading Flask Shard..."
+            docker compose exec core_flask_service /app/reload_app.sh "$APP_NAME"
+        fi
+        
+        if [[ "$TARGET" == "--vite" || "$TARGET" == "--all" ]]; then
+            echo "📦 Building Vite Assets..."
+            docker compose exec core_vite_service node build_single.js "$APP_NAME"
+        fi
+        
+        if [[ "$TARGET" == "--react" ]]; then
+            echo "⚛️  Building React Assets (if available)..."
+            docker compose exec core_react_service node build_single.js "$APP_NAME"
+        fi
+        ;;
+
+    test)
+        echo "🧪 Running Tests for '$APP_NAME'..."
+        docker compose exec core_flask_service pytest "/app/6_service_catalog/$APP_NAME/tests/" -v
+        ;;
+
+    logs)
+        echo "📋 Tailing logs for '$APP_NAME'..."
+        docker compose logs -f core_flask_service core_vite_service | grep "$APP_NAME"
+        ;;
+
+    diagnose)
+        echo "🔍 Diagnosing '$APP_NAME'..."
+        REPORT_FILE="6_service_catalog/$APP_NAME/.ai_diagnostic_report.md"
+        
+        {
+            echo "# AI Diagnostic Report: $APP_NAME"
+            echo "Generated: $(date)"
+            echo "---"
+            echo "## Backend Logs (last 50 lines)"
+            echo '```'
+            docker compose logs --tail=50 core_flask_service | grep "$APP_NAME"
+            echo '```'
+            echo ""
+            echo "## Vite Logs (last 50 lines)"
+            echo '```'
+            docker compose logs --tail=50 core_vite_service | grep "$APP_NAME"
+            echo '```'
+            echo ""
+            echo "## Pytest Output"
+            echo '```'
+            docker compose exec core_flask_service pytest "/app/6_service_catalog/$APP_NAME/tests/" -v 2>&1
+            echo '```'
+        } > "$REPORT_FILE"
+        
+        echo "✅ Diagnosis complete! Report saved to: $REPORT_FILE"
+        ;;
+
+    *)
+        echo "❌ Unknown command: $COMMAND"
+        exit 1
+        ;;
+esac
