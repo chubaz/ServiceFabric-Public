@@ -147,6 +147,11 @@ USE_TZ = True
 # URL per riferirsi ai file statici (es. /static/main.html)
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "staticfiles",
+]
+
+
 # Dove 'collectstatic' (T1, entrypoint.sh) copierà i file.
 # Questo percorso è condiviso con Nginx tramite 'static_volume'.
 STATIC_ROOT = BASE_DIR / 'static'
@@ -193,7 +198,6 @@ CSRF_TRUSTED_ORIGINS = [
     'http://dryfus.one',
     'https://dryfus.one',
     'https://proxy.dryfus.one',
-    'http://penguin.linux.test:8080'
 ]
 
 # Aggiunge dinamicamente la porta del proxy configurata nel .env

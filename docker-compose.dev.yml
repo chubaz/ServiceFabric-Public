@@ -18,6 +18,8 @@ services:
 
   core_flask_service:
     env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
+    environment:
+        PYTHONPATH: /app/services_catalog:/app
     volumes:
       - ./6_service_catalog:/app/services_catalog:cached
       - ./7_user_media:/app/user_media
@@ -80,3 +82,4 @@ services:
 
 volumes:
   flask_static:
+
