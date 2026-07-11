@@ -2,6 +2,8 @@
 import importlib
 import logging
 import uuid
+from flask import current_app
+from app.service_security import ServiceAccessDenied, validate_identifier
 
 logger = logging.getLogger("service_fabric.tasks")
 logger.setLevel(logging.INFO)
@@ -16,6 +18,16 @@ def run_catalog_job(catalog_app_name, module_name, function_name, kwargs, room_i
     logger.info(f"[{audit_id}] 📥 Task ricevuto per {catalog_app_name}.{function_name}")
 
     try:
+        catalog_app_name = validate_identifier(catalog_app_name)
+        if not current_app.config['ENABLE_DYNAMIC_SERVICE_IMPORTS']:
+            raise ServiceAccessDenied('Legacy catalogue jobs are disabled')
+        if current_app.config['IS_PRODUCTION'] and catalog_app_name not in current_app.config['LEGACY_CATALOG_ALLOWLIST']:
+            raise ServiceAccessDenied('Legacy catalogue job is not allowed')
+        module_parts = module_name.split('.') if isinstance(module_name, str) else []
+        if not module_parts or any(not part.isidentifier() for part in module_parts):
+            raise ServiceAccessDenied('Invalid legacy module target')
+        if not isinstance(function_name, str) or not function_name.isidentifier():
+            raise ServiceAccessDenied('Invalid legacy function target')
         # STEP 1: Audit del caricamento modulo
         logger.info(f"[{audit_id}] 🔍 Tentativo di importazione: {catalog_app_name}.{module_name}")
         module_path = f"{catalog_app_name}.{module_name}"

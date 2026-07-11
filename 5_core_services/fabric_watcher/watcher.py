@@ -13,6 +13,9 @@ REACT_URL = os.environ.get("REACT_URL", "http://core_react_service:3000/_interna
 
 WATCH_DIR = "/services_catalog"
 DEBOUNCE_SECONDS = 1.0 # Increased debounce for stability
+WATCHER_RELOAD_ENABLED = os.environ.get("ENABLE_WATCHER_RELOAD", "false").lower() in {"1", "true", "yes", "on"}
+WATCHER_SERVICE_ID = os.environ.get("WATCHER_SERVICE_ID", "fabric_watcher")
+WATCHER_RELOAD_TOKEN = os.environ.get("INTERNAL_RELOAD_TOKEN")
 
 # Noisy paths to ignore completely
 IGNORE_PATTERNS = [
@@ -82,13 +85,23 @@ class FabricHandler(FileSystemEventHandler):
             self.trigger_reload(event)
 
     def trigger_reload(self, event):
+        if not WATCHER_RELOAD_ENABLED:
+            logger.info("Reload notifications are disabled")
+            return
+        if not WATCHER_RELOAD_TOKEN:
+            logger.warning("Reload skipped because watcher credentials are not configured")
+            return
         url = {"FLASK": FLASK_URL, "REACT": REACT_URL, "VITE": VITE_URL}.get(event.service_type)
         if not url: return
 
         logger.info(f"🔄 Triggering {event.service_type} reload: {event.shard_name}")
         try:
             # Short timeout to avoid hanging the watcher
-            requests.post(url, json={"target": event.shard_name}, timeout=2)
+            headers = {
+                "X-Service-Identity": WATCHER_SERVICE_ID,
+                "X-Internal-Reload-Token": WATCHER_RELOAD_TOKEN,
+            }
+            requests.post(url, json={"target": event.shard_name}, headers=headers, timeout=2)
         except Exception as e:
             logger.error(f"❌ Target {event.service_type} unreachable: {e}")
 

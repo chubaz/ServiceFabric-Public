@@ -1,6 +1,14 @@
 import os
 import sys
 
+
+def _flag(name, default=False):
+    return os.environ.get(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _csv(name):
+    return frozenset(item.strip() for item in os.environ.get(name, "").split(",") if item.strip())
+
 class Config:
     # Sicurezza
     SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -32,8 +40,27 @@ class Config:
         db_url = 'sqlite:///:memory:' 
     SQLALCHEMY_DATABASE_URI = db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    MAX_CONTENT_LENGTH = 50 * 1024 * 1024
+    FLASK_ENVIRONMENT = os.environ.get('FLASK_ENVIRONMENT', os.environ.get('FABRIC_ENVIRONMENT', 'production')).lower()
+    IS_PRODUCTION = FLASK_ENVIRONMENT == 'production'
+
+    # Legacy dynamic behaviour is opt-in. Production also requires an explicit catalogue allowlist.
+    ENABLE_DYNAMIC_SERVICE_IMPORTS = _flag('ENABLE_DYNAMIC_SERVICE_IMPORTS')
+    ENABLE_GENERATED_SERVICE_IMPORTS = _flag('ENABLE_GENERATED_SERVICE_IMPORTS') and not IS_PRODUCTION
+    ENABLE_LEGACY_FAAS_EXECUTION = _flag('ENABLE_LEGACY_FAAS_EXECUTION') and not IS_PRODUCTION
+    ENABLE_INTERNAL_RELOAD = _flag('ENABLE_INTERNAL_RELOAD') and not IS_PRODUCTION
+    ENABLE_DEBUG_ROUTES = _flag('ENABLE_DEBUG_ROUTES') and not IS_PRODUCTION
+    LEGACY_CATALOG_ALLOWLIST = _csv('LEGACY_CATALOG_ALLOWLIST')
+    INTERNAL_RELOAD_ALLOWED_SERVICES = _csv('INTERNAL_RELOAD_ALLOWED_SERVICES')
+    INTERNAL_RELOAD_ALLOWED_TARGETS = _csv('INTERNAL_RELOAD_ALLOWED_TARGETS')
+    INTERNAL_RELOAD_TOKEN = os.environ.get('INTERNAL_RELOAD_TOKEN')
+
+    MAX_UPLOAD_BYTES = int(os.environ.get('MAX_UPLOAD_BYTES', 10 * 1024 * 1024))
+    MAX_CONTENT_LENGTH = MAX_UPLOAD_BYTES
+    UPLOAD_ALLOWED_EXTENSIONS = _csv('UPLOAD_ALLOWED_EXTENSIONS') or frozenset({
+        'csv', 'json', 'jpeg', 'jpg', 'pdf', 'png', 'txt'
+    })
 
     # Percorso dove risiedono i Blueprints (Service Catalog)
     SERVICE_CATALOG_PATH = os.environ.get('SERVICE_CATALOG_PATH', '/app/services_catalog')
+    SERVICE_GENERATED_PATH = os.environ.get('SERVICE_GENERATED_PATH', '/app/4_generated_services')
     USER_MEDIA_ROOT = os.environ.get('USER_MEDIA_ROOT', '/app/user_media')

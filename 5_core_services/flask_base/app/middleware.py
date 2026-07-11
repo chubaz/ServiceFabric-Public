@@ -1,5 +1,7 @@
+import hmac
 from functools import wraps
-from flask import request, jsonify, current_app, g
+
+from flask import request, jsonify, current_app, g, abort
 import jwt
 
 def token_required(f):
@@ -54,6 +56,38 @@ def token_required(f):
             print(f"DEBUG AUTH: Errore imprevisto durante la validazione: {str(e)}")
             return jsonify({'message': f'Errore Token: {str(e)}'}), 401
 
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+def reload_service_required(f):
+    """Authorize development reloads using a configured service identity and secret."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not current_app.config['ENABLE_INTERNAL_RELOAD']:
+            abort(404)
+
+        service_id = request.headers.get('X-Service-Identity', '')
+        token = request.headers.get('X-Internal-Reload-Token', '')
+        expected_token = current_app.config.get('INTERNAL_RELOAD_TOKEN')
+        allowed_services = current_app.config.get('INTERNAL_RELOAD_ALLOWED_SERVICES', frozenset())
+        if (
+            not expected_token
+            or service_id not in allowed_services
+            or not hmac.compare_digest(token, expected_token)
+        ):
+            return jsonify({'error': 'Reload authorization denied'}), 403
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+def debug_routes_enabled(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not current_app.config['ENABLE_DEBUG_ROUTES']:
+            abort(404)
         return f(*args, **kwargs)
 
     return decorated
