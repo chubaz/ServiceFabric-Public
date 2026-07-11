@@ -1,5 +1,6 @@
 import os
 from flask import current_app
+from app.service_security import validate_identifier
 
 class ServiceAssetsManager:
     """
@@ -13,6 +14,7 @@ class ServiceAssetsManager:
         Overrides the blueprint's static folder configuration to point 
         to the shared volume mount.
         """
+        service_name = validate_identifier(service_name)
         # 1. Get the global mount point from Flask Config (set by Env Var)
         # Defaults to /app/static_assets if not set
         assets_root = app.config.get('STATIC_ASSETS_PATH', '/app/flask_static')

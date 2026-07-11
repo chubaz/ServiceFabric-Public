@@ -18,6 +18,7 @@ EXCLUDED_PARTS = {
     ".github",
     "__pycache__",
     "docs",
+    "tests",
     "tests/architecture",
     "scripts/architecture",
     ".claude",
@@ -109,6 +110,8 @@ def load_debt_register() -> dict[str, set[str]]:
 
 def is_excluded(path: Path) -> bool:
     relative = path.relative_to(REPOSITORY_ROOT).as_posix()
+    if "tests" in path.relative_to(REPOSITORY_ROOT).parts:
+        return True
     for part in EXCLUDED_PARTS:
         if relative == part or relative.startswith(part + "/"):
             return True

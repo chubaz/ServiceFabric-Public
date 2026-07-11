@@ -41,6 +41,21 @@ services:
     env_file:
       - .env.dev
 
+  fabric_watcher:
+    build:
+      context: ./5_core_services/fabric_watcher
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+    volumes:
+      - ./6_service_catalog:/services_catalog:ro
+    networks:
+      - service_fabric_net
+    depends_on:
+      - core_flask_service
+      - core_vite_service
+      - core_react_service
+
   core_react_service:
     env_file:
       - .env.dev

@@ -123,19 +123,6 @@ services:
     networks:
       - service_fabric_net
 
-  fabric_watcher:
-    build:
-      context: ./5_core_services/fabric_watcher
-    restart: always
-    volumes:
-      - ./6_service_catalog:/services_catalog:ro
-    networks:
-      - service_fabric_net
-    depends_on:
-      - core_flask_service
-      - core_vite_service
-      - core_react_service
-
   fastapi_core:
     build:
       context: ./5_core_services/fastapi_base

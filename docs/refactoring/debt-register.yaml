@@ -1,14 +1,15 @@
 [
   {
     "id": "LEGACY-DYNAMIC-IMPORT",
-    "status": "blocked_for_new_use",
+    "status": "contained",
     "paths": [
       "5_core_services/flask_base/app/services_loader.py",
       "5_core_services/flask_base/app/routes.py"
     ],
-    "notes": "Dynamic import and dynamic script execution remain legacy-only until a strangler replacement exists.",
+    "notes": "P0-02 restricts legacy imports to explicit flags, validates identifiers, disables generated imports in production, and requires a production catalogue allowlist.",
     "governing_prs": [
-      "P0-00"
+      "P0-00",
+      "P0-02"
     ]
   },
   {
@@ -47,14 +48,13 @@
   },
   {
     "id": "UNAUTHENTICATED-RELOAD",
-    "status": "p0",
-    "paths": [
-      "5_core_services/flask_base/app/routes.py"
-    ],
-    "notes": "Legacy internal reload route is not protected by explicit authenticated governance.",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-02 makes the route unavailable by default and in production, and requires configured development service identity, secret, and target allowlists when enabled.",
     "governing_prs": [
       "P0-00",
-      "P0-01"
+      "P0-01",
+      "P0-02"
     ]
   },
   {

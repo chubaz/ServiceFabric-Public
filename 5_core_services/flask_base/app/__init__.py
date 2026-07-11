@@ -5,7 +5,6 @@ from flask_cors import CORS  # <-- 1. Importa CORS
 from app.config import Config
 from app.extensions import db
 from flask_migrate import Migrate
-from app.services_loader import load_active_services
 from werkzeug.middleware.proxy_fix import ProxyFix
 from jinja2 import ChoiceLoader, FileSystemLoader
 from app.services_loader import register_all_services
@@ -62,8 +61,9 @@ def create_app(config_class=Config):
     
     if db_uri and ('postgresql' in db_uri or 'postgres' in db_uri):
         try:
-            # First, register all services to import their models into Metadata
-            register_all_services(app)
+            # Legacy service imports are explicit and fail closed when disabled.
+            if app.config['ENABLE_DYNAMIC_SERVICE_IMPORTS']:
+                register_all_services(app)
             
             # THEN create tables within app context
             with app.app_context():
