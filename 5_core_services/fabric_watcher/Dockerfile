@@ -9,8 +9,8 @@ WORKDIR /app
 
 # 3. Dependencies
 # watchdog needs no system-level libraries but requests does for SSL (though we hit local containers)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements ./requirements
+RUN pip install --no-cache-dir -r requirements/runtime.lock
 
 # 4. Source
 COPY watcher.py .

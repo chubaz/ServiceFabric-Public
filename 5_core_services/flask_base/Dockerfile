@@ -6,8 +6,8 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl libpq-dev && \
     rm -rf /var/lib/apt/lists/*
-COPY 5_core_services/flask_base/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
+COPY 5_core_services/flask_base/requirements ./requirements
+RUN pip install --no-cache-dir -r requirements/runtime.lock && \
     useradd --create-home --uid 10001 appuser
 
 # The catalogue is a build-time snapshot. Production never mounts mutable source.
