@@ -1,52 +1,39 @@
 from app.extensions import db
-from sqlalchemy.dialects.postgresql import UUID, JSON
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
-import uuid
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, String, Text
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+
 
 class ServiceInstance(db.Model):
-    """
-    Mappatura della tabella 'api_serviceinstance' gestita da Django.
-    Flask usa questo modello in modalità 'Read-Only' per configurare il routing e i plugin.
-    """
+    """Read-oriented compatibility mapping for Django-owned ``api_serviceinstance``."""
+
     __tablename__ = 'api_serviceinstance'
 
-    # 1. Mappatura Identica dei Campi
-    # Django usa UUID come primary key nel nostro design
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    
-    # 2. Foreign Key "Logica"
-    # In Django il campo è 'owner', nel DB la colonna diventa 'owner_id'.
-    # Qui la definiamo come intero (assumendo che Auth User di Django usi ID interi standard).
-    owner_id = Column(Integer, nullable=False)
-
-    # 3. Metadati del Servizio
-    # service_type corrisponde alla cartella nel Service Catalog (es. 'music_roadshow_v1')
-    service_type = Column(String(100), nullable=False)
-    
-    # url_prefix per il routing (es. '/users/123/roadshow')
-    url_prefix = Column(String(255), unique=True, nullable=False)
-    
-    # 4. Il Cuore della Configurazione Dinamica
-    # Mappiamo il JSONField di Django al tipo JSON di Postgres
-    state_config = Column(JSON, default=dict)
-    
-    is_active = Column(Boolean, default=True)
-    
-    # Non ci interessa mappare created_at/updated_at se Flask non deve usarli,
-    # ma è buona norma averli per completezza in lettura.
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    id = Column(UUID(as_uuid=True), primary_key=True, nullable=False)
+    owner_id = Column(UUID(as_uuid=True), nullable=False)
+    template_id = Column(BigInteger, nullable=True)
+    service_type = Column(String(100), nullable=True)
+    url_prefix = Column(String(255), unique=True, nullable=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text, nullable=False)
+    state_config = Column(JSONB, nullable=False)
+    status = Column(String(20), nullable=False)
+    service_slug = Column(String(100), unique=True, nullable=True)
+    is_public = Column(Boolean, nullable=False)
+    is_hidden = Column(Boolean, nullable=False)
+    is_active = Column(Boolean, nullable=False)
+    is_free_tier = Column(Boolean, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False)
+    updated_at = Column(DateTime(timezone=True), nullable=False)
 
     def __repr__(self):
         return f"<ServiceInstance {self.service_type} ({self.url_prefix})>"
 
     def to_dict(self):
-        """Helper per debugging e API interne"""
         return {
-            "id": str(self.id),
-            "owner_id": self.owner_id,
-            "service_type": self.service_type,
-            "url_prefix": self.url_prefix,
-            "config": self.state_config,
-            "is_free_tier": self.is_free_tier
+            'id': str(self.id),
+            'owner_id': str(self.owner_id),
+            'service_type': self.service_type,
+            'url_prefix': self.url_prefix,
+            'config': self.state_config,
+            'is_free_tier': self.is_free_tier,
         }

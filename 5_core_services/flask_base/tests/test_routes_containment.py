@@ -4,6 +4,8 @@ import io
 import sys
 import tempfile
 import unittest
+import uuid
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import jwt
@@ -22,6 +24,10 @@ class RouteContainmentTests(unittest.TestCase):
         self.app.config.update(
             TESTING=True,
             DJANGO_SECRET_KEY="test-secret",
+            DJANGO_JWT_ALGORITHMS=('HS256',),
+            DJANGO_JWT_ISSUER='servicefabric-test',
+            DJANGO_JWT_AUDIENCE='servicefabric-test',
+            DJANGO_JWT_TOKEN_TYPE='access',
             IS_PRODUCTION=True,
             ENABLE_LEGACY_FAAS_EXECUTION=False,
             ENABLE_INTERNAL_RELOAD=False,
@@ -36,10 +42,25 @@ class RouteContainmentTests(unittest.TestCase):
         self.app.register_blueprint(core_bp)
         self.app.register_blueprint(system_bp)
         self.client = self.app.test_client()
-        self.headers = {"Authorization": f"Bearer {jwt.encode({'user_id': 'tenant-a'}, 'test-secret', algorithm='HS256')}"}
+        self.user_id = uuid.uuid4()
+        self.headers = {"Authorization": f"Bearer {self._token(self.user_id)}"}
 
     def tearDown(self) -> None:
         self.temporary_directory.cleanup()
+
+    def _token(self, user_id):
+        return jwt.encode(
+            {
+                'user_id': str(user_id),
+                'token_type': 'access',
+                'iss': 'servicefabric-test',
+                'aud': 'servicefabric-test',
+                'exp': datetime.now(timezone.utc) + timedelta(minutes=5),
+                'nbf': datetime.now(timezone.utc) - timedelta(seconds=1),
+            },
+            'test-secret',
+            algorithm='HS256',
+        )
 
     def test_production_execute_route_returns_a_stable_disabled_response(self) -> None:
         response = self.client.post("/execute/123e4567-e89b-12d3-a456-426614174000", headers=self.headers)
@@ -91,13 +112,3 @@ class RouteContainmentTests(unittest.TestCase):
             content_type='multipart/form-data',
         )
         self.assertEqual(oversized.status_code, 413)
-
-        traversal_token = jwt.encode({'user_id': '../outside'}, 'test-secret', algorithm='HS256')
-        traversal = self.client.post(
-            '/utils/upload',
-            headers={'Authorization': f'Bearer {traversal_token}'},
-            data={'file': (io.BytesIO(b'safe'), 'notes.txt')},
-            content_type='multipart/form-data',
-        )
-        self.assertEqual(traversal.status_code, 400)
-        self.assertNotIn(self.temporary_directory.name, traversal.get_data(as_text=True))

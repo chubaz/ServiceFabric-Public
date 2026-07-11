@@ -180,6 +180,8 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
+    'ISSUER': os.environ.get('DJANGO_JWT_ISSUER', 'servicefabric-development'),
+    'AUDIENCE': os.environ.get('DJANGO_JWT_AUDIENCE', 'servicefabric-development'),
 }
     # TBD (T10 - Sicurezza): Per una sicurezza avanzata,
     # potremmo impostare il refresh token per essere inviato
@@ -203,3 +205,12 @@ if _proxy_port:
     CSRF_TRUSTED_ORIGINS.append(f'https://127.0.0.1:{_proxy_port}')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+AUTH_COOKIE_SECURE = os.environ.get('AUTH_COOKIE_SECURE', str(not DEBUG)).lower() in {'1', 'true', 'yes', 'on'}
+AUTH_COOKIE_SAMESITE = os.environ.get('AUTH_COOKIE_SAMESITE', 'Lax')
+AUTH_COOKIE_PATH = os.environ.get('AUTH_COOKIE_PATH', '/')
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = AUTH_COOKIE_SECURE
+SESSION_COOKIE_SAMESITE = AUTH_COOKIE_SAMESITE
+CSRF_COOKIE_SECURE = AUTH_COOKIE_SECURE
+CSRF_COOKIE_SAMESITE = AUTH_COOKIE_SAMESITE
