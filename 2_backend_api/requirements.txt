@@ -6,3 +6,4 @@ gunicorn
 djangorestframework-simplejwt
 jinja2
 django-pgcrypto
+cryptography
