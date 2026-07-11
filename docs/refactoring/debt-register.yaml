@@ -27,11 +27,9 @@
   },
   {
     "id": "INSECURE-INTERNAL-TOKEN",
-    "status": "p0",
-    "paths": [
-      "5_core_services/fastapi_base/app/api/dependencies/auth.py"
-    ],
-    "notes": "Hard-coded shared secret currently gates internal requests.",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-01 replaced the hard-coded shared secret with signed JWT verification and a typed principal context.",
     "governing_prs": [
       "P0-00",
       "P0-01"
@@ -39,11 +37,9 @@
   },
   {
     "id": "UNAUTHENTICATED-VECTOR-ENDPOINTS",
-    "status": "p0",
-    "paths": [
-      "5_core_services/fastapi_base/app/api/endpoints/vector.py"
-    ],
-    "notes": "Vector endpoints are currently exposed without verified principal enforcement.",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-01 requires a verified tenant principal and derives physical collection names from tenant and logical collection ID.",
     "governing_prs": [
       "P0-00",
       "P0-01"
@@ -75,11 +71,9 @@
   },
   {
     "id": "FASTAPI-RELOAD-IN-CONTAINER",
-    "status": "p0",
-    "paths": [
-      "5_core_services/fastapi_base/Dockerfile"
-    ],
-    "notes": "The FastAPI image runs uvicorn with --reload and should be contained in the next PR.",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-01 removes reload mode and runs the FastAPI image as a dedicated non-root user.",
     "governing_prs": [
       "P0-00",
       "P0-01"
