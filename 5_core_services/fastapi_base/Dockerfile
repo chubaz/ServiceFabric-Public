@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11.9-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN useradd --create-home --uid 10001 appuser && mkdir -p /app/user_media && chown -R appuser:appuser /app
 COPY --chown=appuser:appuser ./app ./app
 USER appuser
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--timeout-graceful-shutdown", "30"]

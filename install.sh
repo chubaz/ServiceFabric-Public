@@ -124,6 +124,11 @@ else
 fi
 
 echo "Creating consolidated $ENV_TARGET file..."
+if [ -e "$ENV_TARGET" ] || [ -e .env ]; then
+    echo "Refusing to overwrite existing environment configuration."
+    echo "Move or remove $ENV_TARGET and .env only after preserving operator secrets."
+    exit 1
+fi
 cat <<EOF > $ENV_TARGET
 # --- Core Config ---
 COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME

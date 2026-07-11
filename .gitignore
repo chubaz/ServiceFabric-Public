@@ -4,6 +4,8 @@
 .env
 .env.prod
 .env.dev
+credential-store.dev.json
+credential-store*.json
 *.sqlite3
 ssl/*.key
 ssl/*.pem

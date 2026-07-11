@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -6,8 +7,14 @@ from rest_framework_simplejwt.views import (
 )
 from api import views as api_views
 from api.admin_site import admin_site
+
+
+def healthz(request):
+    return JsonResponse({'status': 'ok'})
+
+
 urlpatterns = [
-    
+    path('healthz/', healthz, name='healthz'),
     path('admin/', admin_site.urls),
     path('api/', include('api.urls')), # Il nostro nuovo file di URL
     

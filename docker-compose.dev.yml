@@ -1,86 +1,82 @@
-# /docker-compose.dev.yml
-#
-# DEVELOPMENT OVERRIDES
-# - Loads .env.dev
-# - Mounts source code for live-reloading
-# - Runs the Django dev server
-#'
 services:
   proxy:
-    # <-- ADD THIS NEW BLOCK
-    ports:
-      - "${PROXY_PORT:-80}:80"
+    ports: ["${PROXY_PORT:-80}:8080"]
     volumes:
-      - ./2_backend_api/service_fabric/staticfiles:/static
+      - ./1_proxy/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+
   backend_api:
-    env_file:
-      - .env.dev
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
     volumes:
-      # Mount local source code for live-reloading
       - ./2_backend_api/service_fabric:/app:cached
-      - ./2_backend_api/service_fabric/staticfiles:/app/static
-      - ./2_backend_api/service_fabric/templates/shared:/app/templates/shared
       - ./3_service_templates:/app/3_service_templates:cached
       - ./6_service_catalog:/app/6_service_catalog:cached
-    depends_on:
-      db:
-        condition: service_healthy
-    command:
-      # Run the Django development server
-      # --nostatic: Disables Django's static file serving (Nginx handles it)
-      # --insecure: Allows serving with DEBUG=0 if needed (though DEBUG=1 is typical for dev)
-      python manage.py runserver 0.0.0.0:8000
-    ports:
-      # Optionally map the 8000 port for direct API access during dev
-      - "${BACKEND_API_PORT:-8002}:8000"
+    command: python manage.py runserver 0.0.0.0:8000
+    ports: ["${BACKEND_API_PORT:-8002}:8000"]
+
+  db:
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
 
   core_flask_service:
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
     volumes:
-      - ./2_backend_api/service_fabric/templates/shared:/app/templates/shared
-      - ./2_backend_api/service_fabric/component_repo:/app/component_repo
-    env_file:
-      - .env.dev
-
-  fabric_watcher:
-    build:
-      context: ./5_core_services/fabric_watcher
-    restart: unless-stopped
-    env_file:
-      - .env.dev
-    volumes:
-      - ./6_service_catalog:/services_catalog:ro
-    networks:
-      - service_fabric_net
-    depends_on:
-      - core_flask_service
-      - core_vite_service
-      - core_react_service
-
-  core_react_service:
-    env_file:
-      - .env.dev
+      - ./6_service_catalog:/app/services_catalog:cached
+      - ./7_user_media:/app/user_media
+      - ./2_backend_api/service_fabric/shared:/app/shared:ro
+      - ./5_core_services/flask_base/app:/app/app:cached
+      - ./5_core_services/flask_base/run.py:/app/run.py:ro
+      - ./2_backend_api/service_fabric/templates/shared:/app/templates/shared:ro
+      - ./2_backend_api/service_fabric/component_repo:/app/component_repo:ro
 
   fastapi_core:
-    env_file:
-      - .env.dev
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
+    volumes:
+      - ./5_core_services/fastapi_base/app:/app/app:cached
 
-  
-  db:
-    env_file:
-      - .env.dev
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d servicefabric" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  core_vite_service:
+    build: ./5_core_services/vite_base
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
+    working_dir: /app/builder
+    volumes:
+      - ./5_core_services/vite_base:/app/builder
+      - ./6_service_catalog:/app/services_catalog
+      - flask_static:/app/dist
+    environment:
+      BUILD_MODE: PERIODIC
+      BUILD_INTERVAL: 300
+      MANAGEMENT_PORT: 3000
+    command: npm start
+    networks: [service_fabric_net]
+
+  core_react_service:
+    build: ./5_core_services/react_base
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
+    working_dir: /app/builder
+    volumes:
+      - ./5_core_services/react_base:/app/builder
+      - ./6_service_catalog:/app/services_catalog
+      - flask_static:/app/dist
+    environment:
+      BUILD_MODE: ONCE
+      BUILD_INTERVAL: 300
+    command: npm start
+    networks: [service_fabric_net]
+
+  fabric_watcher:
+    build: ./5_core_services/fabric_watcher
+    env_file: ["${SERVICEFABRIC_ENV_FILE:?Set SERVICEFABRIC_ENV_FILE}"]
+    volumes:
+      - ./6_service_catalog:/services_catalog:ro
+    networks: [service_fabric_net]
+    depends_on: [core_flask_service, core_vite_service, core_react_service]
 
   component_lab:
-    image: node:20-alpine
+    image: node:20.11-alpine
     working_dir: /app
     volumes:
       - ./9_component_lab:/app
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
-    ports:
-      - "${VITE_PORT:-5173}:5173"
-    networks:
-      - service_fabric_net
+    ports: ["${VITE_PORT:-5173}:5173"]
+    networks: [service_fabric_net]
+
+volumes:
+  flask_static:
