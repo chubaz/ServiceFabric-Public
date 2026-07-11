@@ -280,24 +280,39 @@ class CloudIntegration(models.Model):
         choices=ServiceChoices.choices
     )
     
-    # --- CREDENZIALI CRITTOGRAFATE ---
-    # NON salvare mai i token in chiaro.
-    # Usiamo campi crittografati (richiede 'django-pgcrypto' o simili)
-    # Per semplicità, qui usiamo TextField, ma in T10 (Sicurezza)
-    # implementeremo la crittografia.
-    
-    access_token = models.TextField() # Idealmente EncryptedTextField
-    refresh_token = models.TextField() # Idealmente EncryptedTextField
+    class CredentialMigrationStatus(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        MIGRATED = 'MIGRATED', 'Migrated'
+        FAILED = 'FAILED', 'Failed'
+        NO_CREDENTIAL = 'NO_CREDENTIAL', 'No credential present'
+
+    credential_binding_id = models.UUIDField(null=True, blank=True, unique=True, editable=False)
+    scopes = models.JSONField(default=list, blank=True)
+
+    # Transitional fields retained only for P0-04 migration compatibility.
+    access_token = models.TextField(null=True, blank=True, editable=False)
+    refresh_token = models.TextField(null=True, blank=True, editable=False)
     expires_at = models.DateTimeField()
-    
     last_synced = models.DateTimeField(null=True, blank=True)
+    credential_migration_status = models.CharField(
+        max_length=20,
+        choices=CredentialMigrationStatus.choices,
+        default=CredentialMigrationStatus.PENDING,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         # Un utente può avere solo un'integrazione per servizio
         unique_together = ('user', 'service')
 
+    def save(self, *args, **kwargs):
+        if self.access_token or self.refresh_token:
+            raise ValueError('Plaintext credential writes are disabled')
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.user.email} - {self.get_service_display()}"
+        return f'{self.service} integration for {self.user_id}'
     
 class ServiceApp(models.Model):
     """

@@ -81,13 +81,14 @@
   },
   {
     "id": "PLAINTEXT-PROVIDER-TOKENS",
-    "status": "removal_planned",
+    "status": "migration_in_progress",
     "paths": [
       "2_backend_api/service_fabric/api/models.py"
     ],
-    "notes": "Provider tokens are stored in plaintext model fields.",
+    "notes": "P0-04 prevents new plaintext writes and stores credentials behind encrypted opaque bindings. Legacy plaintext columns remain only for verified, resumable migration and must be removed after the migration report is clear.",
     "governing_prs": [
-      "P0-00"
+      "P0-00",
+      "P0-04"
     ]
   }
 ]

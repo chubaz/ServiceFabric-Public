@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, ServiceTemplate, ServiceInstance
+from .models import CloudIntegration, User, ServiceTemplate, ServiceInstance
 from .admin_site import admin_site 
 
 # =============================================================
@@ -148,3 +148,12 @@ class ServiceInstanceAdmin(admin.ModelAdmin):
     # 4. Campi di Sola Lettura
     # Nessuno, perché tutti i campi possono essere modificati.
     readonly_fields = ()
+
+
+@admin.register(CloudIntegration, site=admin_site)
+class CloudIntegrationAdmin(admin.ModelAdmin):
+    list_display = ('service', 'user', 'credential_binding_id', 'credential_migration_status', 'expires_at', 'last_synced')
+    list_filter = ('service', 'credential_migration_status')
+    search_fields = ('user__email', 'credential_binding_id')
+    readonly_fields = ('credential_binding_id', 'credential_migration_status', 'created_at', 'updated_at')
+    fields = ('user', 'service', 'credential_binding_id', 'expires_at', 'scopes', 'last_synced', 'credential_migration_status', 'created_at', 'updated_at')

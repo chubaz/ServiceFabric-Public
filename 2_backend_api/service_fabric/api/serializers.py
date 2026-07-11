@@ -1,5 +1,5 @@
 from rest_framework import serializers, generics, permissions
-from .models import User, ServiceTemplate, ServiceInstance
+from .models import CloudIntegration, User, ServiceTemplate, ServiceInstance
 
 class UserSerializer(serializers.ModelSerializer):
     """ Serializza solo le informazioni pubbliche dell'utente. """
@@ -56,4 +56,13 @@ class ServiceCreateSerializer(serializers.Serializer):
         if not ServiceTemplate.objects.filter(template_key=value).exists():
             raise serializers.ValidationError("Template non valido o non trovato.")
         return value
-    
+
+
+class CloudIntegrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CloudIntegration
+        fields = [
+            'id', 'service', 'credential_binding_id', 'expires_at', 'scopes', 'last_synced',
+            'credential_migration_status', 'created_at', 'updated_at',
+        ]
+        read_only_fields = fields
