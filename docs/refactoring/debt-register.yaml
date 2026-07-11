@@ -89,5 +89,34 @@
       "P0-00",
       "P0-04"
     ]
+  },
+  {
+    "id": "PYTHON-DEPENDENCY-RESOLUTION-NONDETERMINISTIC",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-06 replaces floating production requirements with service-local exact runtime inputs and committed pip-tools lock files consumed by Dockerfiles.",
+    "governing_prs": [
+      "P0-06"
+    ]
+  },
+  {
+    "id": "PRODUCTION-IMAGE-BUILD-UNVERIFIED",
+    "status": "closed",
+    "paths": [],
+    "notes": "P0-06 validates clean-cache production builds for backend_api, core_flask_service, and fastapi_core from committed locks, followed by pip check in each image.",
+    "governing_prs": [
+      "P0-06"
+    ]
+  },
+  {
+    "id": "DOMAIN-CAPSULE-DEPENDENCY-SEPARATION",
+    "status": "open",
+    "paths": [
+      "docs/refactoring/python-dependency-builds.md"
+    ],
+    "notes": "Agent, scraping, document-processing, data-science, and quantitative-finance packages were removed from the universal Flask production runtime. Future approved domain capsules or immutable legacy catalogue artifacts must own these optional dependency groups explicitly.",
+    "governing_prs": [
+      "P0-06"
+    ]
   }
 ]

@@ -1,0 +1,10 @@
+# Direct production dependencies for the Django control plane.
+Django==5.0.0
+djangorestframework==3.17.1
+django-cors-headers==4.9.0
+psycopg2-binary==2.9.12
+gunicorn==26.0.0
+djangorestframework-simplejwt==5.5.1
+jinja2==3.1.6
+django-pgcrypto==3.1.0
+cryptography==49.0.0

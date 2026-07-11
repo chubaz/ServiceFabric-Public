@@ -13,7 +13,11 @@ if [ "${FABRIC_ENVIRONMENT:-development}" = "production" ]; then
   done
 fi
 
-# Schema migration, static collection, and bootstrap are explicit release operations.
+# Allow explicit commands for release tasks and inspection; fall back to Gunicorn for normal startup.
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
+
 exec gunicorn myproject.wsgi:application \
   --bind 0.0.0.0:8000 \
   --workers "${GUNICORN_WORKERS:-2}" \
