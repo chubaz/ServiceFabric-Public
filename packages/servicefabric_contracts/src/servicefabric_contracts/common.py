@@ -14,12 +14,23 @@ SECRET_KEY_PATTERN = re.compile(r"(?:password|secret|token|api[_-]?key|credentia
 
 Identifier = Annotated[str, Field(min_length=1, max_length=128, pattern=IDENTIFIER_PATTERN)]
 OperationReference = Annotated[str, Field(min_length=3, max_length=160, pattern=IDENTIFIER_PATTERN)]
+ToolIdentifier = Annotated[
+    str,
+    Field(min_length=3, max_length=128, pattern=r"^[a-z][a-z0-9_-]{0,62}\.[a-z][a-z0-9_]{0,62}$"),
+]
+Digest = Annotated[str, Field(pattern=r"^sha256:[a-f0-9]{64}$")]
 
 
 class ContractModel(BaseModel):
     """Strict base model: contracts are source-controlled public declarations."""
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True, str_strip_whitespace=True)
+
+
+class ImmutableContractModel(ContractModel):
+    """Base for immutable revision content and its nested declarations."""
+
+    model_config = ContractModel.model_config | {"frozen": True}
 
 
 def has_secret_like_key(value: str) -> bool:

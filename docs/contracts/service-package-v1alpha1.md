@@ -51,3 +51,6 @@ or status resources.
 
 Those concerns are deferred to C1-01 through C1-04, C2 Registry, C3 Invocation
 Runtime, C4 Hosting Adapters, and C5 MCP Gateway.
+
+The operation-level desired, revision, deployment, and observed-state resources are
+documented in `docs/contracts/tool-lifecycle-v1alpha1.md`.

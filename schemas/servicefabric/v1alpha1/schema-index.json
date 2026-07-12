@@ -1,8 +1,36 @@
 {
   "api_version": "servicefabric.ai/v1alpha1",
-  "contract_package_version": "0.1.0a1",
-  "kind": "ServicePackageDefinition",
-  "schema_id": "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json",
-  "schema_path": "service-package-definition.schema.json",
-  "sha256": "c9f768a04018848e87de5bb4e0c950287b2b94cee968176e35048501b34683ad"
+  "contract_package_version": "0.2.0a1",
+  "schemas": [
+    {
+      "kind": "ServicePackageDefinition",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json",
+      "schema_path": "service-package-definition.schema.json",
+      "sha256": "c9f768a04018848e87de5bb4e0c950287b2b94cee968176e35048501b34683ad"
+    },
+    {
+      "kind": "ToolDefinition",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-definition.schema.json",
+      "schema_path": "tool-definition.schema.json",
+      "sha256": "70359995236a37681bf94278054050eef51e9126dea6d2adc6d25e0646fb5768"
+    },
+    {
+      "kind": "ToolDeployment",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-deployment.schema.json",
+      "schema_path": "tool-deployment.schema.json",
+      "sha256": "9d06c2aa6c11ea812d481e6efe7c5fcbcbd512af36c4d921fa245f8417c46310"
+    },
+    {
+      "kind": "ToolRevision",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-revision.schema.json",
+      "schema_path": "tool-revision.schema.json",
+      "sha256": "8e29645315646699e110b488713fd96a26f09768bd5ad5f784f87f5f4739456d"
+    },
+    {
+      "kind": "ToolStatus",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-status.schema.json",
+      "schema_path": "tool-status.schema.json",
+      "sha256": "2c53884d8ea2bc350d599b4ec5ec71b8f572e0e526f5a4f8827cfc784e854e26"
+    }
+  ]
 }

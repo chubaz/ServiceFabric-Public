@@ -1,0 +1,17 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolDefinition",
+  "metadata": {"id": "project.create_task", "name": "Create Task", "description": "Stable project task creation operation.", "labels": {"domain": "project"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "project-platform"}},
+  "spec": {
+    "tool_id": "project.create_task", "name": "project-create-task", "title": "Create Project Task", "description": "Create one bounded task after policy and approval checks.",
+    "capability": {"capability_id": "project.task-management", "summary": "Create a project task.", "when_to_use": ["A confirmed project task is required."], "when_not_to_use": ["The caller has not confirmed the intended project."]},
+    "behavior": {"determinism": "conditionally_deterministic", "side_effect_class": "reversible", "interaction_mode": "synchronous", "duration_class": "short", "streaming_supported": false, "cancellation_supported": false, "progress_supported": false, "human_participation": "optional"},
+    "input_contract_ref": "schema://tools/project.create_task/input", "output_contract_ref": "schema://tools/project.create_task/output",
+    "declared_effects": {"effects": [{"effect_type": "task_create", "target_category": "project-task", "scope": "One task in an authorized project.", "reversibility": "reversible", "verification_required": true, "approval_required": true, "idempotency_required": true}]},
+    "required_permissions": {"permissions": [{"permission_id": "project.task_create", "tenant_scope": "caller_tenant", "resource_scope": "authorized project", "delegation_allowed": false}]},
+    "approval_policy_ref": "policy://project/task-create", "reliability": {"availability_class": "standard", "timeout_class": "short", "maximum_timeout_ms": 5000, "retry_policy": "policy_controlled"},
+    "observability": {"audit_level": "full", "trace_required": true, "evidence_required": true, "metric_categories": ["latency", "effects", "approvals"]},
+    "quality": {"evaluation_suite_refs": ["suite://project/contract", "suite://project/effect-verification", "suite://project/security"], "agent_callability_suite_refs": ["suite://project/agent-callability"], "quality_gates": [{"gate_id": "effect-verification", "suite_ref": "suite://project/effect-verification"}]},
+    "lifecycle": {"maturity": "alpha", "deprecation_status": "active", "support_status": "supported"},
+    "mcp_projection": {"expose": true, "title": "Create Project Task", "description": "Create one authorized project task.", "annotations": {"read_only_hint": false, "destructive_hint": false, "idempotent_hint": true, "open_world_hint": false}, "structured_result_support": true, "progress_projection": "disabled", "durable_operation_projection": "disabled"}
+  }
+}

@@ -6,9 +6,7 @@ from typing import Annotated, Literal, Union
 
 from pydantic import Field
 
-from .common import ContractModel, Identifier
-
-Digest = Annotated[str, Field(pattern=r"^sha256:[a-f0-9]{64}$")]
+from .common import ContractModel, Digest, Identifier
 
 
 class OciImageArtifact(ContractModel):

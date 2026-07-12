@@ -1,0 +1,17 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolDefinition",
+  "metadata": {"id": "research.search_papers", "name": "Search Papers", "description": "Stable scholarly search operation.", "labels": {"domain": "research"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "research-platform"}},
+  "spec": {
+    "tool_id": "research.search_papers", "name": "research-search-papers", "title": "Scholarly Paper Search", "description": "Search normalized scholarly metadata from approved providers.",
+    "capability": {"capability_id": "research.retrieval", "summary": "Discover papers and identifiers.", "when_to_use": ["Scholarly metadata is required."], "when_not_to_use": ["Full-text retrieval is required."]},
+    "behavior": {"determinism": "conditionally_deterministic", "side_effect_class": "read_only_external", "interaction_mode": "synchronous", "duration_class": "bounded_long", "streaming_supported": false, "cancellation_supported": true, "progress_supported": true, "human_participation": "optional"},
+    "input_contract_ref": "schema://tools/research.search_papers/input", "output_contract_ref": "schema://tools/research.search_papers/output",
+    "declared_effects": {"effects": [{"effect_type": "external_read", "target_category": "scholarly-provider", "scope": "Approved scholarly metadata endpoints.", "reversibility": "not_applicable", "verification_required": true, "approval_required": false, "idempotency_required": false}]},
+    "required_permissions": {"permissions": [{"permission_id": "research.read_external", "tenant_scope": "caller_tenant", "resource_scope": "approved scholarly providers", "delegation_allowed": false}]},
+    "reliability": {"availability_class": "standard", "timeout_class": "bounded_long", "maximum_timeout_ms": 20000, "retry_policy": "bounded"},
+    "observability": {"audit_level": "full", "trace_required": true, "evidence_required": true, "metric_categories": ["latency", "quality", "provider-health"]},
+    "quality": {"evaluation_suite_refs": ["suite://research/contract", "suite://research/integration", "suite://research/security"], "agent_callability_suite_refs": ["suite://research/agent-callability"], "quality_gates": [{"gate_id": "evidence-quality", "suite_ref": "suite://research/integration"}]},
+    "lifecycle": {"maturity": "alpha", "deprecation_status": "active", "support_status": "supported"},
+    "mcp_projection": {"expose": true, "title": "Scholarly Paper Search", "description": "Search approved scholarly metadata providers.", "annotations": {"read_only_hint": true, "destructive_hint": false, "idempotent_hint": true, "open_world_hint": true}, "structured_result_support": true, "progress_projection": "when_negotiated", "durable_operation_projection": "disabled"}
+  }
+}

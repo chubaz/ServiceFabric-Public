@@ -1,0 +1,20 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolRevision",
+  "metadata": {"id": "project.create_task-v1", "name": "Create Task Revision 1", "description": "Immutable project.create_task executable contract.", "labels": {"tool": "project.create_task"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "project-platform"}},
+  "spec": {
+    "tool_id": "project.create_task", "revision": "1.0.0", "definition_ref": {"tool_id": "project.create_task"},
+    "package_ref": {"package_id": "project-service", "package_version": "1.0.0", "entrypoint_id": "api"},
+    "execution_binding": {"binding_kind": "native_service", "service_package_id": "project-service", "entrypoint_id": "api", "operation_ref": "create-task"},
+    "input_schema": {"schema_ref": "schema://tools/project.create_task/input/1.0.0", "schema_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777"},
+    "output_schema": {"schema_ref": "schema://tools/project.create_task/output/1.0.0", "schema_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"},
+    "error_contract": {"error_codes": ["approval.required", "authorization.denied", "business_rule.invalid_project", "execution.timeout"], "categories": ["authorization", "approval", "business_rule", "timeout", "conflict"]},
+    "effect_contract": {"effects": [{"effect_type": "task_create", "target_category": "project-task", "scope": "One authorized project task.", "reversibility": "reversible", "verification_required": true, "approval_required": true, "idempotency_required": true}]},
+    "dependency_contract": {"dependencies": [{"dependency_kind": "external_service", "service_ref": "project-provider"}, {"dependency_kind": "credential_binding", "credential_binding_ref": "project-provider-credentials", "purpose": "Provider authentication"}]},
+    "resource_requirements": {"cpu_millicores": 100, "memory_mebibytes": 128, "network_policy_ref": "policy://network/project-provider", "storage_requirement_refs": []},
+    "timeouts": {"timeout_class": "short", "maximum_timeout_ms": 5000}, "idempotency": {"idempotency_class": "keyed_idempotent", "idempotency_key_supported": true, "retry_safety": "conditional", "duplicate_delivery_behavior": "deduplicate"},
+    "cancellation": {"supported": false, "behavior": "not_supported"}, "evidence_policy": {"evidence_required": true, "evidence_policy_ref": "policy://evidence/effect-verification"},
+    "compatibility": {"minimum_contract_version": "0.2.0", "compatible_definition_revisions": ["1.0.0"]},
+    "provenance": {"source_ref": "source://reference/project-create-task", "source_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999", "build_ref": "build://project-create-task/1.0.0"},
+    "content_digest": "sha256:1d974febfbfde4d2ae1a2520d71bbf334f77d2bb2fe41981b32929aebb2a317f"
+  }
+}

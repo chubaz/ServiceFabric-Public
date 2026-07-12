@@ -1,0 +1,20 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolRevision",
+  "metadata": {"id": "research.search_papers-v1", "name": "Search Papers Revision 1", "description": "Immutable research.search_papers executable contract.", "labels": {"tool": "research.search_papers"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "research-platform"}},
+  "spec": {
+    "tool_id": "research.search_papers", "revision": "1.0.0", "definition_ref": {"tool_id": "research.search_papers"},
+    "package_ref": {"package_id": "research-provider", "package_version": "1.0.0", "entrypoint_id": "api"},
+    "execution_binding": {"binding_kind": "external_http", "service_package_id": "research-provider", "path_template": "/papers/search", "method": "POST", "credential_binding_ref": "research-provider-credentials"},
+    "input_schema": {"schema_ref": "schema://tools/research.search_papers/input/1.0.0", "schema_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444"},
+    "output_schema": {"schema_ref": "schema://tools/research.search_papers/output/1.0.0", "schema_digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555"},
+    "error_contract": {"error_codes": ["validation.invalid_query", "dependency.provider_unavailable", "quality.invalid_evidence"], "categories": ["validation", "dependency", "quality", "timeout", "cancelled", "unavailable"]},
+    "effect_contract": {"effects": [{"effect_type": "external_read", "target_category": "scholarly-provider", "scope": "Approved scholarly metadata providers.", "reversibility": "not_applicable", "verification_required": true, "approval_required": false, "idempotency_required": false}]},
+    "dependency_contract": {"dependencies": [{"dependency_kind": "provider", "provider_ref": "arxiv"}, {"dependency_kind": "provider", "provider_ref": "crossref"}, {"dependency_kind": "credential_binding", "credential_binding_ref": "research-provider-credentials", "purpose": "Provider authentication"}]},
+    "resource_requirements": {"cpu_millicores": 250, "memory_mebibytes": 256, "network_policy_ref": "policy://network/research-providers", "storage_requirement_refs": []},
+    "timeouts": {"timeout_class": "bounded_long", "maximum_timeout_ms": 20000}, "idempotency": {"idempotency_class": "naturally_idempotent", "idempotency_key_supported": false, "retry_safety": "safe", "duplicate_delivery_behavior": "return_previous"},
+    "cancellation": {"supported": true, "behavior": "cooperative"}, "evidence_policy": {"evidence_required": true, "evidence_policy_ref": "policy://evidence/scholarly-sources"},
+    "compatibility": {"minimum_contract_version": "0.2.0", "compatible_definition_revisions": ["1.0.0"]},
+    "provenance": {"source_ref": "source://stage11/research-search-papers", "source_digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666", "build_ref": "build://research-search-papers/1.0.0"},
+    "content_digest": "sha256:8aee586cce4857e535f90247bd042a477f8d0fa499feaed030313e7b39af4d3c"
+  }
+}

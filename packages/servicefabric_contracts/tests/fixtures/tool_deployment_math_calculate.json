@@ -1,0 +1,5 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolDeployment",
+  "metadata": {"id": "math-calculate-production", "name": "Math Calculate Production", "description": "Desired production deployment.", "labels": {"environment": "production"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "servicefabric-platform"}},
+  "spec": {"deployment_id": "math-calculate-production", "tool_id": "math.calculate", "revision_ref": {"tool_id": "math.calculate", "revision": "1.0.0", "content_digest": "sha256:44311ce2a6858638b2cc7a991fe0c05fd14255ef58f2d51a8249a88de22ffb4d"}, "environment": "production", "execution_target_ref": "target://production/internal", "traffic_policy": {"traffic_kind": "single"}, "activation_policy": {"mode": "manual"}, "tenant_scope": "platform", "policy_set_refs": ["policy://tools/math-production"], "configuration_refs": ["config://tools/math-production"], "credential_binding_refs": [], "created_provenance": {"change_ref": "change://release/math-1.0.0", "actor_ref": "release-controller"}}
+}
