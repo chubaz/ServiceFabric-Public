@@ -39,6 +39,7 @@ EXAMPLES = {
     "result_project_create_task_error.json": "result-project-create-task-error.json",
     "effect_receipt_project_create_task.json": "effect-receipt-project-create-task.json",
     "operation_research_search_papers.json": "operation-research-search-papers.json",
+    "translated/translation_report_quant_vite.json": "legacy-translation-quant-composite-report.json",
 }
 
 

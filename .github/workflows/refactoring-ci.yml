@@ -57,6 +57,11 @@ jobs:
       - name: Check deterministic schema snapshots
         run: python3 scripts/contracts/check_schema_snapshots.py
 
+      - name: Check legacy migration snapshots
+        run: |
+          python3 scripts/contracts/inventory_legacy_manifests.py --check
+          python3 scripts/contracts/check_legacy_translation_snapshots.py
+
       - name: Build contract distributions
         run: python3 -m build --outdir /tmp/servicefabric-contract-build packages/servicefabric_contracts
 
@@ -71,6 +76,9 @@ jobs:
 
       - name: Run invocation contract architecture boundaries
         run: python3 -m unittest discover -s tests/architecture -p 'test_invocation_contract_boundaries.py' -v
+
+      - name: Run legacy translation architecture boundaries
+        run: python3 -m unittest discover -s tests/architecture -p 'test_legacy_translation_boundaries.py' -v
 
   python-production-builds:
     runs-on: ubuntu-latest

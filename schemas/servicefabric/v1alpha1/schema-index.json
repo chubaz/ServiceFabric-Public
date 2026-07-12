@@ -1,6 +1,6 @@
 {
   "api_version": "servicefabric.ai/v1alpha1",
-  "contract_package_version": "0.3.0a1",
+  "contract_package_version": "0.4.0a1",
   "schemas": [
     {
       "kind": "EffectReceipt",
@@ -13,6 +13,12 @@
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/evidence-record.schema.json",
       "schema_path": "evidence-record.schema.json",
       "sha256": "79c9c7eea3fd2059a029ab69c3c77e1a92b0faefe73f6e834dbbca209fda1bf9"
+    },
+    {
+      "kind": "LegacyManifestTranslationReport",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/legacy-manifest-translation-report.schema.json",
+      "schema_path": "legacy-manifest-translation-report.schema.json",
+      "sha256": "294fd48e4f6c73c5536f05c5dac9e92bf616118c31ab684745d16d41d2b6f62a"
     },
     {
       "kind": "ServiceFabricOperation",

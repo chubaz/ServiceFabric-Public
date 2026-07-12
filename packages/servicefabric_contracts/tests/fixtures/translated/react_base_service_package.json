@@ -1,0 +1,77 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {
+    "annotations": {
+      "legacy-template": "react_base"
+    },
+    "description": "Modern React 19 application with Tailwind CSS and Vite.",
+    "id": "legacy.react-ui",
+    "labels": {
+      "migration": "legacy"
+    },
+    "name": "React UI",
+    "namespace": "legacy",
+    "owner_ref": {
+      "id": "migration-team",
+      "kind": "team"
+    }
+  },
+  "spec": {
+    "artifact": {
+      "artifact_kind": "static_bundle",
+      "bundle_ref": "artifact://legacy/react-ui/1.0.0",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    "declared_capabilities": [],
+    "description": "Modern React 19 application with Tailwind CSS and Vite.",
+    "entrypoints": [
+      {
+        "description": "Legacy frontend static entrypoint.",
+        "exposures": [
+          {
+            "kind": "web",
+            "operation_refs": []
+          }
+        ],
+        "health_ref": null,
+        "id": "web",
+        "kind": "web_ui",
+        "machine_callable": false,
+        "may_produce_effects": false,
+        "runtime_ref": "static:legacy.react-ui"
+      }
+    ],
+    "health": {
+      "probe_kind": "none"
+    },
+    "hosting": {
+      "managed_resources": null,
+      "mode": "managed_static"
+    },
+    "lifecycle": {
+      "deprecation_status": "active",
+      "maturity": "experimental",
+      "replacement_ref": null,
+      "support_status": "best_effort"
+    },
+    "network_policy": {
+      "egress_allowlist": [],
+      "mode": "none"
+    },
+    "ownership": {
+      "owner_ref": {
+        "id": "migration-team",
+        "kind": "team"
+      },
+      "support_ref": null
+    },
+    "package_version": "1.0.0",
+    "runtime_requirements": {
+      "compute": null,
+      "config_refs": [],
+      "secret_refs": []
+    },
+    "storage_requirements": []
+  }
+}

@@ -20,6 +20,7 @@ from .invocation import ToolInvocationAcceptance, ToolInvocationRequest
 from .operations import ServiceFabricOperation
 from .results import ToolResult
 from .version import __version__
+from .translation_report import LegacyManifestTranslationReport
 
 SCHEMA_ID = "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json"
 SCHEMA_RESOURCES = {
@@ -35,6 +36,7 @@ SCHEMA_RESOURCES = {
     "evidence-record.schema.json": (EvidenceRecord, "https://schemas.servicefabric.ai/v1alpha1/evidence-record.schema.json", "ServiceFabric EvidenceRecord v1alpha1", "EvidenceRecord"),
     "effect-receipt.schema.json": (EffectReceipt, "https://schemas.servicefabric.ai/v1alpha1/effect-receipt.schema.json", "ServiceFabric EffectReceipt v1alpha1", "EffectReceipt"),
     "servicefabric-operation.schema.json": (ServiceFabricOperation, "https://schemas.servicefabric.ai/v1alpha1/servicefabric-operation.schema.json", "ServiceFabric Operation v1alpha1", "ServiceFabricOperation"),
+    "legacy-manifest-translation-report.schema.json": (LegacyManifestTranslationReport, "https://schemas.servicefabric.ai/v1alpha1/legacy-manifest-translation-report.schema.json", "ServiceFabric Legacy Manifest Translation Report v1alpha1", "LegacyManifestTranslationReport"),
 }
 
 

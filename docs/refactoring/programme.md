@@ -22,8 +22,8 @@ This repository-local programme tracks the formal pull-request sequence without 
 | `P0-00` through `P0-06` | P0 containment and production baseline | completed | Completed in merged pull requests through reproducible Python dependency builds. |
 | `C1-00` | Canonical contract package foundation | completed | Established framework-neutral `ServicePackageDefinition` contracts, schema export, fixtures, and CI without runtime integration. |
 | `C1-01` | Canonical tool lifecycle contracts | completed | Defined stable tool identity, immutable revisions, desired deployments, observed status, fixtures, schemas, and contract CI. |
-| `C1-02` | Canonical invocation and result contracts | current | Define protocol-neutral invocation, result, error, evidence, effect-receipt, and durable-operation contracts. |
-| `C1-03` | Contract publication workflow | not started | Not started. |
+| `C1-02` | Canonical invocation and result contracts | completed | Defined protocol-neutral invocation, result, error, evidence, effect-receipt, and durable-operation contracts. |
+| `C1-03` | Legacy manifest translation and diagnostics | current | Add deterministic offline inventory, conservative translation, and migration diagnostics. |
 | `C1-04` | Contract migration preparation | not started | Not started. |
 
 ## `P0-00` deliverables
