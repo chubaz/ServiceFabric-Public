@@ -4,7 +4,9 @@
     "e0-00",
     "v1-00"
   ],
-  "completed_phases": [],
+  "completed_phases": [
+    "federated-mcp-adapter"
+  ],
   "current_milestone": "v1-01",
   "current_phase": "readiness",
   "known_blockers": [],
@@ -12,7 +14,6 @@
   "next_action": "Run make agent-preflight and begin the V1-01 federated MCP adapter phase.",
   "programme_version": 1,
   "remaining_phases": [
-    "federated-mcp-adapter",
     "langchain-projection",
     "composite-graph-adapter",
     "pi-extension",
