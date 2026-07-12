@@ -8,16 +8,16 @@
   ],
   "completed_phases": [
     "capsule-contracts",
-    "capsule-portfolio"
+    "capsule-portfolio",
+    "authoring-model"
   ],
   "current_milestone": "v2-01",
-  "current_phase": "authoring-model",
+  "current_phase": "host-boundary",
   "known_blockers": [],
   "last_verification_summary": "V2-00 merged after contracts, portfolio, source validation, reproducible builder, immutable artifact storage, service, client, preview, schema, dependency-lock, architecture, and regression checks passed.",
-  "next_action": "Implement the declarative capsule authoring phase using the committed portfolio.",
+  "next_action": "Implement the bounded capsule host boundary using the committed reviewed capsule revision.",
   "programme_version": 1,
   "remaining_phases": [
-    "authoring-model",
     "host-boundary",
     "session-lifecycle",
     "asset-and-route-resolution",
