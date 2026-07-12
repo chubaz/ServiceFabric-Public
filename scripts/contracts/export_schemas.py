@@ -30,6 +30,15 @@ EXAMPLES = {
     "tool_revision_project_create_task_v1.json": "tool-revision-project-create-task-v1.json",
     "tool_deployment_math_calculate.json": "tool-deployment-math-calculate.json",
     "tool_status_math_calculate.json": "tool-status-math-calculate.json",
+    "invocation_math_calculate.json": "invocation-math-calculate.json",
+    "result_math_calculate_success.json": "result-math-calculate-success.json",
+    "invocation_research_search_papers.json": "invocation-research-search-papers.json",
+    "result_research_search_papers_partial.json": "result-research-search-papers-partial.json",
+    "invocation_project_create_task.json": "invocation-project-create-task.json",
+    "result_project_create_task_success.json": "result-project-create-task-success.json",
+    "result_project_create_task_error.json": "result-project-create-task-error.json",
+    "effect_receipt_project_create_task.json": "effect-receipt-project-create-task.json",
+    "operation_research_search_papers.json": "operation-research-search-papers.json",
 }
 
 

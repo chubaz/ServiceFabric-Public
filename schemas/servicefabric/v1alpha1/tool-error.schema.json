@@ -1,0 +1,133 @@
+{
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-error.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "enum": [
+        "authentication",
+        "authorization",
+        "delegation",
+        "approval",
+        "validation",
+        "policy",
+        "budget",
+        "execution",
+        "dependency",
+        "output",
+        "effect",
+        "quality",
+        "mcp",
+        "runtime"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "cause_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cause Ref"
+    },
+    "code": {
+      "maxLength": 96,
+      "minLength": 8,
+      "title": "Code",
+      "type": "string"
+    },
+    "correlation_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Correlation Ref"
+    },
+    "dependency_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dependency Ref"
+    },
+    "details": {
+      "additionalProperties": true,
+      "maxProperties": 32,
+      "title": "Details",
+      "type": "object"
+    },
+    "message": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Message",
+      "type": "string"
+    },
+    "retry_after": {
+      "anyOf": [
+        {
+          "format": "duration",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Retry After"
+    },
+    "retry_classification": {
+      "anyOf": [
+        {
+          "enum": [
+            "transient",
+            "throttled",
+            "dependency_recovery",
+            "manual_review"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Retry Classification"
+    },
+    "retryable": {
+      "default": false,
+      "title": "Retryable",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "message"
+  ],
+  "title": "ServiceFabric ToolError v1alpha1",
+  "type": "object"
+}

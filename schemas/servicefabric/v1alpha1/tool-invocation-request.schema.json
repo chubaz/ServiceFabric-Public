@@ -1,0 +1,792 @@
+{
+  "$defs": {
+    "CallerContext": {
+      "additionalProperties": false,
+      "properties": {
+        "audiences": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Audiences",
+          "type": "array"
+        },
+        "authentication_strength": {
+          "enum": [
+            "none",
+            "single_factor",
+            "multi_factor",
+            "workload",
+            "federated"
+          ],
+          "title": "Authentication Strength",
+          "type": "string"
+        },
+        "authority_chain_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Authority Chain Refs",
+          "type": "array"
+        },
+        "delegation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delegation Ref"
+        },
+        "issuer": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Issuer",
+          "type": "string"
+        },
+        "principal_type": {
+          "enum": [
+            "human",
+            "service",
+            "agent",
+            "graph",
+            "system",
+            "anonymous"
+          ],
+          "title": "Principal Type",
+          "type": "string"
+        },
+        "scopes": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Scopes",
+          "type": "array"
+        },
+        "subject_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Subject Ref",
+          "type": "string"
+        },
+        "tenant_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tenant Ref"
+        }
+      },
+      "required": [
+        "subject_ref",
+        "principal_type",
+        "issuer",
+        "authentication_strength"
+      ],
+      "title": "CallerContext",
+      "type": "object"
+    },
+    "DeploymentInvocationTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "deployment_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Deployment Ref",
+          "type": "string"
+        },
+        "target_kind": {
+          "const": "deployment",
+          "title": "Target Kind",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_kind",
+        "tool_id",
+        "deployment_ref"
+      ],
+      "title": "DeploymentInvocationTarget",
+      "type": "object"
+    },
+    "ExecutionBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "deadline": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline"
+        },
+        "maximum_bytes_in": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Bytes In"
+        },
+        "maximum_bytes_out": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Bytes Out"
+        },
+        "maximum_effect_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Effect Count"
+        },
+        "maximum_evidence_records": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Evidence Records"
+        },
+        "maximum_model_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Model Tokens"
+        },
+        "maximum_monetary_cost": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MonetaryBudget"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "maximum_nested_tool_calls": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Nested Tool Calls"
+        },
+        "maximum_provider_calls": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Provider Calls"
+        },
+        "maximum_wall_clock_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Wall Clock Ms"
+        }
+      },
+      "title": "ExecutionBudget",
+      "type": "object"
+    },
+    "InvocationIdempotency": {
+      "additionalProperties": false,
+      "properties": {
+        "caller_intent": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Caller Intent",
+          "type": "string"
+        },
+        "key_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Key Digest",
+          "type": "string"
+        },
+        "replay_policy": {
+          "enum": [
+            "return_previous",
+            "reject_duplicate",
+            "resume"
+          ],
+          "title": "Replay Policy",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "caller",
+            "tenant",
+            "deployment",
+            "tool"
+          ],
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key_digest",
+        "scope",
+        "replay_policy",
+        "caller_intent"
+      ],
+      "title": "InvocationIdempotency",
+      "type": "object"
+    },
+    "MonetaryBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+              "type": "string"
+            }
+          ],
+          "title": "Amount"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "title": "MonetaryBudget",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ParentExecutionContext": {
+      "additionalProperties": false,
+      "properties": {
+        "delegated_authority_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delegated Authority Ref"
+        },
+        "depth": {
+          "maximum": 64,
+          "minimum": 0,
+          "title": "Depth",
+          "type": "integer"
+        },
+        "graph_execution_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Graph Execution Ref"
+        },
+        "inherited_budget_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inherited Budget Ref"
+        },
+        "parent_invocation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Invocation Ref"
+        },
+        "parent_operation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Operation Ref"
+        },
+        "root_correlation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Root Correlation Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "root_correlation_id",
+        "depth"
+      ],
+      "title": "ParentExecutionContext",
+      "type": "object"
+    },
+    "ProtocolContext": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Adapter Ref",
+          "type": "string"
+        },
+        "client_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Client Ref"
+        },
+        "projection_metadata": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 16,
+          "title": "Projection Metadata",
+          "type": "object"
+        },
+        "protocol": {
+          "enum": [
+            "internal",
+            "http",
+            "cli",
+            "graph",
+            "scheduled",
+            "mcp",
+            "federated_mcp"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        },
+        "remote_request_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Remote Request Ref"
+        },
+        "session_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Session Ref"
+        }
+      },
+      "required": [
+        "protocol",
+        "adapter_ref"
+      ],
+      "title": "ProtocolContext",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    },
+    "RevisionInvocationTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "revision_ref": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]+$",
+          "title": "Revision Ref",
+          "type": "string"
+        },
+        "target_kind": {
+          "const": "revision",
+          "title": "Target Kind",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_kind",
+        "tool_id",
+        "revision_ref"
+      ],
+      "title": "RevisionInvocationTarget",
+      "type": "object"
+    },
+    "ToolInvocationRequestSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Approval Refs",
+          "type": "array"
+        },
+        "arguments": {
+          "additionalProperties": true,
+          "maxProperties": 256,
+          "title": "Arguments",
+          "type": "object"
+        },
+        "budget": {
+          "$ref": "#/$defs/ExecutionBudget"
+        },
+        "caller_context": {
+          "$ref": "#/$defs/CallerContext"
+        },
+        "client_metadata": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 16,
+          "title": "Client Metadata",
+          "type": "object"
+        },
+        "idempotency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InvocationIdempotency"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "parent_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParentExecutionContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "protocol_context": {
+          "$ref": "#/$defs/ProtocolContext"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "requested_response_mode": {
+          "default": "either",
+          "enum": [
+            "synchronous",
+            "durable",
+            "either"
+          ],
+          "title": "Requested Response Mode",
+          "type": "string"
+        },
+        "target": {
+          "discriminator": {
+            "mapping": {
+              "deployment": "#/$defs/DeploymentInvocationTarget",
+              "revision": "#/$defs/RevisionInvocationTarget"
+            },
+            "propertyName": "target_kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DeploymentInvocationTarget"
+            },
+            {
+              "$ref": "#/$defs/RevisionInvocationTarget"
+            }
+          ],
+          "title": "Target"
+        }
+      },
+      "required": [
+        "request_id",
+        "target",
+        "caller_context",
+        "protocol_context",
+        "budget"
+      ],
+      "title": "ToolInvocationRequestSpec",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-invocation-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ToolInvocationRequest",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/ToolInvocationRequestSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric ToolInvocationRequest v1alpha1",
+  "type": "object"
+}

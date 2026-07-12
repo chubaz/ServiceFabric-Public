@@ -1,0 +1,78 @@
+{
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-invocation-acceptance.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "accepted_at": {
+      "format": "date-time",
+      "title": "Accepted At",
+      "type": "string"
+    },
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "invocation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "title": "Invocation Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ToolInvocationAcceptance",
+      "title": "Kind",
+      "type": "string"
+    },
+    "operation_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "title": "Operation Ref",
+      "type": "string"
+    },
+    "progress_projection_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Progress Projection Ref"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "title": "Request Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "accepted",
+        "queued",
+        "deferred"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "request_id",
+    "invocation_id",
+    "operation_ref",
+    "accepted_at",
+    "status"
+  ],
+  "title": "ServiceFabric ToolInvocationAcceptance v1alpha1",
+  "type": "object"
+}

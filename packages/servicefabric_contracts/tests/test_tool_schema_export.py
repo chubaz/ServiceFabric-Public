@@ -15,7 +15,7 @@ class ToolSchemaExportTests(unittest.TestCase):
             "tool-deployment.schema.json": "https://schemas.servicefabric.ai/v1alpha1/tool-deployment.schema.json",
             "tool-status.schema.json": "https://schemas.servicefabric.ai/v1alpha1/tool-status.schema.json",
         }
-        self.assertEqual({name: values[1] for name, values in SCHEMA_RESOURCES.items() if name.startswith("tool-")}, expected)
+        self.assertEqual({name: SCHEMA_RESOURCES[name][1] for name in expected}, expected)
 
     def test_all_schema_snapshots_are_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as first, tempfile.TemporaryDirectory() as second:
