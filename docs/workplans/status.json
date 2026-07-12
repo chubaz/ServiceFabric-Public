@@ -13,7 +13,8 @@
     "artifact-identity",
     "artifact-storage",
     "builder-service",
-    "client-and-cli"
+    "client-and-cli",
+    "local-preview"
   ],
   "current_milestone": "v2-00",
   "current_phase": "application-contracts",
@@ -22,7 +23,6 @@
   "next_action": "Implement the V2-00 application contracts and schema snapshots.",
   "programme_version": 1,
   "remaining_phases": [
-    "local-preview",
     "cross-boundary-verification"
   ]
 }
