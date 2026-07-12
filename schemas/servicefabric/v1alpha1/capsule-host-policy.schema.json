@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "CapsuleHostPolicySpec": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_hosts": {
+          "default": [
+            "127.0.0.1"
+          ],
+          "items": {
+            "enum": [
+              "127.0.0.1",
+              "::1"
+            ],
+            "type": "string"
+          },
+          "title": "Allowed Hosts",
+          "type": "array"
+        },
+        "allowed_media_types": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Allowed Media Types",
+          "type": "array"
+        },
+        "allowed_methods": {
+          "default": [
+            "GET",
+            "HEAD"
+          ],
+          "items": {
+            "enum": [
+              "GET",
+              "HEAD"
+            ],
+            "type": "string"
+          },
+          "title": "Allowed Methods",
+          "type": "array"
+        },
+        "bind_mode": {
+          "const": "loopback",
+          "default": "loopback",
+          "title": "Bind Mode",
+          "type": "string"
+        },
+        "idle_timeout_seconds": {
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Idle Timeout Seconds",
+          "type": "integer"
+        },
+        "maximum_bindings": {
+          "maximum": 256,
+          "minimum": 1,
+          "title": "Maximum Bindings",
+          "type": "integer"
+        },
+        "maximum_request_path_bytes": {
+          "maximum": 8192,
+          "minimum": 1,
+          "title": "Maximum Request Path Bytes",
+          "type": "integer"
+        },
+        "maximum_requests": {
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Maximum Requests",
+          "type": "integer"
+        },
+        "maximum_response_bytes": {
+          "maximum": 134217728,
+          "minimum": 1,
+          "title": "Maximum Response Bytes",
+          "type": "integer"
+        },
+        "maximum_routes": {
+          "maximum": 256,
+          "minimum": 1,
+          "title": "Maximum Routes",
+          "type": "integer"
+        },
+        "maximum_session_seconds": {
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Maximum Session Seconds",
+          "type": "integer"
+        },
+        "policy_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "security_headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Security Headers",
+          "type": "object"
+        }
+      },
+      "required": [
+        "policy_id",
+        "revision",
+        "maximum_routes",
+        "maximum_bindings",
+        "maximum_requests",
+        "maximum_request_path_bytes",
+        "maximum_response_bytes",
+        "maximum_session_seconds",
+        "idle_timeout_seconds"
+      ],
+      "title": "CapsuleHostPolicySpec",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/capsule-host-policy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "CapsuleHostPolicy",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/CapsuleHostPolicySpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric CapsuleHostPolicy v1alpha1",
+  "type": "object"
+}

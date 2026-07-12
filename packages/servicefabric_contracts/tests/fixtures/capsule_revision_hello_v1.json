@@ -1,0 +1,65 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "CapsuleRevision",
+  "metadata": {
+    "id": "examples.hello-capsule.1.0.0",
+    "name": "Hello Capsule 1.0.0",
+    "description": "Immutable reviewed capsule revision.",
+    "labels": {},
+    "annotations": {},
+    "owner_ref": {
+      "kind": "team",
+      "id": "platform"
+    }
+  },
+  "spec": {
+    "capsule_id": "examples.hello-capsule",
+    "revision": "1.0.0",
+    "capsule_type": "static_capsule",
+    "authoring_manifest_digest": "sha256:b02cdceaa6ff90d566d311bab85f47f851cf88fe3541e177866a86a35c9aa0f8",
+    "artifact_bindings": [
+      {
+        "binding_id": "hello-static",
+        "application_id": "examples.hello-static",
+        "application_revision": "1.0.0",
+        "artifact_manifest_ref": "examples.hello-static.1.0.0",
+        "artifact_digest": "sha256:b23f23c97d374b87d99255a7669034175e771903aa4f5994b84f114f7d577f58",
+        "mount_path": "/",
+        "entry_document": "index.html",
+        "required": true
+      }
+    ],
+    "routes": [
+      {
+        "route_id": "home",
+        "path": "/",
+        "binding_id": "hello-static",
+        "artifact_path": "index.html",
+        "media_type": "text/html",
+        "fallback_policy": "declared_entry_document",
+        "cache_policy": "immutable"
+      },
+      {
+        "route_id": "styles",
+        "path": "/styles.css",
+        "binding_id": "hello-static",
+        "artifact_path": "styles.css",
+        "media_type": "text/css",
+        "fallback_policy": "none",
+        "cache_policy": "immutable"
+      }
+    ],
+    "entry_route": "/",
+    "host_policy_ref": "loopback-static",
+    "revision_digest": "sha256:ed0f163932f90870080004c4cf5a1af3226b065696b7efc353e942f756e33cbf",
+    "provenance": {
+      "author_ref": {
+        "kind": "team",
+        "id": "platform"
+      },
+      "source_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "review_ref": "review.hello-capsule"
+    },
+    "status": "reviewed"
+  }
+}

@@ -9,6 +9,15 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from .service_package import ServicePackageDefinition
+from .capsules import (
+    CapsuleAuthoringManifest,
+    CapsuleDefinition,
+    CapsuleHostPolicy,
+    CapsuleHostRequest,
+    CapsuleHostResult,
+    CapsuleHostSession,
+    CapsuleRevision,
+)
 from .tool_definition import ToolDefinition
 from .tool_deployment import ToolDeployment
 from .tool_revision import ToolRevision
@@ -35,6 +44,13 @@ from .applications import (
 SCHEMA_ID = "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json"
 SCHEMA_RESOURCES = {
     "service-package-definition.schema.json": (ServicePackageDefinition, SCHEMA_ID, "ServiceFabric ServicePackageDefinition v1alpha1", "ServicePackageDefinition"),
+    "capsule-definition.schema.json": (CapsuleDefinition, "https://schemas.servicefabric.ai/v1alpha1/capsule-definition.schema.json", "ServiceFabric CapsuleDefinition v1alpha1", "CapsuleDefinition"),
+    "capsule-revision.schema.json": (CapsuleRevision, "https://schemas.servicefabric.ai/v1alpha1/capsule-revision.schema.json", "ServiceFabric CapsuleRevision v1alpha1", "CapsuleRevision"),
+    "capsule-authoring-manifest.schema.json": (CapsuleAuthoringManifest, "https://schemas.servicefabric.ai/v1alpha1/capsule-authoring-manifest.schema.json", "ServiceFabric CapsuleAuthoringManifest v1alpha1", "CapsuleAuthoringManifest"),
+    "capsule-host-policy.schema.json": (CapsuleHostPolicy, "https://schemas.servicefabric.ai/v1alpha1/capsule-host-policy.schema.json", "ServiceFabric CapsuleHostPolicy v1alpha1", "CapsuleHostPolicy"),
+    "capsule-host-request.schema.json": (CapsuleHostRequest, "https://schemas.servicefabric.ai/v1alpha1/capsule-host-request.schema.json", "ServiceFabric CapsuleHostRequest v1alpha1", "CapsuleHostRequest"),
+    "capsule-host-session.schema.json": (CapsuleHostSession, "https://schemas.servicefabric.ai/v1alpha1/capsule-host-session.schema.json", "ServiceFabric CapsuleHostSession v1alpha1", "CapsuleHostSession"),
+    "capsule-host-result.schema.json": (CapsuleHostResult, "https://schemas.servicefabric.ai/v1alpha1/capsule-host-result.schema.json", "ServiceFabric CapsuleHostResult v1alpha1", "CapsuleHostResult"),
     "tool-definition.schema.json": (ToolDefinition, "https://schemas.servicefabric.ai/v1alpha1/tool-definition.schema.json", "ServiceFabric ToolDefinition v1alpha1", "ToolDefinition"),
     "tool-revision.schema.json": (ToolRevision, "https://schemas.servicefabric.ai/v1alpha1/tool-revision.schema.json", "ServiceFabric ToolRevision v1alpha1", "ToolRevision"),
     "tool-deployment.schema.json": (ToolDeployment, "https://schemas.servicefabric.ai/v1alpha1/tool-deployment.schema.json", "ServiceFabric ToolDeployment v1alpha1", "ToolDeployment"),

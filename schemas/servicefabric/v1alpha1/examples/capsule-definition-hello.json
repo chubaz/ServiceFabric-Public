@@ -1,0 +1,22 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "CapsuleDefinition",
+  "metadata": {
+    "id": "examples.hello-capsule",
+    "name": "Hello Capsule",
+    "description": "Reviewed capsule for the hello-static application.",
+    "labels": {
+      "domain": "examples"
+    },
+    "annotations": {},
+    "owner_ref": {
+      "kind": "team",
+      "id": "platform"
+    }
+  },
+  "spec": {
+    "capsule_id": "examples.hello-capsule",
+    "capsule_type": "static_capsule",
+    "status": "reviewed"
+  }
+}

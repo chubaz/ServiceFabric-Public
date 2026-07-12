@@ -1,0 +1,71 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "CapsuleHostResult",
+  "metadata": {
+    "id": "session.hello-capsule",
+    "name": "Hello Capsule Host Result",
+    "description": "Successful bounded capsule host result.",
+    "labels": {},
+    "annotations": {},
+    "owner_ref": {
+      "kind": "team",
+      "id": "platform"
+    }
+  },
+  "spec": {
+    "status": "success",
+    "session": {
+      "apiVersion": "servicefabric.ai/v1alpha1",
+      "kind": "CapsuleHostSession",
+      "metadata": {
+        "id": "session.hello-capsule",
+        "name": "Hello Capsule Host Session",
+        "description": "Loopback session for a reviewed capsule revision.",
+        "labels": {},
+        "annotations": {},
+        "owner_ref": {
+          "kind": "team",
+          "id": "platform"
+        }
+      },
+      "spec": {
+        "session_id": "session.hello-capsule",
+        "capsule_id": "examples.hello-capsule",
+        "capsule_revision": "1.0.0",
+        "capsule_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "host": "127.0.0.1",
+        "port": 4321,
+        "base_url": "http://127.0.0.1:4321/",
+        "status": "open",
+        "opened_at": "2026-07-12T10:00:00Z",
+        "expires_at": "2026-07-12T10:10:00Z",
+        "request_budget": {
+          "maximum_wall_clock_ms": 600000
+        },
+        "requests_served": 1,
+        "artifact_digests": ["sha256:b23f23c97d374b87d99255a7669034175e771903aa4f5994b84f114f7d577f58"]
+      }
+    },
+    "warnings": [],
+    "errors": [],
+    "evidence": [
+      {
+        "evidence_id": "evidence.capsule.hello",
+        "evidence_type": "artifact",
+        "source_ref": "session.hello-capsule",
+        "locator": "session.hello-capsule",
+        "content_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "collected_at": "2026-07-12T10:00:00Z",
+        "trust_classification": "platform",
+        "claims": ["capsule session opened"],
+        "summary": "The reviewed capsule host session opened successfully.",
+        "provenance_refs": ["examples.hello-capsule.1.0.0"]
+      }
+    ],
+    "effect_receipts": [],
+    "metrics": {
+      "routes": 2,
+      "requests_served": 1
+    }
+  }
+}

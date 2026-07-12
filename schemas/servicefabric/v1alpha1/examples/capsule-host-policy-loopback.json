@@ -1,0 +1,34 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "CapsuleHostPolicy",
+  "metadata": {
+    "id": "loopback-static",
+    "name": "Loopback Static Policy",
+    "description": "Bounded local loopback-only capsule host policy.",
+    "labels": {},
+    "annotations": {},
+    "owner_ref": {
+      "kind": "team",
+      "id": "platform"
+    }
+  },
+  "spec": {
+    "policy_id": "loopback-static",
+    "revision": "1.0.0",
+    "bind_mode": "loopback",
+    "allowed_hosts": ["127.0.0.1"],
+    "maximum_routes": 8,
+    "maximum_bindings": 2,
+    "maximum_requests": 100,
+    "maximum_request_path_bytes": 4096,
+    "maximum_response_bytes": 1048576,
+    "maximum_session_seconds": 600,
+    "idle_timeout_seconds": 60,
+    "allowed_methods": ["GET", "HEAD"],
+    "allowed_media_types": ["text/html", "text/css"],
+    "security_headers": {
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer"
+    }
+  }
+}

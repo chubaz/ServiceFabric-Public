@@ -1,0 +1,362 @@
+{
+  "$defs": {
+    "CapsuleArtifactBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "application_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Application Id",
+          "type": "string"
+        },
+        "application_revision": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Application Revision",
+          "type": "string"
+        },
+        "artifact_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Artifact Digest",
+          "type": "string"
+        },
+        "artifact_manifest_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Artifact Manifest Ref",
+          "type": "string"
+        },
+        "binding_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Binding Id",
+          "type": "string"
+        },
+        "entry_document": {
+          "title": "Entry Document",
+          "type": "string"
+        },
+        "mount_path": {
+          "title": "Mount Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "binding_id",
+        "application_id",
+        "application_revision",
+        "artifact_manifest_ref",
+        "artifact_digest",
+        "mount_path",
+        "entry_document"
+      ],
+      "title": "CapsuleArtifactBinding",
+      "type": "object"
+    },
+    "CapsuleRevisionProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "author_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        },
+        "review_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Review Ref"
+        },
+        "source_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Source Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "author_ref",
+        "source_digest"
+      ],
+      "title": "CapsuleRevisionProvenance",
+      "type": "object"
+    },
+    "CapsuleRevisionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_bindings": {
+          "items": {
+            "$ref": "#/$defs/CapsuleArtifactBinding"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "title": "Artifact Bindings",
+          "type": "array"
+        },
+        "authoring_manifest_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Authoring Manifest Digest",
+          "type": "string"
+        },
+        "capsule_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Capsule Id",
+          "type": "string"
+        },
+        "capsule_type": {
+          "const": "static_capsule",
+          "default": "static_capsule",
+          "title": "Capsule Type",
+          "type": "string"
+        },
+        "entry_route": {
+          "title": "Entry Route",
+          "type": "string"
+        },
+        "host_policy_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Host Policy Ref",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/CapsuleRevisionProvenance"
+        },
+        "revision": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "revision_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Revision Digest",
+          "type": "string"
+        },
+        "routes": {
+          "items": {
+            "$ref": "#/$defs/CapsuleRoute"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "title": "Routes",
+          "type": "array"
+        },
+        "status": {
+          "const": "reviewed",
+          "default": "reviewed",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capsule_id",
+        "revision",
+        "authoring_manifest_digest",
+        "artifact_bindings",
+        "routes",
+        "entry_route",
+        "host_policy_ref",
+        "revision_digest",
+        "provenance"
+      ],
+      "title": "CapsuleRevisionSpec",
+      "type": "object"
+    },
+    "CapsuleRoute": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_path": {
+          "title": "Artifact Path",
+          "type": "string"
+        },
+        "binding_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Binding Id",
+          "type": "string"
+        },
+        "cache_policy": {
+          "default": "immutable",
+          "enum": [
+            "immutable",
+            "no_cache"
+          ],
+          "title": "Cache Policy",
+          "type": "string"
+        },
+        "fallback_policy": {
+          "default": "none",
+          "enum": [
+            "none",
+            "declared_entry_document"
+          ],
+          "title": "Fallback Policy",
+          "type": "string"
+        },
+        "media_type": {
+          "maxLength": 128,
+          "minLength": 3,
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "route_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Route Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "route_id",
+        "path",
+        "binding_id",
+        "artifact_path",
+        "media_type"
+      ],
+      "title": "CapsuleRoute",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/capsule-revision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "CapsuleRevision",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/CapsuleRevisionSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric CapsuleRevision v1alpha1",
+  "type": "object"
+}

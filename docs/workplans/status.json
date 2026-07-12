@@ -1,27 +1,27 @@
 {
-  "base_commit": "<V1-01 merge commit>",
+  "base_commit": "611d053d81a8cb99053a6f2821ff0275e37580df",
   "completed_milestones": [
     "e0-00",
     "v1-00",
-    "v1-01"
+    "v1-01",
+    "v2-00"
   ],
   "completed_phases": [
-    "application-contracts",
-    "application-portfolio",
-    "source-validation",
-    "static-web-builder",
-    "artifact-identity",
-    "artifact-storage",
-    "builder-service",
+    "capsule-contracts",
+    "capsule-portfolio",
+    "authoring-model",
+    "host-boundary",
+    "session-lifecycle",
+    "loopback-hosting",
+    "asset-and-route-resolution",
     "client-and-cli",
-    "local-preview",
     "cross-boundary-verification"
   ],
-  "current_milestone": "v2-00",
+  "current_milestone": "v2-01",
   "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V2-00 contracts, portfolio, source validation, builder, artifact store, service, client, preview, regressions, schemas, locks, and boundaries passed.",
-  "next_action": "Review and merge V2-00, then author the V2-01 execution workplan without implementing it.",
+  "last_verification_summary": "V2-01 completion verification passed with capsule tests, architecture boundaries, architecture suite, guardrails, dependency locks, compileall, and diff checks.",
+  "next_action": "Review and merge V2-01, then hand off to V3-00.",
   "programme_version": 1,
   "remaining_phases": []
 }
