@@ -1,22 +1,23 @@
 {
-  "base_commit": "6a043773026c7673651cbd491a705b4a109cd812",
+  "base_commit": "<V1-01 merge commit>",
   "completed_milestones": [
     "e0-00",
-    "v1-00"
+    "v1-00",
+    "v1-01"
   ],
-  "completed_phases": [
-    "federated-mcp-adapter",
-    "langchain-projection",
-    "composite-graph-adapter",
-    "pi-extension",
-    "research-demo-toolset",
-    "cross-consumer-verification"
-  ],
-  "current_milestone": "v1-01",
-  "current_phase": "completed",
+  "completed_phases": [],
+  "current_milestone": "v2-00",
+  "current_phase": "readiness",
   "known_blockers": [],
-  "last_verification_summary": "V1-01 MCP, LangChain, graph, Pi, portfolio, boundary, architecture, and lock checks passed.",
-  "next_action": "Review and merge V1-01, then prepare V2-00 without implementing it on this branch.",
+  "last_verification_summary": "V1-01 merged after MCP, LangChain, graph, Pi, portfolio, boundary, architecture, schema, and lock checks passed.",
+  "next_action": "Run make agent-preflight and finalize the V2-00 immutable application builder workplan before implementation.",
   "programme_version": 1,
-  "remaining_phases": []
+  "remaining_phases": [
+    "build-contracts",
+    "isolated-build-runner",
+    "static-application-builds",
+    "artifact-storage",
+    "preview-and-hosting",
+    "verification"
+  ]
 }
