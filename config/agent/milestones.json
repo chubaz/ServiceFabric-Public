@@ -244,10 +244,14 @@
   "verification": {
     "readiness": [
       {
-        "name": "workplans",
+        "name": "v2-00-completion",
         "command": [
           "python3",
-          "scripts/agent/validate_workplans.py"
+          "scripts/agent/verify.py",
+          "--milestone",
+          "v2-00",
+          "--phase",
+          "completion"
         ],
         "required": true
       }

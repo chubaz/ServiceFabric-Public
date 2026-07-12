@@ -18,10 +18,10 @@
     "cross-boundary-verification"
   ],
   "current_milestone": "v2-00",
-  "current_phase": "application-contracts",
+  "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V1-01 merged after MCP, LangChain, graph, Pi, portfolio, boundary, architecture, schema, and lock checks passed.",
-  "next_action": "Implement the V2-00 application contracts and schema snapshots.",
+  "last_verification_summary": "V2-00 contracts, portfolio, source validation, builder, artifact store, service, client, preview, regressions, schemas, locks, and boundaries passed.",
+  "next_action": "Review and merge V2-00, then author the V2-01 execution workplan without implementing it.",
   "programme_version": 1,
   "remaining_phases": []
 }
