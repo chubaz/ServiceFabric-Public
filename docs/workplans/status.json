@@ -9,19 +9,14 @@
   "completed_phases": [
     "capsule-contracts",
     "capsule-portfolio",
-    "authoring-model"
+    "authoring-model",
+    "host-boundary"
   ],
   "current_milestone": "v2-01",
-  "current_phase": "host-boundary",
+  "current_phase": "cross-boundary-verification",
   "known_blockers": [],
-  "last_verification_summary": "V2-00 merged after contracts, portfolio, source validation, reproducible builder, immutable artifact storage, service, client, preview, schema, dependency-lock, architecture, and regression checks passed.",
-  "next_action": "Implement the bounded capsule host boundary using the committed reviewed capsule revision.",
+  "last_verification_summary": "V2-01 host boundary committed after contracts, portfolio, authoring, route resolution, session lifecycle, and loopback host tests passed.",
+  "next_action": "Complete the V2-01 cross-boundary verification, completion checks, and milestone handoff.",
   "programme_version": 1,
-  "remaining_phases": [
-    "host-boundary",
-    "session-lifecycle",
-    "asset-and-route-resolution",
-    "client-and-cli",
-    "cross-boundary-verification"
-  ]
+  "remaining_phases": []
 }
