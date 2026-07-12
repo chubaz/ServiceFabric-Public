@@ -13,6 +13,12 @@ from .tool_definition import ToolDefinition
 from .tool_deployment import ToolDeployment
 from .tool_revision import ToolRevision
 from .tool_status import ToolStatus
+from .effect_receipt import EffectReceipt
+from .errors import ToolError
+from .evidence import EvidenceRecord
+from .invocation import ToolInvocationAcceptance, ToolInvocationRequest
+from .operations import ServiceFabricOperation
+from .results import ToolResult
 from .version import __version__
 
 SCHEMA_ID = "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json"
@@ -22,6 +28,13 @@ SCHEMA_RESOURCES = {
     "tool-revision.schema.json": (ToolRevision, "https://schemas.servicefabric.ai/v1alpha1/tool-revision.schema.json", "ServiceFabric ToolRevision v1alpha1", "ToolRevision"),
     "tool-deployment.schema.json": (ToolDeployment, "https://schemas.servicefabric.ai/v1alpha1/tool-deployment.schema.json", "ServiceFabric ToolDeployment v1alpha1", "ToolDeployment"),
     "tool-status.schema.json": (ToolStatus, "https://schemas.servicefabric.ai/v1alpha1/tool-status.schema.json", "ServiceFabric ToolStatus v1alpha1", "ToolStatus"),
+    "tool-invocation-request.schema.json": (ToolInvocationRequest, "https://schemas.servicefabric.ai/v1alpha1/tool-invocation-request.schema.json", "ServiceFabric ToolInvocationRequest v1alpha1", "ToolInvocationRequest"),
+    "tool-invocation-acceptance.schema.json": (ToolInvocationAcceptance, "https://schemas.servicefabric.ai/v1alpha1/tool-invocation-acceptance.schema.json", "ServiceFabric ToolInvocationAcceptance v1alpha1", "ToolInvocationAcceptance"),
+    "tool-result.schema.json": (ToolResult, "https://schemas.servicefabric.ai/v1alpha1/tool-result.schema.json", "ServiceFabric ToolResult v1alpha1", "ToolResult"),
+    "tool-error.schema.json": (ToolError, "https://schemas.servicefabric.ai/v1alpha1/tool-error.schema.json", "ServiceFabric ToolError v1alpha1", "ToolError"),
+    "evidence-record.schema.json": (EvidenceRecord, "https://schemas.servicefabric.ai/v1alpha1/evidence-record.schema.json", "ServiceFabric EvidenceRecord v1alpha1", "EvidenceRecord"),
+    "effect-receipt.schema.json": (EffectReceipt, "https://schemas.servicefabric.ai/v1alpha1/effect-receipt.schema.json", "ServiceFabric EffectReceipt v1alpha1", "EffectReceipt"),
+    "servicefabric-operation.schema.json": (ServiceFabricOperation, "https://schemas.servicefabric.ai/v1alpha1/servicefabric-operation.schema.json", "ServiceFabric Operation v1alpha1", "ServiceFabricOperation"),
 }
 
 

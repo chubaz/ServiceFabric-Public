@@ -1,5 +1,7 @@
 # Tool Lifecycle Contracts v1alpha1
 
+Canonical invocation, result, evidence, effect receipt, and durable-operation envelopes are documented in [Invocation and Result Contracts](invocation-result-v1alpha1.md).
+
 ## Resource Boundaries
 
 `ServicePackageDefinition` describes a hosted or referenced package. A package may

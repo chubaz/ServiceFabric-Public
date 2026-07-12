@@ -1,0 +1,1 @@
+{"apiVersion":"servicefabric.ai/v1alpha1","kind":"ToolResult","status":"success","invocation_id":"inv-task","tool_id":"project.create_task","revision_ref":"1.0.0","started_at":"2026-01-01T00:00:00Z","completed_at":"2026-01-01T00:00:01Z","duration":"PT1S","data":{"task_ref":"task-123"}}

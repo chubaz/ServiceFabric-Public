@@ -1,7 +1,25 @@
 {
   "api_version": "servicefabric.ai/v1alpha1",
-  "contract_package_version": "0.2.0a1",
+  "contract_package_version": "0.3.0a1",
   "schemas": [
+    {
+      "kind": "EffectReceipt",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/effect-receipt.schema.json",
+      "schema_path": "effect-receipt.schema.json",
+      "sha256": "baa06c3a36cf5b3c80ba0a95adc12177a2422c500591e68c46eacf068567e416"
+    },
+    {
+      "kind": "EvidenceRecord",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/evidence-record.schema.json",
+      "schema_path": "evidence-record.schema.json",
+      "sha256": "79c9c7eea3fd2059a029ab69c3c77e1a92b0faefe73f6e834dbbca209fda1bf9"
+    },
+    {
+      "kind": "ServiceFabricOperation",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/servicefabric-operation.schema.json",
+      "schema_path": "servicefabric-operation.schema.json",
+      "sha256": "5839b66a3e5dcc1c7e94053c4494c9c66589601bb56b7d1e6b07843fb41301e6"
+    },
     {
       "kind": "ServicePackageDefinition",
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json",
@@ -19,6 +37,30 @@
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-deployment.schema.json",
       "schema_path": "tool-deployment.schema.json",
       "sha256": "9d06c2aa6c11ea812d481e6efe7c5fcbcbd512af36c4d921fa245f8417c46310"
+    },
+    {
+      "kind": "ToolError",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-error.schema.json",
+      "schema_path": "tool-error.schema.json",
+      "sha256": "bded3e67705b754199a606333920428c97d0db087482d00a7712fc4ab61068ff"
+    },
+    {
+      "kind": "ToolInvocationAcceptance",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-invocation-acceptance.schema.json",
+      "schema_path": "tool-invocation-acceptance.schema.json",
+      "sha256": "62d2b4bdd2bcaddfdee7b403a0340058758f85700e7f89477ba60ebf76503226"
+    },
+    {
+      "kind": "ToolInvocationRequest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-invocation-request.schema.json",
+      "schema_path": "tool-invocation-request.schema.json",
+      "sha256": "0ede918e8218c56e7562dd33072e550a9f6ab16f848cec386f401c1edf9f251a"
+    },
+    {
+      "kind": "ToolResult",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-result.schema.json",
+      "schema_path": "tool-result.schema.json",
+      "sha256": "9f22a58f782e368d5001f3a09f6b031978e34829c6b74aa02fe112f91a3f4ed2"
     },
     {
       "kind": "ToolRevision",

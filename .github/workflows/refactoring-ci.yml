@@ -69,6 +69,9 @@ jobs:
       - name: Run tool lifecycle architecture boundaries
         run: python3 -m unittest discover -s tests/architecture -p 'test_tool_contract_boundaries.py' -v
 
+      - name: Run invocation contract architecture boundaries
+        run: python3 -m unittest discover -s tests/architecture -p 'test_invocation_contract_boundaries.py' -v
+
   python-production-builds:
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,632 @@
+{
+  "$defs": {
+    "EffectReceiptSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "declared_effect_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Declared Effect Ref",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "idempotency_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Idempotency Digest"
+        },
+        "invocation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Invocation Id",
+          "type": "string"
+        },
+        "issued_at": {
+          "format": "date-time",
+          "title": "Issued At",
+          "type": "string"
+        },
+        "observed_effects": {
+          "items": {
+            "$ref": "#/$defs/ObservedEffect"
+          },
+          "maxItems": 64,
+          "title": "Observed Effects",
+          "type": "array"
+        },
+        "receipt_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "revision_ref": {
+          "pattern": "^[a-z0-9][a-z0-9._:-]+$",
+          "title": "Revision Ref",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "verification_method": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verification Method"
+        },
+        "verification_status": {
+          "enum": [
+            "unverified",
+            "verified",
+            "partially_verified",
+            "verification_failed",
+            "reconciled"
+          ],
+          "title": "Verification Status",
+          "type": "string"
+        },
+        "verified_no_op": {
+          "default": false,
+          "title": "Verified No Op",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "invocation_id",
+        "tool_id",
+        "revision_ref",
+        "declared_effect_ref",
+        "verification_status",
+        "issued_at"
+      ],
+      "title": "EffectReceiptSpec",
+      "type": "object"
+    },
+    "EvidenceRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "claims": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Claims",
+          "type": "array"
+        },
+        "collected_at": {
+          "format": "date-time",
+          "title": "Collected At",
+          "type": "string"
+        },
+        "content_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Digest"
+        },
+        "evidence_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "evidence_type": {
+          "enum": [
+            "document",
+            "web_resource",
+            "database_record",
+            "provider_response",
+            "calculation",
+            "log_reference",
+            "human_confirmation",
+            "artifact"
+          ],
+          "title": "Evidence Type",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "source_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "trust_classification": {
+          "enum": [
+            "untrusted",
+            "external",
+            "verified",
+            "platform"
+          ],
+          "title": "Trust Classification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "evidence_type",
+        "source_ref",
+        "locator",
+        "collected_at",
+        "trust_classification",
+        "summary"
+      ],
+      "title": "EvidenceRecord",
+      "type": "object"
+    },
+    "ObservedEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "after_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "After Ref"
+        },
+        "before_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Before Ref"
+        },
+        "declared_effect_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Declared Effect Ref",
+          "type": "string"
+        },
+        "effect_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Effect Id",
+          "type": "string"
+        },
+        "effect_type": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Effect Type",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "provider_operation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider Operation Ref"
+        },
+        "reversibility": {
+          "enum": [
+            "reversible",
+            "irreversible",
+            "unknown"
+          ],
+          "title": "Reversibility",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "attempted",
+            "committed",
+            "verified",
+            "reconciled",
+            "reversed",
+            "failed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "target_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Target Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "effect_id",
+        "declared_effect_ref",
+        "effect_type",
+        "target_ref",
+        "state",
+        "observed_at",
+        "reversibility"
+      ],
+      "title": "ObservedEffect",
+      "type": "object"
+    },
+    "ToolError": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "authentication",
+            "authorization",
+            "delegation",
+            "approval",
+            "validation",
+            "policy",
+            "budget",
+            "execution",
+            "dependency",
+            "output",
+            "effect",
+            "quality",
+            "mcp",
+            "runtime"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "cause_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cause Ref"
+        },
+        "code": {
+          "maxLength": 96,
+          "minLength": 8,
+          "title": "Code",
+          "type": "string"
+        },
+        "correlation_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correlation Ref"
+        },
+        "dependency_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dependency Ref"
+        },
+        "details": {
+          "additionalProperties": true,
+          "maxProperties": 32,
+          "title": "Details",
+          "type": "object"
+        },
+        "message": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "retry_after": {
+          "anyOf": [
+            {
+              "format": "duration",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retry After"
+        },
+        "retry_classification": {
+          "anyOf": [
+            {
+              "enum": [
+                "transient",
+                "throttled",
+                "dependency_recovery",
+                "manual_review"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retry Classification"
+        },
+        "retryable": {
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "category",
+        "message"
+      ],
+      "title": "ToolError",
+      "type": "object"
+    },
+    "ToolWarning": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "coverage",
+            "evidence",
+            "output",
+            "dependency",
+            "quality"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "code": {
+          "pattern": "^SF-WARN-[A-Z0-9_]+$",
+          "title": "Code",
+          "type": "string"
+        },
+        "details": {
+          "additionalProperties": true,
+          "maxProperties": 16,
+          "title": "Details",
+          "type": "object"
+        },
+        "message": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "category"
+      ],
+      "title": "ToolWarning",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-result.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "completed_at": {
+      "format": "date-time",
+      "title": "Completed At",
+      "type": "string"
+    },
+    "data": {
+      "anyOf": [
+        {},
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Data"
+    },
+    "duration": {
+      "format": "duration",
+      "title": "Duration",
+      "type": "string"
+    },
+    "effect_receipts": {
+      "items": {
+        "$ref": "#/$defs/EffectReceiptSpec"
+      },
+      "maxItems": 64,
+      "title": "Effect Receipts",
+      "type": "array"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ToolError"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRecord"
+      },
+      "maxItems": 128,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "invocation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "title": "Invocation Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ToolResult",
+      "title": "Kind",
+      "type": "string"
+    },
+    "meta": {
+      "additionalProperties": true,
+      "maxProperties": 32,
+      "title": "Meta",
+      "type": "object"
+    },
+    "revision_ref": {
+      "title": "Revision Ref",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "success",
+        "partial",
+        "error"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "tool_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+      "title": "Tool Id",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/ToolWarning"
+      },
+      "maxItems": 64,
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "status",
+    "invocation_id",
+    "tool_id",
+    "revision_ref",
+    "started_at",
+    "completed_at",
+    "duration"
+  ],
+  "title": "ServiceFabric ToolResult v1alpha1",
+  "type": "object"
+}
