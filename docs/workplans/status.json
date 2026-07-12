@@ -11,16 +11,16 @@
     "governance-contracts",
     "policy-evaluation",
     "approval-lifecycle",
-    "durable-operation-store"
+    "durable-operation-store",
+    "operation-state-machine"
   ],
   "current_milestone": "v3-00",
-  "current_phase": "operation-state-machine",
+  "current_phase": "idempotency-and-deduplication",
   "known_blockers": [],
   "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
-  "next_action": "Implement the validated V3-00 operation state machine.",
+  "next_action": "Implement V3-00 idempotency and duplicate handling.",
   "programme_version": 1,
   "remaining_phases": [
-    "idempotency-and-deduplication",
     "cancellation-timeout-and-retry",
     "reconciliation-and-effect-verification",
     "service-client-and-cli",
