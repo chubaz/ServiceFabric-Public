@@ -9,7 +9,8 @@
     "application-contracts",
     "application-portfolio",
     "source-validation",
-    "static-web-builder"
+    "static-web-builder",
+    "artifact-identity"
   ],
   "current_milestone": "v2-00",
   "current_phase": "application-contracts",
@@ -18,7 +19,6 @@
   "next_action": "Implement the V2-00 application contracts and schema snapshots.",
   "programme_version": 1,
   "remaining_phases": [
-    "artifact-identity",
     "artifact-storage",
     "builder-service",
     "client-and-cli",
