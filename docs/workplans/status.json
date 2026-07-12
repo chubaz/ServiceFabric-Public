@@ -1,22 +1,22 @@
 {
-  "base_commit": "5367982",
+  "base_commit": "6a043773026c7673651cbd491a705b4a109cd812",
   "completed_milestones": [
-    "e0-00"
+    "e0-00",
+    "v1-00"
   ],
-  "completed_phases": [
-    "portfolio-contracts",
-    "portfolio-loader",
-    "invocation-kernel",
-    "runtime-service",
-    "client-cli",
-    "math-vertical-slice",
-    "verification"
-  ],
-  "current_milestone": "v1-00",
-  "current_phase": "completed",
+  "completed_phases": [],
+  "current_milestone": "v1-01",
+  "current_phase": "readiness",
   "known_blockers": [],
-  "last_verification_summary": "V1-00 focused contract, runtime, schema, architecture, and lock checks passed.",
-  "next_action": "Review and merge V1-00, then prepare V1-01 agent and external-tool integrations.",
+  "last_verification_summary": "V1-00 merged after contract, runtime/client, schema, architecture, lock, and handoff validation passed.",
+  "next_action": "Run make agent-preflight and begin the V1-01 federated MCP adapter phase.",
   "programme_version": 1,
-  "remaining_phases": []
+  "remaining_phases": [
+    "federated-mcp-adapter",
+    "langchain-projection",
+    "composite-graph-adapter",
+    "pi-extension",
+    "research-demo-toolset",
+    "cross-consumer-verification"
+  ]
 }
