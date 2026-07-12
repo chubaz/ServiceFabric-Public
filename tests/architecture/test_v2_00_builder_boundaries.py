@@ -35,8 +35,11 @@ class BuilderBoundaryTests(unittest.TestCase):
         self.assertFalse(imports & {"servicefabric_builder", "servicefabric_artifacts"})
 
     def test_prohibited_runtime_areas_are_unchanged(self):
+        base = "main"
+        if subprocess.run(["git", "show-ref", "--verify", "--quiet", "refs/heads/main"], cwd=ROOT).returncode:
+            base = "origin/main"
         result = subprocess.run(
-            ["git", "diff", "--name-only", "main...HEAD"],
+            ["git", "diff", "--name-only", f"{base}...HEAD"],
             cwd=ROOT,
             check=True,
             capture_output=True,
