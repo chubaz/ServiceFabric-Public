@@ -1,0 +1,1 @@
+{"tool_id":"research.prepare_literature_review","revision":"1.0.0","binding":"internal_graph","graph_revision_ref":"graph:literature-review:sha256:deterministic-v1","nested_tools":["research.search_papers"],"maximum_depth":2}
