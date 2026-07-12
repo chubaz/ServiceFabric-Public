@@ -9,7 +9,8 @@
     "invocation-kernel",
     "runtime-service",
     "client-cli",
-    "math-vertical-slice"
+    "math-vertical-slice",
+    "verification"
   ],
   "current_milestone": "v1-00",
   "current_phase": "readiness",
@@ -17,7 +18,5 @@
   "last_verification_summary": "E0-00 verification passed; V1-00 readiness is current.",
   "next_action": "Run make agent-preflight and begin the V1-00 portfolio-contract phase.",
   "programme_version": 1,
-  "remaining_phases": [
-    "verification"
-  ]
+  "remaining_phases": []
 }
