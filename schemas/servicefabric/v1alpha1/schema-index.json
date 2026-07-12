@@ -33,6 +33,24 @@
       "sha256": "56684c4e5472b1d692ebe37935d16817ff4dcf81411bc35987b44d540525bb9a"
     },
     {
+      "kind": "ApprovalBinding",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/approval-binding.schema.json",
+      "schema_path": "approval-binding.schema.json",
+      "sha256": "4f9791a36257b0c4f35b4d37bee923288a11906e73e3e4d70d61a67762b077dc"
+    },
+    {
+      "kind": "ApprovalDecision",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/approval-decision.schema.json",
+      "schema_path": "approval-decision.schema.json",
+      "sha256": "24087d6ca376ecaf633dec794d789e327bcd2c514c300779612ae7949d7f6b08"
+    },
+    {
+      "kind": "ApprovalRequest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/approval-request.schema.json",
+      "schema_path": "approval-request.schema.json",
+      "sha256": "74f66a19c962d590bd073149b66118f9c8d9dfd647549e03256404f1931aec2e"
+    },
+    {
       "kind": "CapsuleAuthoringManifest",
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-authoring-manifest.schema.json",
       "schema_path": "capsule-authoring-manifest.schema.json",
@@ -87,10 +105,52 @@
       "sha256": "79c9c7eea3fd2059a029ab69c3c77e1a92b0faefe73f6e834dbbca209fda1bf9"
     },
     {
+      "kind": "ExecutionAttempt",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/execution-attempt.schema.json",
+      "schema_path": "execution-attempt.schema.json",
+      "sha256": "fa57882d58716e327330ad14852529429bd081bab23f5eec83635247e487fbd3"
+    },
+    {
+      "kind": "IdempotencyRecord",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/idempotency-record.schema.json",
+      "schema_path": "idempotency-record.schema.json",
+      "sha256": "8c6c4b3bac66201bcd88b220bcc200b19ec85cf36ce1e669f76e180e1fa38426"
+    },
+    {
       "kind": "LegacyManifestTranslationReport",
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/legacy-manifest-translation-report.schema.json",
       "schema_path": "legacy-manifest-translation-report.schema.json",
       "sha256": "294fd48e4f6c73c5536f05c5dac9e92bf616118c31ab684745d16d41d2b6f62a"
+    },
+    {
+      "kind": "OperationEvent",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/operation-event.schema.json",
+      "schema_path": "operation-event.schema.json",
+      "sha256": "56d5166f4f0040405e3fe8a1c1cbc8fcd46b2e596743a537d59a18449a911468"
+    },
+    {
+      "kind": "OperationTransition",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/operation-transition.schema.json",
+      "schema_path": "operation-transition.schema.json",
+      "sha256": "3bd49aacb88c2ebee1f1c55223c9536d7420522f959e796f44870312e1322e34"
+    },
+    {
+      "kind": "PolicyDecision",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/policy-decision.schema.json",
+      "schema_path": "policy-decision.schema.json",
+      "sha256": "5daf44f1cd1f5764ae4d8e205ac9c1048bf2f2e771cab77e357bb0c03654d7b1"
+    },
+    {
+      "kind": "PolicyEvaluationRequest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/policy-evaluation-request.schema.json",
+      "schema_path": "policy-evaluation-request.schema.json",
+      "sha256": "daac5ea24e75c85d338f34d9762343964a15c422c9965b1e2c0db3632cccb155"
+    },
+    {
+      "kind": "ReconciliationRecord",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/reconciliation-record.schema.json",
+      "schema_path": "reconciliation-record.schema.json",
+      "sha256": "aff9d3b6a83ca96c1123eb2549e9ea269952d2aef94557e7f4fa89031989930e"
     },
     {
       "kind": "ServiceFabricOperation",

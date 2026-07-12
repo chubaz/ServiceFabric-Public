@@ -1,0 +1,628 @@
+{
+  "$defs": {
+    "ApprovalRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_policy_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Approval Policy Ref",
+          "type": "string"
+        },
+        "effect_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Effect Refs",
+          "type": "array"
+        },
+        "minimum_approver_strength": {
+          "enum": [
+            "single_factor",
+            "multi_factor",
+            "workload",
+            "federated"
+          ],
+          "title": "Minimum Approver Strength",
+          "type": "string"
+        }
+      },
+      "required": [
+        "approval_policy_ref",
+        "effect_refs",
+        "minimum_approver_strength"
+      ],
+      "title": "ApprovalRequirement",
+      "type": "object"
+    },
+    "AuthorityGrant": {
+      "additionalProperties": false,
+      "properties": {
+        "resource_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Resource Refs",
+          "type": "array"
+        },
+        "scopes": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Scopes",
+          "type": "array"
+        },
+        "tenant_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tenant Ref"
+        }
+      },
+      "title": "AuthorityGrant",
+      "type": "object"
+    },
+    "ExecutionBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "deadline": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline"
+        },
+        "maximum_bytes_in": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Bytes In"
+        },
+        "maximum_bytes_out": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Bytes Out"
+        },
+        "maximum_effect_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Effect Count"
+        },
+        "maximum_evidence_records": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Evidence Records"
+        },
+        "maximum_model_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Model Tokens"
+        },
+        "maximum_monetary_cost": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MonetaryBudget"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "maximum_nested_tool_calls": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Nested Tool Calls"
+        },
+        "maximum_provider_calls": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Provider Calls"
+        },
+        "maximum_wall_clock_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Wall Clock Ms"
+        }
+      },
+      "title": "ExecutionBudget",
+      "type": "object"
+    },
+    "MonetaryBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+              "type": "string"
+            }
+          ],
+          "title": "Amount"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "title": "MonetaryBudget",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "PolicyConstraint": {
+      "additionalProperties": false,
+      "properties": {
+        "constraint_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Constraint Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "scope",
+            "resource",
+            "budget",
+            "effect",
+            "tenant"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Value Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "constraint_id",
+        "kind",
+        "value_ref"
+      ],
+      "title": "PolicyConstraint",
+      "type": "object"
+    },
+    "PolicyDecisionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_requirement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ApprovalRequirement"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "caller_context_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Caller Context Digest",
+          "type": "string"
+        },
+        "constraints": {
+          "items": {
+            "$ref": "#/$defs/PolicyConstraint"
+          },
+          "maxItems": 64,
+          "title": "Constraints",
+          "type": "array"
+        },
+        "decision_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "declared_effect_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Declared Effect Refs",
+          "type": "array"
+        },
+        "effective_authority": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AuthorityGrant"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "effective_budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExecutionBudget"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evaluation_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluation Digest",
+          "type": "string"
+        },
+        "evaluation_request_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Evaluation Request Ref",
+          "type": "string"
+        },
+        "evaluator_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Evaluator Ref",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "intent_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Intent Digest",
+          "type": "string"
+        },
+        "issued_at": {
+          "format": "date-time",
+          "title": "Issued At",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "allow",
+            "deny",
+            "require_approval",
+            "constrained_allow"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "policy_bundle_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Policy Bundle Ref",
+          "type": "string"
+        },
+        "policy_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Policy Digest",
+          "type": "string"
+        },
+        "policy_version": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "revision_ref": {
+          "maxLength": 160,
+          "minLength": 1,
+          "pattern": "^[a-z0-9][a-z0-9._:-]+$",
+          "title": "Revision Ref",
+          "type": "string"
+        },
+        "risk": {
+          "enum": [
+            "low",
+            "moderate",
+            "high",
+            "critical"
+          ],
+          "title": "Risk",
+          "type": "string"
+        },
+        "safe_reason": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Safe Reason"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "valid_until": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Until"
+        }
+      },
+      "required": [
+        "decision_id",
+        "evaluation_request_ref",
+        "evaluation_digest",
+        "caller_context_digest",
+        "tool_id",
+        "revision_ref",
+        "intent_digest",
+        "declared_effect_refs",
+        "outcome",
+        "risk",
+        "policy_bundle_ref",
+        "policy_version",
+        "policy_digest",
+        "issued_at",
+        "evaluator_ref"
+      ],
+      "title": "PolicyDecisionSpec",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/policy-decision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "PolicyDecision",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/PolicyDecisionSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric PolicyDecision v1alpha1",
+  "type": "object"
+}

@@ -7,12 +7,14 @@
     "v2-00",
     "v2-01"
   ],
-  "completed_phases": [],
+  "completed_phases": [
+    "governance-contracts"
+  ],
   "current_milestone": "v3-00",
-  "current_phase": "governance-contracts",
+  "current_phase": "policy-evaluation",
   "known_blockers": [],
   "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
-  "next_action": "Install first-class local packages in the repository external Python environment, verify V2-01, then implement the V3-00 governance-contracts phase.",
+  "next_action": "Implement the deterministic V3-00 policy-evaluation phase.",
   "programme_version": 1,
   "remaining_phases": [
     "policy-evaluation",

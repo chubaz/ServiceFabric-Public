@@ -45,6 +45,36 @@ from .applications import (
     SourceBundleManifest,
     StaticWebBuildSpec,
 )
+from .governance import (
+    ApprovalRequirement,
+    AuthorityGrant,
+    PolicyConstraint,
+    PolicyDecision,
+    PolicyDecisionSpec,
+    PolicyEvaluationRequest,
+    PolicyEvaluationRequestSpec,
+)
+from .approvals import (
+    ApprovalBinding,
+    ApprovalBindingSpec,
+    ApprovalDecision,
+    ApprovalDecisionSpec,
+    ApprovalRequest,
+    ApprovalRequestSpec,
+    ApprovalScope,
+)
+from .durable_operations import (
+    ExecutionAttempt,
+    ExecutionAttemptSpec,
+    IdempotencyRecord,
+    IdempotencyRecordSpec,
+    OperationEvent,
+    OperationEventSpec,
+    OperationTransition,
+    OperationTransitionSpec,
+    ReconciliationRecord,
+    ReconciliationRecordSpec,
+)
 
 __all__ = [
     "ServicePackageDefinition",
@@ -82,4 +112,10 @@ __all__ = [
     "ToolsetDefinition", "ToolsetDefinitionSpec",
     "ApplicationArtifactManifest", "ApplicationBuildRequest", "ApplicationBuildResult",
     "ApplicationDefinition", "ApplicationRevision", "SourceBundleManifest", "StaticWebBuildSpec",
+    "ApprovalRequirement", "AuthorityGrant", "PolicyConstraint", "PolicyDecision", "PolicyDecisionSpec",
+    "PolicyEvaluationRequest", "PolicyEvaluationRequestSpec", "ApprovalBinding", "ApprovalBindingSpec",
+    "ApprovalDecision", "ApprovalDecisionSpec", "ApprovalRequest", "ApprovalRequestSpec", "ApprovalScope",
+    "ExecutionAttempt", "ExecutionAttemptSpec", "IdempotencyRecord", "IdempotencyRecordSpec",
+    "OperationEvent", "OperationEventSpec", "OperationTransition", "OperationTransitionSpec",
+    "ReconciliationRecord", "ReconciliationRecordSpec",
 ]
