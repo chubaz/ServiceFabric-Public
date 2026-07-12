@@ -1,0 +1,254 @@
+{
+  "$defs": {
+    "ApplicationRevisionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "application_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Application Id",
+          "type": "string"
+        },
+        "application_type": {
+          "const": "static_web",
+          "title": "Application Type",
+          "type": "string"
+        },
+        "build_spec": {
+          "$ref": "#/$defs/StaticWebBuildSpec"
+        },
+        "created_from": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Created From",
+          "type": "string"
+        },
+        "output_format": {
+          "const": "directory",
+          "default": "directory",
+          "title": "Output Format",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "source_bundle_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Source Bundle Ref",
+          "type": "string"
+        },
+        "source_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Source Digest",
+          "type": "string"
+        },
+        "status": {
+          "const": "reviewed",
+          "default": "reviewed",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "application_id",
+        "revision",
+        "application_type",
+        "source_bundle_ref",
+        "source_digest",
+        "build_spec",
+        "created_from"
+      ],
+      "title": "ApplicationRevisionSpec",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    },
+    "StaticWebBuildSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "build_type": {
+          "const": "static_web",
+          "default": "static_web",
+          "title": "Build Type",
+          "type": "string"
+        },
+        "entry_document": {
+          "title": "Entry Document",
+          "type": "string"
+        },
+        "exclude_patterns": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclude Patterns",
+          "type": "array"
+        },
+        "include_patterns": {
+          "default": [
+            "**/*"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Include Patterns",
+          "type": "array"
+        },
+        "maximum_file_count": {
+          "default": 256,
+          "maximum": 4096,
+          "minimum": 1,
+          "title": "Maximum File Count",
+          "type": "integer"
+        },
+        "maximum_output_bytes": {
+          "default": 16777216,
+          "maximum": 134217728,
+          "minimum": 1,
+          "title": "Maximum Output Bytes",
+          "type": "integer"
+        },
+        "maximum_source_bytes": {
+          "default": 16777216,
+          "maximum": 134217728,
+          "minimum": 1,
+          "title": "Maximum Source Bytes",
+          "type": "integer"
+        },
+        "normalization_policy": {
+          "const": "utf8_lf_final_newline",
+          "default": "utf8_lf_final_newline",
+          "title": "Normalization Policy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entry_document"
+      ],
+      "title": "StaticWebBuildSpec",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/application-revision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ApplicationRevision",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/ApplicationRevisionSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric ApplicationRevision v1alpha1",
+  "type": "object"
+}

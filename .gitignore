@@ -26,6 +26,7 @@ cloudflared-creds/
 node_modules/
 dist/
 build/
+*.egg-info/
 __pycache__/
 *.py[cod]
 *$py.class

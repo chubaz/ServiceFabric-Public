@@ -3,6 +3,36 @@
   "contract_package_version": "0.4.0a1",
   "schemas": [
     {
+      "kind": "ApplicationArtifactManifest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/application-artifact-manifest.schema.json",
+      "schema_path": "application-artifact-manifest.schema.json",
+      "sha256": "65a80443de62ea5da7c6b85fecb50d5aabb45042bfe351aba95c953cc7f1fd4b"
+    },
+    {
+      "kind": "ApplicationBuildRequest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/application-build-request.schema.json",
+      "schema_path": "application-build-request.schema.json",
+      "sha256": "f3585c93f631ebafed9c331f19c33dadeaf0a638102b5c5dab80969383cd7ee5"
+    },
+    {
+      "kind": "ApplicationBuildResult",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/application-build-result.schema.json",
+      "schema_path": "application-build-result.schema.json",
+      "sha256": "3521a1de67bf9b3ccf8b67179a36afeecad7d33e868d867472ab6081dc384948"
+    },
+    {
+      "kind": "ApplicationDefinition",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/application-definition.schema.json",
+      "schema_path": "application-definition.schema.json",
+      "sha256": "3d85e122e76b8c8ff662c698d9eec8c900092b4ccd7f6abab60d3d07b7190973"
+    },
+    {
+      "kind": "ApplicationRevision",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/application-revision.schema.json",
+      "schema_path": "application-revision.schema.json",
+      "sha256": "56684c4e5472b1d692ebe37935d16817ff4dcf81411bc35987b44d540525bb9a"
+    },
+    {
       "kind": "EffectReceipt",
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/effect-receipt.schema.json",
       "schema_path": "effect-receipt.schema.json",
@@ -31,6 +61,18 @@
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json",
       "schema_path": "service-package-definition.schema.json",
       "sha256": "c9f768a04018848e87de5bb4e0c950287b2b94cee968176e35048501b34683ad"
+    },
+    {
+      "kind": "SourceBundleManifest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/source-bundle-manifest.schema.json",
+      "schema_path": "source-bundle-manifest.schema.json",
+      "sha256": "1e01e3fc17abee69e17fee08ade1d3fd87e72b51fcce36a8126c1f3ee84a2d85"
+    },
+    {
+      "kind": "StaticWebBuildSpec",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/static-web-build-spec.schema.json",
+      "schema_path": "static-web-build-spec.schema.json",
+      "sha256": "440f580d5c0179c7141092fc510535d404448e276995244632654172498607dd"
     },
     {
       "kind": "ToolDefinition",

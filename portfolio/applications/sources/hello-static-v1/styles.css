@@ -1,0 +1,11 @@
+body {
+  background: #f4efe3;
+  color: #17332d;
+  font-family: Georgia, serif;
+  margin: 0;
+}
+main {
+  margin: 15vh auto;
+  max-width: 42rem;
+  padding: 2rem;
+}

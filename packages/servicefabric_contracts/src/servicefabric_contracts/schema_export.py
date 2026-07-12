@@ -22,6 +22,15 @@ from .results import ToolResult
 from .version import __version__
 from .translation_report import LegacyManifestTranslationReport
 from .toolset import ToolsetDefinition
+from .applications import (
+    ApplicationArtifactManifest,
+    ApplicationBuildRequest,
+    ApplicationBuildResult,
+    ApplicationDefinition,
+    ApplicationRevision,
+    SourceBundleManifest,
+    StaticWebBuildSpec,
+)
 
 SCHEMA_ID = "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json"
 SCHEMA_RESOURCES = {
@@ -39,6 +48,13 @@ SCHEMA_RESOURCES = {
     "servicefabric-operation.schema.json": (ServiceFabricOperation, "https://schemas.servicefabric.ai/v1alpha1/servicefabric-operation.schema.json", "ServiceFabric Operation v1alpha1", "ServiceFabricOperation"),
     "legacy-manifest-translation-report.schema.json": (LegacyManifestTranslationReport, "https://schemas.servicefabric.ai/v1alpha1/legacy-manifest-translation-report.schema.json", "ServiceFabric Legacy Manifest Translation Report v1alpha1", "LegacyManifestTranslationReport"),
     "toolset-definition.schema.json": (ToolsetDefinition, "https://schemas.servicefabric.ai/v1alpha1/toolset-definition.schema.json", "ServiceFabric ToolsetDefinition v1alpha1", "ToolsetDefinition"),
+    "application-definition.schema.json": (ApplicationDefinition, "https://schemas.servicefabric.ai/v1alpha1/application-definition.schema.json", "ServiceFabric ApplicationDefinition v1alpha1", "ApplicationDefinition"),
+    "application-revision.schema.json": (ApplicationRevision, "https://schemas.servicefabric.ai/v1alpha1/application-revision.schema.json", "ServiceFabric ApplicationRevision v1alpha1", "ApplicationRevision"),
+    "static-web-build-spec.schema.json": (StaticWebBuildSpec, "https://schemas.servicefabric.ai/v1alpha1/static-web-build-spec.schema.json", "ServiceFabric StaticWebBuildSpec v1alpha1", "StaticWebBuildSpec"),
+    "source-bundle-manifest.schema.json": (SourceBundleManifest, "https://schemas.servicefabric.ai/v1alpha1/source-bundle-manifest.schema.json", "ServiceFabric SourceBundleManifest v1alpha1", "SourceBundleManifest"),
+    "application-build-request.schema.json": (ApplicationBuildRequest, "https://schemas.servicefabric.ai/v1alpha1/application-build-request.schema.json", "ServiceFabric ApplicationBuildRequest v1alpha1", "ApplicationBuildRequest"),
+    "application-build-result.schema.json": (ApplicationBuildResult, "https://schemas.servicefabric.ai/v1alpha1/application-build-result.schema.json", "ServiceFabric ApplicationBuildResult v1alpha1", "ApplicationBuildResult"),
+    "application-artifact-manifest.schema.json": (ApplicationArtifactManifest, "https://schemas.servicefabric.ai/v1alpha1/application-artifact-manifest.schema.json", "ServiceFabric ApplicationArtifactManifest v1alpha1", "ApplicationArtifactManifest"),
 }
 
 

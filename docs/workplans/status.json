@@ -1,22 +1,27 @@
 {
-  "base_commit": "6a043773026c7673651cbd491a705b4a109cd812",
+  "base_commit": "<V1-01 merge commit>",
   "completed_milestones": [
     "e0-00",
-    "v1-00"
+    "v1-00",
+    "v1-01"
   ],
   "completed_phases": [
-    "federated-mcp-adapter",
-    "langchain-projection",
-    "composite-graph-adapter",
-    "pi-extension",
-    "research-demo-toolset",
-    "cross-consumer-verification"
+    "application-contracts",
+    "application-portfolio",
+    "source-validation",
+    "static-web-builder",
+    "artifact-identity",
+    "artifact-storage",
+    "builder-service",
+    "client-and-cli",
+    "local-preview",
+    "cross-boundary-verification"
   ],
-  "current_milestone": "v1-01",
+  "current_milestone": "v2-00",
   "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V1-01 MCP, LangChain, graph, Pi, portfolio, boundary, architecture, and lock checks passed.",
-  "next_action": "Review and merge V1-01, then prepare V2-00 without implementing it on this branch.",
+  "last_verification_summary": "V2-00 contracts, portfolio, source validation, builder, artifact store, service, client, preview, regressions, schemas, locks, and boundaries passed.",
+  "next_action": "Review and merge V2-00, then author the V2-01 execution workplan without implementing it.",
   "programme_version": 1,
   "remaining_phases": []
 }

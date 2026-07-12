@@ -18,6 +18,15 @@ from .legacy_translation import translate_legacy_manifest
 from .translation_context import TranslationContext
 from .translation_report import LegacyManifestTranslationReport
 from .toolset import ToolsetDefinition, ToolsetDefinitionSpec
+from .applications import (
+    ApplicationArtifactManifest,
+    ApplicationBuildRequest,
+    ApplicationBuildResult,
+    ApplicationDefinition,
+    ApplicationRevision,
+    SourceBundleManifest,
+    StaticWebBuildSpec,
+)
 
 __all__ = [
     "ServicePackageDefinition",
@@ -37,4 +46,6 @@ __all__ = [
     "LegacyManifest", "LegacyManifestTranslationReport", "TranslationContext",
     "parse_legacy_manifest", "translate_legacy_manifest",
     "ToolsetDefinition", "ToolsetDefinitionSpec",
+    "ApplicationArtifactManifest", "ApplicationBuildRequest", "ApplicationBuildResult",
+    "ApplicationDefinition", "ApplicationRevision", "SourceBundleManifest", "StaticWebBuildSpec",
 ]

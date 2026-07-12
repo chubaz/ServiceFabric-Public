@@ -1,0 +1,67 @@
+{
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/static-web-build-spec.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "build_type": {
+      "const": "static_web",
+      "default": "static_web",
+      "title": "Build Type",
+      "type": "string"
+    },
+    "entry_document": {
+      "title": "Entry Document",
+      "type": "string"
+    },
+    "exclude_patterns": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Exclude Patterns",
+      "type": "array"
+    },
+    "include_patterns": {
+      "default": [
+        "**/*"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Include Patterns",
+      "type": "array"
+    },
+    "maximum_file_count": {
+      "default": 256,
+      "maximum": 4096,
+      "minimum": 1,
+      "title": "Maximum File Count",
+      "type": "integer"
+    },
+    "maximum_output_bytes": {
+      "default": 16777216,
+      "maximum": 134217728,
+      "minimum": 1,
+      "title": "Maximum Output Bytes",
+      "type": "integer"
+    },
+    "maximum_source_bytes": {
+      "default": 16777216,
+      "maximum": 134217728,
+      "minimum": 1,
+      "title": "Maximum Source Bytes",
+      "type": "integer"
+    },
+    "normalization_policy": {
+      "const": "utf8_lf_final_newline",
+      "default": "utf8_lf_final_newline",
+      "title": "Normalization Policy",
+      "type": "string"
+    }
+  },
+  "required": [
+    "entry_document"
+  ],
+  "title": "ServiceFabric StaticWebBuildSpec v1alpha1",
+  "type": "object"
+}

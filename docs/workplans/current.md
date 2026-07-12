@@ -1,8 +1,8 @@
 # Current Milestone
 
-- ID: `v1-01`
-- Title: Agent and external-tool integrations
+- ID: `v2-00`
+- Title: Immutable application builder
 - Status: current
-- Workplan: `docs/workplans/milestones/v1-01-agent-tool-integrations.md`
-- Configuration key: `v1-01`
+- Workplan: `docs/workplans/milestones/v2-00-immutable-application-builder.md`
+- Configuration key: `v2-00`
 - Commands: `make agent-preflight`, `make agent-context`, `make verify-current`, `make agent-handoff`

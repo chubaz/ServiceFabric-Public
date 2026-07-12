@@ -1,0 +1,19 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ApplicationRevision",
+  "metadata": {
+    "description": "First reviewed immutable source revision",
+    "id": "examples.hello-static",
+    "name": "Hello static 1.0.0",
+    "owner_ref": {"id": "platform", "kind": "team"}
+  },
+  "spec": {
+    "application_id": "examples.hello-static",
+    "application_type": "static_web",
+    "build_spec": {"entry_document": "index.html"},
+    "created_from": "sha256:b220395cc73fc02f351761f3e974b2d47d93521c75fbfeb780418b1ccb2558de",
+    "revision": "1.0.0",
+    "source_bundle_ref": "hello-static-v1",
+    "source_digest": "sha256:b220395cc73fc02f351761f3e974b2d47d93521c75fbfeb780418b1ccb2558de"
+  }
+}
