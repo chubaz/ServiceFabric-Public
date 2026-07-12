@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {"id": "finance.reconciliation", "name": "Reconciliation Worker", "description": "Background reconciliation worker.", "labels": {}, "annotations": {}, "owner_ref": {"kind": "team", "id": "finance-platform"}},
+  "spec": {"package_version": "1.0.0", "description": "Worker without web or MCP exposure.", "hosting": {"mode": "managed_container"}, "artifact": {"artifact_kind": "oci_image", "image": "registry.example/reconcile", "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}, "entrypoints": [{"id": "worker", "kind": "worker", "description": "Queue-driven worker.", "runtime_ref": "container:reconcile", "machine_callable": false, "may_produce_effects": true, "exposures": [{"kind": "none"}]}], "declared_capabilities": ["finance.reconciliation"], "runtime_requirements": {}, "network_policy": {"mode": "none"}, "storage_requirements": [{"name": "work", "persistence": "ephemeral", "access_mode": "read_write", "mount_purpose": "temporary reconciliation state"}], "health": {"probe_kind": "command", "command": ["worker", "--healthcheck"]}, "ownership": {"owner_ref": {"kind": "team", "id": "finance-platform"}}}
+}

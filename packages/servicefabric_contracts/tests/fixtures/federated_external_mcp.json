@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {"id": "federation.research-mcp", "name": "Federated Research MCP", "description": "Referenced external MCP server.", "labels": {}, "annotations": {}, "owner_ref": {"kind": "team", "id": "federation-platform"}},
+  "spec": {"package_version": "1.0.0", "description": "Federated MCP server without gateway ownership.", "hosting": {"mode": "external_mcp"}, "artifact": {"artifact_kind": "external_mcp", "server_ref": "research-mcp", "endpoint": "https://mcp.example/stream"}, "entrypoints": [{"id": "server", "kind": "mcp_server", "description": "External MCP endpoint.", "runtime_ref": "external:research-mcp", "machine_callable": true, "may_produce_effects": false, "exposures": [{"kind": "mcp", "operation_refs": ["research.search_papers"]}], "health_ref": "mcp-health"}], "declared_capabilities": ["research.federation"], "runtime_requirements": {}, "network_policy": {"mode": "egress_allowlist", "egress_allowlist": ["mcp.example"]}, "storage_requirements": [], "health": {"probe_kind": "external", "health_ref": "mcp-health"}, "ownership": {"owner_ref": {"kind": "team", "id": "federation-platform"}}}
+}
