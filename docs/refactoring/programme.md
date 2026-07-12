@@ -23,8 +23,12 @@ This repository-local programme tracks the formal pull-request sequence without 
 | `C1-00` | Canonical contract package foundation | completed | Established framework-neutral `ServicePackageDefinition` contracts, schema export, fixtures, and CI without runtime integration. |
 | `C1-01` | Canonical tool lifecycle contracts | completed | Defined stable tool identity, immutable revisions, desired deployments, observed status, fixtures, schemas, and contract CI. |
 | `C1-02` | Canonical invocation and result contracts | completed | Defined protocol-neutral invocation, result, error, evidence, effect-receipt, and durable-operation contracts. |
-| `C1-03` | Legacy manifest translation and diagnostics | current | Add deterministic offline inventory, conservative translation, and migration diagnostics. |
-| `C1-04` | Contract migration preparation | not started | Not started. |
+| `C1-03` | Legacy manifest translation and diagnostics | completed | Added deterministic offline inventory, conservative translation, and migration diagnostics. |
+| `C1-04` | Contract migration preparation | deferred | Authoring objective moved to V2-01. |
+
+## Post-C1 supersession
+
+The original C2/C3/C4/C5 sequence is superseded by the compressed V1-V4 roadmap in `docs/architecture/post-c1-execution-roadmap.md`; historical entries remain authoritative context. E0-00 is completed by this PR. V1-00 is current.
 
 ## `P0-00` deliverables
 

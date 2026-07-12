@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":["programme_version","current_milestone","base_commit","completed_milestones","current_phase","completed_phases","remaining_phases","known_blockers","last_verification_summary","next_action"],"additionalProperties":false}

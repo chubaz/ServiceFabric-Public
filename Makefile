@@ -62,3 +62,21 @@ teardown:
 	docker compose down -v
 	# Delete everything in 6_service_catalog except _shared and its content
 	find 6_service_catalog/ -mindepth 1 -not -name "_shared" -not -path "6_service_catalog/_shared*" -delete
+
+MILESTONE ?= $(shell python3 -c 'import json;print(json.load(open("docs/workplans/status.json"))["current_milestone"])')
+agent-preflight:
+	python3 scripts/agent/preflight.py --milestone $(MILESTONE)
+agent-context:
+	python3 scripts/agent/context.py --milestone $(MILESTONE)
+agent-validate:
+	python3 scripts/agent/validate_workplans.py
+agent-verify:
+	python3 scripts/agent/verify.py --milestone $(MILESTONE) --phase readiness
+agent-report:
+	python3 scripts/agent/completion_report.py --milestone $(MILESTONE)
+agent-handoff:
+	python3 scripts/agent/prepare_handoff.py --milestone $(MILESTONE)
+verify-e0-00:
+	python3 scripts/agent/verify.py --milestone e0-00 --phase completion
+verify-current:
+	python3 scripts/agent/verify.py --milestone $(MILESTONE) --phase readiness

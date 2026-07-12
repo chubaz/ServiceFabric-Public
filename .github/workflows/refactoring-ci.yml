@@ -8,6 +8,21 @@ on:
       - master
 
 jobs:
+  agent-execution-foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python3 scripts/agent/validate_workplans.py
+      - run: python3 -m unittest discover -s tests/agent -v
+      - run: python3 scripts/agent/preflight.py --milestone e0-00 --mode ci
+      - run: python3 scripts/agent/verify.py --milestone e0-00
+      - run: python3 scripts/architecture/check_legacy_patterns.py
+
   architecture-guardrails:
     runs-on: ubuntu-latest
     steps:
