@@ -1,27 +1,26 @@
 {
-  "base_commit": "<V1-01 merge commit>",
+  "base_commit": "611d053d81a8cb99053a6f2821ff0275e37580df",
   "completed_milestones": [
     "e0-00",
     "v1-00",
-    "v1-01"
+    "v1-01",
+    "v2-00"
   ],
-  "completed_phases": [
-    "application-contracts",
-    "application-portfolio",
-    "source-validation",
-    "static-web-builder",
-    "artifact-identity",
-    "artifact-storage",
-    "builder-service",
-    "client-and-cli",
-    "local-preview",
-    "cross-boundary-verification"
-  ],
-  "current_milestone": "v2-00",
-  "current_phase": "completed",
+  "completed_phases": [],
+  "current_milestone": "v2-01",
+  "current_phase": "capsule-contracts",
   "known_blockers": [],
-  "last_verification_summary": "V2-00 contracts, portfolio, source validation, builder, artifact store, service, client, preview, regressions, schemas, locks, and boundaries passed.",
-  "next_action": "Review and merge V2-00, then author the V2-01 execution workplan without implementing it.",
+  "last_verification_summary": "V2-00 merged after contracts, portfolio, source validation, reproducible builder, immutable artifact storage, service, client, preview, schema, dependency-lock, architecture, and regression checks passed.",
+  "next_action": "Define the V2-01 capsule-hosting and authoring workplan before implementation.",
   "programme_version": 1,
-  "remaining_phases": []
+  "remaining_phases": [
+    "capsule-contracts",
+    "capsule-portfolio",
+    "authoring-model",
+    "host-boundary",
+    "session-lifecycle",
+    "asset-and-route-resolution",
+    "client-and-cli",
+    "cross-boundary-verification"
+  ]
 }

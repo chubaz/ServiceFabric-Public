@@ -193,7 +193,7 @@
 }, {
   "id": "v2-00",
   "title": "Immutable application builder",
-  "status": "current",
+  "status": "completed",
   "workplan": "docs/workplans/milestones/v2-00-immutable-application-builder.md",
   "base_branch": "main",
   "suggested_branch": "feature/v2-00-immutable-application-builder",
@@ -319,5 +319,126 @@
         "required": true
       }
     ]
-  }
+  },"handoff_target":"v2-01"}, {
+  "id": "v2-01",
+  "title": "Capsule hosting and authoring",
+  "status": "current",
+  "workplan": "docs/workplans/milestones/v2-01-capsule-hosting-and-authoring.md",
+  "base_branch": "main",
+  "suggested_branch": "feature/v2-01-capsule-hosting-and-authoring",
+  "required_files": [
+    "AGENTS.md",
+    "docs/workplans/current.md",
+    "packages/servicefabric_contracts/pyproject.toml",
+    "packages/servicefabric_builder/pyproject.toml",
+    "packages/servicefabric_artifacts/pyproject.toml"
+  ],
+  "context_files": [
+    {
+      "path": "AGENTS.md",
+      "reason": "stable repository instructions"
+    },
+    {
+      "path": "docs/workplans/milestones/v2-01-capsule-hosting-and-authoring.md",
+      "reason": "current milestone workplan"
+    },
+    {
+      "path": "docs/workplans/milestones/v2-00-immutable-application-builder.md",
+      "reason": "completed immutable application-builder baseline"
+    },
+    {
+      "path": "packages/servicefabric_builder",
+      "reason": "deterministic application builder"
+    },
+    {
+      "path": "packages/servicefabric_artifacts",
+      "reason": "immutable artifact storage"
+    },
+    {
+      "path": "services/application_builder",
+      "reason": "application-builder service boundary"
+    }
+  ],
+  "allowed_paths": [
+    "packages/servicefabric_contracts",
+    "packages/servicefabric_builder",
+    "packages/servicefabric_artifacts",
+    "packages/servicefabric_capsules",
+    "services/application_builder",
+    "services/capsule_host",
+    "clients/python",
+    "portfolio",
+    "schemas/servicefabric",
+    "tests",
+    "docs",
+    "scripts",
+    ".github",
+    "config/agent"
+  ],
+  "forbidden_paths": [
+    "1_proxy",
+    "2_backend_api/service_fabric/api/migrations",
+    "3_service_templates",
+    "4_generated_services",
+    "5_core_services/flask_base",
+    "6_service_catalog",
+    "docker-compose.yml",
+    "docker-compose.dev.yml",
+    "docker-compose.prod.yml"
+  ],
+  "preflight_checks": [
+    "git",
+    "files",
+    "canonical_hashes",
+    "status"
+  ],
+  "verification": {
+    "readiness": [
+      {
+        "name": "v2-00-completion",
+        "command": [
+          "python3",
+          "scripts/agent/verify.py",
+          "--milestone",
+          "v2-00",
+          "--phase",
+          "completion"
+        ],
+        "required": true
+      },
+      {
+        "name": "workplans",
+        "command": [
+          "python3",
+          "scripts/agent/validate_workplans.py"
+        ],
+        "required": true
+      },
+      {
+        "name": "dependency-locks",
+        "command": [
+          "python3",
+          "scripts/dependencies/check_python_locks.py"
+        ],
+        "required": true
+      }
+    ],
+    "completion": [
+      {
+        "name": "v2-01-tests",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/capsules",
+          "-v"
+        ],
+        "required": true,
+        "planned": true
+      }
+    ]
+  },
+  "handoff_target": "v3-00"
 }]}
