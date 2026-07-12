@@ -15,15 +15,14 @@
     "operation-state-machine",
     "idempotency-and-deduplication",
     "cancellation-timeout-and-retry",
-    "reconciliation-and-effect-verification"
+    "reconciliation-and-effect-verification",
+    "service-client-and-cli"
   ],
   "current_milestone": "v3-00",
-  "current_phase": "service-client-and-cli",
+  "current_phase": "cross-boundary-verification",
   "known_blockers": [],
   "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
-  "next_action": "Implement V3-00 service, Python client, and CLI delegation.",
+  "next_action": "Complete V3-00 cross-boundary and end-to-end verification.",
   "programme_version": 1,
-  "remaining_phases": [
-    "cross-boundary-verification"
-  ]
+  "remaining_phases": []
 }
