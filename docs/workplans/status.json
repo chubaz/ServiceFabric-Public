@@ -1,5 +1,5 @@
 {
-  "base_commit": "0158babe93916aa23b732ee25404995ece2f67c0",
+  "base_commit": "5367982",
   "completed_milestones": [
     "e0-00"
   ],
@@ -13,10 +13,10 @@
     "verification"
   ],
   "current_milestone": "v1-00",
-  "current_phase": "readiness",
+  "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "E0-00 verification passed; V1-00 readiness is current.",
-  "next_action": "Run make agent-preflight and begin the V1-00 portfolio-contract phase.",
+  "last_verification_summary": "V1-00 focused contract, runtime, schema, architecture, and lock checks passed.",
+  "next_action": "Review and merge V1-00, then prepare V1-01 agent and external-tool integrations.",
   "programme_version": 1,
   "remaining_phases": []
 }
