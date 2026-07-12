@@ -76,6 +76,7 @@ jobs:
           python3 -m pip install --no-deps -e clients/python
           python3 -m pip install --no-deps -e packages/servicefabric_builder
           python3 -m pip install --no-deps -e packages/servicefabric_artifacts
+          python3 -m pip install --no-deps -e packages/servicefabric_capsules
 
       - name: Run contract tests
         run: python3 -m unittest discover -s packages/servicefabric_contracts/tests -v
@@ -198,3 +199,11 @@ jobs:
             -f docker-compose.yml \
             -f docker-compose.prod.yml \
             run --rm --no-deps fastapi_core python -m pip check
+
+      - name: Run capsule tests
+        run: |
+          python3 -m unittest discover -s tests/capsules -v
+          python3 -m unittest discover \
+            -s tests/architecture \
+            -p 'test_capsule_host_boundaries.py' \
+            -v
