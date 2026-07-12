@@ -17,6 +17,7 @@ from .legacy_manifest import LegacyManifest, parse_legacy_manifest
 from .legacy_translation import translate_legacy_manifest
 from .translation_context import TranslationContext
 from .translation_report import LegacyManifestTranslationReport
+from .toolset import ToolsetDefinition, ToolsetDefinitionSpec
 
 __all__ = [
     "ServicePackageDefinition",
@@ -35,4 +36,5 @@ __all__ = [
     "__version__",
     "LegacyManifest", "LegacyManifestTranslationReport", "TranslationContext",
     "parse_legacy_manifest", "translate_legacy_manifest",
+    "ToolsetDefinition", "ToolsetDefinitionSpec",
 ]

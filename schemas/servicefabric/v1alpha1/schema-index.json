@@ -79,6 +79,12 @@
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/tool-status.schema.json",
       "schema_path": "tool-status.schema.json",
       "sha256": "2c53884d8ea2bc350d599b4ec5ec71b8f572e0e526f5a4f8827cfc784e854e26"
+    },
+    {
+      "kind": "ToolsetDefinition",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/toolset-definition.schema.json",
+      "schema_path": "toolset-definition.schema.json",
+      "sha256": "097511b9ea4e8126ce03758dc0149078ad87f197eebb8f43f9a37fc88217b483"
     }
   ]
 }

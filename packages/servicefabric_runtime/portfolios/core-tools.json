@@ -1,0 +1,1 @@
+{"apiVersion":"servicefabric.ai/v1alpha1","kind":"ToolsetDefinition","metadata":{"id":"core-tools","name":"Core tools","description":"Trusted native core tools.","owner_ref":{"kind":"team","id":"platform"}},"spec":{"toolset_id":"core-tools","description":"Trusted native core tools.","members":[{"tool_id":"math.calculate","revision_ref":"1.0.0"}]}}
