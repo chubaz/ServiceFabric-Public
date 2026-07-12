@@ -1,0 +1,20 @@
+{
+  "files": [
+    {
+      "content_digest": "sha256:86c46e069e822b913b1494eb160e69fc9aabfc7d4ddb0a90f68443d7beb6434f",
+      "executable": false,
+      "media_type": "text/html",
+      "path": "index.html",
+      "size_bytes": 315
+    },
+    {
+      "content_digest": "sha256:e11849cbc968683742679b3716a34d24aa576283de66737961cd96a33ad1beb9",
+      "executable": false,
+      "media_type": "text/css",
+      "path": "styles.css",
+      "size_bytes": 161
+    }
+  ],
+  "source_digest": "sha256:b220395cc73fc02f351761f3e974b2d47d93521c75fbfeb780418b1ccb2558de",
+  "total_size_bytes": 476
+}

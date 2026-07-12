@@ -1,0 +1,17 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ApplicationDefinition",
+  "metadata": {
+    "description": "Reviewed static application example",
+    "id": "examples.hello-static",
+    "name": "Hello static",
+    "owner_ref": {"id": "platform", "kind": "team"}
+  },
+  "spec": {
+    "application_id": "examples.hello-static",
+    "application_type": "static_web",
+    "description": "Reviewed static application example",
+    "display_name": "Hello static",
+    "status": "reviewed"
+  }
+}
