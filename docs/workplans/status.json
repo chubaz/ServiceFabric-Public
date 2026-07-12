@@ -12,16 +12,16 @@
     "policy-evaluation",
     "approval-lifecycle",
     "durable-operation-store",
-    "operation-state-machine"
+    "operation-state-machine",
+    "idempotency-and-deduplication"
   ],
   "current_milestone": "v3-00",
-  "current_phase": "idempotency-and-deduplication",
+  "current_phase": "cancellation-timeout-and-retry",
   "known_blockers": [],
   "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
-  "next_action": "Implement V3-00 idempotency and duplicate handling.",
+  "next_action": "Implement V3-00 cancellation, timeout, and bounded retry.",
   "programme_version": 1,
   "remaining_phases": [
-    "cancellation-timeout-and-retry",
     "reconciliation-and-effect-verification",
     "service-client-and-cli",
     "cross-boundary-verification"
