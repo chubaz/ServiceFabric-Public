@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import posixpath
 from datetime import datetime
@@ -388,3 +389,40 @@ class CapsuleHostResult(ContractModel):
     metadata: ResourceMetadata
     spec: CapsuleHostResultSpec
     model_config = ContractModel.model_config | {"populate_by_name": True}
+
+
+def capsule_authoring_digest(manifest: CapsuleAuthoringManifest) -> Digest:
+    payload = {
+        "api_version": manifest.api_version,
+        "kind": manifest.kind,
+        "capsule_id": manifest.spec.capsule_id,
+        "target_revision": manifest.spec.target_revision,
+        "bindings": [binding.model_dump(mode="json", by_alias=True) for binding in manifest.spec.bindings],
+        "routes": [route.model_dump(mode="json", by_alias=True) for route in manifest.spec.routes],
+        "entry_route": manifest.spec.entry_route,
+        "host_policy_ref": manifest.spec.host_policy_ref,
+        "author_ref": manifest.spec.author_ref.model_dump(mode="json", by_alias=True),
+        "source_digest": manifest.spec.source_digest,
+        "review_ref": manifest.spec.review_ref,
+        "format_revision": "v1",
+    }
+    return "sha256:" + hashlib.sha256(_canonical_json(payload).encode("utf-8")).hexdigest()
+
+
+def capsule_revision_digest(revision: CapsuleRevision) -> Digest:
+    payload = {
+        "api_version": revision.api_version,
+        "kind": revision.kind,
+        "capsule_id": revision.spec.capsule_id,
+        "revision": revision.spec.revision,
+        "capsule_type": revision.spec.capsule_type,
+        "authoring_manifest_digest": revision.spec.authoring_manifest_digest,
+        "artifact_bindings": [binding.model_dump(mode="json", by_alias=True) for binding in revision.spec.artifact_bindings],
+        "routes": [route.model_dump(mode="json", by_alias=True) for route in revision.spec.routes],
+        "entry_route": revision.spec.entry_route,
+        "host_policy_ref": revision.spec.host_policy_ref,
+        "provenance": revision.spec.provenance.model_dump(mode="json", by_alias=True),
+        "status": revision.spec.status,
+        "format_revision": "v1",
+    }
+    return "sha256:" + hashlib.sha256(_canonical_json(payload).encode("utf-8")).hexdigest()

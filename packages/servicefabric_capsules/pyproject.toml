@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-capsules"
+version = "0.1.0a1"
+description = "Bounded capsule portfolio and identity helpers for ServiceFabric."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-artifacts==0.1.0a1",
+  "servicefabric-builder==0.1.0a1",
+  "servicefabric-contracts==0.4.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

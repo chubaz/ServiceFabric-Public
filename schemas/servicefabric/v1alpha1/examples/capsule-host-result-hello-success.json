@@ -43,7 +43,7 @@
           "maximum_wall_clock_ms": 600000
         },
         "requests_served": 1,
-        "artifact_digests": ["sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]
+        "artifact_digests": ["sha256:b23f23c97d374b87d99255a7669034175e771903aa4f5994b84f114f7d577f58"]
       }
     },
     "warnings": [],

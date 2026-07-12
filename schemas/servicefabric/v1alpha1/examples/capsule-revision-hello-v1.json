@@ -16,14 +16,14 @@
     "capsule_id": "examples.hello-capsule",
     "revision": "1.0.0",
     "capsule_type": "static_capsule",
-    "authoring_manifest_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "authoring_manifest_digest": "sha256:b02cdceaa6ff90d566d311bab85f47f851cf88fe3541e177866a86a35c9aa0f8",
     "artifact_bindings": [
       {
         "binding_id": "hello-static",
         "application_id": "examples.hello-static",
         "application_revision": "1.0.0",
         "artifact_manifest_ref": "examples.hello-static.1.0.0",
-        "artifact_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "artifact_digest": "sha256:b23f23c97d374b87d99255a7669034175e771903aa4f5994b84f114f7d577f58",
         "mount_path": "/",
         "entry_document": "index.html",
         "required": true
@@ -51,7 +51,7 @@
     ],
     "entry_route": "/",
     "host_policy_ref": "loopback-static",
-    "revision_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "revision_digest": "sha256:ed0f163932f90870080004c4cf5a1af3226b065696b7efc353e942f756e33cbf",
     "provenance": {
       "author_ref": {
         "kind": "team",
