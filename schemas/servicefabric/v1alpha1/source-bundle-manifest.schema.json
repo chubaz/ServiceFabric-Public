@@ -1,0 +1,77 @@
+{
+  "$defs": {
+    "SourceFileManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "content_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "executable": {
+          "const": false,
+          "default": false,
+          "title": "Executable",
+          "type": "boolean"
+        },
+        "media_type": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z0-9.+-]+/[a-z0-9.+-]+$",
+          "title": "Media Type",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "size_bytes": {
+          "maximum": 134217728,
+          "minimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "content_digest",
+        "media_type",
+        "size_bytes"
+      ],
+      "title": "SourceFileManifest",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/source-bundle-manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "files": {
+      "items": {
+        "$ref": "#/$defs/SourceFileManifest"
+      },
+      "maxItems": 4096,
+      "minItems": 1,
+      "title": "Files",
+      "type": "array"
+    },
+    "source_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Source Digest",
+      "type": "string"
+    },
+    "total_size_bytes": {
+      "maximum": 134217728,
+      "minimum": 0,
+      "title": "Total Size Bytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "source_digest",
+    "files",
+    "total_size_bytes"
+  ],
+  "title": "ServiceFabric SourceBundleManifest v1alpha1",
+  "type": "object"
+}

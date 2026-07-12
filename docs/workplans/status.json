@@ -5,7 +5,9 @@
     "v1-00",
     "v1-01"
   ],
-  "completed_phases": [],
+  "completed_phases": [
+    "application-contracts"
+  ],
   "current_milestone": "v2-00",
   "current_phase": "application-contracts",
   "known_blockers": [],
@@ -13,7 +15,6 @@
   "next_action": "Implement the V2-00 application contracts and schema snapshots.",
   "programme_version": 1,
   "remaining_phases": [
-    "application-contracts",
     "application-portfolio",
     "source-validation",
     "static-web-builder",
