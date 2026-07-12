@@ -9,15 +9,14 @@
     "langchain-projection",
     "composite-graph-adapter",
     "pi-extension",
-    "research-demo-toolset"
+    "research-demo-toolset",
+    "cross-consumer-verification"
   ],
   "current_milestone": "v1-01",
-  "current_phase": "readiness",
+  "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V1-00 merged after contract, runtime/client, schema, architecture, lock, and handoff validation passed.",
-  "next_action": "Run make agent-preflight and begin the V1-01 federated MCP adapter phase.",
+  "last_verification_summary": "V1-01 MCP, LangChain, graph, Pi, portfolio, boundary, architecture, and lock checks passed.",
+  "next_action": "Review and merge V1-01, then prepare V2-00 without implementing it on this branch.",
   "programme_version": 1,
-  "remaining_phases": [
-    "cross-consumer-verification"
-  ]
+  "remaining_phases": []
 }
