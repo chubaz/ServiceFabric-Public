@@ -9,16 +9,16 @@
   ],
   "completed_phases": [
     "governance-contracts",
-    "policy-evaluation"
+    "policy-evaluation",
+    "approval-lifecycle"
   ],
   "current_milestone": "v3-00",
-  "current_phase": "approval-lifecycle",
+  "current_phase": "durable-operation-store",
   "known_blockers": [],
   "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
-  "next_action": "Implement the bounded V3-00 approval lifecycle.",
+  "next_action": "Implement the bounded local durable operation store.",
   "programme_version": 1,
   "remaining_phases": [
-    "durable-operation-store",
     "operation-state-machine",
     "idempotency-and-deduplication",
     "cancellation-timeout-and-retry",
