@@ -4,7 +4,9 @@
     "e0-00"
   ],
   "completed_phases": [
-    "portfolio-contracts"
+    "portfolio-contracts",
+    "portfolio-loader",
+    "invocation-kernel"
   ],
   "current_milestone": "v1-00",
   "current_phase": "readiness",
@@ -13,8 +15,6 @@
   "next_action": "Run make agent-preflight and begin the V1-00 portfolio-contract phase.",
   "programme_version": 1,
   "remaining_phases": [
-    "portfolio-loader",
-    "invocation-kernel",
     "runtime-service",
     "client-cli",
     "math-vertical-slice",
