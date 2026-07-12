@@ -11,16 +11,17 @@
   "current_milestone": "v3-00",
   "current_phase": "governance-contracts",
   "known_blockers": [],
-  "last_verification_summary": "V2-01 completion and CI portability are merged. V3-00 readiness uses the portable V2-01 completion gate as its baseline.",
-  "next_action": "Expand the complete V3-00 workplan before writing governance or durable-operation code.",
+  "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
+  "next_action": "Install first-class local packages in the repository external Python environment, verify V2-01, then implement the V3-00 governance-contracts phase.",
   "programme_version": 1,
   "remaining_phases": [
     "policy-evaluation",
     "approval-lifecycle",
     "durable-operation-store",
+    "operation-state-machine",
     "idempotency-and-deduplication",
-    "cancellation-retry-and-reconciliation",
-    "evidence-and-effect-verification",
+    "cancellation-timeout-and-retry",
+    "reconciliation-and-effect-verification",
     "service-client-and-cli",
     "cross-boundary-verification"
   ]
