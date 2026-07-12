@@ -15,6 +15,16 @@ from servicefabric_contracts.schema_export import write_schema_snapshot  # noqa:
 
 
 EXAMPLES = {
+    "policy_evaluation_request_project_task.json": "policy-evaluation-request-project-task.json",
+    "policy_decision_project_task.json": "policy-decision-project-task.json",
+    "approval_request_project_task.json": "approval-request-project-task.json",
+    "approval_decision_project_task.json": "approval-decision-project-task.json",
+    "approval_binding_project_task.json": "approval-binding-project-task.json",
+    "operation_transition_project_task.json": "operation-transition-project-task.json",
+    "operation_event_project_task.json": "operation-event-project-task.json",
+    "idempotency_record_project_task.json": "idempotency-record-project-task.json",
+    "execution_attempt_project_task.json": "execution-attempt-project-task.json",
+    "reconciliation_record_project_task.json": "reconciliation-record-project-task.json",
     "capsule_definition_hello.json": "capsule-definition-hello.json",
     "capsule_revision_hello_v1.json": "capsule-revision-hello-v1.json",
     "capsule_authoring_manifest_hello.json": "capsule-authoring-manifest-hello.json",

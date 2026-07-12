@@ -40,6 +40,15 @@ from .applications import (
     SourceBundleManifest,
     StaticWebBuildSpec,
 )
+from .governance import PolicyDecision, PolicyEvaluationRequest
+from .approvals import ApprovalBinding, ApprovalDecision, ApprovalRequest
+from .durable_operations import (
+    ExecutionAttempt,
+    IdempotencyRecord,
+    OperationEvent,
+    OperationTransition,
+    ReconciliationRecord,
+)
 
 SCHEMA_ID = "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json"
 SCHEMA_RESOURCES = {
@@ -71,6 +80,16 @@ SCHEMA_RESOURCES = {
     "application-build-request.schema.json": (ApplicationBuildRequest, "https://schemas.servicefabric.ai/v1alpha1/application-build-request.schema.json", "ServiceFabric ApplicationBuildRequest v1alpha1", "ApplicationBuildRequest"),
     "application-build-result.schema.json": (ApplicationBuildResult, "https://schemas.servicefabric.ai/v1alpha1/application-build-result.schema.json", "ServiceFabric ApplicationBuildResult v1alpha1", "ApplicationBuildResult"),
     "application-artifact-manifest.schema.json": (ApplicationArtifactManifest, "https://schemas.servicefabric.ai/v1alpha1/application-artifact-manifest.schema.json", "ServiceFabric ApplicationArtifactManifest v1alpha1", "ApplicationArtifactManifest"),
+    "policy-evaluation-request.schema.json": (PolicyEvaluationRequest, "https://schemas.servicefabric.ai/v1alpha1/policy-evaluation-request.schema.json", "ServiceFabric PolicyEvaluationRequest v1alpha1", "PolicyEvaluationRequest"),
+    "policy-decision.schema.json": (PolicyDecision, "https://schemas.servicefabric.ai/v1alpha1/policy-decision.schema.json", "ServiceFabric PolicyDecision v1alpha1", "PolicyDecision"),
+    "approval-request.schema.json": (ApprovalRequest, "https://schemas.servicefabric.ai/v1alpha1/approval-request.schema.json", "ServiceFabric ApprovalRequest v1alpha1", "ApprovalRequest"),
+    "approval-decision.schema.json": (ApprovalDecision, "https://schemas.servicefabric.ai/v1alpha1/approval-decision.schema.json", "ServiceFabric ApprovalDecision v1alpha1", "ApprovalDecision"),
+    "approval-binding.schema.json": (ApprovalBinding, "https://schemas.servicefabric.ai/v1alpha1/approval-binding.schema.json", "ServiceFabric ApprovalBinding v1alpha1", "ApprovalBinding"),
+    "operation-transition.schema.json": (OperationTransition, "https://schemas.servicefabric.ai/v1alpha1/operation-transition.schema.json", "ServiceFabric OperationTransition v1alpha1", "OperationTransition"),
+    "operation-event.schema.json": (OperationEvent, "https://schemas.servicefabric.ai/v1alpha1/operation-event.schema.json", "ServiceFabric OperationEvent v1alpha1", "OperationEvent"),
+    "idempotency-record.schema.json": (IdempotencyRecord, "https://schemas.servicefabric.ai/v1alpha1/idempotency-record.schema.json", "ServiceFabric IdempotencyRecord v1alpha1", "IdempotencyRecord"),
+    "execution-attempt.schema.json": (ExecutionAttempt, "https://schemas.servicefabric.ai/v1alpha1/execution-attempt.schema.json", "ServiceFabric ExecutionAttempt v1alpha1", "ExecutionAttempt"),
+    "reconciliation-record.schema.json": (ReconciliationRecord, "https://schemas.servicefabric.ai/v1alpha1/reconciliation-record.schema.json", "ServiceFabric ReconciliationRecord v1alpha1", "ReconciliationRecord"),
 }
 
 

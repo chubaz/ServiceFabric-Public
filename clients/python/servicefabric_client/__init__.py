@@ -1,6 +1,7 @@
 from servicefabric_contracts import ApplicationBuildRequest
 
 from .capsules import CapsuleClient
+from .governance import GovernanceClient
 
 
 class ServiceFabricClient:

@@ -68,15 +68,29 @@ jobs:
       - name: Install contract package
         run: python3 -m pip install --no-deps -e packages/servicefabric_contracts
 
-      - name: Install application builder packages
+      - name: Install ServiceFabric packages
         run: |
-          python3 -m pip install --no-deps -e packages/servicefabric_runtime
-          python3 -m pip install --no-deps -e packages/servicefabric_mcp_client
-          python3 -m pip install --no-deps -e packages/servicefabric_langchain
-          python3 -m pip install --no-deps -e clients/python
-          python3 -m pip install --no-deps -e packages/servicefabric_builder
-          python3 -m pip install --no-deps -e packages/servicefabric_artifacts
-          python3 -m pip install --no-deps -e packages/servicefabric_capsules
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_runtime
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_mcp_client
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_langchain
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_builder
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_artifacts
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_capsules
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_governance
+          python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_operations
+          python3 -m pip install --no-build-isolation --no-deps -e services/governance_operations
+          python3 -m pip install --no-build-isolation --no-deps -e clients/python
+
+      - name: Verify V3 package imports
+        run: |
+          python3 - <<'PY'
+          import servicefabric_contracts
+          import servicefabric_governance
+          import servicefabric_operations
+          import servicefabric_governance_service
+
+          print("ServiceFabric V3 package imports passed.")
+          PY
 
       - name: Run contract tests
         run: python3 -m unittest discover -s packages/servicefabric_contracts/tests -v
@@ -117,6 +131,12 @@ jobs:
 
       - name: Run V2-00 committed verification
         run: python3 scripts/agent/verify.py --milestone v2-00 --phase completion
+
+      - name: Run V2-01 committed verification
+        run: python3 scripts/agent/verify.py --milestone v2-01 --phase completion
+
+      - name: Run V3-00 completion verification
+        run: python3 scripts/agent/verify.py --milestone v3-00 --phase completion
 
   python-production-builds:
     runs-on: ubuntu-latest
