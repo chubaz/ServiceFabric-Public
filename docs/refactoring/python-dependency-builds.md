@@ -25,6 +25,7 @@ python3 -m venv /tmp/servicefabric-p0-06-lock-venv
 PIP_TOOLS_CACHE_DIR=/tmp/servicefabric-pip-tools-cache \
 PIP_CACHE_DIR=/tmp/servicefabric-pip-cache \
 pip-compile --resolver=backtracking --no-emit-index-url --no-emit-trusted-host \
+  --allow-unsafe \
   --output-file 2_backend_api/requirements/runtime.lock \
   2_backend_api/requirements/runtime.in
 ```

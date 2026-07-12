@@ -31,6 +31,38 @@ jobs:
       - name: Run architecture tests
         run: python3 -m unittest discover -s tests/architecture -v
 
+  canonical-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install locked contract test dependencies
+        run: python3 -m pip install -r packages/servicefabric_contracts/requirements/test.lock
+
+      - name: Install contract package
+        run: python3 -m pip install --no-deps -e packages/servicefabric_contracts
+
+      - name: Run contract tests
+        run: python3 -m unittest discover -s packages/servicefabric_contracts/tests -v
+
+      - name: Check deterministic schema snapshots
+        run: python3 scripts/contracts/check_schema_snapshots.py
+
+      - name: Build contract distributions
+        run: python3 -m build --outdir /tmp/servicefabric-contract-build packages/servicefabric_contracts
+
+      - name: Check installed dependency metadata
+        run: python3 -m pip check
+
+      - name: Run contract package architecture boundaries
+        run: python3 -m unittest discover -s tests/architecture -p 'test_contract_package_boundaries.py' -v
+
   python-production-builds:
     runs-on: ubuntu-latest
     steps:

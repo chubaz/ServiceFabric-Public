@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {"id": "research.http-capsule", "name": "Research HTTP Capsule", "description": "Managed internal HTTP capability host.", "labels": {}, "annotations": {}, "owner_ref": {"kind": "team", "id": "research-platform"}},
+  "spec": {"package_version": "1.2.0", "description": "Internal HTTP package, not a tool definition.", "hosting": {"mode": "managed_container", "managed_resources": {"cpu_millicores": 250, "memory_mebibytes": 256}}, "artifact": {"artifact_kind": "oci_image", "image": "registry.example/research", "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, "entrypoints": [{"id": "api", "kind": "http_api", "description": "Internal HTTP API.", "runtime_ref": "container:research", "machine_callable": true, "may_produce_effects": false, "exposures": [{"kind": "internal"}], "health_ref": "api-health"}], "declared_capabilities": ["research.lookup"], "runtime_requirements": {"config_refs": [{"config_ref": "config://research/endpoint", "purpose": "endpoint selection"}]}, "network_policy": {"mode": "platform_default"}, "storage_requirements": [], "health": {"probe_kind": "http", "path": "/healthz"}, "ownership": {"owner_ref": {"kind": "team", "id": "research-platform"}}}
+}

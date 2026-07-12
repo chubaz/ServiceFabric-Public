@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {"id": "web.research-ui", "name": "Research UI", "description": "Immutable Svelte frontend.", "labels": {"domain": "research"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "web-platform"}},
+  "spec": {"package_version": "1.0.0", "description": "A frontend-only package.", "hosting": {"mode": "managed_static"}, "artifact": {"artifact_kind": "static_bundle", "bundle_ref": "artifact://research-ui", "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, "entrypoints": [{"id": "web", "kind": "web_ui", "description": "Browser UI.", "runtime_ref": "static:research-ui", "machine_callable": false, "may_produce_effects": false, "exposures": [{"kind": "web"}], "health_ref": "web-health"}], "declared_capabilities": ["research.ui"], "runtime_requirements": {}, "network_policy": {"mode": "none"}, "storage_requirements": [], "health": {"probe_kind": "http", "path": "/healthz"}, "ownership": {"owner_ref": {"kind": "team", "id": "web-platform"}}}
+}

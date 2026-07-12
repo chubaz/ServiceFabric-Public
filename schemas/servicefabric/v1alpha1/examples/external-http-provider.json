@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {"id": "provider.market-data", "name": "Market Data Provider", "description": "Externally hosted HTTP provider.", "labels": {}, "annotations": {}, "owner_ref": {"kind": "team", "id": "provider-integrations"}},
+  "spec": {"package_version": "2.0.0", "description": "External HTTP implementation reference.", "hosting": {"mode": "external_service"}, "artifact": {"artifact_kind": "external_service", "service_ref": "market-data-provider", "endpoint": "https://provider.example/api"}, "entrypoints": [{"id": "api", "kind": "http_api", "description": "External HTTP API.", "runtime_ref": "external:market-data-provider", "machine_callable": true, "may_produce_effects": false, "exposures": [{"kind": "internal"}], "health_ref": "provider-health"}], "declared_capabilities": ["market.data"], "runtime_requirements": {"secret_refs": [{"secret_ref": "secret://provider/market-data", "purpose": "provider authentication"}]}, "network_policy": {"mode": "egress_allowlist", "egress_allowlist": ["provider.example"]}, "storage_requirements": [], "health": {"probe_kind": "external", "health_ref": "provider-health"}, "ownership": {"owner_ref": {"kind": "team", "id": "provider-integrations"}}}
+}

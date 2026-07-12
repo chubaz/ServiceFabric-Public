@@ -22,7 +22,7 @@ class ServiceDependencies:
     name: str
     runtime_input: Path
     runtime_lock: Path
-    dockerfile: Path
+    dockerfile: Path | None
     production: bool = True
 
 
@@ -52,6 +52,16 @@ SERVICES = (
         dockerfile=REPOSITORY_ROOT / "5_core_services" / "fabric_watcher" / "Dockerfile",
         production=False,
     ),
+)
+
+# Contract tests are not production image dependencies, but their lock is still
+# source-controlled and must be reproducible.
+CONTRACT_TEST_LOCK = ServiceDependencies(
+    name="servicefabric_contracts_tests",
+    runtime_input=REPOSITORY_ROOT / "packages" / "servicefabric_contracts" / "requirements" / "test.in",
+    runtime_lock=REPOSITORY_ROOT / "packages" / "servicefabric_contracts" / "requirements" / "test.lock",
+    dockerfile=None,
+    production=False,
 )
 
 
@@ -166,6 +176,8 @@ def validate_runtime_lock(service: ServiceDependencies) -> list[str]:
 
 
 def validate_dockerfile(service: ServiceDependencies) -> list[str]:
+    if service.dockerfile is None:
+        return []
     content = service.dockerfile.read_text(encoding="utf-8")
     errors: list[str] = []
     if "requirements/runtime.lock" not in content:
@@ -190,6 +202,7 @@ def validate_lock_freshness(service: ServiceDependencies, pip_compile: str) -> l
             "--resolver=backtracking",
             "--no-emit-index-url",
             "--no-emit-trusted-host",
+            "--allow-unsafe",
             f"--output-file={temporary_lock}",
             str(service.runtime_input.relative_to(REPOSITORY_ROOT)),
         ]
@@ -223,7 +236,8 @@ def main() -> int:
     args = parser.parse_args()
 
     errors: list[str] = []
-    for service in SERVICES:
+    all_locks = SERVICES + (CONTRACT_TEST_LOCK,)
+    for service in all_locks:
         errors.extend(validate_runtime_input(service))
         errors.extend(validate_runtime_lock(service))
         errors.extend(validate_dockerfile(service))
@@ -233,7 +247,7 @@ def main() -> int:
         if not pip_compile:
             errors.append("pip-compile is required for --verify-compile")
         else:
-            for service in SERVICES:
+            for service in all_locks:
                 errors.extend(validate_lock_freshness(service, pip_compile))
 
     if errors:

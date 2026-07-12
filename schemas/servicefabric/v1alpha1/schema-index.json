@@ -1,0 +1,8 @@
+{
+  "api_version": "servicefabric.ai/v1alpha1",
+  "contract_package_version": "0.1.0a1",
+  "kind": "ServicePackageDefinition",
+  "schema_id": "https://schemas.servicefabric.ai/v1alpha1/service-package-definition.schema.json",
+  "schema_path": "service-package-definition.schema.json",
+  "sha256": "c9f768a04018848e87de5bb4e0c950287b2b94cee968176e35048501b34683ad"
+}

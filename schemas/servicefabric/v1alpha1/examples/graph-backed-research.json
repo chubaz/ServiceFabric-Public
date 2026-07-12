@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ServicePackageDefinition",
+  "metadata": {"id": "research.graph", "name": "Research Graph", "description": "Managed graph-backed research package.", "labels": {}, "annotations": {}, "owner_ref": {"kind": "team", "id": "research-platform"}},
+  "spec": {"package_version": "1.0.0", "description": "Graph runtime reference.", "hosting": {"mode": "managed_graph"}, "artifact": {"artifact_kind": "graph_revision", "graph_revision_ref": "graph://research/42"}, "entrypoints": [{"id": "research", "kind": "graph", "description": "Scheduled graph.", "runtime_ref": "graph:research-42", "machine_callable": true, "may_produce_effects": false, "exposures": [{"kind": "scheduled"}]}], "declared_capabilities": ["research.analysis"], "runtime_requirements": {}, "network_policy": {"mode": "platform_default"}, "storage_requirements": [], "health": {"probe_kind": "external", "health_ref": "graph-health"}, "ownership": {"owner_ref": {"kind": "team", "id": "research-platform"}}}
+}

@@ -1,6 +1,6 @@
 # ServiceFabric Refactoring Programme
 
-Last updated: 2026-07-11
+Last updated: 2026-07-12
 Programme source: `../ServiceFabric Formal Refactoring Plan for Codex.md`
 
 ## Purpose
@@ -19,8 +19,12 @@ This repository-local programme tracks the formal pull-request sequence without 
 
 | PR | Title | Status | Scope |
 | --- | --- | --- | --- |
-| `P0-00` | Specification traceability and refactoring guardrails | current | Create the local specification map, ADRs, debt register, architecture checks, architecture tests, and baseline CI. |
-| `P0-01` | FastAPI security containment | not started | Authenticate FastAPI control and data-plane endpoints, remove insecure fallbacks, and contain prototype exposure. |
+| `P0-00` through `P0-06` | P0 containment and production baseline | completed | Completed in merged pull requests through reproducible Python dependency builds. |
+| `C1-00` | Canonical contract package foundation | current | Establish framework-neutral `ServicePackageDefinition` contracts, schema export, fixtures, and CI without runtime integration. |
+| `C1-01` | Canonical tool contracts | not started | Not started. |
+| `C1-02` | Contract validation integration | not started | Not started. |
+| `C1-03` | Contract publication workflow | not started | Not started. |
+| `C1-04` | Contract migration preparation | not started | Not started. |
 
 ## `P0-00` deliverables
 
