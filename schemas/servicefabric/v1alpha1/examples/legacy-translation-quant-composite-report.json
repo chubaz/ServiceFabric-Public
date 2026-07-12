@@ -1,0 +1,81 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "assumptions": [],
+  "canonical_resource": null,
+  "canonical_resource_digest": null,
+  "diagnostics": [
+    {
+      "canonical_pointer": null,
+      "code": "COMPOSITE_PACKAGE_REQUIRES_SPLIT_REVIEW",
+      "message": "UI and Python execution concerns require an explicit split review.",
+      "remediation": "Decide artifact ownership before canonical authoring.",
+      "severity": "error",
+      "source_pointer": "/template"
+    },
+    {
+      "canonical_pointer": null,
+      "code": "LEGACY_TOOL_SEMANTICS_NOT_INFERRED",
+      "message": "No tool lifecycle resources were inferred.",
+      "remediation": "Author tools explicitly in later work.",
+      "severity": "info",
+      "source_pointer": "/rules"
+    },
+    {
+      "canonical_pointer": null,
+      "code": "LEGACY_HOST_PATH_NOT_PORTABLE",
+      "message": "A host path was not copied into the canonical resource.",
+      "remediation": "Replace it with an immutable artifact or dependency reference.",
+      "severity": "warning",
+      "source_pointer": "/core_services/shared_utils"
+    },
+    {
+      "canonical_pointer": null,
+      "code": "LEGACY_INTERNAL_URL_NOT_PORTABLE",
+      "message": "An internal service URL was not copied into the canonical resource.",
+      "remediation": "Supply approved dependency references.",
+      "severity": "warning",
+      "source_pointer": "/core_services/gateway_api"
+    },
+    {
+      "canonical_pointer": null,
+      "code": "LEGACY_INTERNAL_URL_NOT_PORTABLE",
+      "message": "An internal service URL was not copied into the canonical resource.",
+      "remediation": "Supply approved dependency references.",
+      "severity": "warning",
+      "source_pointer": "/core_services/vector_store"
+    },
+    {
+      "canonical_pointer": null,
+      "code": "LEGACY_INTERNAL_URL_NOT_PORTABLE",
+      "message": "An internal service URL was not copied into the canonical resource.",
+      "remediation": "Supply approved dependency references.",
+      "severity": "warning",
+      "source_pointer": "/core_services/websockets"
+    },
+    {
+      "canonical_pointer": null,
+      "code": "LEGACY_RULES_ARE_ADVISORY_ONLY",
+      "message": "Legacy rules are advisory prose and were not converted into runtime authority.",
+      "remediation": "Review during future canonical authoring.",
+      "severity": "warning",
+      "source_pointer": "/rules"
+    }
+  ],
+  "discarded_fields": [],
+  "kind": "LegacyManifestTranslationReport",
+  "mapped_fields": [],
+  "profile": "legacy_composite_ui_python",
+  "required_context": [],
+  "requires_human_review": true,
+  "source": {
+    "kind": "template",
+    "reference": "3_service_templates/quant_vite_base/fabric-manifest.json"
+  },
+  "source_digest": "sha256:ace15e69d8d91e8b2fe0566096540c9c803676765e26762c459b6beefb5ad091",
+  "status": "requires_split",
+  "translation_version": "0.4.0a1",
+  "unmapped_fields": [
+    "/core_services",
+    "/rules"
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "manifest_count": 7,
+  "manifests": [
+    {
+      "parse_status": "valid",
+      "path": "3_service_templates/data_science_base/fabric-manifest.json",
+      "placeholders": [
+        "APP_NAME",
+        "APP_SLUG"
+      ],
+      "recommended_profile": "legacy_python_process",
+      "sha256": "5dac9654c1e8b574a5640927a5dda2afd0bc8591a6d36d1af427a66a0f178f61",
+      "template": "data_science_base"
+    },
+    {
+      "parse_status": "valid",
+      "path": "3_service_templates/flask_base/fabric-manifest.json",
+      "placeholders": [
+        "APP_NAME",
+        "APP_SLUG"
+      ],
+      "recommended_profile": "legacy_flask_shared_host",
+      "sha256": "6d6852f939489d568e1488ceb021815ea23238492387ac3b29c9719bc9bf538e",
+      "template": "flask_base"
+    },
+    {
+      "parse_status": "valid",
+      "path": "3_service_templates/quant_vite_base/fabric-manifest.json",
+      "placeholders": [
+        "APP_NAME",
+        "APP_SLUG"
+      ],
+      "recommended_profile": "legacy_composite_ui_python",
+      "sha256": "ace15e69d8d91e8b2fe0566096540c9c803676765e26762c459b6beefb5ad091",
+      "template": "quant_vite_base"
+    },
+    {
+      "parse_status": "valid",
+      "path": "3_service_templates/react_base/fabric-manifest.json",
+      "placeholders": [
+        "APP_NAME",
+        "APP_SLUG"
+      ],
+      "recommended_profile": "legacy_static_frontend",
+      "sha256": "64c1a2a028f53ab1565c8cb4802b055bde3d895c5e51bc3a6b6a78b393454b96",
+      "template": "react_base"
+    },
+    {
+      "parse_status": "valid",
+      "path": "3_service_templates/vite_base/fabric-manifest.json",
+      "placeholders": [
+        "APP_NAME",
+        "APP_SLUG"
+      ],
+      "recommended_profile": "legacy_static_frontend",
+      "sha256": "b83a524bc37fb9804df66324ed3040b705681c09e1d9d4dbb8486f46a933ad86",
+      "template": "vite_base"
+    },
+    {
+      "parse_status": "valid",
+      "path": "6_service_catalog/something/fabric-manifest.json",
+      "placeholders": [],
+      "recommended_profile": "legacy_flask_shared_host",
+      "sha256": "2247843137533411aedab798f119686b90af0248f252e84f742306ecd7ba7cf0",
+      "template": "flask_base"
+    },
+    {
+      "parse_status": "valid",
+      "path": "6_service_catalog/trial-flask-service/fabric-manifest.json",
+      "placeholders": [],
+      "recommended_profile": "legacy_flask_shared_host",
+      "sha256": "3e3120fde1c3738ffe7d05f3087a3dd8cd27017f4f1f23ad937fb18bab780b57",
+      "template": "flask_base"
+    }
+  ]
+}

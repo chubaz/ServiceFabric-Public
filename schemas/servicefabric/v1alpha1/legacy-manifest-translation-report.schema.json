@@ -1,0 +1,1224 @@
+{
+  "$defs": {
+    "CommandHealthProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Command",
+          "type": "array"
+        },
+        "probe_kind": {
+          "const": "command",
+          "title": "Probe Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "probe_kind",
+        "command"
+      ],
+      "title": "CommandHealthProbe",
+      "type": "object"
+    },
+    "ComputeRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu_millicores": {
+          "anyOf": [
+            {
+              "maximum": 64000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cpu Millicores"
+        },
+        "memory_mebibytes": {
+          "anyOf": [
+            {
+              "maximum": 1048576,
+              "minimum": 16,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Memory Mebibytes"
+        }
+      },
+      "title": "ComputeRequirements",
+      "type": "object"
+    },
+    "ConfigReference": {
+      "additionalProperties": false,
+      "properties": {
+        "config_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9._:/-]+$",
+          "title": "Config Ref",
+          "type": "string"
+        },
+        "optional": {
+          "default": false,
+          "title": "Optional",
+          "type": "boolean"
+        },
+        "purpose": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "config_ref",
+        "purpose"
+      ],
+      "title": "ConfigReference",
+      "type": "object"
+    },
+    "EntrypointDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "exposures": {
+          "items": {
+            "$ref": "#/$defs/ExposureDeclaration"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Exposures",
+          "type": "array"
+        },
+        "health_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Health Ref"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "http_api",
+            "cli",
+            "web_ui",
+            "worker",
+            "graph",
+            "mcp_server",
+            "library"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "machine_callable": {
+          "title": "Machine Callable",
+          "type": "boolean"
+        },
+        "may_produce_effects": {
+          "title": "May Produce Effects",
+          "type": "boolean"
+        },
+        "runtime_ref": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9._:/-]+$",
+          "title": "Runtime Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "description",
+        "runtime_ref",
+        "machine_callable",
+        "may_produce_effects",
+        "exposures"
+      ],
+      "title": "EntrypointDeclaration",
+      "type": "object"
+    },
+    "ExposureDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "internal",
+            "web",
+            "cli",
+            "scheduled",
+            "mcp",
+            "none"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "operation_refs": {
+          "items": {
+            "maxLength": 160,
+            "minLength": 3,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Operation Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "ExposureDeclaration",
+      "type": "object"
+    },
+    "ExternalHealthProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "health_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9._:/-]+$",
+          "title": "Health Ref",
+          "type": "string"
+        },
+        "probe_kind": {
+          "const": "external",
+          "title": "Probe Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "probe_kind",
+        "health_ref"
+      ],
+      "title": "ExternalHealthProbe",
+      "type": "object"
+    },
+    "ExternalMcpArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "external_mcp",
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "endpoint": {
+          "maxLength": 512,
+          "minLength": 8,
+          "pattern": "^https?://",
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "server_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Server Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind",
+        "server_ref",
+        "endpoint"
+      ],
+      "title": "ExternalMcpArtifact",
+      "type": "object"
+    },
+    "ExternalServiceArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "external_service",
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "endpoint": {
+          "maxLength": 512,
+          "minLength": 8,
+          "pattern": "^https?://",
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "service_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Service Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind",
+        "service_ref",
+        "endpoint"
+      ],
+      "title": "ExternalServiceArtifact",
+      "type": "object"
+    },
+    "GraphRevisionArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "graph_revision",
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "graph_revision_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9._:/-]+$",
+          "title": "Graph Revision Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind",
+        "graph_revision_ref"
+      ],
+      "title": "GraphRevisionArtifact",
+      "type": "object"
+    },
+    "HostingDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "managed_resources": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ManagedResourceRequirements"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "mode": {
+          "enum": [
+            "managed_container",
+            "managed_process",
+            "managed_static",
+            "managed_graph",
+            "external_service",
+            "external_mcp",
+            "none"
+          ],
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "HostingDeclaration",
+      "type": "object"
+    },
+    "HttpHealthProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_status": {
+          "default": 200,
+          "maximum": 599,
+          "minimum": 100,
+          "title": "Expected Status",
+          "type": "integer"
+        },
+        "path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Path",
+          "type": "string"
+        },
+        "probe_kind": {
+          "const": "http",
+          "title": "Probe Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "probe_kind",
+        "path"
+      ],
+      "title": "HttpHealthProbe",
+      "type": "object"
+    },
+    "LifecycleDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "deprecation_status": {
+          "default": "active",
+          "enum": [
+            "active",
+            "deprecated",
+            "retired"
+          ],
+          "title": "Deprecation Status",
+          "type": "string"
+        },
+        "maturity": {
+          "default": "experimental",
+          "enum": [
+            "experimental",
+            "alpha",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "title": "Maturity",
+          "type": "string"
+        },
+        "replacement_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replacement Ref"
+        },
+        "support_status": {
+          "default": "best_effort",
+          "enum": [
+            "supported",
+            "best_effort",
+            "unsupported"
+          ],
+          "title": "Support Status",
+          "type": "string"
+        }
+      },
+      "title": "LifecycleDeclaration",
+      "type": "object"
+    },
+    "ManagedResourceRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu_millicores": {
+          "anyOf": [
+            {
+              "maximum": 64000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cpu Millicores"
+        },
+        "memory_mebibytes": {
+          "anyOf": [
+            {
+              "maximum": 1048576,
+              "minimum": 16,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Memory Mebibytes"
+        }
+      },
+      "title": "ManagedResourceRequirements",
+      "type": "object"
+    },
+    "NetworkPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "egress_allowlist": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Egress Allowlist",
+          "type": "array"
+        },
+        "mode": {
+          "default": "none",
+          "enum": [
+            "none",
+            "egress_allowlist",
+            "platform_default"
+          ],
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "title": "NetworkPolicy",
+      "type": "object"
+    },
+    "NoArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "none",
+          "title": "Artifact Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind"
+      ],
+      "title": "NoArtifact",
+      "type": "object"
+    },
+    "NoHealthProbe": {
+      "additionalProperties": false,
+      "properties": {
+        "probe_kind": {
+          "const": "none",
+          "title": "Probe Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "probe_kind"
+      ],
+      "title": "NoHealthProbe",
+      "type": "object"
+    },
+    "OciImageArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "oci_image",
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "image": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Image",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind",
+        "image",
+        "digest"
+      ],
+      "title": "OciImageArtifact",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "OwnershipDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        },
+        "support_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OwnerReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "owner_ref"
+      ],
+      "title": "OwnershipDeclaration",
+      "type": "object"
+    },
+    "ProcessBundleArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "process_bundle",
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "bundle_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Bundle Ref",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind",
+        "bundle_ref",
+        "digest"
+      ],
+      "title": "ProcessBundleArtifact",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    },
+    "RuntimeRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "compute": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComputeRequirements"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "config_refs": {
+          "items": {
+            "$ref": "#/$defs/ConfigReference"
+          },
+          "maxItems": 64,
+          "title": "Config Refs",
+          "type": "array"
+        },
+        "secret_refs": {
+          "items": {
+            "$ref": "#/$defs/SecretReference"
+          },
+          "maxItems": 64,
+          "title": "Secret Refs",
+          "type": "array"
+        }
+      },
+      "title": "RuntimeRequirements",
+      "type": "object"
+    },
+    "SecretReference": {
+      "additionalProperties": false,
+      "properties": {
+        "optional": {
+          "default": false,
+          "title": "Optional",
+          "type": "boolean"
+        },
+        "purpose": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "secret_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^secret://[a-z][a-z0-9._:/-]+$",
+          "title": "Secret Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "secret_ref",
+        "purpose"
+      ],
+      "title": "SecretReference",
+      "type": "object"
+    },
+    "ServicePackageDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "apiVersion": {
+          "const": "servicefabric.ai/v1alpha1",
+          "title": "Apiversion",
+          "type": "string"
+        },
+        "kind": {
+          "const": "ServicePackageDefinition",
+          "title": "Kind",
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ResourceMetadata"
+        },
+        "spec": {
+          "$ref": "#/$defs/ServicePackageSpec"
+        }
+      },
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "spec"
+      ],
+      "title": "ServicePackageDefinition",
+      "type": "object"
+    },
+    "ServicePackageSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "discriminator": {
+            "mapping": {
+              "external_mcp": "#/$defs/ExternalMcpArtifact",
+              "external_service": "#/$defs/ExternalServiceArtifact",
+              "graph_revision": "#/$defs/GraphRevisionArtifact",
+              "none": "#/$defs/NoArtifact",
+              "oci_image": "#/$defs/OciImageArtifact",
+              "process_bundle": "#/$defs/ProcessBundleArtifact",
+              "static_bundle": "#/$defs/StaticBundleArtifact"
+            },
+            "propertyName": "artifact_kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/OciImageArtifact"
+            },
+            {
+              "$ref": "#/$defs/StaticBundleArtifact"
+            },
+            {
+              "$ref": "#/$defs/ProcessBundleArtifact"
+            },
+            {
+              "$ref": "#/$defs/GraphRevisionArtifact"
+            },
+            {
+              "$ref": "#/$defs/ExternalServiceArtifact"
+            },
+            {
+              "$ref": "#/$defs/ExternalMcpArtifact"
+            },
+            {
+              "$ref": "#/$defs/NoArtifact"
+            }
+          ],
+          "title": "Artifact"
+        },
+        "declared_capabilities": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Declared Capabilities",
+          "type": "array"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "entrypoints": {
+          "items": {
+            "$ref": "#/$defs/EntrypointDeclaration"
+          },
+          "maxItems": 64,
+          "title": "Entrypoints",
+          "type": "array"
+        },
+        "health": {
+          "discriminator": {
+            "mapping": {
+              "command": "#/$defs/CommandHealthProbe",
+              "external": "#/$defs/ExternalHealthProbe",
+              "http": "#/$defs/HttpHealthProbe",
+              "none": "#/$defs/NoHealthProbe"
+            },
+            "propertyName": "probe_kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NoHealthProbe"
+            },
+            {
+              "$ref": "#/$defs/HttpHealthProbe"
+            },
+            {
+              "$ref": "#/$defs/CommandHealthProbe"
+            },
+            {
+              "$ref": "#/$defs/ExternalHealthProbe"
+            }
+          ],
+          "title": "Health"
+        },
+        "hosting": {
+          "$ref": "#/$defs/HostingDeclaration"
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/LifecycleDeclaration"
+        },
+        "network_policy": {
+          "$ref": "#/$defs/NetworkPolicy"
+        },
+        "ownership": {
+          "$ref": "#/$defs/OwnershipDeclaration"
+        },
+        "package_version": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Package Version",
+          "type": "string"
+        },
+        "runtime_requirements": {
+          "$ref": "#/$defs/RuntimeRequirements"
+        },
+        "storage_requirements": {
+          "items": {
+            "$ref": "#/$defs/StorageRequirement"
+          },
+          "maxItems": 32,
+          "title": "Storage Requirements",
+          "type": "array"
+        }
+      },
+      "required": [
+        "package_version",
+        "description",
+        "hosting",
+        "artifact",
+        "health",
+        "ownership"
+      ],
+      "title": "ServicePackageSpec",
+      "type": "object"
+    },
+    "StaticBundleArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_kind": {
+          "const": "static_bundle",
+          "title": "Artifact Kind",
+          "type": "string"
+        },
+        "bundle_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Bundle Ref",
+          "type": "string"
+        },
+        "digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_kind",
+        "bundle_ref",
+        "digest"
+      ],
+      "title": "StaticBundleArtifact",
+      "type": "object"
+    },
+    "StorageRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "access_mode": {
+          "enum": [
+            "read_only",
+            "read_write"
+          ],
+          "title": "Access Mode",
+          "type": "string"
+        },
+        "capacity_hint_mebibytes": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Capacity Hint Mebibytes"
+        },
+        "mount_purpose": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Mount Purpose",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "persistence": {
+          "enum": [
+            "ephemeral",
+            "persistent"
+          ],
+          "title": "Persistence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "persistence",
+        "access_mode",
+        "mount_purpose"
+      ],
+      "title": "StorageRequirement",
+      "type": "object"
+    },
+    "TranslationDiagnostic": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_pointer": {
+          "anyOf": [
+            {
+              "pattern": "^(/.*)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canonical Pointer"
+        },
+        "code": {
+          "pattern": "^(LEGACY|COMPOSITE)_[A-Z0-9_]+$",
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "remediation": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Remediation",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "source_pointer": {
+          "pattern": "^(/.*)?$",
+          "title": "Source Pointer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "message",
+        "source_pointer",
+        "remediation"
+      ],
+      "title": "TranslationDiagnostic",
+      "type": "object"
+    },
+    "TranslationProfile": {
+      "enum": [
+        "legacy_static_frontend",
+        "legacy_flask_shared_host",
+        "legacy_python_process",
+        "legacy_composite_ui_python",
+        "assessment_only"
+      ],
+      "title": "TranslationProfile",
+      "type": "string"
+    },
+    "TranslationSource": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "template",
+            "catalogue_package",
+            "generated_package",
+            "external_snapshot",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reference": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "title": "TranslationSource",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/legacy-manifest-translation-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "canonical_resource": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ServicePackageDefinition"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "canonical_resource_digest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Canonical Resource Digest"
+    },
+    "diagnostics": {
+      "items": {
+        "$ref": "#/$defs/TranslationDiagnostic"
+      },
+      "title": "Diagnostics",
+      "type": "array"
+    },
+    "discarded_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Discarded Fields",
+      "type": "array"
+    },
+    "kind": {
+      "const": "LegacyManifestTranslationReport",
+      "title": "Kind",
+      "type": "string"
+    },
+    "mapped_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Mapped Fields",
+      "type": "array"
+    },
+    "profile": {
+      "$ref": "#/$defs/TranslationProfile"
+    },
+    "required_context": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Required Context",
+      "type": "array"
+    },
+    "requires_human_review": {
+      "default": true,
+      "title": "Requires Human Review",
+      "type": "boolean"
+    },
+    "source": {
+      "$ref": "#/$defs/TranslationSource"
+    },
+    "source_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Source Digest",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "translated",
+        "translated_with_warnings",
+        "requires_context",
+        "requires_split",
+        "unsupported",
+        "invalid",
+        "unsafe"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "translation_version": {
+      "const": "0.4.0a1",
+      "default": "0.4.0a1",
+      "title": "Translation Version",
+      "type": "string"
+    },
+    "unmapped_fields": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unmapped Fields",
+      "type": "array"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "status",
+    "source",
+    "source_digest",
+    "profile"
+  ],
+  "title": "ServiceFabric Legacy Manifest Translation Report v1alpha1",
+  "type": "object"
+}

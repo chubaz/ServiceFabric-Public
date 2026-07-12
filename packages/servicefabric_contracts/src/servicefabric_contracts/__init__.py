@@ -13,6 +13,10 @@ from .invocation import ToolInvocationAcceptance, ToolInvocationRequest, ToolInv
 from .operations import ServiceFabricOperation, ServiceFabricOperationSpec
 from .results import ToolResult
 from .version import __version__
+from .legacy_manifest import LegacyManifest, parse_legacy_manifest
+from .legacy_translation import translate_legacy_manifest
+from .translation_context import TranslationContext
+from .translation_report import LegacyManifestTranslationReport
 
 __all__ = [
     "ServicePackageDefinition",
@@ -29,4 +33,6 @@ __all__ = [
     "ServiceFabricOperation", "ServiceFabricOperationSpec", "ToolError", "ToolExecutionContext",
     "ToolInvocationAcceptance", "ToolInvocationRequest", "ToolInvocationTarget", "ToolResult",
     "__version__",
+    "LegacyManifest", "LegacyManifestTranslationReport", "TranslationContext",
+    "parse_legacy_manifest", "translate_legacy_manifest",
 ]
