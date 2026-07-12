@@ -16,13 +16,14 @@
     "idempotency-and-deduplication",
     "cancellation-timeout-and-retry",
     "reconciliation-and-effect-verification",
-    "service-client-and-cli"
+    "service-client-and-cli",
+    "cross-boundary-verification"
   ],
   "current_milestone": "v3-00",
-  "current_phase": "cross-boundary-verification",
+  "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V3-00 readiness passes with the repository external Python environment; its inherited V2 preview regression requires loopback socket permission unavailable inside the managed sandbox.",
-  "next_action": "Complete V3-00 cross-boundary and end-to-end verification.",
+  "last_verification_summary": "V3-00 completion passed all 14 configured checks in the external environment; the inherited V2 loopback regression remains blocked only inside the managed sandbox.",
+  "next_action": "Review and merge V3-00, then prepare the post-merge V3-to-V4 handoff without implementing V4 on this branch.",
   "programme_version": 1,
   "remaining_phases": []
 }
