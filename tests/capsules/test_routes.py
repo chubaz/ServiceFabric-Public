@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import sys
 import unittest
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
+sys.path[:0] = [
+    str(ROOT / "packages" / "servicefabric_contracts" / "src"),
+    str(ROOT / "packages" / "servicefabric_capsules" / "src"),
+]
+
 from servicefabric_contracts import CapsuleRevision
 from servicefabric_capsules.routes import CapsuleRouteTable
-
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 class CapsuleRouteResolutionTests(unittest.TestCase):
@@ -27,4 +31,3 @@ class CapsuleRouteResolutionTests(unittest.TestCase):
         table = CapsuleRouteTable.from_revision(revision)
         with self.assertRaises(ValueError):
             table.resolve("/../index.html")
-

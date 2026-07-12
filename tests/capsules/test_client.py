@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import json
+import sys
 import unittest
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
+sys.path[:0] = [
+    str(ROOT / "clients" / "python"),
+    str(ROOT / "packages" / "servicefabric_contracts" / "src"),
+]
+
 from servicefabric_client.capsule_cli import execute
 from servicefabric_client.capsules import CapsuleClient
-
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 class FakeSession:

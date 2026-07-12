@@ -2,17 +2,24 @@ from __future__ import annotations
 
 import shutil
 import tempfile
+import sys
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path[:0] = [
+    str(ROOT / "packages" / "servicefabric_contracts" / "src"),
+    str(ROOT / "packages" / "servicefabric_builder"),
+    str(ROOT / "packages" / "servicefabric_artifacts"),
+    str(ROOT / "packages" / "servicefabric_capsules" / "src"),
+    str(ROOT / "services"),
+]
 
 from servicefabric_artifacts import FileArtifactStore
 from servicefabric_builder import ApplicationPortfolio
 from servicefabric_contracts import CapsuleHostRequest
 from servicefabric_capsules import CapsuleHostService, CapsulePortfolio, LoopbackCapsuleHost
-
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 def load_request() -> CapsuleHostRequest:

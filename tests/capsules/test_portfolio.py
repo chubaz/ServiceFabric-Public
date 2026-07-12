@@ -1,18 +1,25 @@
 from __future__ import annotations
 
+import shutil
+import sys
 import tempfile
 import unittest
-import shutil
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path[:0] = [
+    str(ROOT / "packages" / "servicefabric_contracts" / "src"),
+    str(ROOT / "packages" / "servicefabric_builder"),
+    str(ROOT / "packages" / "servicefabric_artifacts"),
+    str(ROOT / "packages" / "servicefabric_capsules" / "src"),
+    str(ROOT / "services"),
+]
 
 from servicefabric_artifacts import FileArtifactStore
 from servicefabric_builder import ApplicationPortfolio
 from servicefabric_contracts import ApplicationBuildRequest
 from servicefabric_capsules import CapsulePortfolio
 from services.application_builder import ApplicationBuilderService
-
-
-ROOT = Path(__file__).resolve().parents[2]
 
 
 def build_example_artifact(store_root: Path):
