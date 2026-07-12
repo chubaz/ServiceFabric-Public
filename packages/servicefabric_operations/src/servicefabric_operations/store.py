@@ -155,6 +155,19 @@ class DurableOperationStore:
             self._write_snapshot(directory, resulting, transition.spec.resulting_version)
             return transition.spec.resulting_version
 
+    def append_observation(self, event: OperationEvent, resulting: ServiceFabricOperation, *, expected_version: int) -> int:
+        with self._lock:
+            current, version = self.get(event.spec.operation_ref)
+            if version != expected_version or event.spec.sequence != version + 1:
+                raise OperationConflictError("stale observation version")
+            if resulting.spec.operation_id != current.spec.operation_id or resulting.spec.state != current.spec.state:
+                raise OperationStoreError("observation cannot change operation state")
+            directory = self._operation_dir(current.spec.operation_id)
+            path = directory / "events" / f"{event.spec.sequence:08d}.json"
+            self._atomic_write(path, _envelope({"event": event.model_dump(mode="json", by_alias=True)}), exclusive=True)
+            self._write_snapshot(directory, resulting, event.spec.sequence)
+            return event.spec.sequence
+
     def events(self, operation_id: str) -> tuple[OperationEvent, ...]:
         directory = self._operation_dir(operation_id)
         paths = sorted((directory / "events").glob("*.json"))
@@ -180,6 +193,20 @@ class DurableOperationStore:
         operation = initial
         for path in sorted((directory / "events").glob("*.json"))[1:]:
             payload = self._read(path)
+            if "transition" not in payload:
+                event = OperationEvent.model_validate(payload["event"])
+                details = {item.key: item.value for item in event.spec.details}
+                if event.spec.event_type == "cancellation":
+                    requested_at = operation.spec.cancellation.cancellation_requested_at
+                    if details["state"] == "requested":
+                        requested_at = event.spec.recorded_at
+                    cancellation = operation.spec.cancellation.model_copy(update={
+                        "cancellation_state": details["state"],
+                        "cancellation_reason": details.get("reason"),
+                        "cancellation_requested_at": requested_at,
+                    })
+                    operation = operation.model_copy(update={"spec": operation.spec.model_copy(update={"cancellation": cancellation, "updated_at": event.spec.recorded_at})})
+                continue
             transition = OperationTransition.model_validate(payload["transition"])
             if operation.spec.state != transition.spec.from_state:
                 raise CorruptOperationError("transition history state mismatch")
