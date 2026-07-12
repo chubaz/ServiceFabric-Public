@@ -6,11 +6,11 @@ from servicefabric_client.governance_cli import execute
 from servicefabric_contracts import OperationEvent,ServiceFabricOperation
 from servicefabric_governance import ApprovalService,PolicyBundle,VersionedPolicyEvaluator
 from servicefabric_governance_service import GovernanceOperationsService
-from servicefabric_operations import DeterministicEffectAdapter,DurableOperationStore,IdempotencyRepository,ReconciliationService,idempotency_digest,request_intent_digest
+from servicefabric_operations import DeterministicEffectAdapter,DurableOperationStore,IdempotencyRepository,ImmutableRecordRepository,ReconciliationService,idempotency_digest,request_intent_digest
 from tests.operations.test_operation_state_machine import event,operation
 NOW=datetime(2030,1,1,12,0,tzinfo=timezone.utc);D1="sha256:"+"1"*64
 def client(root):
- service=GovernanceOperationsService(evaluator=VersionedPolicyEvaluator((PolicyBundle(bundle_id="policy-default",version="1.0.0",digest=D1,allowed_scopes=("project-task-create",)),)),approvals=ApprovalService(),operations=DurableOperationStore(Path(root)/"operations"),idempotency=IdempotencyRepository(Path(root)/"idempotency"),reconciliation=ReconciliationService(DeterministicEffectAdapter({})))
+ service=GovernanceOperationsService(evaluator=VersionedPolicyEvaluator((PolicyBundle(bundle_id="policy-default",version="1.0.0",digest=D1,allowed_scopes=("project-task-create",)),)),approvals=ApprovalService(),operations=DurableOperationStore(Path(root)/"operations"),idempotency=IdempotencyRepository(Path(root)/"idempotency"),reconciliation=ReconciliationService(DeterministicEffectAdapter({})),audit_records=ImmutableRecordRepository(Path(root)/"audit"))
  return GovernanceClient(service)
 class ServiceClientCliTests(unittest.TestCase):
  def test_client_delegates_submission_get_and_events(self):

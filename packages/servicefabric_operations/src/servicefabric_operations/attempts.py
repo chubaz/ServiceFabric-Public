@@ -26,9 +26,13 @@ class AttemptRepository:
   if attempt.spec.attempt_number>self._max:raise ValueError("attempt limit exceeded")
   path=self._path(attempt.spec.operation_ref,attempt.spec.attempt_number);content=_envelope(attempt.model_dump(mode="json",by_alias=True))
   with self._lock:
+   if path.exists():
+    if path.read_bytes()==content:return
+    raise ValueError("immutable attempt record already exists")
    fd,name=tempfile.mkstemp(prefix=".pending-",dir=self._root)
    try:
     with os.fdopen(fd,"wb") as h:h.write(content);h.flush();os.fsync(h.fileno())
+    if path.exists():raise ValueError("immutable attempt record already exists")
     os.replace(name,path)
    finally:Path(name).unlink(missing_ok=True)
  def get(self,operation_ref:str,number:int)->ExecutionAttempt:

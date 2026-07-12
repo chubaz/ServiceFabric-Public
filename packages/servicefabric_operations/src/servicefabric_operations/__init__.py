@@ -5,5 +5,6 @@ from .state_machine import IllegalTransitionError, LEGAL_TRANSITIONS, OperationS
 from .idempotency import IdempotencyConflictError, IdempotencyRepository, ReservationResult, idempotency_digest, request_intent_digest
 from .attempts import AttemptRepository, CancellationController, RetryDecision, RetryPlanner
 from .reconciliation import DeterministicEffectAdapter, ReconciliationResult, ReconciliationService
+from .records import ImmutableRecordRepository
 
-__all__ = ["AttemptRepository", "CancellationController", "CorruptOperationError", "DeterministicEffectAdapter", "DurableOperationStore", "IdempotencyConflictError", "IdempotencyRepository", "IllegalTransitionError", "LEGAL_TRANSITIONS", "OperationConflictError", "OperationStateMachine", "ReconciliationResult", "ReconciliationService", "ReservationResult", "RetryDecision", "RetryPlanner", "StoreLimits", "idempotency_digest", "request_intent_digest"]
+__all__ = ["AttemptRepository", "CancellationController", "CorruptOperationError", "DeterministicEffectAdapter", "DurableOperationStore", "IdempotencyConflictError", "IdempotencyRepository", "IllegalTransitionError", "ImmutableRecordRepository", "LEGAL_TRANSITIONS", "OperationConflictError", "OperationStateMachine", "ReconciliationResult", "ReconciliationService", "ReservationResult", "RetryDecision", "RetryPlanner", "StoreLimits", "idempotency_digest", "request_intent_digest"]
