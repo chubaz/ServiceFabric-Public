@@ -1,0 +1,1 @@
+Read AGENTS.md and docs/workplans/current.md. Run make agent-preflight. Implement the current milestone only, using make agent-context for bounded paths. Run focused tests, then make verify-current and make agent-handoff. Report blockers, deviations, limitations, validation, and rollback. Do not widen scope.
