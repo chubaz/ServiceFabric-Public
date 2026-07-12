@@ -1,0 +1,1284 @@
+{
+  "$defs": {
+    "CancellationDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "behavior": {
+          "enum": [
+            "not_supported",
+            "best_effort",
+            "cooperative",
+            "durable_checkpoint"
+          ],
+          "title": "Behavior",
+          "type": "string"
+        },
+        "supported": {
+          "title": "Supported",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "supported",
+        "behavior"
+      ],
+      "title": "CancellationDeclaration",
+      "type": "object"
+    },
+    "CommandArgumentMapping": {
+      "additionalProperties": false,
+      "properties": {
+        "argument": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Argument",
+          "type": "string"
+        },
+        "input_field_ref": {
+          "maxLength": 160,
+          "minLength": 7,
+          "pattern": "^input\\.[a-z][a-z0-9_.-]*$",
+          "title": "Input Field Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "argument",
+        "input_field_ref"
+      ],
+      "title": "CommandArgumentMapping",
+      "type": "object"
+    },
+    "CommandRunnerBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "argument_mapping": {
+          "items": {
+            "$ref": "#/$defs/CommandArgumentMapping"
+          },
+          "maxItems": 64,
+          "title": "Argument Mapping",
+          "type": "array"
+        },
+        "binding_kind": {
+          "const": "command_runner",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "command_name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Command Name",
+          "type": "string"
+        },
+        "entrypoint_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Entrypoint Id",
+          "type": "string"
+        },
+        "service_package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Service Package Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "service_package_id",
+        "entrypoint_id",
+        "command_name"
+      ],
+      "title": "CommandRunnerBinding",
+      "type": "object"
+    },
+    "CompatibilityDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "compatible_definition_revisions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Compatible Definition Revisions",
+          "type": "array"
+        },
+        "minimum_contract_version": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Minimum Contract Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "minimum_contract_version"
+      ],
+      "title": "CompatibilityDeclaration",
+      "type": "object"
+    },
+    "CredentialBindingDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "credential_binding_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Credential Binding Ref",
+          "type": "string"
+        },
+        "dependency_kind": {
+          "const": "credential_binding",
+          "title": "Dependency Kind",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "credential_binding_ref",
+        "purpose"
+      ],
+      "title": "CredentialBindingDependency",
+      "type": "object"
+    },
+    "DataDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "data_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^data://[a-z][a-z0-9._:/-]+$",
+          "title": "Data Ref",
+          "type": "string"
+        },
+        "dependency_kind": {
+          "const": "data",
+          "title": "Dependency Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "data_ref"
+      ],
+      "title": "DataDependency",
+      "type": "object"
+    },
+    "DatabaseOperationBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "database_operation",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "entrypoint_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Entrypoint Id",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "service_package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Service Package Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "service_package_id",
+        "entrypoint_id",
+        "operation_id"
+      ],
+      "title": "DatabaseOperationBinding",
+      "type": "object"
+    },
+    "DependencyContract": {
+      "additionalProperties": false,
+      "properties": {
+        "dependencies": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "credential_binding": "#/$defs/CredentialBindingDependency",
+                "data": "#/$defs/DataDependency",
+                "external_service": "#/$defs/ExternalServiceDependency",
+                "graph": "#/$defs/GraphDependency",
+                "human": "#/$defs/HumanDependency",
+                "provider": "#/$defs/ProviderDependency",
+                "tool": "#/$defs/ToolDependency"
+              },
+              "propertyName": "dependency_kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/ToolDependency"
+              },
+              {
+                "$ref": "#/$defs/ProviderDependency"
+              },
+              {
+                "$ref": "#/$defs/ExternalServiceDependency"
+              },
+              {
+                "$ref": "#/$defs/DataDependency"
+              },
+              {
+                "$ref": "#/$defs/CredentialBindingDependency"
+              },
+              {
+                "$ref": "#/$defs/GraphDependency"
+              },
+              {
+                "$ref": "#/$defs/HumanDependency"
+              }
+            ]
+          },
+          "maxItems": 64,
+          "title": "Dependencies",
+          "type": "array"
+        }
+      },
+      "title": "DependencyContract",
+      "type": "object"
+    },
+    "EffectContract": {
+      "additionalProperties": false,
+      "properties": {
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/EffectDeclaration"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "effects"
+      ],
+      "title": "EffectContract",
+      "type": "object"
+    },
+    "EffectDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_required": {
+          "title": "Approval Required",
+          "type": "boolean"
+        },
+        "effect_type": {
+          "enum": [
+            "none",
+            "external_read",
+            "database_read",
+            "database_write",
+            "file_write",
+            "message_send",
+            "task_create",
+            "payment_initiate",
+            "infrastructure_change",
+            "human_workflow_create"
+          ],
+          "title": "Effect Type",
+          "type": "string"
+        },
+        "idempotency_required": {
+          "title": "Idempotency Required",
+          "type": "boolean"
+        },
+        "reversibility": {
+          "enum": [
+            "not_applicable",
+            "reversible",
+            "compensatable",
+            "irreversible"
+          ],
+          "title": "Reversibility",
+          "type": "string"
+        },
+        "scope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "target_category": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Target Category",
+          "type": "string"
+        },
+        "verification_required": {
+          "title": "Verification Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "effect_type",
+        "target_category",
+        "scope",
+        "reversibility",
+        "verification_required",
+        "approval_required",
+        "idempotency_required"
+      ],
+      "title": "EffectDeclaration",
+      "type": "object"
+    },
+    "ErrorContractDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "categories": {
+          "items": {
+            "enum": [
+              "validation",
+              "authorization",
+              "approval",
+              "policy",
+              "dependency",
+              "timeout",
+              "cancelled",
+              "rate_limit",
+              "business_rule",
+              "quality",
+              "conflict",
+              "unavailable",
+              "internal"
+            ],
+            "type": "string"
+          },
+          "title": "Categories",
+          "type": "array"
+        },
+        "error_codes": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "title": "Error Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "error_codes",
+        "categories"
+      ],
+      "title": "ErrorContractDeclaration",
+      "type": "object"
+    },
+    "EvidencePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_policy_ref": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 3,
+              "pattern": "^policy://[a-z][a-z0-9._:/-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidence Policy Ref"
+        },
+        "evidence_required": {
+          "title": "Evidence Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "evidence_required"
+      ],
+      "title": "EvidencePolicy",
+      "type": "object"
+    },
+    "ExternalHttpBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "external_http",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "credential_binding_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Credential Binding Ref"
+        },
+        "external_binding_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "External Binding Ref"
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "path_template": {
+          "maxLength": 256,
+          "minLength": 1,
+          "pattern": "^/[A-Za-z0-9_{}./-]*$",
+          "title": "Path Template",
+          "type": "string"
+        },
+        "service_package_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service Package Id"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "path_template",
+        "method"
+      ],
+      "title": "ExternalHttpBinding",
+      "type": "object"
+    },
+    "ExternalServiceDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "dependency_kind": {
+          "const": "external_service",
+          "title": "Dependency Kind",
+          "type": "string"
+        },
+        "service_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Service Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "service_ref"
+      ],
+      "title": "ExternalServiceDependency",
+      "type": "object"
+    },
+    "FederatedMcpBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "federated_mcp",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "external_package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "External Package Id",
+          "type": "string"
+        },
+        "projection_policy": {
+          "enum": [
+            "explicit_selection",
+            "reviewed_selection"
+          ],
+          "title": "Projection Policy",
+          "type": "string"
+        },
+        "remote_tool_name": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.\\-/]+$",
+          "title": "Remote Tool Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "external_package_id",
+        "remote_tool_name",
+        "projection_policy"
+      ],
+      "title": "FederatedMcpBinding",
+      "type": "object"
+    },
+    "GraphDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "dependency_kind": {
+          "const": "graph",
+          "title": "Dependency Kind",
+          "type": "string"
+        },
+        "graph_revision_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^graph://[a-z][a-z0-9._:/-]+$",
+          "title": "Graph Revision Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "graph_revision_ref"
+      ],
+      "title": "GraphDependency",
+      "type": "object"
+    },
+    "HumanDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "dependency_kind": {
+          "const": "human",
+          "title": "Dependency Kind",
+          "type": "string"
+        },
+        "workflow_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Workflow Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "workflow_ref"
+      ],
+      "title": "HumanDependency",
+      "type": "object"
+    },
+    "HumanTaskBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "human_task",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "result_handling": {
+          "const": "human_validated",
+          "title": "Result Handling",
+          "type": "string"
+        },
+        "task_type": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Task Type",
+          "type": "string"
+        },
+        "workflow_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Workflow Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "workflow_ref",
+        "task_type",
+        "result_handling"
+      ],
+      "title": "HumanTaskBinding",
+      "type": "object"
+    },
+    "IdempotencyDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "duplicate_delivery_behavior": {
+          "enum": [
+            "deduplicate",
+            "return_previous",
+            "reject",
+            "compensate",
+            "manual_review"
+          ],
+          "title": "Duplicate Delivery Behavior",
+          "type": "string"
+        },
+        "idempotency_class": {
+          "enum": [
+            "naturally_idempotent",
+            "keyed_idempotent",
+            "non_idempotent",
+            "unknown"
+          ],
+          "title": "Idempotency Class",
+          "type": "string"
+        },
+        "idempotency_key_supported": {
+          "title": "Idempotency Key Supported",
+          "type": "boolean"
+        },
+        "retry_safety": {
+          "enum": [
+            "safe",
+            "unsafe",
+            "conditional"
+          ],
+          "title": "Retry Safety",
+          "type": "string"
+        }
+      },
+      "required": [
+        "idempotency_class",
+        "idempotency_key_supported",
+        "retry_safety",
+        "duplicate_delivery_behavior"
+      ],
+      "title": "IdempotencyDeclaration",
+      "type": "object"
+    },
+    "InternalGraphBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "internal_graph",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "graph_revision_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^graph://[a-z][a-z0-9._:/-]+$",
+          "title": "Graph Revision Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "graph_revision_ref"
+      ],
+      "title": "InternalGraphBinding",
+      "type": "object"
+    },
+    "NativeFunctionBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "native_function",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "entrypoint_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Entrypoint Id",
+          "type": "string"
+        },
+        "function_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Function Ref",
+          "type": "string"
+        },
+        "service_package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Service Package Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "service_package_id",
+        "entrypoint_id",
+        "function_ref"
+      ],
+      "title": "NativeFunctionBinding",
+      "type": "object"
+    },
+    "NativeServiceBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_kind": {
+          "const": "native_service",
+          "title": "Binding Kind",
+          "type": "string"
+        },
+        "entrypoint_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Entrypoint Id",
+          "type": "string"
+        },
+        "operation_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Operation Ref",
+          "type": "string"
+        },
+        "service_package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Service Package Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding_kind",
+        "service_package_id",
+        "entrypoint_id",
+        "operation_ref"
+      ],
+      "title": "NativeServiceBinding",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ProviderDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "dependency_kind": {
+          "const": "provider",
+          "title": "Dependency Kind",
+          "type": "string"
+        },
+        "provider_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Provider Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "provider_ref"
+      ],
+      "title": "ProviderDependency",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    },
+    "RevisionProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "build_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^build://[a-z][a-z0-9._:/-]+$",
+          "title": "Build Ref",
+          "type": "string"
+        },
+        "source_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Source Digest",
+          "type": "string"
+        },
+        "source_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^source://[a-z][a-z0-9._:/-]+$",
+          "title": "Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_ref",
+        "source_digest",
+        "build_ref"
+      ],
+      "title": "RevisionProvenance",
+      "type": "object"
+    },
+    "RevisionResourceRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu_millicores": {
+          "anyOf": [
+            {
+              "maximum": 64000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cpu Millicores"
+        },
+        "memory_mebibytes": {
+          "anyOf": [
+            {
+              "maximum": 1048576,
+              "minimum": 16,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Memory Mebibytes"
+        },
+        "network_policy_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^policy://[a-z][a-z0-9._:/-]+$",
+          "title": "Network Policy Ref",
+          "type": "string"
+        },
+        "storage_requirement_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Storage Requirement Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "network_policy_ref"
+      ],
+      "title": "RevisionResourceRequirements",
+      "type": "object"
+    },
+    "SchemaReference": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Schema Digest",
+          "type": "string"
+        },
+        "schema_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^schema://[a-z][a-z0-9._:/-]+$",
+          "title": "Schema Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_ref",
+        "schema_digest"
+      ],
+      "title": "SchemaReference",
+      "type": "object"
+    },
+    "ServicePackageRevisionReference": {
+      "additionalProperties": false,
+      "properties": {
+        "entrypoint_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Entrypoint Id",
+          "type": "string"
+        },
+        "package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Package Id",
+          "type": "string"
+        },
+        "package_version": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Package Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "package_id",
+        "package_version",
+        "entrypoint_id"
+      ],
+      "title": "ServicePackageRevisionReference",
+      "type": "object"
+    },
+    "TimeoutDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_timeout_ms": {
+          "maximum": 86400000,
+          "minimum": 1,
+          "title": "Maximum Timeout Ms",
+          "type": "integer"
+        },
+        "timeout_class": {
+          "enum": [
+            "short",
+            "bounded_long",
+            "durable"
+          ],
+          "title": "Timeout Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "timeout_class",
+        "maximum_timeout_ms"
+      ],
+      "title": "TimeoutDeclaration",
+      "type": "object"
+    },
+    "ToolDefinitionReference": {
+      "additionalProperties": false,
+      "properties": {
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id"
+      ],
+      "title": "ToolDefinitionReference",
+      "type": "object"
+    },
+    "ToolDependency": {
+      "additionalProperties": false,
+      "properties": {
+        "dependency_kind": {
+          "const": "tool",
+          "title": "Dependency Kind",
+          "type": "string"
+        },
+        "revision_constraint": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Revision Constraint",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dependency_kind",
+        "tool_id",
+        "revision_constraint"
+      ],
+      "title": "ToolDependency",
+      "type": "object"
+    },
+    "ToolRevisionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "cancellation": {
+          "$ref": "#/$defs/CancellationDeclaration"
+        },
+        "compatibility": {
+          "$ref": "#/$defs/CompatibilityDeclaration"
+        },
+        "content_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "definition_ref": {
+          "$ref": "#/$defs/ToolDefinitionReference"
+        },
+        "dependency_contract": {
+          "$ref": "#/$defs/DependencyContract"
+        },
+        "effect_contract": {
+          "$ref": "#/$defs/EffectContract"
+        },
+        "error_contract": {
+          "$ref": "#/$defs/ErrorContractDeclaration"
+        },
+        "evidence_policy": {
+          "$ref": "#/$defs/EvidencePolicy"
+        },
+        "execution_binding": {
+          "discriminator": {
+            "mapping": {
+              "command_runner": "#/$defs/CommandRunnerBinding",
+              "database_operation": "#/$defs/DatabaseOperationBinding",
+              "external_http": "#/$defs/ExternalHttpBinding",
+              "federated_mcp": "#/$defs/FederatedMcpBinding",
+              "human_task": "#/$defs/HumanTaskBinding",
+              "internal_graph": "#/$defs/InternalGraphBinding",
+              "native_function": "#/$defs/NativeFunctionBinding",
+              "native_service": "#/$defs/NativeServiceBinding"
+            },
+            "propertyName": "binding_kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NativeFunctionBinding"
+            },
+            {
+              "$ref": "#/$defs/NativeServiceBinding"
+            },
+            {
+              "$ref": "#/$defs/InternalGraphBinding"
+            },
+            {
+              "$ref": "#/$defs/ExternalHttpBinding"
+            },
+            {
+              "$ref": "#/$defs/DatabaseOperationBinding"
+            },
+            {
+              "$ref": "#/$defs/CommandRunnerBinding"
+            },
+            {
+              "$ref": "#/$defs/FederatedMcpBinding"
+            },
+            {
+              "$ref": "#/$defs/HumanTaskBinding"
+            }
+          ],
+          "title": "Execution Binding"
+        },
+        "idempotency": {
+          "$ref": "#/$defs/IdempotencyDeclaration"
+        },
+        "input_schema": {
+          "$ref": "#/$defs/SchemaReference"
+        },
+        "output_schema": {
+          "$ref": "#/$defs/SchemaReference"
+        },
+        "package_ref": {
+          "$ref": "#/$defs/ServicePackageRevisionReference"
+        },
+        "provenance": {
+          "$ref": "#/$defs/RevisionProvenance"
+        },
+        "resource_requirements": {
+          "$ref": "#/$defs/RevisionResourceRequirements"
+        },
+        "revision": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "timeouts": {
+          "$ref": "#/$defs/TimeoutDeclaration"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "revision",
+        "definition_ref",
+        "package_ref",
+        "execution_binding",
+        "input_schema",
+        "output_schema",
+        "error_contract",
+        "effect_contract",
+        "dependency_contract",
+        "resource_requirements",
+        "timeouts",
+        "idempotency",
+        "cancellation",
+        "evidence_policy",
+        "compatibility",
+        "provenance",
+        "content_digest"
+      ],
+      "title": "ToolRevisionSpec",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-revision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ToolRevision",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/ToolRevisionSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric ToolRevision v1alpha1",
+  "type": "object"
+}

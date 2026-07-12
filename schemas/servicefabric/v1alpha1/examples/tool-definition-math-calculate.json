@@ -1,0 +1,16 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ToolDefinition",
+  "metadata": {"id": "math.calculate", "name": "Math Calculate", "description": "Stable bounded arithmetic operation.", "labels": {"domain": "math"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "servicefabric-platform"}},
+  "spec": {
+    "tool_id": "math.calculate", "name": "math-calculate", "title": "Mathematical Calculator", "description": "Evaluate bounded arithmetic expressions without arbitrary code execution.",
+    "capability": {"capability_id": "math.calculation", "summary": "Evaluate bounded arithmetic expressions.", "when_to_use": ["Exact arithmetic is required."], "when_not_to_use": ["External data is required."]},
+    "behavior": {"determinism": "deterministic", "side_effect_class": "none", "interaction_mode": "synchronous", "duration_class": "short", "streaming_supported": false, "cancellation_supported": false, "progress_supported": false, "human_participation": "none"},
+    "input_contract_ref": "schema://tools/math.calculate/input", "output_contract_ref": "schema://tools/math.calculate/output",
+    "declared_effects": {"effects": [{"effect_type": "none", "target_category": "none", "scope": "No external state changes.", "reversibility": "not_applicable", "verification_required": false, "approval_required": false, "idempotency_required": false}]},
+    "required_permissions": {"permissions": []}, "reliability": {"availability_class": "standard", "timeout_class": "short", "maximum_timeout_ms": 2000, "retry_policy": "bounded"},
+    "observability": {"audit_level": "metadata", "trace_required": true, "evidence_required": false, "metric_categories": ["latency", "errors"]},
+    "quality": {"evaluation_suite_refs": ["suite://math/contract", "suite://math/security"], "agent_callability_suite_refs": ["suite://math/agent-callability"], "quality_gates": [{"gate_id": "contract-tests", "suite_ref": "suite://math/contract"}]},
+    "lifecycle": {"maturity": "alpha", "deprecation_status": "active", "support_status": "supported"}, "mcp_projection": {"expose": false}
+  }
+}

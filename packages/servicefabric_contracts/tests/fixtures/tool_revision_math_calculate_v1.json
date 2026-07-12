@@ -1,0 +1,19 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolRevision",
+  "metadata": {"id": "math.calculate-v1", "name": "Math Calculate Revision 1", "description": "Immutable math.calculate executable contract.", "labels": {"tool": "math.calculate"}, "annotations": {}, "owner_ref": {"kind": "team", "id": "servicefabric-platform"}},
+  "spec": {
+    "tool_id": "math.calculate", "revision": "1.0.0", "definition_ref": {"tool_id": "math.calculate"},
+    "package_ref": {"package_id": "math-runtime", "package_version": "1.0.0", "entrypoint_id": "library"},
+    "execution_binding": {"binding_kind": "native_function", "service_package_id": "math-runtime", "entrypoint_id": "library", "function_ref": "calculate"},
+    "input_schema": {"schema_ref": "schema://tools/math.calculate/input/1.0.0", "schema_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"},
+    "output_schema": {"schema_ref": "schema://tools/math.calculate/output/1.0.0", "schema_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"},
+    "error_contract": {"error_codes": ["validation.invalid_input", "execution.timeout"], "categories": ["validation", "timeout", "internal"]},
+    "effect_contract": {"effects": [{"effect_type": "none", "target_category": "none", "scope": "No external state changes.", "reversibility": "not_applicable", "verification_required": false, "approval_required": false, "idempotency_required": false}]},
+    "dependency_contract": {"dependencies": []}, "resource_requirements": {"cpu_millicores": 50, "memory_mebibytes": 32, "network_policy_ref": "policy://network/none", "storage_requirement_refs": []},
+    "timeouts": {"timeout_class": "short", "maximum_timeout_ms": 2000}, "idempotency": {"idempotency_class": "naturally_idempotent", "idempotency_key_supported": false, "retry_safety": "safe", "duplicate_delivery_behavior": "return_previous"},
+    "cancellation": {"supported": false, "behavior": "not_supported"}, "evidence_policy": {"evidence_required": false},
+    "compatibility": {"minimum_contract_version": "0.2.0", "compatible_definition_revisions": ["1.0.0"]},
+    "provenance": {"source_ref": "source://stage11/math-calculate", "source_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333", "build_ref": "build://math-calculate/1.0.0"},
+    "content_digest": "sha256:44311ce2a6858638b2cc7a991fe0c05fd14255ef58f2d51a8249a88de22ffb4d"
+  }
+}

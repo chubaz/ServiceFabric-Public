@@ -1,0 +1,5 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1", "kind": "ToolStatus",
+  "metadata": {"id": "math-calculate-production-status", "name": "Math Calculate Status", "description": "Observed production state.", "labels": {"environment": "production"}, "annotations": {}, "owner_ref": {"kind": "controller", "id": "maintenance-controller"}},
+  "spec": {"tool_id": "math.calculate", "deployment_ref": "math-calculate-production", "revision_ref": {"tool_id": "math.calculate", "revision": "1.0.0", "content_digest": "sha256:44311ce2a6858638b2cc7a991fe0c05fd14255ef58f2d51a8249a88de22ffb4d"}, "availability": "available", "maintenance_state": "normal", "readiness": "ready", "last_transition": "2026-07-12T10:00:00Z", "conditions": [{"type": "ready", "status": "true", "reason": "health-check-passed", "message": "The declared readiness checks passed.", "observed_at": "2026-07-12T10:00:00Z"}], "observed_version": 1, "observed_evidence_refs": ["evidence://health/math-calculate-production/1"]}
+}

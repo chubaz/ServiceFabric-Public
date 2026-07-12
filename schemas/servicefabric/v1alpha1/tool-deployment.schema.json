@@ -1,0 +1,431 @@
+{
+  "$defs": {
+    "ActivationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "immediate",
+            "manual",
+            "scheduled",
+            "disabled"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "schedule_ref": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 3,
+              "pattern": "^schedule://[a-z][a-z0-9._:/-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schedule Ref"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "ActivationPolicy",
+      "type": "object"
+    },
+    "DeploymentProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "actor_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Actor Ref",
+          "type": "string"
+        },
+        "change_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^change://[a-z][a-z0-9._:/-]+$",
+          "title": "Change Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "change_ref",
+        "actor_ref"
+      ],
+      "title": "DeploymentProvenance",
+      "type": "object"
+    },
+    "DisabledTrafficPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "traffic_kind": {
+          "const": "disabled",
+          "title": "Traffic Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "traffic_kind"
+      ],
+      "title": "DisabledTrafficPolicy",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    },
+    "ShadowTrafficPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "shadow_percentage": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Shadow Percentage",
+          "type": "integer"
+        },
+        "shadow_revision_ref": {
+          "$ref": "#/$defs/ToolRevisionReference"
+        },
+        "traffic_kind": {
+          "const": "shadow",
+          "title": "Traffic Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "traffic_kind",
+        "shadow_revision_ref",
+        "shadow_percentage"
+      ],
+      "title": "ShadowTrafficPolicy",
+      "type": "object"
+    },
+    "SingleTrafficPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "traffic_kind": {
+          "const": "single",
+          "title": "Traffic Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "traffic_kind"
+      ],
+      "title": "SingleTrafficPolicy",
+      "type": "object"
+    },
+    "ToolDeploymentSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "activation_policy": {
+          "$ref": "#/$defs/ActivationPolicy"
+        },
+        "configuration_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Configuration Refs",
+          "type": "array"
+        },
+        "created_provenance": {
+          "$ref": "#/$defs/DeploymentProvenance"
+        },
+        "credential_binding_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Credential Binding Refs",
+          "type": "array"
+        },
+        "deployment_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Deployment Id",
+          "type": "string"
+        },
+        "environment": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Environment",
+          "type": "string"
+        },
+        "execution_target_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^target://[a-z][a-z0-9._:/-]+$",
+          "title": "Execution Target Ref",
+          "type": "string"
+        },
+        "policy_set_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Policy Set Refs",
+          "type": "array"
+        },
+        "revision_ref": {
+          "$ref": "#/$defs/ToolRevisionReference"
+        },
+        "tenant_scope": {
+          "enum": [
+            "single_tenant",
+            "multi_tenant",
+            "platform"
+          ],
+          "title": "Tenant Scope",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        },
+        "traffic_policy": {
+          "discriminator": {
+            "mapping": {
+              "disabled": "#/$defs/DisabledTrafficPolicy",
+              "shadow": "#/$defs/ShadowTrafficPolicy",
+              "single": "#/$defs/SingleTrafficPolicy",
+              "weighted": "#/$defs/WeightedTrafficPolicy"
+            },
+            "propertyName": "traffic_kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SingleTrafficPolicy"
+            },
+            {
+              "$ref": "#/$defs/WeightedTrafficPolicy"
+            },
+            {
+              "$ref": "#/$defs/ShadowTrafficPolicy"
+            },
+            {
+              "$ref": "#/$defs/DisabledTrafficPolicy"
+            }
+          ],
+          "title": "Traffic Policy"
+        }
+      },
+      "required": [
+        "deployment_id",
+        "tool_id",
+        "revision_ref",
+        "environment",
+        "execution_target_ref",
+        "traffic_policy",
+        "activation_policy",
+        "tenant_scope",
+        "created_provenance"
+      ],
+      "title": "ToolDeploymentSpec",
+      "type": "object"
+    },
+    "ToolRevisionReference": {
+      "additionalProperties": false,
+      "properties": {
+        "content_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "revision",
+        "content_digest"
+      ],
+      "title": "ToolRevisionReference",
+      "type": "object"
+    },
+    "WeightedTrafficPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "targets": {
+          "items": {
+            "$ref": "#/$defs/WeightedTrafficTarget"
+          },
+          "maxItems": 16,
+          "minItems": 2,
+          "title": "Targets",
+          "type": "array"
+        },
+        "traffic_kind": {
+          "const": "weighted",
+          "title": "Traffic Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "traffic_kind",
+        "targets"
+      ],
+      "title": "WeightedTrafficPolicy",
+      "type": "object"
+    },
+    "WeightedTrafficTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "percentage": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Percentage",
+          "type": "integer"
+        },
+        "revision_ref": {
+          "$ref": "#/$defs/ToolRevisionReference"
+        }
+      },
+      "required": [
+        "revision_ref",
+        "percentage"
+      ],
+      "title": "WeightedTrafficTarget",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-deployment.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ToolDeployment",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/ToolDeploymentSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric ToolDeployment v1alpha1",
+  "type": "object"
+}

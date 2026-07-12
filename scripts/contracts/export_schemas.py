@@ -22,6 +22,14 @@ EXAMPLES = {
     "federated_external_mcp.json": "federated-external-mcp.json",
     "graph_backed_research.json": "graph-backed-research.json",
     "worker_only_reconciliation.json": "worker-only-reconciliation.json",
+    "tool_definition_math_calculate.json": "tool-definition-math-calculate.json",
+    "tool_revision_math_calculate_v1.json": "tool-revision-math-calculate-v1.json",
+    "tool_definition_research_search_papers.json": "tool-definition-research-search-papers.json",
+    "tool_revision_research_search_papers_v1.json": "tool-revision-research-search-papers-v1.json",
+    "tool_definition_project_create_task.json": "tool-definition-project-create-task.json",
+    "tool_revision_project_create_task_v1.json": "tool-revision-project-create-task-v1.json",
+    "tool_deployment_math_calculate.json": "tool-deployment-math-calculate.json",
+    "tool_status_math_calculate.json": "tool-status-math-calculate.json",
 }
 
 

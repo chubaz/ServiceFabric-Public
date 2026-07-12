@@ -42,6 +42,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Validate committed dependency locks
+        run: python3 scripts/dependencies/check_python_locks.py
+
       - name: Install locked contract test dependencies
         run: python3 -m pip install -r packages/servicefabric_contracts/requirements/test.lock
 
@@ -62,6 +65,9 @@ jobs:
 
       - name: Run contract package architecture boundaries
         run: python3 -m unittest discover -s tests/architecture -p 'test_contract_package_boundaries.py' -v
+
+      - name: Run tool lifecycle architecture boundaries
+        run: python3 -m unittest discover -s tests/architecture -p 'test_tool_contract_boundaries.py' -v
 
   python-production-builds:
     runs-on: ubuntu-latest

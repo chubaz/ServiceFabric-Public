@@ -1,0 +1,809 @@
+{
+  "$defs": {
+    "CapabilityDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "capability_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "when_not_to_use": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "When Not To Use",
+          "type": "array"
+        },
+        "when_to_use": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "When To Use",
+          "type": "array"
+        }
+      },
+      "required": [
+        "capability_id",
+        "summary",
+        "when_to_use",
+        "when_not_to_use"
+      ],
+      "title": "CapabilityDeclaration",
+      "type": "object"
+    },
+    "EffectContract": {
+      "additionalProperties": false,
+      "properties": {
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/EffectDeclaration"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "effects"
+      ],
+      "title": "EffectContract",
+      "type": "object"
+    },
+    "EffectDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_required": {
+          "title": "Approval Required",
+          "type": "boolean"
+        },
+        "effect_type": {
+          "enum": [
+            "none",
+            "external_read",
+            "database_read",
+            "database_write",
+            "file_write",
+            "message_send",
+            "task_create",
+            "payment_initiate",
+            "infrastructure_change",
+            "human_workflow_create"
+          ],
+          "title": "Effect Type",
+          "type": "string"
+        },
+        "idempotency_required": {
+          "title": "Idempotency Required",
+          "type": "boolean"
+        },
+        "reversibility": {
+          "enum": [
+            "not_applicable",
+            "reversible",
+            "compensatable",
+            "irreversible"
+          ],
+          "title": "Reversibility",
+          "type": "string"
+        },
+        "scope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "target_category": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Target Category",
+          "type": "string"
+        },
+        "verification_required": {
+          "title": "Verification Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "effect_type",
+        "target_category",
+        "scope",
+        "reversibility",
+        "verification_required",
+        "approval_required",
+        "idempotency_required"
+      ],
+      "title": "EffectDeclaration",
+      "type": "object"
+    },
+    "McpAnnotations": {
+      "additionalProperties": false,
+      "properties": {
+        "destructive_hint": {
+          "title": "Destructive Hint",
+          "type": "boolean"
+        },
+        "idempotent_hint": {
+          "title": "Idempotent Hint",
+          "type": "boolean"
+        },
+        "open_world_hint": {
+          "title": "Open World Hint",
+          "type": "boolean"
+        },
+        "read_only_hint": {
+          "title": "Read Only Hint",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "read_only_hint",
+        "destructive_hint",
+        "idempotent_hint",
+        "open_world_hint"
+      ],
+      "title": "McpAnnotations",
+      "type": "object"
+    },
+    "McpProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/McpAnnotations"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "description": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "durable_operation_projection": {
+          "default": "disabled",
+          "enum": [
+            "disabled",
+            "when_negotiated"
+          ],
+          "title": "Durable Operation Projection",
+          "type": "string"
+        },
+        "expose": {
+          "default": false,
+          "title": "Expose",
+          "type": "boolean"
+        },
+        "name_override": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_.\\-/]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name Override"
+        },
+        "progress_projection": {
+          "default": "disabled",
+          "enum": [
+            "disabled",
+            "when_negotiated"
+          ],
+          "title": "Progress Projection",
+          "type": "string"
+        },
+        "structured_result_support": {
+          "default": true,
+          "title": "Structured Result Support",
+          "type": "boolean"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        }
+      },
+      "title": "McpProjection",
+      "type": "object"
+    },
+    "ObservabilityDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "audit_level": {
+          "enum": [
+            "none",
+            "metadata",
+            "full"
+          ],
+          "title": "Audit Level",
+          "type": "string"
+        },
+        "evidence_required": {
+          "title": "Evidence Required",
+          "type": "boolean"
+        },
+        "metric_categories": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Metric Categories",
+          "type": "array"
+        },
+        "trace_required": {
+          "title": "Trace Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "audit_level",
+        "trace_required",
+        "evidence_required"
+      ],
+      "title": "ObservabilityDeclaration",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "PermissionContract": {
+      "additionalProperties": false,
+      "properties": {
+        "permissions": {
+          "items": {
+            "$ref": "#/$defs/PermissionRequirement"
+          },
+          "maxItems": 64,
+          "title": "Permissions",
+          "type": "array"
+        }
+      },
+      "title": "PermissionContract",
+      "type": "object"
+    },
+    "PermissionRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "delegation_allowed": {
+          "default": false,
+          "title": "Delegation Allowed",
+          "type": "boolean"
+        },
+        "permission_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Permission Id",
+          "type": "string"
+        },
+        "resource_scope": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Resource Scope",
+          "type": "string"
+        },
+        "tenant_scope": {
+          "enum": [
+            "caller_tenant",
+            "owner_tenant",
+            "platform",
+            "explicit"
+          ],
+          "title": "Tenant Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "permission_id",
+        "tenant_scope",
+        "resource_scope"
+      ],
+      "title": "PermissionRequirement",
+      "type": "object"
+    },
+    "QualityDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_callability_suite_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Agent Callability Suite Refs",
+          "type": "array"
+        },
+        "evaluation_suite_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Evaluation Suite Refs",
+          "type": "array"
+        },
+        "quality_gates": {
+          "items": {
+            "$ref": "#/$defs/QualityGateReference"
+          },
+          "maxItems": 32,
+          "title": "Quality Gates",
+          "type": "array"
+        }
+      },
+      "title": "QualityDeclaration",
+      "type": "object"
+    },
+    "QualityGateReference": {
+      "additionalProperties": false,
+      "properties": {
+        "gate_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Gate Id",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "suite_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^suite://[a-z][a-z0-9._:/-]+$",
+          "title": "Suite Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "gate_id",
+        "suite_ref"
+      ],
+      "title": "QualityGateReference",
+      "type": "object"
+    },
+    "ReliabilityDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "availability_class": {
+          "enum": [
+            "best_effort",
+            "standard",
+            "critical"
+          ],
+          "title": "Availability Class",
+          "type": "string"
+        },
+        "maximum_timeout_ms": {
+          "maximum": 86400000,
+          "minimum": 1,
+          "title": "Maximum Timeout Ms",
+          "type": "integer"
+        },
+        "retry_policy": {
+          "enum": [
+            "none",
+            "bounded",
+            "policy_controlled"
+          ],
+          "title": "Retry Policy",
+          "type": "string"
+        },
+        "timeout_class": {
+          "enum": [
+            "short",
+            "bounded_long",
+            "durable"
+          ],
+          "title": "Timeout Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "availability_class",
+        "timeout_class",
+        "maximum_timeout_ms",
+        "retry_policy"
+      ],
+      "title": "ReliabilityDeclaration",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    },
+    "ToolBehavior": {
+      "additionalProperties": false,
+      "properties": {
+        "cancellation_supported": {
+          "title": "Cancellation Supported",
+          "type": "boolean"
+        },
+        "determinism": {
+          "enum": [
+            "deterministic",
+            "conditionally_deterministic",
+            "nondeterministic"
+          ],
+          "title": "Determinism",
+          "type": "string"
+        },
+        "duration_class": {
+          "enum": [
+            "short",
+            "bounded_long",
+            "durable"
+          ],
+          "title": "Duration Class",
+          "type": "string"
+        },
+        "human_participation": {
+          "enum": [
+            "none",
+            "optional",
+            "required"
+          ],
+          "title": "Human Participation",
+          "type": "string"
+        },
+        "interaction_mode": {
+          "enum": [
+            "synchronous",
+            "asynchronous",
+            "either"
+          ],
+          "title": "Interaction Mode",
+          "type": "string"
+        },
+        "progress_supported": {
+          "title": "Progress Supported",
+          "type": "boolean"
+        },
+        "side_effect_class": {
+          "enum": [
+            "none",
+            "read_only_external",
+            "reversible",
+            "irreversible"
+          ],
+          "title": "Side Effect Class",
+          "type": "string"
+        },
+        "streaming_supported": {
+          "title": "Streaming Supported",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "determinism",
+        "side_effect_class",
+        "interaction_mode",
+        "duration_class",
+        "streaming_supported",
+        "cancellation_supported",
+        "progress_supported",
+        "human_participation"
+      ],
+      "title": "ToolBehavior",
+      "type": "object"
+    },
+    "ToolDefinitionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_policy_ref": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 3,
+              "pattern": "^policy://[a-z][a-z0-9._:/-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Policy Ref"
+        },
+        "behavior": {
+          "$ref": "#/$defs/ToolBehavior"
+        },
+        "capability": {
+          "$ref": "#/$defs/CapabilityDeclaration"
+        },
+        "declared_effects": {
+          "$ref": "#/$defs/EffectContract"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "input_contract_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^schema://[a-z][a-z0-9._:/-]+$",
+          "title": "Input Contract Ref",
+          "type": "string"
+        },
+        "lifecycle": {
+          "$ref": "#/$defs/ToolLifecycleDeclaration"
+        },
+        "mcp_projection": {
+          "$ref": "#/$defs/McpProjection"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "observability": {
+          "$ref": "#/$defs/ObservabilityDeclaration"
+        },
+        "output_contract_ref": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^schema://[a-z][a-z0-9._:/-]+$",
+          "title": "Output Contract Ref",
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/$defs/QualityDeclaration"
+        },
+        "reliability": {
+          "$ref": "#/$defs/ReliabilityDeclaration"
+        },
+        "required_permissions": {
+          "$ref": "#/$defs/PermissionContract"
+        },
+        "title": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "tool_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "name",
+        "title",
+        "description",
+        "capability",
+        "behavior",
+        "input_contract_ref",
+        "output_contract_ref",
+        "declared_effects",
+        "reliability",
+        "observability",
+        "quality",
+        "lifecycle"
+      ],
+      "title": "ToolDefinitionSpec",
+      "type": "object"
+    },
+    "ToolLifecycleDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "deprecation_status": {
+          "enum": [
+            "active",
+            "deprecated",
+            "retired"
+          ],
+          "title": "Deprecation Status",
+          "type": "string"
+        },
+        "maturity": {
+          "enum": [
+            "experimental",
+            "alpha",
+            "beta",
+            "stable",
+            "deprecated"
+          ],
+          "title": "Maturity",
+          "type": "string"
+        },
+        "replacement_tool_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 3,
+              "pattern": "^[a-z][a-z0-9_-]{0,62}\\.[a-z][a-z0-9_]{0,62}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replacement Tool Ref"
+        },
+        "support_status": {
+          "enum": [
+            "supported",
+            "best_effort",
+            "unsupported"
+          ],
+          "title": "Support Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "maturity",
+        "deprecation_status",
+        "support_status"
+      ],
+      "title": "ToolLifecycleDeclaration",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/tool-definition.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "ToolDefinition",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/ToolDefinitionSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric ToolDefinition v1alpha1",
+  "type": "object"
+}
