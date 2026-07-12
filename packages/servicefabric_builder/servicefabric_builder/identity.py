@@ -75,3 +75,19 @@ def artifact_manifest(revision: ApplicationRevision, output: BuildOutput, builde
             },
         },
     })
+
+
+def manifest_content_digest(manifest: ApplicationArtifactManifest) -> str:
+    spec = manifest.spec
+    return digest({
+        "application_id": spec.application_id,
+        "application_revision": spec.application_revision,
+        "builder_id": spec.builder_id,
+        "builder_revision": spec.builder_revision,
+        "build_spec_digest": spec.build_spec_digest,
+        "entry_document": spec.entry_document,
+        "files": [item.model_dump(mode="json") for item in spec.files],
+        "reproducibility": spec.reproducibility,
+        "source_digest": spec.source_digest,
+        "total_size_bytes": spec.total_size_bytes,
+    })
