@@ -1,0 +1,1 @@
+{"server_id":"research-provider","transport":"streamable_http","endpoint_ref":"endpoint:research-provider","credential_binding_ref":"credential:research-provider","allowed_tools":[{"remote_name":"search_papers","canonical_tool_id":"research.search_papers","expected_schema_digest":"sha256:1dc63095e8672403bbe40fa26719d175e695c0167f6daad6b9655f6506491f01"}]}

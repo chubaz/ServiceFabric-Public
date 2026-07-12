@@ -1,0 +1,1 @@
+{"tool_id":"research.search_papers","revision":"1.0.0","binding":"federated_mcp","server_ref":"research-provider","remote_tool":"search_papers","input":{"query":{"type":"string","maxLength":500},"maximum_results":{"type":"integer","minimum":1,"maximum":20}},"timeout_ms":10000,"cancellable":true}
