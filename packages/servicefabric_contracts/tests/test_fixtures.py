@@ -4,10 +4,34 @@ import json
 import unittest
 from pathlib import Path
 
-from servicefabric_contracts import EffectReceipt, ServiceFabricOperation, ServicePackageDefinition, ToolDefinition, ToolDeployment, ToolInvocationRequest, ToolResult, ToolRevision, ToolStatus
+from servicefabric_contracts import (
+    CapsuleAuthoringManifest,
+    CapsuleDefinition,
+    CapsuleHostPolicy,
+    CapsuleHostRequest,
+    CapsuleHostResult,
+    CapsuleHostSession,
+    CapsuleRevision,
+    EffectReceipt,
+    ServiceFabricOperation,
+    ServicePackageDefinition,
+    ToolDefinition,
+    ToolDeployment,
+    ToolInvocationRequest,
+    ToolResult,
+    ToolRevision,
+    ToolStatus,
+)
 
 RESOURCE_MODELS = {
     "ServicePackageDefinition": ServicePackageDefinition,
+    "CapsuleDefinition": CapsuleDefinition,
+    "CapsuleRevision": CapsuleRevision,
+    "CapsuleAuthoringManifest": CapsuleAuthoringManifest,
+    "CapsuleHostPolicy": CapsuleHostPolicy,
+    "CapsuleHostRequest": CapsuleHostRequest,
+    "CapsuleHostSession": CapsuleHostSession,
+    "CapsuleHostResult": CapsuleHostResult,
     "ToolDefinition": ToolDefinition,
     "ToolRevision": ToolRevision,
     "ToolDeployment": ToolDeployment,

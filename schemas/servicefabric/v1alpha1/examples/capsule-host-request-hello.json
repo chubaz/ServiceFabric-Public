@@ -1,0 +1,32 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "CapsuleHostRequest",
+  "metadata": {
+    "id": "request.hello-capsule",
+    "name": "Hello Capsule Host Request",
+    "description": "Request to open a bounded loopback session.",
+    "labels": {},
+    "annotations": {},
+    "owner_ref": {
+      "kind": "team",
+      "id": "platform"
+    }
+  },
+  "spec": {
+    "request_id": "request.hello-capsule",
+    "capsule_id": "examples.hello-capsule",
+    "capsule_revision": "1.0.0",
+    "caller_context": {
+      "subject_ref": "capsule-client",
+      "principal_type": "service",
+      "tenant_ref": "tenant.platform",
+      "issuer": "servicefabric",
+      "audiences": ["servicefabric"],
+      "scopes": ["capsules.host"],
+      "authentication_strength": "workload"
+    },
+    "host_policy_ref": "loopback-static",
+    "requested_port": 0,
+    "correlation_ref": "correlation.hello-capsule"
+  }
+}

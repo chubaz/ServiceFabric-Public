@@ -15,6 +15,13 @@ from servicefabric_contracts.schema_export import write_schema_snapshot  # noqa:
 
 
 EXAMPLES = {
+    "capsule_definition_hello.json": "capsule-definition-hello.json",
+    "capsule_revision_hello_v1.json": "capsule-revision-hello-v1.json",
+    "capsule_authoring_manifest_hello.json": "capsule-authoring-manifest-hello.json",
+    "capsule_host_policy_loopback.json": "capsule-host-policy-loopback.json",
+    "capsule_host_request_hello.json": "capsule-host-request-hello.json",
+    "capsule_host_session_hello.json": "capsule-host-session-hello.json",
+    "capsule_host_result_hello_success.json": "capsule-host-result-hello-success.json",
     "frontend_only_svelte.json": "frontend-only-svelte.json",
     "cli_financial_calculator.json": "cli-financial-calculator.json",
     "managed_http_capsule.json": "managed-http-capsule.json",

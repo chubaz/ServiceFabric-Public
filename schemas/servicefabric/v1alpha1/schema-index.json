@@ -33,6 +33,48 @@
       "sha256": "56684c4e5472b1d692ebe37935d16817ff4dcf81411bc35987b44d540525bb9a"
     },
     {
+      "kind": "CapsuleAuthoringManifest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-authoring-manifest.schema.json",
+      "schema_path": "capsule-authoring-manifest.schema.json",
+      "sha256": "cc6964fee4fe8cc517bc9fe291d006badd0938b3b0e25eb862eb640b1f7102d6"
+    },
+    {
+      "kind": "CapsuleDefinition",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-definition.schema.json",
+      "schema_path": "capsule-definition.schema.json",
+      "sha256": "87a2af33231102b72172d87365ab65b40fda19ce40f6b382c26e66a10c6f9e7b"
+    },
+    {
+      "kind": "CapsuleHostPolicy",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-host-policy.schema.json",
+      "schema_path": "capsule-host-policy.schema.json",
+      "sha256": "8295a0e32edb73afb70a1237b3b363acfe6378d4dcefbac0fbb4f6f54e4f6272"
+    },
+    {
+      "kind": "CapsuleHostRequest",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-host-request.schema.json",
+      "schema_path": "capsule-host-request.schema.json",
+      "sha256": "a95e8187d4064db54200e60761d91e9d986e0f0e07bbc1e193670a72022cc34f"
+    },
+    {
+      "kind": "CapsuleHostResult",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-host-result.schema.json",
+      "schema_path": "capsule-host-result.schema.json",
+      "sha256": "b0da2f7abc79bc97d946c0d5beb838c9f256b551364c63923ef49faf901d94ae"
+    },
+    {
+      "kind": "CapsuleHostSession",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-host-session.schema.json",
+      "schema_path": "capsule-host-session.schema.json",
+      "sha256": "2d1b63ec73641f4c649fd4c919689f4c00861b1efa68c09e00c02d2e4916044e"
+    },
+    {
+      "kind": "CapsuleRevision",
+      "schema_id": "https://schemas.servicefabric.ai/v1alpha1/capsule-revision.schema.json",
+      "schema_path": "capsule-revision.schema.json",
+      "sha256": "58e98656789ef0e78b80e8768c3ee06fe979b4f97cf169396257f943a540cbec"
+    },
+    {
       "kind": "EffectReceipt",
       "schema_id": "https://schemas.servicefabric.ai/v1alpha1/effect-receipt.schema.json",
       "schema_path": "effect-receipt.schema.json",

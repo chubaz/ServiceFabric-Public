@@ -1,0 +1,157 @@
+{
+  "$defs": {
+    "CapsuleDefinitionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "capsule_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Capsule Id",
+          "type": "string"
+        },
+        "capsule_type": {
+          "const": "static_capsule",
+          "default": "static_capsule",
+          "title": "Capsule Type",
+          "type": "string"
+        },
+        "status": {
+          "default": "reviewed",
+          "enum": [
+            "draft",
+            "reviewed",
+            "deprecated"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capsule_id"
+      ],
+      "title": "CapsuleDefinitionSpec",
+      "type": "object"
+    },
+    "OwnerReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 32,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ],
+      "title": "OwnerReference",
+      "type": "object"
+    },
+    "ResourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Annotations",
+          "type": "object"
+        },
+        "description": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Labels",
+          "type": "object"
+        },
+        "name": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/OwnerReference"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "owner_ref"
+      ],
+      "title": "ResourceMetadata",
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.servicefabric.ai/v1alpha1/capsule-definition.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "servicefabric.ai/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "kind": {
+      "const": "CapsuleDefinition",
+      "title": "Kind",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ResourceMetadata"
+    },
+    "spec": {
+      "$ref": "#/$defs/CapsuleDefinitionSpec"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "title": "ServiceFabric CapsuleDefinition v1alpha1",
+  "type": "object"
+}

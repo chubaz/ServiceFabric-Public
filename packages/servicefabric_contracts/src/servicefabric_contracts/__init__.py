@@ -1,6 +1,24 @@
 """Public contract package API."""
 
 from .service_package import ServicePackageDefinition, ServicePackageSpec
+from .capsules import (
+    CapsuleArtifactBinding,
+    CapsuleAuthoringManifest,
+    CapsuleAuthoringManifestSpec,
+    CapsuleDefinition,
+    CapsuleDefinitionSpec,
+    CapsuleHostPolicy,
+    CapsuleHostRequest,
+    CapsuleHostRequestSpec,
+    CapsuleHostResult,
+    CapsuleHostResultSpec,
+    CapsuleHostSession,
+    CapsuleHostSessionSpec,
+    CapsuleRoute,
+    CapsuleRevision,
+    CapsuleRevisionProvenance,
+    CapsuleRevisionSpec,
+)
 from .tool_definition import ToolDefinition, ToolDefinitionSpec
 from .tool_deployment import ToolDeployment, ToolDeploymentSpec
 from .tool_revision import ToolRevision, ToolRevisionSpec
@@ -31,6 +49,22 @@ from .applications import (
 __all__ = [
     "ServicePackageDefinition",
     "ServicePackageSpec",
+    "CapsuleArtifactBinding",
+    "CapsuleAuthoringManifest",
+    "CapsuleAuthoringManifestSpec",
+    "CapsuleDefinition",
+    "CapsuleDefinitionSpec",
+    "CapsuleHostPolicy",
+    "CapsuleHostRequest",
+    "CapsuleHostRequestSpec",
+    "CapsuleHostResult",
+    "CapsuleHostResultSpec",
+    "CapsuleHostSession",
+    "CapsuleHostSessionSpec",
+    "CapsuleRoute",
+    "CapsuleRevision",
+    "CapsuleRevisionProvenance",
+    "CapsuleRevisionSpec",
     "ToolDefinition",
     "ToolDefinitionSpec",
     "ToolDeployment",
