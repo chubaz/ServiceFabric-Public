@@ -24,6 +24,7 @@ class OperationStoreTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             store=DurableOperationStore(Path(root)); store.publish(operation(),event())
             restarted=DurableOperationStore(Path(root)); self.assertEqual(restarted.get("operation-1")[1],1)
+            self.assertEqual(restarted.list_operations()[0][0].spec.operation_id,"operation-1")
             queued=operation("queued"); restarted.append(transition(),event(2,D1,D2,"transition-2"),queued,expected_version=1)
             replayed,version=DurableOperationStore(Path(root)).replay("operation-1")
             self.assertEqual((replayed.spec.state,version),("queued",2)); self.assertEqual(len(restarted.events("operation-1")),2)

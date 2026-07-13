@@ -4,6 +4,7 @@ class GovernanceClient:
  def evaluate_policy(self,request,**kwargs):return self._service.evaluate_policy(request,**kwargs)
  def submit_operation(self,operation,initial_event,**kwargs):return self._service.submit_operation(operation,initial_event,**kwargs)
  def get_operation(self,operation_ref):return self._service.get_operation(operation_ref)
+ def list_operations(self):return self._service.list_operations()
  def list_operation_events(self,operation_ref):return self._service.list_operation_events(operation_ref)
  def create_approval_request(self,*args,**kwargs):return self._service.create_approval_request(*args,**kwargs)
  def record_approval_decision(self,*args,**kwargs):return self._service.record_approval_decision(*args,**kwargs)

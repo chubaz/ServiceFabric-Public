@@ -6,6 +6,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Callable, Iterable
 
 from servicefabric_contracts import ApprovalBinding, ApprovalDecision, ApprovalRequest, PolicyDecision
 from servicefabric_contracts.approvals import (
@@ -59,9 +60,19 @@ class TrustedApprover:
 
 
 class ApprovalService:
-    def __init__(self) -> None:
-        self._decisions: dict[str, ApprovalDecision] = {}
-        self._consumed_bindings: set[str] = set()
+    def __init__(
+        self,
+        *,
+        decisions: Iterable[ApprovalDecision] = (),
+        consumed_bindings: Iterable[str] = (),
+        consume_binding: Callable[[str], None] | None = None,
+    ) -> None:
+        """Restore immutable decisions and persist single-use consumption when configured."""
+        self._decisions = {
+            decision.spec.approval_request_ref: decision for decision in decisions
+        }
+        self._consumed_bindings = set(consumed_bindings)
+        self._consume_binding = consume_binding
 
     def create_request(
         self,
@@ -198,4 +209,6 @@ class ApprovalService:
         if binding.spec.binding_id in self._consumed_bindings:
             raise ApprovalError("single-use approval binding was already consumed")
         if consume and binding.spec.authority_scope.single_use:
+            if self._consume_binding is not None:
+                self._consume_binding(binding.spec.binding_id)
             self._consumed_bindings.add(binding.spec.binding_id)

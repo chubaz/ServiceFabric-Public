@@ -133,6 +133,15 @@ class DurableOperationStore:
             raise CorruptOperationError("snapshot operation identity mismatch")
         return operation, int(payload["version"])
 
+    def list_operations(self) -> tuple[tuple[ServiceFabricOperation, int], ...]:
+        """Return validated operation snapshots without exposing store paths."""
+        values: list[tuple[ServiceFabricOperation, int]] = []
+        for directory in sorted(path for path in self._root.iterdir() if path.is_dir()):
+            payload = self._read(directory / "snapshot.json")
+            operation = ServiceFabricOperation.model_validate(payload["operation"])
+            values.append((operation, int(payload["version"])))
+        return tuple(sorted(values, key=lambda item: item[0].spec.operation_id))
+
     def append(self, transition: OperationTransition, event: OperationEvent, resulting: ServiceFabricOperation, *, expected_version: int) -> int:
         with self._lock:
             current, version = self.get(transition.spec.operation_ref)

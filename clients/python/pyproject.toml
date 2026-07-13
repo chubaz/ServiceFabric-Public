@@ -7,7 +7,10 @@ name = "servicefabric-client"
 version = "0.1.0a1"
 description = "Python client for canonical ServiceFabric boundaries."
 requires-python = ">=3.11,<3.12"
-dependencies = ["servicefabric-contracts==0.4.0a1"]
+dependencies = ["servicefabric-application-builder==0.1.0a1", "servicefabric-artifacts==0.1.0a1", "servicefabric-builder==0.1.0a1", "servicefabric-capsule-host==0.1.0a1", "servicefabric-contracts==0.4.0a1", "servicefabric-governance==0.1.0a1", "servicefabric-governance-service==0.1.0a1", "servicefabric-mcp-gateway==0.1.0a1", "servicefabric-mcp-projection==0.1.0a1", "servicefabric-operations==0.1.0a1", "servicefabric-runtime==0.1.0a1", "servicefabric-tool-runtime-service==0.1.0a1"]
+
+[project.scripts]
+servicefabric = "servicefabric_client.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "."}

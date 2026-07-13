@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-local-gateway"
+version = "0.1.0a1"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-contracts==0.4.0a1",
+  "servicefabric-governance==0.1.0a1",
+  "servicefabric-governance-service==0.1.0a1",
+  "servicefabric-operations==0.1.0a1",
+  "servicefabric-runtime==0.1.0a1",
+  "servicefabric-tool-runtime-service==0.1.0a1",
+]
+
+[project.scripts]
+servicefabric-gateway = "servicefabric_local_gateway.main:main"
+
+[tool.setuptools]
+package-dir = {"servicefabric_local_gateway" = "."}
+packages = ["servicefabric_local_gateway"]

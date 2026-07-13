@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
-from servicefabric_contracts import EffectReceipt,OperationEvent,PolicyDecision,PolicyEvaluationRequest,ServiceFabricOperation
+from servicefabric_contracts import ApprovalBinding,EffectReceipt,OperationEvent,PolicyDecision,PolicyEvaluationRequest,ServiceFabricOperation
 from servicefabric_governance import ApprovalService,TrustedApprover,TrustedPolicyInput,VersionedPolicyEvaluator
 from servicefabric_operations import CancellationController,DurableOperationStore,IdempotencyRepository,OperationStateMachine,ReconciliationService
 @dataclass(frozen=True,slots=True)
@@ -20,6 +20,7 @@ class GovernanceOperationsService:
   if reservation.outcome=="reserved":self._operations.publish(operation,initial_event);return SubmissionResult("accepted",operation.spec.operation_id,operation)
   existing,_=self._operations.get(reservation.record.spec.operation_ref);return SubmissionResult(reservation.outcome,existing.spec.operation_id,existing)
  def get_operation(self,operation_ref:str):return self._operations.get(operation_ref)
+ def list_operations(self):return self._operations.list_operations()
  def list_operation_events(self,operation_ref:str):return self._operations.events(operation_ref)
  def create_approval_request(self,*args,**kwargs):
   value=self._approvals.create_request(*args,**kwargs);self._audit.put(value,kind="ApprovalRequest",identifier=value.spec.approval_request_id,operation_ref=value.spec.operation_ref);return value
@@ -35,3 +36,8 @@ class GovernanceOperationsService:
   if result.receipt:self._audit.put(result.receipt,kind="EffectReceipt",identifier=result.receipt.spec.receipt_id,operation_ref=operation_ref)
   return result
  def effect_receipts(self,operation_ref:str):return self._audit.list_for_operation(kind="EffectReceipt",operation_ref=operation_ref,model=EffectReceipt)
+ def approval_binding(self,binding_ref:str)->ApprovalBinding|None:
+  try:return self._audit.get(kind="ApprovalBinding",identifier=binding_ref,model=ApprovalBinding)
+  except Exception:return None
+ @property
+ def approvals(self):return self._approvals

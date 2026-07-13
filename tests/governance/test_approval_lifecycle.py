@@ -1,4 +1,5 @@
 import json
+import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -6,6 +7,7 @@ from pathlib import Path
 from servicefabric_contracts import PolicyDecision
 from servicefabric_contracts.governance import AuthorityGrant
 from servicefabric_governance import ApprovalError, ApprovalService, TrustedApprover
+from servicefabric_operations import ApprovalConsumptionRepository
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,6 +43,18 @@ class ApprovalLifecycleTests(unittest.TestCase):
         with self.assertRaises(ApprovalError): service.validate_binding(binding, now=NOW+timedelta(minutes=11), **args)
         service.validate_binding(binding, now=NOW+timedelta(minutes=2), consume=True, **args)
         with self.assertRaises(ApprovalError): service.validate_binding(binding, now=NOW+timedelta(minutes=3), **args)
+
+    def test_consumption_repository_survives_service_restart(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repository=ApprovalConsumptionRepository(Path(directory))
+            service=ApprovalService(consume_binding=repository.consume)
+            req=request(service)
+            decision=service.decide(req, approver(), outcome="approved", now=NOW+timedelta(minutes=1), reason_code="approved-reviewed", safe_reason="Approved.")
+            binding=service.bind(req, decision, policy_version="1.0.0")
+            args=dict(caller_ref="user-alice", revision_ref="1.0.0", intent_digest=D3, argument_digest=D2, now=NOW+timedelta(minutes=2), consume=True)
+            service.validate_binding(binding, **args)
+            restarted=ApprovalService(consumed_bindings=repository.consumed(), consume_binding=repository.consume)
+            with self.assertRaises(ApprovalError): restarted.validate_binding(binding, **args)
 
     def test_denial_cannot_create_binding(self):
         service=ApprovalService(); req=request(service); decision=service.decide(req, approver(), outcome="denied", now=NOW+timedelta(minutes=1), reason_code="approval-denied", safe_reason="Denied.")

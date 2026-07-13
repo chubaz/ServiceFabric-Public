@@ -30,6 +30,13 @@ class ImmutableRecordRepository:
   except CorruptOperationError:raise
   except Exception as exc:raise CorruptOperationError("audit record is corrupt") from exc
  def get(self,*,kind:str,identifier:str,model:type[BaseModel])->BaseModel:return model.model_validate(self._payload(self._path(kind,identifier))["record"])
+ def list_by_kind(self,*,kind:str,model:type[BaseModel])->tuple[BaseModel,...]:
+  """Return immutable records of one canonical kind in deterministic order."""
+  values=[]
+  for path in sorted(self._root.glob("*.json")):
+   payload=self._payload(path)
+   if payload["kind"]==kind:values.append(model.model_validate(payload["record"]))
+  return tuple(sorted(values,key=lambda value:value.metadata.id))
  def list_for_operation(self,*,kind:str,operation_ref:str,model:type[BaseModel])->tuple[BaseModel,...]:
   values=[]
   for path in sorted(self._root.glob("*.json")):

@@ -58,6 +58,7 @@ class GovernedInvocationBoundary:
         runtime: object,
         profiles: tuple[InvocationGovernanceProfile, ...],
         approval_lookup: Callable[[str], ApprovalBinding | None] = lambda _ref: None,
+        approval_required_acceptor: Callable[[ToolInvocationRequest, PolicyDecision, str, str, datetime], ToolInvocationAcceptance] | None = None,
         durable_acceptor: Callable[[ToolInvocationRequest, str, datetime], ToolInvocationAcceptance] | None = None,
     ) -> None:
         self._evaluator = evaluator
@@ -67,6 +68,7 @@ class GovernedInvocationBoundary:
         if len(self._profiles) != len(profiles):
             raise ValueError("invocation governance profiles must be unique")
         self._approval_lookup = approval_lookup
+        self._approval_required_acceptor = approval_required_acceptor
         self._durable_acceptor = durable_acceptor
 
     def invoke(self, request: ToolInvocationRequest, *, trusted_adapter_ref: str, now: datetime) -> ToolResult | ToolInvocationAcceptance:
@@ -84,6 +86,14 @@ class GovernedInvocationBoundary:
         if decision.spec.outcome == "require_approval":
             binding = self._resolve_binding(request)
             if binding is None:
+                if self._approval_required_acceptor is not None:
+                    return self._approval_required_acceptor(
+                        self._effective_request(request, decision),
+                        decision,
+                        intent_digest,
+                        argument_digest,
+                        now,
+                    )
                 return self._error_result(request, "SF-APPROVAL-REQUIRED", "approval", "Approval is required before execution.", now)
             try:
                 self._validate_binding(binding, decision, request, intent_digest, argument_digest, now)
