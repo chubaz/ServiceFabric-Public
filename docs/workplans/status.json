@@ -8,15 +8,14 @@
     "v2-01",
     "v3-00"
   ],
-  "completed_phases": [],
+  "completed_phases": ["projection-contracts"],
   "current_milestone": "v4-00",
-  "current_phase": "projection-contracts",
+  "current_phase": "discovery-projection",
   "known_blockers": [],
   "last_verification_summary": "V3-00 was merged into main after its completion suite, V2-01 regression gate, dependency checks, architecture checks, schema checks, and CI portability checks passed.",
-  "next_action": "Run V4-00 preflight and readiness verification, then implement projection-contracts without changing canonical execution ownership.",
+  "next_action": "Implement caller-specific MCP discovery.",
   "programme_version": 1,
   "remaining_phases": [
-    "discovery-projection",
     "call-translation",
     "result-and-error-projection",
     "progress-and-cancellation",
