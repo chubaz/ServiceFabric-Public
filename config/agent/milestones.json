@@ -1651,7 +1651,31 @@
               "-v"
             ],
             "name": "ap-01a-cli-acceptance",
-            "planned": true,
+            "required": true
+          },
+          {
+            "command": ["python3", "scripts/agent/verify.py", "--milestone", "v4-00", "--phase", "completion"],
+            "name": "v4-00-regressions",
+            "required": true
+          },
+          {
+            "command": ["python3", "scripts/dependencies/check_python_locks.py"],
+            "name": "dependency-locks",
+            "required": true
+          },
+          {
+            "command": ["python3", "scripts/architecture/check_legacy_patterns.py"],
+            "name": "architecture-guardrails",
+            "required": true
+          },
+          {
+            "command": ["python3", "-m", "compileall", "services/application_host", "clients/python", "examples/text-utility", "tests/ap_01a"],
+            "name": "compileall",
+            "required": true
+          },
+          {
+            "command": ["git", "diff", "--check"],
+            "name": "diff-check",
             "required": true
           }
         ],
