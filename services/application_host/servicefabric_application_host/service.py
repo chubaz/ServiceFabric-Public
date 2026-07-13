@@ -232,7 +232,11 @@ class LocalApplicationHost:
     def build(self, application_id: str) -> dict[str, object]:
         with self._lock(application_id):
             record = self._record(application_id)
-            if record.get("state") in {"starting", "running"} and self._owned_process(record):
+            if (
+                record.get("state") == "starting" and self._same_process(record)
+            ) or (
+                record.get("state") == "running" and self._owned_process(record)
+            ):
                 raise ApplicationHostError("running application must be stopped before rebuild")
             source = self._directory(application_id) / "source"
             self._validate_source(source, record["package"])
@@ -359,11 +363,16 @@ class LocalApplicationHost:
         return bool(fields and fields[0] != "Z")
 
     @classmethod
-    def _owned_process(cls, record: dict[str, object]) -> bool:
+    def _same_process(cls, record: dict[str, object]) -> bool:
         pid = int(record.get("pid") or 0)
         expected_start = record.get("process_start_ticks")
         fields = cls._process_fields(pid)
-        if not fields or fields[0] == "Z" or fields[1] != expected_start:
+        return bool(fields and fields[0] != "Z" and fields[1] == expected_start)
+
+    @classmethod
+    def _owned_process(cls, record: dict[str, object]) -> bool:
+        pid = int(record.get("pid") or 0)
+        if not cls._same_process(record):
             return False
         try:
             command = Path(f"/proc/{pid}/cmdline").read_bytes().split(b"\0")
@@ -412,7 +421,11 @@ class LocalApplicationHost:
             record = self._record(application_id)
             if "artifact_digest" not in record:
                 raise ApplicationHostError("application must be built before start")
-            if record.get("state") in {"starting", "running"} and self._owned_process(record):
+            if (
+                record.get("state") == "starting" and self._same_process(record)
+            ) or (
+                record.get("state") == "running" and self._owned_process(record)
+            ):
                 return self._status_value(record)
             if record.get("state") in {"stopped", "failed"}:
                 record["restart_count"] = int(record.get("restart_count", 0)) + 1
@@ -523,7 +536,12 @@ class LocalApplicationHost:
     def status(self, application_id: str) -> dict[str, object]:
         with self._lock(application_id):
             record = self._record(application_id)
-            if record.get("state") in {"starting", "running"} and not self._owned_process(record):
+            alive = (
+                self._same_process(record)
+                if record.get("state") == "starting"
+                else self._owned_process(record)
+            )
+            if record.get("state") in {"starting", "running"} and not alive:
                 record["state"] = "failed"
                 _atomic(self._directory(application_id) / "application.json", record)
             return self._status_value(record)
