@@ -9,6 +9,7 @@ from .discovery import DiscoveryService, ProjectionCandidate
 from .translation import CallTranslationError, CallTranslator
 from .results import project_error, project_result
 from .progress import CancellationProjector, ProgressProjector
+from .tasks import project_task
 
 __all__ = [
     "McpCallRequest", "McpCallResponse", "McpCancellationRequest", "McpClientCapabilities",
@@ -18,4 +19,5 @@ __all__ = [
     "CallTranslationError", "CallTranslator",
     "project_error", "project_result",
     "CancellationProjector", "ProgressProjector",
+    "project_task",
 ]
