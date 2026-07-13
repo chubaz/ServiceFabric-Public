@@ -28,6 +28,6 @@ servicefabric invoke math.calculate --arguments '{"expression":"1+1"}' --explain
 
 `SERVICEFABRIC_HOME` selects the workspace; the default is `.servicefabric/` in the current directory. The workspace contains only local immutable artifacts, operation data, idempotency records, approvals, and configuration. The tool-runtime, application-builder, capsule-host, and governance-operation service boundaries are separately installable packages; their factories construct reviewed portfolios and local durable repositories without a `PYTHONPATH` setting.
 
-Available commands include `status`, `doctor`, `tools`, `invoke`, `apps`, and `artifacts`. Output is deterministic JSON and failures return nonzero without a traceback unless `--debug` is supplied.
+Available commands include `status`, `doctor`, `tools`, `invoke`, `apps`, and `artifacts`. Default output is concise and task-oriented; add `--json` anywhere in a command when another tool needs deterministic structured output. Failures return nonzero without a traceback unless `--debug` is supplied.
 
 The local command is intentionally limited: there is no public HTTP or MCP transport, production identity, external provider execution, deployment orchestration, or V5 control plane.
