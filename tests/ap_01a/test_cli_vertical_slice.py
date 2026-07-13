@@ -17,24 +17,21 @@ CLI = Path(sys.executable).parent / "servicefabric"
 
 
 class HostedVerticalSliceTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.temporary = tempfile.TemporaryDirectory()
-        cls.home = Path(cls.temporary.name) / "workspace"
-        cls.command("init")
-        cls.command("apps", "install", str(ROOT / "examples/text-utility"))
-        cls.command("apps", "build", "text-utility")
-        cls.command("apps", "start", "text-utility")
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.home = Path(self.temporary.name) / "workspace"
+        self.command("init")
+        self.command("apps", "install", str(ROOT / "examples/text-utility"))
+        self.command("apps", "build", "text-utility")
+        self.command("apps", "start", "text-utility")
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.command("apps", "stop", "text-utility", check=False)
-        cls.temporary.cleanup()
+    def tearDown(self):
+        self.command("apps", "stop", "text-utility", check=False)
+        self.temporary.cleanup()
 
-    @classmethod
-    def command(cls, *arguments: str, check: bool = True):
+    def command(self, *arguments: str, check: bool = True):
         environment = os.environ.copy()
-        environment["SERVICEFABRIC_HOME"] = str(cls.home)
+        environment["SERVICEFABRIC_HOME"] = str(self.home)
         result = subprocess.run([str(CLI), *arguments], cwd=ROOT, env=environment, text=True, capture_output=True)
         if check and result.returncode:
             raise AssertionError(f"command failed ({result.returncode}): {result.stderr}")
@@ -125,18 +122,17 @@ class FailureJourneyTests(unittest.TestCase):
             self.assertEqual((start.returncode,build.returncode),(1,1))
             self.assertNotIn("Traceback",start.stderr+build.stderr)
 
-    def test_start_failure_is_recorded_without_traceback(self):
+    def test_modified_source_is_rejected_before_build_without_traceback(self):
         with tempfile.TemporaryDirectory() as directory:
             home=Path(directory)/"workspace"
             self.command(home,"init")
             self.command(home,"apps","install",str(ROOT/"examples/text-utility"))
             (home/"hosted-applications/text-utility/source/app.py").write_text("raise RuntimeError('fixture failure')\n",encoding="utf-8")
-            self.command(home,"apps","build","text-utility")
-            result=self.command(home,"apps","start","text-utility")
+            result=self.command(home,"apps","build","text-utility")
             self.assertEqual(result.returncode,1)
             self.assertNotIn("Traceback",result.stderr)
             status=json.loads(self.command(home,"apps","status","text-utility","--json").stdout)["status"]
-            self.assertEqual(status["state"],"failed")
+            self.assertEqual(status["state"],"installed")
 
     def test_invalid_capability_input_is_safe(self):
         with tempfile.TemporaryDirectory() as directory:
