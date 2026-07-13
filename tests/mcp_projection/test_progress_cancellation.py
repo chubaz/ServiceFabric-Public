@@ -1,4 +1,5 @@
 import unittest
+from test_gateway_operations import GatewayOperationsTests
 from datetime import datetime,timezone
 from servicefabric_mcp_projection import CancellationProjector,McpCancellationRequest,ProgressProjector
 class FakeOperations:
