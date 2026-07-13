@@ -32,5 +32,7 @@ No AP-00 framework kits, AP-01B resource-aware scheduling, AP-02 application con
 ## Completion
 AP-01A remains current and is marked completed only after the real Text Utility process journey and all verification pass.
 
+Implementation status: completed on the feature branch; AP-01A remains the current milestone pending review and merge.
+
 ## Rollback
 Revert AP-01A commits and remove the local workspace. No database migration, public deployment, DNS, TLS, Compose, or production operation cleanup is required.

@@ -9,12 +9,12 @@
     "v3-00",
     "v4-00"
   ],
-  "completed_phases": ["programme-registration"],
+  "completed_phases": ["programme-registration", "hosted-package", "managed-hosting", "resource-observation", "capability-bridge", "cli-journey", "acceptance-verification"],
   "current_milestone": "ap-01a-first-hosted-vertical-slice",
-  "current_phase": "hosted-package",
+  "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V4-00 completion and AP-01A starting preflight passed on main before branching.",
-  "next_action": "Implement the reviewed Text Utility package and managed local host.",
+  "last_verification_summary": "AP-01A completion passed the 13-test installed-CLI suite, inherited V4 verification, schema, lock, architecture, compilation, pip, and diff checks.",
+  "next_action": "Review and merge AP-01A; keep AP-00 planned until the post-merge handoff.",
   "programme_version": 1,
-  "remaining_phases": ["hosted-package", "managed-hosting", "resource-observation", "capability-bridge", "cli-journey", "acceptance-verification"]
+  "remaining_phases": []
 }
