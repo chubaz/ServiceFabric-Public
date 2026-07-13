@@ -11,6 +11,7 @@ from .results import project_error, project_result
 from .progress import CancellationProjector, ProgressProjector
 from .tasks import project_task
 from .sessions import SessionError, SessionManager
+from .transport import InProcessTransport, TransportError
 
 __all__ = [
     "McpCallRequest", "McpCallResponse", "McpCancellationRequest", "McpClientCapabilities",
@@ -22,4 +23,5 @@ __all__ = [
     "CancellationProjector", "ProgressProjector",
     "project_task",
     "SessionError", "SessionManager",
+    "InProcessTransport", "TransportError",
 ]
