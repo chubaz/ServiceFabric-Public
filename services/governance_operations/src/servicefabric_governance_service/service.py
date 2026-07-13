@@ -20,6 +20,7 @@ class GovernanceOperationsService:
   if reservation.outcome=="reserved":self._operations.publish(operation,initial_event);return SubmissionResult("accepted",operation.spec.operation_id,operation)
   existing,_=self._operations.get(reservation.record.spec.operation_ref);return SubmissionResult(reservation.outcome,existing.spec.operation_id,existing)
  def get_operation(self,operation_ref:str):return self._operations.get(operation_ref)
+ def list_operations(self):return self._operations.list_operations()
  def list_operation_events(self,operation_ref:str):return self._operations.events(operation_ref)
  def create_approval_request(self,*args,**kwargs):
   value=self._approvals.create_request(*args,**kwargs);self._audit.put(value,kind="ApprovalRequest",identifier=value.spec.approval_request_id,operation_ref=value.spec.operation_ref);return value

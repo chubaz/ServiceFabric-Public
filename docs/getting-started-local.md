@@ -57,4 +57,14 @@ servicefabric mcp tools list
 servicefabric mcp tools call math.calculate --arguments '{"expression":"6 * 7"}'
 ```
 
+Durable operations are inspected through the governance service boundary. They may be empty until a reviewed durable workflow is introduced:
+
+```bash
+servicefabric operations list
+servicefabric operations get OPERATION_ID
+servicefabric operations events OPERATION_ID
+servicefabric operations receipts OPERATION_ID
+servicefabric operations cancel OPERATION_ID --expected-version VERSION --reason "No longer needed"
+```
+
 The local command is intentionally limited: there is no public HTTP or MCP transport, production identity, external provider execution, deployment orchestration, or V5 control plane.

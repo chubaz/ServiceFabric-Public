@@ -33,6 +33,7 @@ from servicefabric_governance import (
     PolicyBundle,
     VersionedPolicyEvaluator,
 )
+from servicefabric_governance_service import create_governance_operations_service
 from servicefabric_mcp_gateway import McpGatewayService
 from servicefabric_mcp_projection import (
     DiscoveryService,
@@ -43,12 +44,12 @@ from servicefabric_mcp_projection import (
     SessionManager,
     TrustedMcpTransportContext,
 )
-from servicefabric_operations import DurableOperationStore, IdempotencyRepository
 from servicefabric_runtime import FilePortfolio, InvocationKernel
 from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
 
 from .capsules import CapsuleClient
+from .governance import GovernanceClient
 from .mcp import McpGatewayClient
 
 
@@ -101,8 +102,6 @@ class LocalRuntime:
     def __init__(self, home: Path):
         self.home = home
         self.artifacts = FileArtifactStore(home / "artifacts")
-        self.operations = DurableOperationStore(home / "operations")
-        self.idempotency = IdempotencyRepository(home / "idempotency")
         portfolio_root = Path(_portfolio_module).resolve().parent.parent / "portfolios"
         self.portfolio = FilePortfolio(portfolio_root)
         self.runtime_service = ToolRuntimeService(InvocationKernel(self.portfolio))
@@ -154,6 +153,12 @@ class LocalRuntime:
             runtime=self.runtime_service,
             profiles=(profile,),
         )
+        self.governance = GovernanceClient(
+            create_governance_operations_service(
+                root=home / "governance",
+                evaluator=VersionedPolicyEvaluator((bundle,)),
+            )
+        )
         repository = Path(__file__).resolve().parents[3]
         self.applications = create_application_builder_service(
             portfolio_root=repository / "portfolio" / "applications",
@@ -198,7 +203,7 @@ class LocalRuntime:
                 discovery=DiscoveryService((candidate,)),
                 tools=(projected_tool,),
                 governed_invocations=self.governed,
-                operations=self.operations,
+                operations=self.governance,
             )
         )
 
@@ -328,6 +333,20 @@ def parser() -> ServiceFabricArgumentParser:
     mcp_call = mcp_tool_actions.add_parser("call", help="call a projected MCP tool")
     mcp_call.add_argument("tool_name")
     mcp_call.add_argument("--arguments", required=True, metavar="JSON")
+
+    operations = commands.add_parser("operations", help="inspect local durable operations")
+    operation_actions = operations.add_subparsers(dest="action", required=True)
+    operation_actions.add_parser("list", help="list durable operations")
+    operation = operation_actions.add_parser("get", help="show an operation")
+    operation.add_argument("operation_id")
+    operation = operation_actions.add_parser("events", help="show immutable operation history")
+    operation.add_argument("operation_id")
+    operation = operation_actions.add_parser("receipts", help="show verified effect receipts")
+    operation.add_argument("operation_id")
+    operation = operation_actions.add_parser("cancel", help="request cooperative cancellation")
+    operation.add_argument("operation_id")
+    operation.add_argument("--expected-version", type=int, required=True)
+    operation.add_argument("--reason", required=True)
     return root
 
 
@@ -383,7 +402,7 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "policy_bundle": "local-policy@1.0.0",
             "tools": 1,
             "applications": len(runtime.applications.list_applications()),
-            "operations": len(list((home / "operations").glob("*"))),
+            "operations": len(runtime.governance.list_operations()),
             "mcp_profile": MCP_PROFILE,
             "limitations": "Local only. No public transport or production identity.",
             "json_mode": json_mode,
@@ -562,6 +581,41 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "transport": "in-process only",
             "json_mode": json_mode,
         }
+    if args.command == "operations":
+        if args.action == "list":
+            return 0, "operations-list", {
+                "operations": [
+                    {"operation": operation, "version": version}
+                    for operation, version in runtime.governance.list_operations()
+                ],
+                "json_mode": json_mode,
+            }
+        if args.action == "get":
+            operation, version = runtime.governance.get_operation(args.operation_id)
+            return 0, "operations-get", {
+                "operation": operation,
+                "version": version,
+                "json_mode": json_mode,
+            }
+        if args.action == "events":
+            return 0, "operations-events", {
+                "events": runtime.governance.list_operation_events(args.operation_id),
+                "json_mode": json_mode,
+            }
+        if args.action == "receipts":
+            return 0, "operations-receipts", {
+                "receipts": runtime.governance.effect_receipts(args.operation_id),
+                "json_mode": json_mode,
+            }
+        return 0, "operations-cancel", {
+            "operation": runtime.governance.request_cancellation(
+                args.operation_id,
+                expected_version=args.expected_version,
+                now=datetime.now(timezone.utc),
+                reason=args.reason,
+            ),
+            "json_mode": json_mode,
+        }
     raise ValueError("unsupported command")
 
 
@@ -669,6 +723,39 @@ def human_output(command: str, value: object) -> str:
         if isinstance(result, dict) and "value" in result:
             return f"MCP {response['request_id']} -> {result['value']}\n"
         return "MCP call completed. Use --json for the structured result.\n"
+    if command == "operations-list":
+        operations = data["operations"]
+        if not operations:
+            return "No durable operations yet.\n"
+        lines = ["Durable operations"]
+        lines.extend(
+            f"  {item['operation']['spec']['operation_id']:<28} {item['operation']['spec']['state']} (v{item['version']})"
+            for item in operations
+        )
+        return "\n".join([*lines, ""])
+    if command == "operations-get":
+        operation = data["operation"]["spec"]
+        return "\n".join(
+            [
+                operation["operation_id"],
+                f"  State: {operation['state']}  Version: {data['version']}",
+                f"  Tool: {operation['tool_id']} {operation['revision_ref']}",
+                "",
+            ]
+        )
+    if command == "operations-events":
+        events = data["events"]
+        return "\n".join(
+            ["Operation history", *[f"  {event['spec']['sequence']}: {event['spec']['event_type']}" for event in events], ""]
+        )
+    if command == "operations-receipts":
+        receipts = data["receipts"]
+        if not receipts:
+            return "No effect receipts for this operation.\n"
+        return "\n".join(["Effect receipts", *[f"  {receipt['spec']['receipt_id']}" for receipt in receipts], ""])
+    if command == "operations-cancel":
+        operation = data["operation"]["spec"]
+        return f"Cancellation requested for {operation['operation_id']}.\n"
     return json_output(data)
 
 

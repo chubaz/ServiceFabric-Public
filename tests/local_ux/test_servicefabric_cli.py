@@ -126,6 +126,19 @@ class LocalDeveloperUxTests(unittest.TestCase):
                 json.loads(call.stdout)["response"]["structured_content"]["value"], 42
             )
 
+    def test_operations_are_listed_through_the_governance_service(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary) / "workspace"
+            self.assertEqual(self.command("init", home=home).returncode, 0)
+
+            operations = self.command("operations", "list", home=home)
+            status = self.command("status", "--json", home=home)
+
+            self.assertEqual(operations.returncode, 0)
+            self.assertEqual(operations.stdout, "No durable operations yet.\n")
+            self.assertEqual(status.returncode, 0)
+            self.assertEqual(json.loads(status.stdout)["operations"], 0)
+
     def test_safe_errors_and_help(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary) / "workspace"
