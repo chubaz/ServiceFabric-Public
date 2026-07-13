@@ -210,19 +210,21 @@ class LocalRuntime:
         )
 
     def invoke_application(self, tool_id: str, arguments: dict[str, object]):
+        capability = self.host.describe_capability(tool_id)
         request_id = "local-request-" + uuid4().hex[:16]
-        permission = "text-count" if tool_id == "text.count_words" else "text-inspect"
+        permission = str(capability["permission_id"])
+        revision = str(capability["revision"])
         caller = self.caller.model_copy(update={"scopes": (permission,)})
-        request = ToolInvocationRequest.model_validate({"apiVersion":"servicefabric.ai/v1alpha1","kind":"ToolInvocationRequest","metadata":{"id":request_id,"name":"Hosted application invocation","description":"Governed hosted application capability request.","owner_ref":{"kind":"service","id":"servicefabric-cli"}},"spec":{"request_id":request_id,"target":{"target_kind":"revision","tool_id":tool_id,"revision_ref":"1.0.0"},"arguments":arguments,"caller_context":caller,"protocol_context":{"protocol":"internal","adapter_ref":"trusted-local-cli"},"budget":{},"requested_response_mode":"synchronous"}})
+        request = ToolInvocationRequest.model_validate({"apiVersion":"servicefabric.ai/v1alpha1","kind":"ToolInvocationRequest","metadata":{"id":request_id,"name":"Hosted application invocation","description":"Governed hosted application capability request.","owner_ref":{"kind":"service","id":"servicefabric-cli"}},"spec":{"request_id":request_id,"target":{"target_kind":"revision","tool_id":tool_id,"revision_ref":revision},"arguments":arguments,"caller_context":caller,"protocol_context":{"protocol":"internal","adapter_ref":"trusted-local-cli"},"budget":{},"requested_response_mode":"synchronous"}})
         bundle = PolicyBundle(bundle_id="hosted-application-policy",version="1.0.0",digest=POLICY_DIGEST,allowed_scopes=("text-count","text-inspect"))
-        profile = InvocationGovernanceProfile(tool_id,"1.0.0",(EffectDeclaration(effect_type="none",target_category="text",scope="local",reversibility="not_applicable",verification_required=False,approval_required=False,idempotency_required=False),),(PermissionRequirement(permission_id=permission,tenant_scope="caller_tenant",resource_scope="text-utility"),),AuthorityGrant(scopes=(permission,),tenant_ref="local"),ExecutionBudget(),"low",bundle.bundle_id,bundle.version,bundle.digest)
+        profile = InvocationGovernanceProfile(tool_id,revision,(EffectDeclaration(effect_type="none",target_category="text",scope="local",reversibility="not_applicable",verification_required=False,approval_required=False,idempotency_required=False),),(PermissionRequirement(permission_id=permission,tenant_scope="caller_tenant",resource_scope=str(capability["application_id"])),),AuthorityGrant(scopes=(permission,),tenant_ref="local"),ExecutionBudget(),"low",bundle.bundle_id,bundle.version,bundle.digest)
         host = self.host
         class Adapter:
             def invoke(self, value):
                 started=datetime.now(timezone.utc)
                 data=host.invoke(tool_id,value.spec.arguments)
                 completed=datetime.now(timezone.utc)
-                return ToolResult(apiVersion="servicefabric.ai/v1alpha1",kind="ToolResult",status="success",invocation_id=value.spec.request_id,tool_id=tool_id,revision_ref="1.0.0",started_at=started,completed_at=completed,duration=completed-started,data=data)
+                return ToolResult(apiVersion="servicefabric.ai/v1alpha1",kind="ToolResult",status="success",invocation_id=value.spec.request_id,tool_id=tool_id,revision_ref=revision,started_at=started,completed_at=completed,duration=completed-started,data=data)
         boundary=GovernedInvocationBoundary(evaluator=VersionedPolicyEvaluator((bundle,)),approvals=ApprovalService(),runtime=Adapter(),profiles=(profile,))
         return request,boundary.invoke(request,trusted_adapter_ref="trusted-local-cli",now=datetime.now(timezone.utc))
 
@@ -449,12 +451,7 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "json_mode": json_mode,
         }
     if args.command == "tools":
-        hosted = []
-        if runtime.host.is_installed("text-utility"):
-            hosted = [
-                {"tool_id":"text.count_words","revision":"1.0.0","description":"Count words using the hosted Text Utility application."},
-                {"tool_id":"text.inspect","revision":"1.0.0","description":"Inspect text using the hosted Text Utility application."},
-            ]
+        hosted = list(runtime.host.capabilities())
         if args.action == "list":
             return 0, "tools-list", {
                 "tools": [
@@ -467,8 +464,12 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                 "json_mode": json_mode,
             }
         if args.tool_id in {item["tool_id"] for item in hosted}:
-            item=next(value for value in hosted if value["tool_id"]==args.tool_id)
-            return 0,"tools-describe",{**item,"machine_callable":True,"effects":["none"],"application_id":"text-utility","json_mode":json_mode}
+            item = next(value for value in hosted if value["tool_id"] == args.tool_id)
+            return 0, "tools-describe", {
+                **item,
+                "machine_callable": True,
+                "json_mode": json_mode,
+            }
         if args.tool_id != "math.calculate":
             raise ValueError(f"tool '{args.tool_id}' is not available locally")
         return 0, "tools-describe", {
@@ -508,10 +509,9 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             ]
         return 0, "invoke", value
     if args.command == "call":
-        if args.tool_id not in {"text.count_words","text.inspect"}:
-            raise ValueError(f"tool '{args.tool_id}' is not available locally")
+        runtime.host.describe_capability(args.tool_id)
         request,result=runtime.invoke_application(args.tool_id,_parse_arguments(args.input))
-        return 0,"call",{"request_id":request.spec.request_id,"revision":"1.0.0","policy_outcome":"allow","result":result,"json_mode":json_mode}
+        return 0,"call",{"request_id":request.spec.request_id,"revision":request.spec.target.revision_ref,"policy_outcome":"allow","result":result,"json_mode":json_mode}
     if args.command == "apps":
         if args.action == "install":
             return 0,"apps-install",{**runtime.host.install(Path(args.source)),"json_mode":json_mode}
