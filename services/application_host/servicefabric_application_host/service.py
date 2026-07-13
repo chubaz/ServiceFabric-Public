@@ -167,10 +167,23 @@ class LocalApplicationHost:
             except OSError:
                 current = 0
         peak = max(int(record.get("peak_memory_bytes", 0)), current)
+        cpu = self._cpu_percent(pid) if pid and self._alive(pid) else None
         record["peak_memory_bytes"] = peak
         _atomic(self._directory(application_id) / "application.json", record)
         declared = record["package"]["declared_resources"]
-        return {"declared": declared, "measured": {"current_memory_bytes": current or None, "peak_memory_bytes": peak or None, "recent_cpu_percent": None, "startup_duration_ms": record.get("startup_duration_ms"), "request_count": record.get("request_count", 0), "health": self.status(application_id)["health"], "restart_count": record.get("restart_count", 0)}}
+        return {"declared": declared, "measured": {"current_memory_bytes": current or None, "peak_memory_bytes": peak or None, "recent_cpu_percent": cpu, "startup_duration_ms": record.get("startup_duration_ms"), "request_count": record.get("request_count", 0), "health": self.status(application_id)["health"], "restart_count": record.get("restart_count", 0)}}
+
+    @staticmethod
+    def _cpu_percent(pid: int) -> float | None:
+        try:
+            clock_ticks = os.sysconf("SC_CLK_TCK")
+            def ticks() -> int:
+                fields = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8").split()
+                return int(fields[13]) + int(fields[14])
+            before = ticks(); started = time.monotonic(); time.sleep(0.05)
+            return round(((ticks() - before) / clock_ticks) / (time.monotonic() - started) * 100, 3)
+        except (OSError, ValueError, IndexError):
+            return None
 
     def stop(self, application_id: str) -> dict[str, object]:
         record = self._record(application_id)

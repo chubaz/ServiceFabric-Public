@@ -4,6 +4,8 @@
   "framework": "fastapi",
   "adapter": "reviewed-fastapi-v1",
   "module": "app:app",
+  "build": {"kind": "reviewed-python-source"},
+  "start": {"adapter": "reviewed-fastapi-v1", "module": "app:app"},
   "health_path": "/health",
   "declared_resources": {
     "memory_mib": 128,

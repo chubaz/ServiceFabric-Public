@@ -52,6 +52,7 @@ class HostedVerticalSliceTests(unittest.TestCase):
         value = json.loads(self.command("apps", "resources", "text-utility", "--json").stdout)["resources"]
         self.assertEqual(value["declared"]["memory_mib"], 128)
         self.assertGreater(value["measured"]["current_memory_bytes"], 0)
+        self.assertIsNotNone(value["measured"]["recent_cpu_percent"])
 
     def test_04_discovery_and_description(self):
         self.assertIn("text.count_words", self.command("tools", "list").stdout)
