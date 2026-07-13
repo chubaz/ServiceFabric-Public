@@ -77,11 +77,7 @@ class GovernedInvocationBoundary:
             raise GovernedInvocationError("no reviewed governance profile exists for the immutable revision")
         intent_digest = _digest({"tool": target.tool_id, "revision": revision_ref, "caller": request.spec.caller_context.subject_ref, "arguments": request.spec.arguments})
         argument_digest = _digest(request.spec.arguments)
-        policy_request = PolicyEvaluationRequest(
-            apiVersion="servicefabric.ai/v1alpha1", kind="PolicyEvaluationRequest",
-            metadata=ResourceMetadata(id="policy-evaluation-" + request.spec.request_id, name="Policy evaluation", description="Trusted canonical invocation policy input.", owner_ref=OwnerReference(kind="service", id="governed-invocation")),
-            spec={"evaluation_request_id": "policy-evaluation-" + request.spec.request_id, "request_ref": request.spec.request_id, "request_digest": _digest(request.model_dump(mode="json", by_alias=True)), "caller": request.spec.caller_context, "caller_context_digest": _digest(request.spec.caller_context.model_dump(mode="json")), "tool_id": target.tool_id, "revision_ref": revision_ref, "intent_digest": intent_digest, "declared_effects": profile.declared_effects, "required_permissions": profile.required_permissions, "requested_authority": profile.requested_authority, "requested_budget": profile.requested_budget, "risk_hint": profile.risk_hint, "policy_bundle_ref": profile.policy_bundle_ref, "policy_version": profile.policy_version, "policy_digest": profile.policy_digest, "evaluated_at": now},
-        )
+        policy_request = self._policy_request(request, profile, intent_digest, now)
         decision = self._evaluator.evaluate(TrustedPolicyInput.from_authenticated_adapter(policy_request, adapter_ref=trusted_adapter_ref), now=now)
         if decision.spec.outcome == "deny":
             return self._error_result(request, "SF-AUTHZ-DENIED", "authorization", "The requested operation is not authorized.", now)
@@ -90,14 +86,55 @@ class GovernedInvocationBoundary:
             if binding is None:
                 return self._error_result(request, "SF-APPROVAL-REQUIRED", "approval", "Approval is required before execution.", now)
             try:
+                self._validate_binding(binding, decision, request, intent_digest, argument_digest, now)
                 self._approvals.validate_binding(binding, caller_ref=request.spec.caller_context.subject_ref, revision_ref=revision_ref, intent_digest=intent_digest, argument_digest=argument_digest, now=now, consume=True)
             except Exception:
                 return self._error_result(request, "SF-APPROVAL-INVALID", "approval", "The supplied approval is not valid for this execution.", now)
+        effective_request = self._effective_request(request, decision)
         if profile.durable:
             if self._durable_acceptor is None:
                 raise GovernedInvocationError("reviewed durable operation boundary is unavailable")
-            return self._durable_acceptor(request, intent_digest, now)
-        return self._runtime.invoke(request)
+            return self._durable_acceptor(effective_request, intent_digest, now)
+        return self._runtime.invoke(effective_request)
+
+    @staticmethod
+    def _policy_request(request: ToolInvocationRequest, profile: InvocationGovernanceProfile, intent_digest: str, now: datetime) -> PolicyEvaluationRequest:
+        target = request.spec.target
+        request_payload = request.model_dump(mode="json", by_alias=True)
+        # Approval references select evidence for an existing decision; they do not change intent.
+        request_payload["spec"]["approval_refs"] = []
+        return PolicyEvaluationRequest(
+            apiVersion="servicefabric.ai/v1alpha1", kind="PolicyEvaluationRequest",
+            metadata=ResourceMetadata(id="policy-evaluation-" + request.spec.request_id, name="Policy evaluation", description="Trusted canonical invocation policy input.", owner_ref=OwnerReference(kind="service", id="governed-invocation")),
+            spec={"evaluation_request_id": "policy-evaluation-" + request.spec.request_id, "request_ref": request.spec.request_id, "request_digest": _digest(request_payload), "caller": request.spec.caller_context, "caller_context_digest": _digest(request.spec.caller_context.model_dump(mode="json")), "tool_id": target.tool_id, "revision_ref": getattr(target, "revision_ref", None), "intent_digest": intent_digest, "declared_effects": profile.declared_effects, "required_permissions": profile.required_permissions, "requested_authority": profile.requested_authority, "requested_budget": profile.requested_budget, "risk_hint": profile.risk_hint, "policy_bundle_ref": profile.policy_bundle_ref, "policy_version": profile.policy_version, "policy_digest": profile.policy_digest, "evaluated_at": now},
+        )
+
+    @staticmethod
+    def _effective_request(request: ToolInvocationRequest, decision: PolicyDecision) -> ToolInvocationRequest:
+        authority = decision.spec.effective_authority
+        budget = decision.spec.effective_budget
+        if authority is None or budget is None:
+            raise GovernedInvocationError("allowed policy decision lacks effective execution authority")
+        caller = request.spec.caller_context.model_copy(update={"scopes": authority.scopes, "tenant_ref": authority.tenant_ref or request.spec.caller_context.tenant_ref})
+        payload = request.model_dump(mode="python", by_alias=True)
+        payload["spec"]["caller_context"] = caller
+        payload["spec"]["budget"] = budget
+        return ToolInvocationRequest.model_validate(payload)
+
+    @staticmethod
+    def _validate_binding(binding: ApprovalBinding, decision: PolicyDecision, request: ToolInvocationRequest, intent_digest: str, argument_digest: str, now: datetime) -> None:
+        requirement = decision.spec.approval_requirement
+        authority = decision.spec.effective_authority
+        target = request.spec.target
+        if requirement is None or authority is None:
+            raise GovernedInvocationError("approval decision lacks required policy authority")
+        spec = binding.spec
+        if (spec.policy_decision_ref != decision.spec.decision_id or spec.policy_version != decision.spec.policy_version or spec.tool_id != target.tool_id or spec.revision_ref != getattr(target, "revision_ref", None) or spec.caller_ref != request.spec.caller_context.subject_ref or spec.tenant_ref not in {None, request.spec.caller_context.tenant_ref} or spec.intent_digest != intent_digest or spec.argument_digest != argument_digest or now < spec.valid_from or now >= spec.valid_until):
+            raise GovernedInvocationError("approval binding does not match the current policy decision")
+        if not set(requirement.effect_refs).issubset(spec.authority_scope.effect_refs):
+            raise GovernedInvocationError("approval binding does not cover required effects")
+        if not set(authority.scopes).issubset(spec.authority_scope.authority.scopes):
+            raise GovernedInvocationError("approval binding does not cover effective authority")
 
     def _resolve_binding(self, request: ToolInvocationRequest) -> ApprovalBinding | None:
         if len(request.spec.approval_refs) != 1:
