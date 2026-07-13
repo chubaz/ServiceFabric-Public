@@ -2,7 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
-from servicefabric_contracts import EffectReceipt,OperationEvent,PolicyDecision,PolicyEvaluationRequest,ServiceFabricOperation
+from servicefabric_contracts import ApprovalBinding,EffectReceipt,OperationEvent,PolicyDecision,PolicyEvaluationRequest,ServiceFabricOperation
 from servicefabric_governance import ApprovalService,TrustedApprover,TrustedPolicyInput,VersionedPolicyEvaluator
 from servicefabric_operations import CancellationController,DurableOperationStore,IdempotencyRepository,OperationStateMachine,ReconciliationService
 @dataclass(frozen=True,slots=True)
@@ -36,3 +36,8 @@ class GovernanceOperationsService:
   if result.receipt:self._audit.put(result.receipt,kind="EffectReceipt",identifier=result.receipt.spec.receipt_id,operation_ref=operation_ref)
   return result
  def effect_receipts(self,operation_ref:str):return self._audit.list_for_operation(kind="EffectReceipt",operation_ref=operation_ref,model=EffectReceipt)
+ def approval_binding(self,binding_ref:str)->ApprovalBinding|None:
+  try:return self._audit.get(kind="ApprovalBinding",identifier=binding_ref,model=ApprovalBinding)
+  except Exception:return None
+ @property
+ def approvals(self):return self._approvals

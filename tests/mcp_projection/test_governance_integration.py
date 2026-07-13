@@ -31,6 +31,13 @@ class GovernanceIntegrationTests(unittest.TestCase):
  def test_denied_and_approval_required_calls_do_not_execute(self):
   value,runtime=boundary(bundle(denied=("none",)),profile());self.assertEqual(value.invoke(request(),trusted_adapter_ref="trusted-mcp-adapter",now=NOW).error.code,"SF-AUTHZ-DENIED");self.assertEqual(runtime.calls,[])
   value,runtime=boundary(bundle(approval=("task_create",)),profile("task_create"));self.assertEqual(value.invoke(request(),trusted_adapter_ref="trusted-mcp-adapter",now=NOW).error.code,"SF-APPROVAL-REQUIRED");self.assertEqual(runtime.calls,[])
+ def test_approval_required_call_can_be_accepted_by_canonical_durable_boundary(self):
+  accepted=ToolInvocationAcceptance(apiVersion="servicefabric.ai/v1alpha1",kind="ToolInvocationAcceptance",request_id="request-1",invocation_id="invocation-1",operation_ref="operation-approval-1",accepted_at=NOW,status="accepted")
+  calls=[]
+  runtime=Runtime(); governed_profile=profile("task_create")
+  value=GovernedInvocationBoundary(evaluator=VersionedPolicyEvaluator((bundle(approval=("task_create",)),)),approvals=ApprovalService(),runtime=runtime,profiles=(governed_profile,),approval_required_acceptor=lambda req,decision,intent,arguments,now:(calls.append((req,decision,intent,arguments)),accepted)[1])
+  result=value.invoke(request(),trusted_adapter_ref="trusted-mcp-adapter",now=NOW)
+  self.assertEqual(result.operation_ref,"operation-approval-1");self.assertEqual(len(calls),1);self.assertEqual(runtime.calls,[])
  def test_approval_binding_requires_exact_unexpired_intent(self):
   governed_profile=profile("task_create");source=request();value,runtime=boundary(bundle(approval=("task_create",)),governed_profile);binding=binding_for(value,governed_profile,source);value._approval_lookup=lambda _ref:binding;self.assertEqual(value.invoke(request(approval_refs=("binding-1",)),trusted_adapter_ref="trusted-mcp-adapter",now=NOW).status,"success");self.assertEqual(len(runtime.calls),1)
   value,runtime=boundary(bundle(approval=("task_create",)),governed_profile);value._approval_lookup=lambda _ref:binding;self.assertEqual(value.invoke(request(arguments={"value":2},approval_refs=("binding-1",)),trusted_adapter_ref="trusted-mcp-adapter",now=NOW).error.code,"SF-APPROVAL-INVALID");self.assertEqual(runtime.calls,[])
