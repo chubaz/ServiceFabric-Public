@@ -12,9 +12,9 @@ class ServiceFabricConnection:
     toolset: str = "research-demo"
 
     @classmethod
-    def load(cls, path: Path) -> "ServiceFabricConnection":
+    def load(cls, path: Path | str) -> "ServiceFabricConnection":
         values = {}
-        for line in path.read_text(encoding="utf-8").splitlines():
+        for line in Path(path).read_text(encoding="utf-8").splitlines():
             if "=" in line:
                 key, value = line.split("=", 1)
                 values[key.strip()] = value.strip().strip('"')

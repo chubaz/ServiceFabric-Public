@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 
 from servicefabric_contracts import ToolInvocationRequest
 from servicefabric_contracts.budgets import ExecutionBudget
@@ -21,7 +22,10 @@ from servicefabric_tool_runtime_service import ToolRuntimeService
 class LocalConsumerGateway:
     """Trusted local boundary; consumers never import tool implementations."""
 
-    def __init__(self, portfolio_root):
+    def __init__(self, portfolio_root, *, workspace_root: Path | None = None):
+        # The gateway's durable state is deliberately rooted in an explicit local workspace.
+        self.workspace_root = (workspace_root or Path(".servicefabric")).resolve(strict=False)
+        self.workspace_root.mkdir(parents=True, exist_ok=True)
         runtime = ToolRuntimeService(InvocationKernel(FilePortfolio(portfolio_root)), toolset="research-demo")
         bundle = PolicyBundle(bundle_id="research-demo-policy", version="1.0.0", digest="sha256:" + "b" * 64, allowed_scopes=("math-calculate", "research-search"))
         profiles = (

@@ -1,4 +1,5 @@
 from pathlib import Path
+import tempfile
 import unittest
 
 from services.local_gateway import LocalConsumerGateway
@@ -13,3 +14,13 @@ class LocalConsumerGatewayTests(unittest.TestCase):
         result = gateway.invoke("research.search_papers", {"query": "retrieval", "maximum_results": 1})
         self.assertEqual(gateway.list_tools(), ("math.calculate", "research.search_papers"))
         self.assertEqual(result.data["papers"][0]["id"], "paper.retrieval-augmentation")
+
+    def test_gateway_uses_an_explicit_workspace_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory) / "workspace"
+            gateway = LocalConsumerGateway(
+                ROOT / "packages" / "servicefabric_runtime" / "portfolios",
+                workspace_root=workspace,
+            )
+            self.assertEqual(gateway.workspace_root, workspace.resolve())
+            self.assertTrue(workspace.is_dir())
