@@ -6,7 +6,10 @@ from servicefabric_contracts.protocol import ProtocolContext
 from .models import McpCallRequest,McpSessionContext,ProjectedMcpTool
 class CallTranslationError(ValueError):pass
 class CallTranslator:
- def __init__(self,tools:tuple[ProjectedMcpTool,...]):self._tools={tool.name:tool for tool in tools}
+ def __init__(self,tools:tuple[ProjectedMcpTool,...]):
+  names=tuple(tool.name for tool in tools)
+  if len(set(names))!=len(names):raise ValueError("projected MCP tool names must be unique")
+  self._tools={tool.name:tool for tool in tools}
  def translate(self,call:McpCallRequest,session:McpSessionContext)->ToolInvocationRequest:
   tool=self._tools.get(call.tool_name)
   if tool is None:raise CallTranslationError("projected tool was not found")

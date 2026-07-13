@@ -14,4 +14,7 @@ class DiscoveryTests(unittest.TestCase):
   service=DiscoveryService((),maximum_page_size=2)
   with self.assertRaises(ValueError):service.list_tools(caller(()),page_size=3)
   with self.assertRaises(ValueError):service.list_tools(caller(()),cursor="missing")
+ def test_duplicate_projected_names_are_rejected(self):
+  candidate=ProjectionCandidate("math.calculate","1.0.0","math-calculate","Calculate","Calculate.",{},True,True)
+  with self.assertRaises(ValueError):DiscoveryService((candidate,candidate))
 if __name__=="__main__":unittest.main()

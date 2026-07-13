@@ -12,4 +12,6 @@ class CallTranslationTests(unittest.TestCase):
   with self.assertRaises(CallTranslationError):CallTranslator((tool(),)).translate(McpCallRequest(request_id="request-1",tool_name="unknown",correlation_id="corr-1"),session())
   value=session().model_copy(update={"caller":session().caller.model_copy(update={"principal_type":"anonymous","authentication_strength":"none","scopes":()})})
   with self.assertRaises(CallTranslationError):CallTranslator((tool(),)).translate(McpCallRequest(request_id="request-1",tool_name="math-calculate",correlation_id="corr-1"),value)
+ def test_duplicate_projected_names_are_rejected(self):
+  with self.assertRaises(ValueError):CallTranslator((tool(),tool()))
 if __name__=="__main__":unittest.main()

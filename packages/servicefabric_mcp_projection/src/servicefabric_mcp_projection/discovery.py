@@ -6,7 +6,11 @@ from .models import McpToolPage,ProjectedMcpTool
 class ProjectionCandidate:
  canonical_tool_id:str;revision_ref:str;name:str;title:str;description:str;input_schema:dict;enabled:bool;available:bool;discover_scopes:tuple[str,...]=();structured_result:bool=False;progress:bool=False;cancellation:bool=False;durable_operations:bool=False;federated:bool=False
 class DiscoveryService:
- def __init__(self,candidates:tuple[ProjectionCandidate,...],*,maximum_page_size:int=32):self._candidates=tuple(candidates);self._maximum_page_size=maximum_page_size
+ def __init__(self,candidates:tuple[ProjectionCandidate,...],*,maximum_page_size:int=32):
+  if maximum_page_size<1 or maximum_page_size>64:raise ValueError("invalid maximum page size")
+  names=tuple(candidate.name for candidate in candidates)
+  if len(set(names))!=len(names):raise ValueError("projected MCP tool names must be unique")
+  self._candidates=tuple(candidates);self._maximum_page_size=maximum_page_size
  def list_tools(self,caller:CallerContext,*,cursor:str|None=None,page_size:int=16)->McpToolPage:
   if page_size<1 or page_size>self._maximum_page_size:raise ValueError("invalid page size")
   visible=[]

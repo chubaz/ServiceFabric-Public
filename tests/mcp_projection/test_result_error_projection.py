@@ -8,8 +8,13 @@ def result(status="success",error=None,data={"value":2}):return ToolResult(apiVe
 class ResultErrorTests(unittest.TestCase):
  def test_structured_and_bounded_text_projection(self):
   self.assertEqual(project_result("request-1",result(),structured=True).structured_content,{"value":2});self.assertEqual(project_result("request-1",result(data="x"*100),structured=False,maximum_text_bytes=8).content,("x"*8,))
+  unordered=result(data={"z":1,"a":2})
+  self.assertEqual(project_result("request-1",unordered,structured=False).content,('{"a":2,"z":1}',))
+  with self.assertRaises(ValueError):project_result("request-1",unordered,structured=False,maximum_text_bytes=4097)
  def test_safe_error_mapping_redacts_details(self):
   error=ToolError(code="SF-APPROVAL-INVALID",category="approval",message="Approval is invalid.",details={})
   self.assertEqual(project_error(error).code,"approval_invalid");self.assertEqual(project_result("request-1",result("error",error,None),structured=True).error.message,"Approval is invalid.")
- def test_unknown_errors_become_internal(self):self.assertEqual(project_error(ToolError(code="SF-RUNTIME-UNKNOWN",category="runtime",message="/private/path",details={})).code,"internal")
+ def test_unknown_errors_become_internal(self):
+  value=project_error(ToolError(code="SF-RUNTIME-UNKNOWN",category="runtime",message="/private/path",details={}))
+  self.assertEqual((value.code,value.message),("internal","Internal execution failure."))
 if __name__=="__main__":unittest.main()
