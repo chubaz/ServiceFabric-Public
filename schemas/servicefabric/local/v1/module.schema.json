@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceFabric ApplicationModule Schema",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "servicefabric.local/v1"
+    },
+    "kind": {
+      "type": "string",
+      "const": "ApplicationModule"
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-\\w+)?$"
+        }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": ["primitive", "kit"],
+      "additionalProperties": false,
+      "properties": {
+        "primitive": {
+          "type": "string",
+          "enum": ["service", "web", "worker", "job", "library"]
+        },
+        "kit": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "provides": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "type": { "type": "string" },
+                  "protocol": { "type": "string" },
+                  "contract": { "type": "string" }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "interfaces": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["id"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "type": { "type": "string" },
+                      "protocol": { "type": "string" },
+                      "contract": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "requires": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "interfaces": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  { "type": "string" },
+                  {
+                    "type": "object",
+                    "required": ["id"],
+                    "properties": {
+                      "id": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            },
+            "resources": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  { "type": "string" },
+                  {
+                    "type": "object",
+                    "required": ["id"],
+                    "properties": {
+                      "id": { "type": "string" },
+                      "type": { "type": "string" },
+                      "scope": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "startAfter": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "start_after": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "readiness": {
+              "type": "object",
+              "required": ["type"],
+              "additionalProperties": false,
+              "properties": {
+                "type": { "type": "string", "enum": ["http", "tcp", "command"] },
+                "path": { "type": "string" },
+                "port": { "type": "integer" }
+              }
+            },
+            "shutdown": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "timeoutSeconds": { "type": "integer" },
+                "timeout_seconds": { "type": "integer" }
+              }
+            },
+            "shutdownTimeoutSeconds": {
+              "type": "integer"
+            }
+          }
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "memoryMiB": { "type": "integer" },
+            "cpuCores": { "type": "number" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
-# Application Modules Contract v0.1
+# Application Module Contract v0.1
 
-This contract defines the taxonomy and operational behavior of ServiceFabric Primitives, Framework Kits, and Modules. It establishes how applications are modeled as directed graphs of independent, loosely coupled modules rather than monolithic codebases.
+This contract defines the taxonomy, schemas, and operational behavior of ServiceFabric Primitives, Framework Kits, and Modules. It establishes how applications are modeled as directed graphs of independent, loosely coupled modules rather than monolithic codebases.
 
 ## 1. Core Taxonomy
 
