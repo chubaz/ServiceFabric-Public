@@ -26,6 +26,8 @@ from servicefabric_builder.identity import digest
 from servicefabric_contracts import ApplicationArtifactManifest
 
 
+from servicefabric_workspace import ApplicationHostPaths, WorkspaceLayout
+
 MAX_RECORD_BYTES = 262_144
 MAX_ARTIFACT_BYTES = 16 * 1024 * 1024
 MAX_ARTIFACT_FILES = 128
@@ -126,13 +128,32 @@ class LocalApplicationHost:
     """Hosts only packages using the reviewed-fastapi-v1 adapter on loopback."""
 
     def __init__(
-        self, workspace: Path, *, health_timeout_seconds: float = 10.0
+        self,
+        workspace: Path | ApplicationHostPaths | WorkspaceLayout,
+        *,
+        health_timeout_seconds: float = 10.0,
     ) -> None:
         if health_timeout_seconds < 0.1 or health_timeout_seconds > 10.0:
             raise ValueError("health timeout must be between 0.1 and 10 seconds")
-        self.root = workspace / "hosted-applications"
+
+        if isinstance(workspace, ApplicationHostPaths):
+            self.root = workspace.root
+            self.artifacts = FileArtifactStore(workspace.artifacts)
+            self._locks_dir = workspace.locks
+            self._logs_dir = workspace.logs
+        elif isinstance(workspace, WorkspaceLayout):
+            self.root = workspace.legacy_hosted_applications
+            self.artifacts = FileArtifactStore(workspace.artifacts)
+            self._locks_dir = workspace.locks
+            self._logs_dir = workspace.logs
+        else:
+            w_path = Path(workspace)
+            self.root = w_path / "hosted-applications"
+            self.artifacts = FileArtifactStore(w_path / "artifacts")
+            self._locks_dir = w_path / "locks"
+            self._logs_dir = w_path / "logs"
+
         self.root.mkdir(parents=True, exist_ok=True)
-        self.artifacts = FileArtifactStore(workspace / "artifacts")
         self._health_timeout_seconds = health_timeout_seconds
 
     def _directory(self, application_id: str) -> Path:

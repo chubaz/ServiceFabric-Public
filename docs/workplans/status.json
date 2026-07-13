@@ -7,14 +7,15 @@
     "v2-00",
     "v2-01",
     "v3-00",
-    "v4-00"
+    "v4-00",
+    "ap-01a-first-hosted-vertical-slice"
   ],
-  "completed_phases": ["programme-registration", "hosted-package", "managed-hosting", "resource-observation", "capability-bridge", "cli-journey", "acceptance-verification"],
-  "current_milestone": "ap-01a-first-hosted-vertical-slice",
-  "current_phase": "completed",
+  "completed_phases": [],
+  "current_milestone": "ap-00-modular-framework-kits",
+  "current_phase": "readiness",
   "known_blockers": [],
-  "last_verification_summary": "AP-01A review completion passes 27 isolated installed-CLI and adversarial tests, 3 focused hosting-boundary tests, and the inherited V1-V4 regression chain.",
-  "next_action": "Review and merge AP-01A; keep AP-00 planned until the post-merge handoff.",
+  "last_verification_summary": "AP-01A hosting baseline verification passes 27 isolated installed-CLI and adversarial tests, 3 focused hosting-boundary tests, and a dedicated hosting-only acceptance test.",
+  "next_action": "Design and implement reusable, reviewed framework kits for AP-00.",
   "programme_version": 1,
   "remaining_phases": []
 }

@@ -1635,7 +1635,7 @@
         "docs/workplans/current.md",
         "docs/workplans/milestones/ap-01a-first-hosted-vertical-slice.md"
       ],
-      "status": "current",
+      "status": "completed",
       "suggested_branch": "feature/ap-01-first-hosted-vertical-slice",
       "title": "First hosted vertical slice",
       "verification": {
@@ -1764,7 +1764,7 @@
         "docs/workplans/current.md",
         "docs/workplans/milestones/ap-00-modular-framework-kits.md"
       ],
-      "status": "planned",
+      "status": "current",
       "suggested_branch": "feature/ap-00-modular-framework-kits",
       "title": "Modular framework kits",
       "verification": {

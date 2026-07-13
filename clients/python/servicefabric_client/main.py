@@ -48,6 +48,26 @@ from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
 from servicefabric_application_host import LocalApplicationHost
 
+from servicefabric_workspace import (
+    WorkspaceLayout,
+    WorkspaceContext,
+    WorkspaceStatus,
+    WorkspaceValidation,
+    ApplicationCreateRequest,
+    ApplicationRecord,
+    ApplicationLayout,
+    ApplicationHostPaths,
+    resolve_workspace,
+    WorkspaceService,
+    validate_application_id,
+    WorkspaceError,
+    WorkspaceNotInitialized,
+    InvalidWorkspaceConfiguration,
+    InvalidApplicationId,
+    ApplicationAlreadyExists,
+    ApplicationNotFound,
+)
+
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
@@ -67,9 +87,25 @@ class ServiceFabricArgumentParser(argparse.ArgumentParser):
         raise CliUsageError(message)
 
 
-def workspace_path() -> Path:
-    value = os.environ.get("SERVICEFABRIC_HOME", Path.cwd() / ".servicefabric")
-    return Path(value).expanduser().resolve()
+def resolve_workspace_for_cli(explicit_path: str | None = None) -> WorkspaceContext:
+    # Precedence:
+    # 1. explicit --workspace PATH;
+    # 2. SERVICEFABRIC_WORKSPACE env var;
+    # 3. nearest parent containing workspace.yaml;
+    # 4. current directory for workspace init;
+    # 5. legacy SERVICEFABRIC_HOME state-only mode.
+    if explicit_path:
+        return resolve_workspace(explicit_workspace=Path(explicit_path))
+
+    if os.environ.get("SERVICEFABRIC_WORKSPACE"):
+        return resolve_workspace()
+
+    curr = Path.cwd().resolve()
+    for parent in [curr, *curr.parents]:
+        if (parent / "workspace.yaml").is_file():
+            return resolve_workspace(explicit_workspace=parent)
+
+    return resolve_workspace()
 
 
 def as_json_value(value: Any) -> Any:
@@ -99,9 +135,32 @@ def _display_workspace(home: Path) -> str:
 class LocalRuntime:
     """Composes reviewed local services; command handlers do not execute tools directly."""
 
-    def __init__(self, home: Path):
-        self.home = home
-        self.host = LocalApplicationHost(home)
+    def __init__(self, context: WorkspaceContext | Path | str, workspace_service: WorkspaceService | None = None):
+        if isinstance(context, (Path, str)):
+            legacy_home = Path(context)
+            # Create a compatibility layout with legacy-state-only mode
+            compat_layout = WorkspaceLayout.from_root(legacy_home, legacy_home)
+            context = WorkspaceContext(
+                layout=compat_layout,
+                mode="legacy-state-only",
+                resolution_source="legacy-home"
+            )
+            workspace_service = WorkspaceService(context)
+        elif workspace_service is None:
+            workspace_service = WorkspaceService(context)
+
+        self.context = context
+        self.workspace = workspace_service
+        self.home = context.layout.state
+
+        host_paths = ApplicationHostPaths(
+            root=context.layout.legacy_hosted_applications,
+            artifacts=context.layout.artifacts,
+            locks=context.layout.locks,
+            logs=context.layout.logs,
+        )
+        self.host = LocalApplicationHost(host_paths)
+
         portfolio_root = Path(_portfolio_module).resolve().parent.parent / "portfolios"
         self.portfolio = FilePortfolio(portfolio_root)
         self.runtime_service = ToolRuntimeService(InvocationKernel(self.portfolio))
@@ -155,20 +214,20 @@ class LocalRuntime:
         )
         self.governance = GovernanceClient(
             create_governance_operations_service(
-                root=home / "governance",
+                root=context.layout.operations,
                 evaluator=VersionedPolicyEvaluator((bundle,)),
             )
         )
         repository = Path(__file__).resolve().parents[3]
         self.applications = create_application_builder_service(
             portfolio_root=repository / "portfolio" / "applications",
-            artifact_store_root=home / "artifacts",
+            artifact_store_root=context.layout.artifacts,
         )
         self.capsules = CapsuleClient(
             create_capsule_host_service(
                 capsule_portfolio_root=repository / "portfolio" / "capsules",
                 application_portfolio_root=repository / "portfolio" / "applications",
-                artifact_store_root=home / "artifacts",
+                artifact_store_root=context.layout.artifacts,
             )
         )
         candidate = ProjectionCandidate(
@@ -261,35 +320,54 @@ class LocalRuntime:
         return request, result
 
 
-def require_workspace(home: Path) -> None:
-    if not (home / "workspace.json").is_file():
-        raise ValueError("workspace is not initialized. Run 'servicefabric init' first.")
+def require_workspace(context: WorkspaceContext) -> None:
+    if context.mode == "legacy-state-only":
+        marker = context.layout.state / "workspace.json"
+        if not marker.is_file():
+            raise ValueError("workspace is not initialized. Run 'servicefabric init' first.")
+    else:
+        marker = context.layout.root / "workspace.yaml"
+        if not marker.is_file():
+            raise ValueError("workspace is not initialized. Run 'servicefabric workspace init PATH' first.")
 
 
-def init_workspace(home: Path) -> dict[str, object]:
-    for name in ("operations", "idempotency", "artifacts", "approvals", "config"):
-        (home / name).mkdir(parents=True, exist_ok=True)
-    marker = home / "workspace.json"
-    created = not marker.exists()
-    if created:
-        marker.write_text(
-            json.dumps(
-                {
-                    "format": 1,
-                    "mcp_profile": MCP_PROFILE,
-                    "policy_bundle": "local-policy@1.0.0",
-                },
-                sort_keys=True,
+def init_workspace_compat(context: WorkspaceContext) -> dict[str, object]:
+    if context.mode == "external":
+        service = WorkspaceService(context)
+        status = service.initialize()
+        return {
+            "workspace": str(context.layout.root),
+            "created": status.created,
+            "initialized": status.initialized,
+            "local_only": True,
+            "mode": "external",
+        }
+    else:
+        home = context.layout.state
+        for name in ("operations", "idempotency", "artifacts", "approvals", "config"):
+            (home / name).mkdir(parents=True, exist_ok=True)
+        marker = home / "workspace.json"
+        created = not marker.exists()
+        if created:
+            marker.write_text(
+                json.dumps(
+                    {
+                        "format": 1,
+                        "mcp_profile": MCP_PROFILE,
+                        "policy_bundle": "local-policy@1.0.0",
+                    },
+                    sort_keys=True,
+                )
+                + "\n",
+                encoding="utf-8",
             )
-            + "\n",
-            encoding="utf-8",
-        )
-    return {
-        "workspace": str(home),
-        "created": created,
-        "initialized": True,
-        "local_only": True,
-    }
+        return {
+            "workspace": str(home),
+            "created": created,
+            "initialized": True,
+            "local_only": True,
+            "mode": "legacy-state-only",
+        }
 
 
 def parser() -> ServiceFabricArgumentParser:
@@ -298,11 +376,25 @@ def parser() -> ServiceFabricArgumentParser:
         description="A local developer command for reviewed ServiceFabric capabilities.",
         epilog="Start with: servicefabric init && servicefabric tools list",
     )
+    root.add_argument("--workspace", metavar="PATH", help="explicit workspace path")
+
     commands = root.add_subparsers(dest="command", required=True)
     commands.add_parser("init", help="create or verify the local workspace")
     commands.add_parser("status", help="show the local environment")
     commands.add_parser("doctor", help="check local prerequisites")
     commands.add_parser("shell", help="open an interactive local shell")
+
+    workspace = commands.add_parser("workspace", help="manage the ServiceFabric development workspace")
+    workspace_actions = workspace.add_subparsers(dest="workspace_action", required=True)
+
+    w_init = workspace_actions.add_parser("init", help="create a full ServiceFabric development workspace")
+    w_init.add_argument("path", nargs="?", help="optional path to initialize workspace")
+
+    workspace_actions.add_parser("status", help="show physical development-workspace state")
+    workspace_actions.add_parser("paths", help="show all resolved workspace paths")
+
+    w_val = workspace_actions.add_parser("validate", help="validate workspace layout")
+    w_val.add_argument("--deep", action="store_true", help="run deep validation including apps and symlinks")
 
     tools = commands.add_parser("tools", help="discover reviewed tools")
     tool_actions = tools.add_subparsers(dest="action", required=True)
@@ -320,6 +412,19 @@ def parser() -> ServiceFabricArgumentParser:
     apps = commands.add_parser("apps", help="inspect and build reviewed applications")
     app_actions = apps.add_subparsers(dest="action", required=True)
     app_actions.add_parser("list", help="list reviewed applications")
+
+    # New apps subcommands
+    create_app = app_actions.add_parser("create", help="create a new empty application source")
+    create_app.add_argument("application_id", help="the unique application ID")
+    create_app.add_argument("--name", required=True, help="descriptive name of the application")
+    create_app.add_argument("--empty", action="store_true", required=True, help="initialize an empty application project")
+
+    locate_app = app_actions.add_parser("locate", help="get the directory path of an application")
+    locate_app.add_argument("application_id")
+
+    inspect_app = app_actions.add_parser("inspect", help="inspect application definition and structure")
+    inspect_app.add_argument("application_id")
+
     install = app_actions.add_parser("install", help="install a reviewed local application")
     install.add_argument("source")
     app = app_actions.add_parser("describe", help="describe an application")
@@ -378,20 +483,34 @@ def parser() -> ServiceFabricArgumentParser:
     return root
 
 
-def _extract_global_options(argv: list[str]) -> tuple[list[str], bool, bool, bool]:
+def _extract_global_options(argv: list[str]) -> tuple[list[str], bool, bool, bool, str | None]:
     """Allow output flags before or after a subcommand without parser duplication."""
     json_mode = debug = verbose = False
+    workspace_path_val = None
     remaining: list[str] = []
-    for item in argv:
+
+    i = 0
+    while i < len(argv):
+        item = argv[i]
         if item == "--json":
             json_mode = True
         elif item == "--debug":
             debug = True
         elif item == "--verbose":
             verbose = True
+        elif item == "--workspace":
+            if i + 1 < len(argv):
+                workspace_path_val = argv[i + 1]
+                i += 1
+            else:
+                raise CliUsageError("--workspace requires a path argument")
+        elif item.startswith("--workspace="):
+            workspace_path_val = item.split("=", 1)[1]
         else:
             remaining.append(item)
-    return remaining, json_mode, debug, verbose
+        i += 1
+
+    return remaining, json_mode, debug, verbose, workspace_path_val
 
 
 def _parse_arguments(raw: str) -> dict[str, object]:
@@ -404,19 +523,104 @@ def _parse_arguments(raw: str) -> dict[str, object]:
     return value
 
 
+def require_development_workspace(context: WorkspaceContext) -> None:
+    if context.mode == "legacy-state-only":
+        raise CliUsageError(
+            "A development workspace is required.\n"
+            "Run: servicefabric workspace init PATH"
+        )
+
+
 def dispatch(argv: list[str]) -> tuple[int, str, object]:
-    selected, json_mode, _debug, verbose = _extract_global_options(argv)
+    selected, json_mode, _debug, verbose, workspace_path_val = _extract_global_options(argv)
     args = parser().parse_args(selected)
-    home = workspace_path()
+
+    context = resolve_workspace_for_cli(workspace_path_val)
+    workspace_service = WorkspaceService(context)
+
+    if args.command == "workspace":
+        if args.workspace_action == "init":
+            init_context = context
+            if args.path:
+                init_context = resolve_workspace_for_cli(args.path)
+            init_service = WorkspaceService(init_context)
+            status = init_service.initialize()
+            return 0, "workspace-init", {
+                "created": status.created,
+                "initialized": status.initialized,
+                "mode": status.mode,
+                "workspace": str(status.root),
+                "state": str(status.state),
+                "repaired_directories": status.repaired_directories,
+                "json_mode": json_mode,
+            }
+
+        require_development_workspace(context)
+
+        if args.workspace_action == "status":
+            status = workspace_service.inspect()
+            validation_res = workspace_service.validate()
+            num_apps = 0
+            if context.layout.applications.is_dir():
+                num_apps = len([p for p in context.layout.applications.iterdir() if p.is_dir()])
+            num_recipes = 0
+            if context.layout.recipes.is_dir():
+                num_recipes = len([p for p in context.layout.recipes.iterdir() if p.is_dir()])
+            num_libraries = 0
+            if context.layout.libraries.is_dir():
+                num_libraries = len([p for p in context.layout.libraries.iterdir() if p.is_dir()])
+
+            return 0, "workspace-status", {
+                "workspace": str(status.root),
+                "state": str(status.state),
+                "applications": num_apps,
+                "recipes": num_recipes,
+                "libraries": num_libraries,
+                "validation": "valid" if validation_res.valid else "invalid",
+                "json_mode": json_mode,
+            }
+
+        if args.workspace_action == "paths":
+            return 0, "workspace-paths", {
+                "workspace_root": str(context.layout.root),
+                "applications": str(context.layout.applications),
+                "recipes": str(context.layout.recipes),
+                "libraries": str(context.layout.libraries),
+                "state": str(context.layout.state),
+                "artifacts": str(context.layout.artifacts),
+                "environments": str(context.layout.environments),
+                "logs": str(context.layout.logs),
+                "json_mode": json_mode,
+            }
+
+        if args.workspace_action == "validate":
+            validation_res = workspace_service.validate()
+            findings = [
+                {
+                    "code": f.code,
+                    "severity": f.severity,
+                    "path": str(f.path) if f.path else None,
+                    "message": f.message,
+                }
+                for f in validation_res.findings
+            ]
+            return 0, "workspace-validate", {
+                "valid": validation_res.valid,
+                "findings": findings,
+                "json_mode": json_mode,
+            }
+
     if args.command == "init":
-        return 0, "init", {**init_workspace(home), "json_mode": json_mode}
+        return 0, "init", {**init_workspace_compat(context), "json_mode": json_mode}
     if args.command == "shell":
         return 0, "shell", {"json_mode": json_mode}
-    require_workspace(home)
-    runtime = LocalRuntime(home)
+
+    require_workspace(context)
+    runtime = LocalRuntime(context, workspace_service)
+
     if args.command == "status":
         return 0, "status", {
-            "workspace": str(home),
+            "workspace": str(context.layout.root if context.mode != "legacy-state-only" else context.layout.state),
             "version": VERSION,
             "services": [
                 "tool runtime",
@@ -523,14 +727,105 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
         request,result=runtime.invoke_application(args.tool_id,_parse_arguments(args.input))
         return 0,"call",{"request_id":request.spec.request_id,"revision":request.spec.target.revision_ref,"policy_outcome":"allow","result":result,"json_mode":json_mode}
     if args.command == "apps":
+        if args.action in {"create", "locate", "inspect"}:
+            require_development_workspace(context)
+
+        if args.action == "create":
+            try:
+                record = workspace_service.create_application(
+                    ApplicationCreateRequest(
+                        application_id=args.application_id,
+                        display_name=args.name,
+                    )
+                )
+                return 0, "apps-create", {
+                    "application_id": record.application_id,
+                    "display_name": record.display_name,
+                    "source_path": record.source_path,
+                    "status": record.status,
+                    "json_mode": json_mode,
+                }
+            except WorkspaceError as error:
+                raise CliUsageError(str(error))
+
+        if args.action == "locate":
+            try:
+                app_layout = workspace_service.locate_application(args.application_id)
+                return 0, "apps-locate", {
+                    "application_id": args.application_id,
+                    "absolute_path": str(app_layout.root.resolve()),
+                    "relative_path": f"applications/{args.application_id}",
+                    "json_mode": json_mode,
+                }
+            except WorkspaceError as error:
+                raise CliUsageError(str(error))
+
+        if args.action == "inspect":
+            try:
+                app_layout = workspace_service.locate_application(args.application_id)
+                installed = args.application_id in runtime.host.list_applications()
+                running = False
+                if installed:
+                    try:
+                        running = runtime.host.status(args.application_id)["state"] == "running"
+                    except Exception:
+                        pass
+
+                display_name = args.application_id.replace("-", " ").title()
+                num_modules = 0
+                num_bindings = 0
+                if app_layout.application_definition.is_file():
+                    try:
+                        import yaml
+                        with app_layout.application_definition.open("r", encoding="utf-8") as f:
+                            data = yaml.safe_load(f)
+                            display_name = data.get("metadata", {}).get("name", display_name)
+                            num_modules = len(data.get("spec", {}).get("modules", []))
+                    except Exception:
+                        pass
+                if app_layout.bindings.is_file():
+                    try:
+                        import yaml
+                        with app_layout.bindings.open("r", encoding="utf-8") as f:
+                            data = yaml.safe_load(f)
+                            num_bindings = len(data.get("spec", {}).get("bindings", {}))
+                    except Exception:
+                        pass
+
+                return 0, "apps-inspect", {
+                    "application_id": args.application_id,
+                    "display_name": display_name,
+                    "status": "development",
+                    "source_path": f"applications/{args.application_id}",
+                    "modules": num_modules,
+                    "bindings": num_bindings,
+                    "installed": installed,
+                    "running": running,
+                    "json_mode": json_mode,
+                }
+            except WorkspaceError as error:
+                raise CliUsageError(str(error))
+
         if args.action == "install":
             return 0,"apps-install",{**runtime.host.install(Path(args.source)),"json_mode":json_mode}
         if args.action in {"start","status","resources","stop"}:
             method=getattr(runtime.host,args.action)
             return 0,f"apps-{args.action}",{args.action:method(args.application_id),"json_mode":json_mode}
         if args.action == "list":
+            ws_apps = []
+            if context.mode != "legacy-state-only":
+                try:
+                    ws_apps = [{"application_id": app.application_id, "status": app.status} for app in workspace_service.list_applications()]
+                except Exception:
+                    pass
+            reviewed_apps = runtime.applications.list_applications()
+            installed_apps = runtime.host.list_applications()
+            combined_apps = sorted(set(reviewed_apps) | set(installed_apps) | {app["application_id"] for app in ws_apps})
             return 0, "apps-list", {
-                "applications": sorted(set(runtime.applications.list_applications()) | set(runtime.host.list_applications())),
+                "applications": combined_apps,
+                "workspace_applications": ws_apps,
+                "reviewed_applications": reviewed_apps,
+                "installed_applications": installed_apps,
                 "json_mode": json_mode,
             }
         if args.action == "describe":
@@ -683,9 +978,106 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
 def human_output(command: str, value: object) -> str:
     data = as_json_value(value)
     assert isinstance(data, dict)
+    if command == "workspace-init":
+        action = "Created" if data["created"] else "Using existing"
+        repaired = ""
+        if data.get("repaired_directories"):
+            repaired = f"\n  Repaired:  {', '.join(data['repaired_directories'])}"
+        return "\n".join(
+            [
+                f"{action} ServiceFabric development workspace",
+                "",
+                f"  Workspace: {data['workspace']}",
+                f"  State:     {data['state']}",
+                f"  Mode:      {data['mode']}{repaired}",
+                "",
+                "Ready to create applications.",
+                "",
+            ]
+        )
+    if command == "workspace-status":
+        return "\n".join(
+            [
+                "ServiceFabric development workspace",
+                "",
+                f"  Workspace:    {data['workspace']}",
+                f"  State:        {data['state']}",
+                f"  Applications: {data['applications']}",
+                f"  Recipes:      {data['recipes']}",
+                f"  Libraries:    {data['libraries']}",
+                f"  Validation:   {data['validation']}",
+                "",
+            ]
+        )
+    if command == "workspace-paths":
+        return "\n".join(
+            [
+                "Workspace paths",
+                "",
+                f"  applications:  {data['applications']}",
+                f"  recipes:       {data['recipes']}",
+                f"  libraries:     {data['libraries']}",
+                f"  state:         {data['state']}",
+                f"  artifacts:     {data['artifacts']}",
+                f"  environments:  {data['environments']}",
+                f"  logs:          {data['logs']}",
+                "",
+            ]
+        )
+    if command == "workspace-validate":
+        if data["valid"]:
+            return "Workspace validation passed.\n"
+        lines = ["Workspace validation failed", ""]
+        for f in data["findings"]:
+            path_str = f" ({f['path']})" if f['path'] else ""
+            lines.append(f"  {f['severity'].upper()} {f['code']}{path_str}")
+            lines.append(f"  {f['message']}")
+            lines.append("")
+        return "\n".join(lines)
+    if command == "apps-create":
+        return "\n".join(
+            [
+                f"Created application source: {data['application_id']}",
+                "",
+                f"  Location: {data['source_path']}",
+                f"  Status:   {data['status']}",
+                "  Modules:  none",
+                "",
+                "Next: edit the application or generate its blueprint.",
+                "",
+            ]
+        )
+    if command == "apps-locate":
+        return f"{data['absolute_path']}\n"
+    if command == "apps-inspect":
+        inst_str = "yes" if data["installed"] else "no"
+        run_str = "yes" if data["running"] else "no"
+        return "\n".join(
+            [
+                data["display_name"],
+                "",
+                f"  ID:          {data['application_id']}",
+                f"  Status:      {data['status']}",
+                f"  Source:      {data['source_path']}",
+                f"  Modules:     {data['modules']}",
+                f"  Bindings:    {data['bindings']}",
+                f"  Installed:   {inst_str}",
+                f"  Running:     {run_str}",
+                "",
+            ]
+        )
     if command == "init":
         action = "Created" if data["created"] else "Using"
-        return f"{action} local workspace: {_display_workspace(Path(data['workspace']))}\nReady. Try: servicefabric tools list\n"
+        gentle_note = ""
+        if data.get("mode") == "legacy-state-only":
+            gentle_note = (
+                "\n\nFor application development, create a full workspace with:\n"
+                "  servicefabric workspace init PATH\n"
+            )
+        return (
+            f"{action} local workspace: {_display_workspace(Path(data['workspace']))}"
+            f"{gentle_note}\nReady. Try: servicefabric tools list\n"
+        )
     if command == "status":
         return "\n".join(
             [
@@ -732,7 +1124,24 @@ def human_output(command: str, value: object) -> str:
             return f"{result['tool_id']} -> {json.dumps(result['data'], sort_keys=True)}\n  Revision: {data['revision']}  Policy: {data['policy_outcome']}\n"
         return f"{result['tool_id']} failed: {result['error']['message']}\n"
     if command == "apps-list":
-        return "\n".join(["Reviewed applications", *[f"  {item}" for item in data["applications"]], ""])
+        lines = ["Applications", ""]
+        ws_ids = {app["application_id"] for app in data.get("workspace_applications", [])}
+        reviewed_ids = set(data.get("reviewed_applications", []))
+        installed_ids = set(data.get("installed_applications", []))
+
+        all_ids = sorted(ws_ids | reviewed_ids | installed_ids)
+        for app_id in all_ids:
+            facets = []
+            if app_id in ws_ids:
+                facets.append("development source")
+            if app_id in reviewed_ids:
+                facets.append("reviewed definition")
+            if app_id in installed_ids:
+                facets.append("installed")
+
+            facet_str = " + ".join(facets)
+            lines.append(f"  {app_id:<24} {facet_str}")
+        return "\n".join(lines) + "\n"
     if command == "apps-describe":
         app = data["application"]
         return "\n".join([app["spec"]["display_name"], f"  ID: {app['spec']['application_id']}", f"  {app['spec']['description']}", ""])
@@ -881,7 +1290,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: {error}. Run 'servicefabric --help' for usage.", file=sys.stderr)
         return 2
     except Exception as error:
-        _remaining, _json_mode, debug, _verbose = _extract_global_options(selected)
+        _remaining, _json_mode, debug, _verbose, _ws = _extract_global_options(selected)
         if debug:
             raise
         print(f"error: {error}", file=sys.stderr)

@@ -152,6 +152,9 @@ jobs:
       - name: Run V4-00 completion verification
         run: python3 scripts/agent/verify.py --milestone v4-00 --phase completion
 
+      - name: Run AP-01A hosting baseline
+        run: python3 -m unittest tests.ap_01a.test_hosting_baseline -v
+
       - name: Run AP-01A installed CLI acceptance
         run: python3 -m unittest discover -s tests/ap_01a -v
 
