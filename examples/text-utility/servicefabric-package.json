@@ -1,0 +1,19 @@
+{
+  "application_id": "text-utility",
+  "version": "1.0.0",
+  "framework": "fastapi",
+  "adapter": "reviewed-fastapi-v1",
+  "module": "app:app",
+  "health_path": "/health",
+  "declared_resources": {
+    "memory_mib": 128,
+    "cpu_cores": 0.25,
+    "storage_mib": 16,
+    "network": "loopback-only"
+  },
+  "entrypoints": ["web", "health", "capability-adapter"],
+  "capabilities": [
+    {"tool_id": "text.count_words", "path": "/actions/count-words"},
+    {"tool_id": "text.inspect", "path": "/actions/inspect"}
+  ]
+}
