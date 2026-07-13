@@ -33,12 +33,23 @@ from servicefabric_governance import (
     PolicyBundle,
     VersionedPolicyEvaluator,
 )
+from servicefabric_mcp_gateway import McpGatewayService
+from servicefabric_mcp_projection import (
+    DiscoveryService,
+    McpCallRequest,
+    McpClientCapabilities,
+    ProjectionCandidate,
+    ProjectedMcpTool,
+    SessionManager,
+    TrustedMcpTransportContext,
+)
 from servicefabric_operations import DurableOperationStore, IdempotencyRepository
 from servicefabric_runtime import FilePortfolio, InvocationKernel
 from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
 
 from .capsules import CapsuleClient
+from .mcp import McpGatewayClient
 
 
 VERSION = "0.1.0a1"
@@ -153,6 +164,41 @@ class LocalRuntime:
                 capsule_portfolio_root=repository / "portfolio" / "capsules",
                 application_portfolio_root=repository / "portfolio" / "applications",
                 artifact_store_root=home / "artifacts",
+            )
+        )
+        candidate = ProjectionCandidate(
+            canonical_tool_id="math.calculate",
+            revision_ref="1.0.0",
+            name="math.calculate",
+            title="Calculate",
+            description="Deterministic arithmetic calculation.",
+            input_schema={
+                "type": "object",
+                "properties": {"expression": {"type": "string"}},
+                "required": ["expression"],
+                "additionalProperties": False,
+            },
+            enabled=True,
+            available=True,
+            discover_scopes=("math-calculate",),
+            structured_result=True,
+        )
+        projected_tool = ProjectedMcpTool(
+            name=candidate.name,
+            canonical_tool_id=candidate.canonical_tool_id,
+            revision_ref=candidate.revision_ref,
+            title=candidate.title,
+            description=candidate.description,
+            input_schema=candidate.input_schema,
+            structured_result=candidate.structured_result,
+        )
+        self.mcp = McpGatewayClient(
+            McpGatewayService(
+                sessions=SessionManager(),
+                discovery=DiscoveryService((candidate,)),
+                tools=(projected_tool,),
+                governed_invocations=self.governed,
+                operations=self.operations,
             )
         )
 
@@ -272,6 +318,16 @@ def parser() -> ServiceFabricArgumentParser:
     dispatch.add_argument("--request-file", required=True, metavar="PATH")
     dispatch.add_argument("--method", default="GET", choices=("GET", "HEAD"))
     dispatch.add_argument("--path", default="/", help="declared capsule route")
+
+    mcp = commands.add_parser("mcp", help="use the in-process MCP projection")
+    mcp_actions = mcp.add_subparsers(dest="action", required=True)
+    mcp_actions.add_parser("initialize", help="show local MCP capabilities")
+    mcp_tools = mcp_actions.add_parser("tools", help="discover or call projected MCP tools")
+    mcp_tool_actions = mcp_tools.add_subparsers(dest="mcp_action", required=True)
+    mcp_tool_actions.add_parser("list", help="list projected MCP tools")
+    mcp_call = mcp_tool_actions.add_parser("call", help="call a projected MCP tool")
+    mcp_call.add_argument("tool_name")
+    mcp_call.add_argument("--arguments", required=True, metavar="JSON")
     return root
 
 
@@ -466,6 +522,44 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             }
         finally:
             runtime.capsules.close_session(session)
+    if args.command == "mcp":
+        now = datetime.now(timezone.utc)
+        session_id = "local-mcp-session"
+        context = TrustedMcpTransportContext(
+            caller=runtime.caller, adapter_ref="trusted-mcp-adapter"
+        )
+        capabilities = McpClientCapabilities(structured_results=True)
+        session, server = runtime.mcp.initialize(
+            session_id=session_id,
+            trusted_context=context,
+            capabilities=capabilities,
+            now=now,
+        )
+        if args.action == "initialize":
+            return 0, "mcp-initialize", {
+                "profile": MCP_PROFILE,
+                "session": session,
+                "capabilities": server,
+                "transport": "in-process only",
+                "json_mode": json_mode,
+            }
+        if args.mcp_action == "list":
+            return 0, "mcp-tools-list", {
+                "tools": runtime.mcp.list_tools(session_id=session_id, now=now).tools,
+                "transport": "in-process only",
+                "json_mode": json_mode,
+            }
+        call = McpCallRequest(
+            request_id="local-mcp-call",
+            tool_name=args.tool_name,
+            correlation_id="local-mcp-correlation",
+            arguments=_parse_arguments(args.arguments),
+        )
+        return 0, "mcp-tools-call", {
+            "response": runtime.mcp.call(session_id=session_id, call=call, now=now),
+            "transport": "in-process only",
+            "json_mode": json_mode,
+        }
     raise ValueError("unsupported command")
 
 
@@ -549,6 +643,30 @@ def human_output(command: str, value: object) -> str:
                 ]
             )
         return f"Capsule route unavailable ({data['status']}).\n"
+    if command == "mcp-initialize":
+        capabilities = data["capabilities"]
+        enabled = [name.replace("_", " ") for name, value in capabilities.items() if value]
+        return "\n".join(
+            [
+                f"MCP projection ready ({data['profile']})",
+                f"  Capabilities: {', '.join(enabled)}",
+                "  Transport: in-process only",
+                "",
+            ]
+        )
+    if command == "mcp-tools-list":
+        tools = data["tools"]
+        return "\n".join(
+            ["Projected MCP tools", *[f"  {tool['name']:<24} {tool['description']}" for tool in tools], ""]
+        )
+    if command == "mcp-tools-call":
+        response = data["response"]
+        if response["error"] is not None:
+            return f"MCP call failed: {response['error']['message']}\n"
+        result = response["structured_content"]
+        if isinstance(result, dict) and "value" in result:
+            return f"MCP {response['request_id']} -> {result['value']}\n"
+        return "MCP call completed. Use --json for the structured result.\n"
     return json_output(data)
 
 

@@ -14,10 +14,12 @@ python3 -m pip install --no-build-isolation --no-deps \
   -e packages/servicefabric_artifacts \
   -e packages/servicefabric_builder \
   -e packages/servicefabric_capsules \
+  -e packages/servicefabric_mcp_projection \
   -e services/tool_runtime \
   -e services/application_builder \
   -e services/capsule_host \
   -e services/governance_operations \
+  -e services/mcp_gateway \
   -e clients/python
 
 servicefabric init
@@ -45,6 +47,14 @@ servicefabric capsules dispatch \
   --request-file packages/servicefabric_contracts/tests/fixtures/capsule_host_request_hello.json \
   --method GET \
   --path /
+```
+
+The same reviewed tool is also available through the existing MCP projection. These commands use the in-process gateway only; ServiceFabric does not start stdio or HTTP MCP transport:
+
+```bash
+servicefabric mcp initialize
+servicefabric mcp tools list
+servicefabric mcp tools call math.calculate --arguments '{"expression":"6 * 7"}'
 ```
 
 The local command is intentionally limited: there is no public HTTP or MCP transport, production identity, external provider execution, deployment orchestration, or V5 control plane.

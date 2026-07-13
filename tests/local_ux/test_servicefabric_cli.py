@@ -98,6 +98,32 @@ class LocalDeveloperUxTests(unittest.TestCase):
             self.assertEqual(capsule.returncode, 0)
             self.assertIn("examples.hello-capsule 1.0.0 -> 200", capsule.stdout)
 
+    def test_in_process_mcp_projection_discovers_and_calls_tool(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary) / "workspace"
+            self.assertEqual(self.command("init", home=home).returncode, 0)
+            initialize = self.command("mcp", "initialize", home=home)
+            tools = self.command("mcp", "tools", "list", home=home)
+            call = self.command(
+                "mcp",
+                "tools",
+                "call",
+                "math.calculate",
+                "--arguments",
+                '{"expression":"6*7"}',
+                "--json",
+                home=home,
+            )
+
+            self.assertEqual(initialize.returncode, 0)
+            self.assertIn("in-process only", initialize.stdout)
+            self.assertEqual(tools.returncode, 0)
+            self.assertIn("math.calculate", tools.stdout)
+            self.assertEqual(call.returncode, 0)
+            self.assertEqual(
+                json.loads(call.stdout)["response"]["structured_content"]["value"], 42
+            )
+
     def test_safe_errors_and_help(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary) / "workspace"
