@@ -64,7 +64,9 @@ class LocalDeveloperUxTests(unittest.TestCase):
             )
 
             self.assertEqual(status.returncode, 0)
-            self.assertEqual(json.loads(status.stdout)["tools"], 1)
+            status_data = json.loads(status.stdout)
+            self.assertEqual(status_data["tools"], 1)
+            self.assertIn("MCP projection (in-process)", status_data["services"])
             self.assertEqual(result.returncode, 0)
             self.assertEqual(json.loads(result.stdout)["result"]["data"]["value"], 42)
 

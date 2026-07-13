@@ -377,6 +377,8 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                 "durable operations",
                 "application builder",
                 "artifact store",
+                "capsule host",
+                "MCP projection (in-process)",
             ],
             "policy_bundle": "local-policy@1.0.0",
             "tools": 1,
