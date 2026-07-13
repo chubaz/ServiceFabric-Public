@@ -8,6 +8,7 @@ from .models import (
 from .discovery import DiscoveryService, ProjectionCandidate
 from .translation import CallTranslationError, CallTranslator
 from .results import project_error, project_result
+from .progress import CancellationProjector, ProgressProjector
 
 __all__ = [
     "McpCallRequest", "McpCallResponse", "McpCancellationRequest", "McpClientCapabilities",
@@ -16,4 +17,5 @@ __all__ = [
     "DiscoveryService", "ProjectionCandidate",
     "CallTranslationError", "CallTranslator",
     "project_error", "project_result",
+    "CancellationProjector", "ProgressProjector",
 ]
