@@ -1,29 +1,30 @@
 {
-  "base_commit": "9870eae9fd935dfa9918995437038ed167ddcc46",
+  "base_commit": "65d5d0f8b3beffc2d06311fb78350c3933d38b09",
   "completed_milestones": [
     "e0-00",
     "v1-00",
     "v1-01",
     "v2-00",
-    "v2-01"
+    "v2-01",
+    "v3-00"
   ],
-  "completed_phases": [
-    "governance-contracts",
-    "policy-evaluation",
-    "approval-lifecycle",
-    "durable-operation-store",
-    "operation-state-machine",
-    "idempotency-and-deduplication",
-    "cancellation-timeout-and-retry",
-    "reconciliation-and-effect-verification",
-    "service-client-and-cli",
-    "cross-boundary-verification"
-  ],
-  "current_milestone": "v3-00",
-  "current_phase": "completed",
+  "completed_phases": [],
+  "current_milestone": "v4-00",
+  "current_phase": "projection-contracts",
   "known_blockers": [],
-  "last_verification_summary": "V3-00 completion passed all 14 configured checks in the external environment; the inherited V2 loopback regression remains blocked only inside the managed sandbox.",
-  "next_action": "Review and merge V3-00, then prepare the post-merge V3-to-V4 handoff without implementing V4 on this branch.",
+  "last_verification_summary": "V3-00 was merged into main after its completion suite, V2-01 regression gate, dependency checks, architecture checks, schema checks, and CI portability checks passed.",
+  "next_action": "Run V4-00 preflight and readiness verification, then implement projection-contracts without changing canonical execution ownership.",
   "programme_version": 1,
-  "remaining_phases": []
+  "remaining_phases": [
+    "discovery-projection",
+    "call-translation",
+    "result-and-error-projection",
+    "progress-and-cancellation",
+    "durable-operation-projection",
+    "session-and-capability-negotiation",
+    "local-transports",
+    "harness-and-transcript-ecosystem",
+    "client-cli-and-integration",
+    "cross-boundary-verification"
+  ]
 }

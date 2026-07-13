@@ -1,8 +1,8 @@
 # Current Milestone
 
-- ID: `v3-00`
-- Title: Governance and durable operations
+- ID: `v4-00`
+- Title: MCP projection and harness ecosystem
 - Status: current
-- Workplan: `docs/workplans/milestones/v3-00-governance-and-durable-operations.md`
-- Configuration key: `v3-00`
+- Workplan: `docs/workplans/milestones/v4-00-mcp-projection-and-harness-ecosystem.md`
+- Configuration key: `v4-00`
 - Commands: `make agent-preflight`, `make agent-context`, `make verify-current`, `make agent-handoff`
