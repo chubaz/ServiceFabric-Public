@@ -112,7 +112,7 @@ class LocalRuntime:
             principal_type="human",
             tenant_ref="local",
             issuer="servicefabric-local",
-            scopes=("math-calculate",),
+            scopes=("math-calculate", "text-count", "text-inspect"),
             authentication_strength="multi_factor",
         )
         bundle = PolicyBundle(
@@ -214,7 +214,7 @@ class LocalRuntime:
         request_id = "local-request-" + uuid4().hex[:16]
         permission = str(capability["permission_id"])
         revision = str(capability["revision"])
-        caller = self.caller.model_copy(update={"scopes": (permission,)})
+        caller = self.caller
         request = ToolInvocationRequest.model_validate({"apiVersion":"servicefabric.ai/v1alpha1","kind":"ToolInvocationRequest","metadata":{"id":request_id,"name":"Hosted application invocation","description":"Governed hosted application capability request.","owner_ref":{"kind":"service","id":"servicefabric-cli"}},"spec":{"request_id":request_id,"target":{"target_kind":"revision","tool_id":tool_id,"revision_ref":revision},"arguments":arguments,"caller_context":caller,"protocol_context":{"protocol":"internal","adapter_ref":"trusted-local-cli"},"budget":{},"requested_response_mode":"synchronous"}})
         bundle = PolicyBundle(bundle_id="hosted-application-policy",version="1.0.0",digest=POLICY_DIGEST,allowed_scopes=("text-count","text-inspect"))
         profile = InvocationGovernanceProfile(tool_id,revision,(EffectDeclaration(effect_type="none",target_category="text",scope="local",reversibility="not_applicable",verification_required=False,approval_required=False,idempotency_required=False),),(PermissionRequirement(permission_id=permission,tenant_scope="caller_tenant",resource_scope=str(capability["application_id"])),),AuthorityGrant(scopes=(permission,),tenant_ref="local"),ExecutionBudget(),"low",bundle.bundle_id,bundle.version,bundle.digest)
@@ -451,7 +451,19 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "json_mode": json_mode,
         }
     if args.command == "tools":
-        hosted = list(runtime.host.capabilities())
+        hosted = [
+            {
+                key: item[key]
+                for key in (
+                    "tool_id",
+                    "revision",
+                    "application_id",
+                    "description",
+                    "effects",
+                )
+            }
+            for item in runtime.host.capabilities()
+        ]
         if args.action == "list":
             return 0, "tools-list", {
                 "tools": [

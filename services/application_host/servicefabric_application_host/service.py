@@ -41,6 +41,16 @@ _REVIEWED_PACKAGE = {
     "build": {"kind": "reviewed-python-source"},
     "start": {"adapter": "reviewed-fastapi-v1", "module": "app:app"},
     "health_path": "/health",
+    "source_files": [
+        {
+            "path": "app.py",
+            "sha256": "46375c58efbb5b6baacd817e4b0fe3f4515989c54340bf523ee0b14d20110b89",
+        },
+        {
+            "path": "pyproject.toml",
+            "sha256": "5b2cef6fcc362121b5777f03911ca65dfa3d398995e63badf39473d13697075c",
+        },
+    ],
     "declared_resources": {
         "memory_mib": 128,
         "cpu_cores": 0.25,
@@ -155,6 +165,27 @@ class LocalApplicationHost:
             raise ApplicationHostError("package is not an approved AP-01A FastAPI package")
         return dict(package)
 
+    @staticmethod
+    def _validate_source(source: Path, package: dict[str, object]) -> None:
+        declared = {
+            str(item["path"]): str(item["sha256"])
+            for item in package["source_files"]
+        }
+        actual_paths = {
+            path.relative_to(source).as_posix()
+            for path in source.rglob("*")
+            if path.is_file()
+            and "__pycache__" not in path.parts
+            and path.suffix != ".pyc"
+            and path.name != "servicefabric-package.json"
+        }
+        if actual_paths != set(declared):
+            raise ApplicationHostError("package source files do not match the reviewed manifest")
+        for relative, expected in declared.items():
+            path = source / relative
+            if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+                raise ApplicationHostError("package source failed reviewed digest verification")
+
     def install(self, source: Path) -> dict[str, object]:
         try:
             source = source.resolve(strict=True)
@@ -166,6 +197,7 @@ class LocalApplicationHost:
             package = self._validate_package(
                 json.loads((source / "servicefabric-package.json").read_text(encoding="utf-8"))
             )
+            self._validate_source(source, package)
         except (OSError, UnicodeError, json.JSONDecodeError) as error:
             raise ApplicationHostError("package manifest is unreadable") from error
         with self._lock("text-utility"):
@@ -203,6 +235,7 @@ class LocalApplicationHost:
             if record.get("state") in {"starting", "running"} and self._owned_process(record):
                 raise ApplicationHostError("running application must be stopped before rebuild")
             source = self._directory(application_id) / "source"
+            self._validate_source(source, record["package"])
             paths = sorted(
                 item
                 for item in source.rglob("*")
@@ -437,18 +470,33 @@ class LocalApplicationHost:
                 }
             )
             _atomic(self._directory(application_id) / "application.json", record)
-            deadline = time.monotonic() + 10
-            while time.monotonic() < deadline:
-                if process.poll() is not None:
-                    record.update({"state": "failed", "exit_code": process.returncode})
-                    _atomic(self._directory(application_id) / "application.json", record)
-                    raise ApplicationHostError(
-                        "application process exited before becoming healthy"
-                    )
-                try:
-                    with urlopen(f"http://127.0.0.1:{port}/health", timeout=0.5) as response:
-                        if response.status == 200:
-                            record.update(
+        deadline = time.monotonic() + 10
+        while time.monotonic() < deadline:
+            if process.poll() is not None:
+                with self._lock(application_id):
+                    current = self._record(application_id)
+                    if current.get("state") != "stopped":
+                        current.update({"state": "failed", "exit_code": process.returncode})
+                        _atomic(
+                            self._directory(application_id) / "application.json", current
+                        )
+                raise ApplicationHostError(
+                    "application process exited before becoming healthy"
+                )
+            try:
+                with urlopen(f"http://127.0.0.1:{port}/health", timeout=0.5) as response:
+                    if response.status == 200:
+                        with self._lock(application_id):
+                            current = self._record(application_id)
+                            if (
+                                current.get("pid") != process.pid
+                                or current.get("state") != "starting"
+                                or not self._owned_process(current)
+                            ):
+                                raise ApplicationHostError(
+                                    "application startup was superseded"
+                                )
+                            current.update(
                                 {
                                     "state": "running",
                                     "startup_duration_ms": round(
@@ -458,15 +506,19 @@ class LocalApplicationHost:
                                 }
                             )
                             _atomic(
-                                self._directory(application_id) / "application.json", record
+                                self._directory(application_id) / "application.json",
+                                current,
                             )
-                            return self._status_value(record)
-                except (OSError, URLError):
-                    time.sleep(0.05)
-            self._terminate_owned(record)
-            record["state"] = "failed"
-            _atomic(self._directory(application_id) / "application.json", record)
-            raise ApplicationHostError("application health check timed out")
+                            return self._status_value(current)
+            except (OSError, URLError):
+                time.sleep(0.05)
+        with self._lock(application_id):
+            current = self._record(application_id)
+            if current.get("pid") == process.pid:
+                self._terminate_owned(current)
+                current["state"] = "failed"
+                _atomic(self._directory(application_id) / "application.json", current)
+        raise ApplicationHostError("application health check timed out")
 
     def status(self, application_id: str) -> dict[str, object]:
         with self._lock(application_id):
