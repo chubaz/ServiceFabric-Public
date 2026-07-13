@@ -83,6 +83,9 @@ class LocalApplicationHost:
     def list_applications(self) -> tuple[str, ...]:
         return tuple(sorted(path.name for path in self.root.iterdir() if (path / "application.json").is_file()))
 
+    def is_installed(self, application_id: str) -> bool:
+        return application_id in self.list_applications()
+
     @staticmethod
     def _port() -> int:
         with socket.socket() as value:

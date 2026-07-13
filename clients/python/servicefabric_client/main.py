@@ -450,14 +450,11 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
         }
     if args.command == "tools":
         hosted = []
-        try:
-            runtime.host._record("text-utility")
+        if runtime.host.is_installed("text-utility"):
             hosted = [
                 {"tool_id":"text.count_words","revision":"1.0.0","description":"Count words using the hosted Text Utility application."},
                 {"tool_id":"text.inspect","revision":"1.0.0","description":"Inspect text using the hosted Text Utility application."},
             ]
-        except Exception:
-            pass
         if args.action == "list":
             return 0, "tools-list", {
                 "tools": [
