@@ -8,15 +8,14 @@
     "v2-01",
     "v3-00"
   ],
-  "completed_phases": ["projection-contracts", "discovery-projection", "call-translation", "result-and-error-projection", "progress-and-cancellation", "durable-operation-projection"],
+  "completed_phases": ["projection-contracts", "discovery-projection", "call-translation", "result-and-error-projection", "progress-and-cancellation", "durable-operation-projection", "session-and-capability-negotiation"],
   "current_milestone": "v4-00",
-  "current_phase": "session-and-capability-negotiation",
+  "current_phase": "local-transports",
   "known_blockers": [],
   "last_verification_summary": "V3-00 was merged into main after its completion suite, V2-01 regression gate, dependency checks, architecture checks, schema checks, and CI portability checks passed.",
-  "next_action": "Implement bounded MCP session capability negotiation.",
+  "next_action": "Implement bounded deterministic local MCP transport.",
   "programme_version": 1,
   "remaining_phases": [
-    "local-transports",
     "harness-and-transcript-ecosystem",
     "client-cli-and-integration",
     "cross-boundary-verification"
