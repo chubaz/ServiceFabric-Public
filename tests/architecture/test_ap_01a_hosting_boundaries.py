@@ -27,6 +27,7 @@ class Ap01aHostingBoundaryTests(unittest.TestCase):
         modules = imported_modules(CLI)
         source = CLI.read_text(encoding="utf-8")
         self.assertFalse({"urllib", "urllib.request", "fastapi", "uvicorn"} & modules)
+        self.assertNotIn("servicefabric_artifacts", modules)
         self.assertNotIn("examples.text", source)
         self.assertNotIn("/actions/", source)
         self.assertNotIn("application.json", source)

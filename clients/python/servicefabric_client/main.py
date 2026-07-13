@@ -14,7 +14,6 @@ from typing import Any
 from uuid import uuid4
 
 from servicefabric_application_builder import create_application_builder_service
-from servicefabric_artifacts import FileArtifactStore
 from servicefabric_capsule_host import create_capsule_host_service
 from servicefabric_contracts import ApplicationBuildRequest, ToolInvocationRequest, ToolResult
 from servicefabric_contracts import CapsuleHostRequest
@@ -102,7 +101,6 @@ class LocalRuntime:
 
     def __init__(self, home: Path):
         self.home = home
-        self.artifacts = FileArtifactStore(home / "artifacts")
         self.host = LocalApplicationHost(home)
         portfolio_root = Path(_portfolio_module).resolve().parent.parent / "portfolios"
         self.portfolio = FilePortfolio(portfolio_root)
@@ -577,11 +575,11 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             }
         if args.action == "describe":
             return 0, "artifacts-describe", {
-                "artifact": runtime.artifacts.get_manifest(args.digest),
+                "artifact": runtime.applications.get_artifact_manifest(args.digest),
                 "json_mode": json_mode,
             }
         return 0, "artifacts-verify", {
-            "verification": runtime.artifacts.verify_artifact(args.digest),
+            "verification": runtime.applications.verify_artifact(args.digest),
             "json_mode": json_mode,
         }
     if args.command == "capsules":
