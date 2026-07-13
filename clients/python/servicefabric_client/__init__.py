@@ -2,6 +2,7 @@ from servicefabric_contracts import ApplicationBuildRequest
 
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
+from .mcp import McpGatewayClient
 
 
 class ServiceFabricClient:
