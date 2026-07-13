@@ -76,6 +76,8 @@ class LocalApplicationHost:
 
     def build(self, application_id: str) -> dict[str, object]:
         record = self._record(application_id)
+        if record.get("state") == "running" and self._alive(int(record.get("pid") or 0)):
+            raise ApplicationHostError("running application must be stopped before rebuild")
         source = self._directory(application_id) / "source"
         files=[]
         for path in sorted(item for item in source.rglob("*") if item.is_file() and "__pycache__" not in item.parts and item.suffix != ".pyc"):
