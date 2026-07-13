@@ -101,5 +101,46 @@ class ArchitectureTests(unittest.TestCase):
         self.assertNotIn("os.system", source)
 
 
+class FailureJourneyTests(unittest.TestCase):
+    def command(self, home: Path, *arguments: str):
+        environment = os.environ.copy()
+        environment["SERVICEFABRIC_HOME"] = str(home)
+        return subprocess.run([str(CLI), *arguments], cwd=ROOT, env=environment, text=True, capture_output=True)
+
+    def test_application_not_installed_and_build_failure_are_safe(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home=Path(directory)/"workspace"
+            self.assertEqual(self.command(home,"init").returncode,0)
+            start=self.command(home,"apps","start","text-utility")
+            build=self.command(home,"apps","build","text-utility")
+            self.assertEqual((start.returncode,build.returncode),(1,1))
+            self.assertNotIn("Traceback",start.stderr+build.stderr)
+
+    def test_start_failure_is_recorded_without_traceback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home=Path(directory)/"workspace"
+            self.command(home,"init")
+            self.command(home,"apps","install",str(ROOT/"examples/text-utility"))
+            (home/"hosted-applications/text-utility/source/app.py").write_text("raise RuntimeError('fixture failure')\n",encoding="utf-8")
+            self.command(home,"apps","build","text-utility")
+            result=self.command(home,"apps","start","text-utility")
+            self.assertEqual(result.returncode,1)
+            self.assertNotIn("Traceback",result.stderr)
+            status=json.loads(self.command(home,"apps","status","text-utility","--json").stdout)["status"]
+            self.assertEqual(status["state"],"failed")
+
+    def test_invalid_capability_input_is_safe(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home=Path(directory)/"workspace"
+            self.command(home,"init");self.command(home,"apps","install",str(ROOT/"examples/text-utility"));self.command(home,"apps","build","text-utility");self.command(home,"apps","start","text-utility")
+            try:
+                result=self.command(home,"call","text.count_words","--input",'{"text":""}')
+                self.assertEqual(result.returncode,1)
+                self.assertIn("input is invalid",result.stderr)
+                self.assertNotIn("Traceback",result.stderr)
+            finally:
+                self.command(home,"apps","stop","text-utility")
+
+
 if __name__ == "__main__":
     unittest.main()
