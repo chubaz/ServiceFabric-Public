@@ -1654,6 +1654,25 @@
             "required": true
           },
           {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "tests.architecture.test_ap_01a_hosting_boundaries",
+              "-v"
+            ],
+            "name": "ap-01a-hosting-boundaries",
+            "required": true
+          },
+          {
+            "command": [
+              "python3",
+              "scripts/contracts/check_schema_snapshots.py"
+            ],
+            "name": "schema-snapshots",
+            "required": true
+          },
+          {
             "command": ["python3", "scripts/agent/verify.py", "--milestone", "v4-00", "--phase", "completion"],
             "name": "v4-00-regressions",
             "required": true
@@ -1666,6 +1685,11 @@
           {
             "command": ["python3", "scripts/architecture/check_legacy_patterns.py"],
             "name": "architecture-guardrails",
+            "required": true
+          },
+          {
+            "command": ["python3", "-m", "pip", "check"],
+            "name": "pip-check",
             "required": true
           },
           {
