@@ -1,2 +1,2 @@
-from .harness import GoldenTranscript, McpHarness, TranscriptError
-__all__=["GoldenTranscript","McpHarness","TranscriptError"]
+from .harness import GoldenTranscript, HarnessFixtures, McpHarness, TranscriptError
+__all__=["GoldenTranscript","HarnessFixtures","McpHarness","TranscriptError"]
