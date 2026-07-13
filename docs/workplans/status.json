@@ -13,7 +13,7 @@
   "current_milestone": "ap-01a-first-hosted-vertical-slice",
   "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "AP-01A completion passed the 13-test installed-CLI suite, inherited V4 verification, schema, lock, architecture, compilation, pip, and diff checks.",
+  "last_verification_summary": "AP-01A completion passed the 14-test installed-CLI suite, inherited V4 verification, schema, lock, architecture, compilation, pip, and diff checks.",
   "next_action": "Review and merge AP-01A; keep AP-00 planned until the post-merge handoff.",
   "programme_version": 1,
   "remaining_phases": []

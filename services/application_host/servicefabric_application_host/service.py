@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import mimetypes
 import os
 import shutil
 import signal
@@ -14,6 +15,10 @@ import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+from servicefabric_artifacts import FileArtifactStore
+from servicefabric_builder.identity import digest
+from servicefabric_contracts import ApplicationArtifactManifest
 
 
 class ApplicationHostError(RuntimeError):
@@ -36,6 +41,7 @@ class LocalApplicationHost:
     def __init__(self, workspace: Path) -> None:
         self.root = workspace / "hosted-applications"
         self.root.mkdir(parents=True, exist_ok=True)
+        self.artifacts = FileArtifactStore(workspace / "artifacts")
 
     def _directory(self, application_id: str) -> Path:
         if application_id != "text-utility":
@@ -59,7 +65,7 @@ class LocalApplicationHost:
         directory.mkdir(parents=True, exist_ok=True)
         target = directory / "source"
         if installed:
-            shutil.copytree(source, target)
+            shutil.copytree(source, target, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         elif package != self._record("text-utility")["package"]:
             raise ApplicationHostError("installed package differs from the reviewed package")
         record = {"application_id": "text-utility", "package": package, "state": "installed", "restart_count": 0, "request_count": 0}
@@ -71,12 +77,16 @@ class LocalApplicationHost:
     def build(self, application_id: str) -> dict[str, object]:
         record = self._record(application_id)
         source = self._directory(application_id) / "source"
-        digest = hashlib.sha256()
-        for path in sorted(item for item in source.rglob("*") if item.is_file()):
-            digest.update(path.relative_to(source).as_posix().encode())
-            digest.update(path.read_bytes())
-        artifact = "sha256:" + digest.hexdigest()
-        record.update({"state": "built", "artifact_digest": artifact})
+        files=[]
+        for path in sorted(item for item in source.rglob("*") if item.is_file() and "__pycache__" not in item.parts and item.suffix != ".pyc"):
+            content=path.read_bytes();relative=path.relative_to(source).as_posix()
+            files.append({"path":relative,"content_digest":"sha256:"+hashlib.sha256(content).hexdigest(),"media_type":mimetypes.guess_type(relative)[0] or "application/octet-stream","size_bytes":len(content)})
+        source_digest=digest(files);build_spec_digest=digest(record["package"]["build"])
+        stable={"application_id":application_id,"application_revision":record["package"]["version"],"builder_id":"reviewed-fastapi-source-builder","builder_revision":"1.0.0","source_digest":source_digest,"build_spec_digest":build_spec_digest,"files":files,"entry_document":"app.py","total_size_bytes":sum(item["size_bytes"] for item in files),"reproducibility":"reproducible"}
+        artifact=digest(stable);artifact_id="artifact."+artifact[7:39]
+        manifest=ApplicationArtifactManifest.model_validate({"apiVersion":"servicefabric.ai/v1alpha1","kind":"ApplicationArtifactManifest","metadata":{"id":artifact_id,"name":"Text Utility 1.0.0","description":"Immutable reviewed FastAPI source artifact.","owner_ref":{"kind":"service","id":"application-host"}},"spec":{**stable,"artifact_id":artifact_id,"artifact_digest":artifact,"provenance":{"source_manifest_ref":"text-utility-source","source_digest":source_digest,"build_spec_digest":build_spec_digest,"builder_id":"reviewed-fastapi-source-builder","builder_revision":"1.0.0"}}})
+        self.artifacts.put_artifact(manifest,source)
+        record.update({"state": "built", "artifact_digest": artifact, "artifact_id":artifact_id})
         _atomic(self._directory(application_id) / "application.json", record)
         return {"application_id": application_id, "revision": record["package"]["version"], "artifact_digest": artifact, "state": "built", "status": "success"}
 
@@ -110,12 +120,19 @@ class LocalApplicationHost:
         if record.get("state") in {"stopped", "failed"}:
             record["restart_count"] = int(record.get("restart_count", 0)) + 1
         port = self._port()
+        artifact=str(record["artifact_digest"]);verification=self.artifacts.verify_artifact(artifact)
+        if not verification.valid: raise ApplicationHostError("application artifact failed integrity verification")
+        runtime_root=self._directory(application_id)/"runtime"
+        shutil.rmtree(runtime_root,ignore_errors=True);runtime_root.mkdir()
+        manifest=self.artifacts.get_manifest(artifact)
+        for item in manifest.spec.files:
+            target=runtime_root/item.path;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(self.artifacts.open_file(artifact,item.path))
         log_path = self._directory(application_id) / "application.log"
         started = time.monotonic()
         with log_path.open("ab") as log:
             process = subprocess.Popen(
                 [sys.executable, "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", str(port), "--no-access-log"],
-                cwd=self._directory(application_id) / "source",
+                cwd=runtime_root,
                 stdin=subprocess.DEVNULL,
                 stdout=log,
                 stderr=subprocess.STDOUT,

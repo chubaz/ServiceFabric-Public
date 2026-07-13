@@ -48,6 +48,11 @@ class HostedVerticalSliceTests(unittest.TestCase):
         output = self.command("apps", "status", "text-utility", "--json")
         self.assertEqual(json.loads(output.stdout)["status"]["health"], "healthy")
 
+    def test_02b_build_publishes_a_verified_immutable_artifact(self):
+        build=json.loads(self.command("apps","build","text-utility","--json").stdout)["build"]
+        verification=json.loads(self.command("artifacts","verify",build["artifact_digest"],"--json").stdout)["verification"]
+        self.assertTrue(verification["valid"])
+
     def test_03_resource_observation_separates_declared_and_measured(self):
         value = json.loads(self.command("apps", "resources", "text-utility", "--json").stdout)["resources"]
         self.assertEqual(value["declared"]["memory_mib"], 128)
