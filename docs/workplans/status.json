@@ -1,20 +1,20 @@
 {
-  "base_commit": "65d5d0f8b3beffc2d06311fb78350c3933d38b09",
+  "base_commit": "d2ffc0ac917f3e61f4478a10a2251477fe9ba73d",
   "completed_milestones": [
     "e0-00",
     "v1-00",
     "v1-01",
     "v2-00",
     "v2-01",
-    "v3-00"
+    "v3-00",
+    "v4-00"
   ],
-  "completed_phases": ["projection-contracts", "discovery-projection", "call-translation", "result-and-error-projection", "progress-and-cancellation", "durable-operation-projection", "session-and-capability-negotiation", "local-transports", "harness-and-transcript-ecosystem", "client-cli-and-integration", "cross-boundary-verification"],
-  "current_milestone": "v4-00",
+  "completed_phases": ["programme-registration", "hosted-package", "managed-hosting", "resource-observation", "capability-bridge", "cli-journey", "acceptance-verification"],
+  "current_milestone": "ap-01a-first-hosted-vertical-slice",
   "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V4-00 completion passed all configured projection, harness, architecture, dependency, compilation, pip, diff, and inherited V3 regression checks in the external environment.",
-  "next_action": "Review and merge V4-00, then prepare the post-merge programme handoff without implementing V5 on this branch.",
+  "last_verification_summary": "AP-01A review completion passes 27 isolated installed-CLI and adversarial tests, 3 focused hosting-boundary tests, and the inherited V1-V4 regression chain.",
+  "next_action": "Review and merge AP-01A; keep AP-00 planned until the post-merge handoff.",
   "programme_version": 1,
-  "remaining_phases": [
-  ]
+  "remaining_phases": []
 }

@@ -80,12 +80,14 @@ jobs:
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_operations
           python3 -m pip install --no-build-isolation --no-deps -e services/tool_runtime
           python3 -m pip install --no-build-isolation --no-deps -e services/application_builder
+          python3 -m pip install --no-build-isolation --no-deps -e services/application_host
           python3 -m pip install --no-build-isolation --no-deps -e services/capsule_host
           python3 -m pip install --no-build-isolation --no-deps -e services/governance_operations
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_mcp_projection
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_mcp_harness
           python3 -m pip install --no-build-isolation --no-deps -e services/mcp_gateway
           python3 -m pip install --no-build-isolation --no-deps -e clients/python
+          python3 -m pip install fastapi==0.139.0 uvicorn==0.51.0
 
       - name: Verify V3 package imports
         run: |
@@ -149,6 +151,9 @@ jobs:
 
       - name: Run V4-00 completion verification
         run: python3 scripts/agent/verify.py --milestone v4-00 --phase completion
+
+      - name: Run AP-01A installed CLI acceptance
+        run: python3 -m unittest discover -s tests/ap_01a -v
 
   python-production-builds:
     runs-on: ubuntu-latest

@@ -8,15 +8,14 @@ import json
 import os
 import shlex
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
 from servicefabric_application_builder import create_application_builder_service
-from servicefabric_artifacts import FileArtifactStore
 from servicefabric_capsule_host import create_capsule_host_service
-from servicefabric_contracts import ApplicationBuildRequest, ToolInvocationRequest
+from servicefabric_contracts import ApplicationBuildRequest, ToolInvocationRequest, ToolResult
 from servicefabric_contracts import CapsuleHostRequest
 from servicefabric_contracts.budgets import ExecutionBudget
 from servicefabric_contracts.caller import CallerContext
@@ -47,6 +46,7 @@ from servicefabric_mcp_projection import (
 from servicefabric_runtime import FilePortfolio, InvocationKernel
 from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
+from servicefabric_application_host import LocalApplicationHost
 
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
@@ -101,7 +101,7 @@ class LocalRuntime:
 
     def __init__(self, home: Path):
         self.home = home
-        self.artifacts = FileArtifactStore(home / "artifacts")
+        self.host = LocalApplicationHost(home)
         portfolio_root = Path(_portfolio_module).resolve().parent.parent / "portfolios"
         self.portfolio = FilePortfolio(portfolio_root)
         self.runtime_service = ToolRuntimeService(InvocationKernel(self.portfolio))
@@ -110,7 +110,7 @@ class LocalRuntime:
             principal_type="human",
             tenant_ref="local",
             issuer="servicefabric-local",
-            scopes=("math-calculate",),
+            scopes=("math-calculate", "text-count", "text-inspect"),
             authentication_strength="multi_factor",
         )
         bundle = PolicyBundle(
@@ -207,6 +207,25 @@ class LocalRuntime:
             )
         )
 
+    def invoke_application(self, tool_id: str, arguments: dict[str, object]):
+        capability = self.host.describe_capability(tool_id)
+        request_id = "local-request-" + uuid4().hex[:16]
+        permission = str(capability["permission_id"])
+        revision = str(capability["revision"])
+        caller = self.caller
+        request = ToolInvocationRequest.model_validate({"apiVersion":"servicefabric.ai/v1alpha1","kind":"ToolInvocationRequest","metadata":{"id":request_id,"name":"Hosted application invocation","description":"Governed hosted application capability request.","owner_ref":{"kind":"service","id":"servicefabric-cli"}},"spec":{"request_id":request_id,"target":{"target_kind":"revision","tool_id":tool_id,"revision_ref":revision},"arguments":arguments,"caller_context":caller,"protocol_context":{"protocol":"internal","adapter_ref":"trusted-local-cli"},"budget":{},"requested_response_mode":"synchronous"}})
+        bundle = PolicyBundle(bundle_id="hosted-application-policy",version="1.0.0",digest=POLICY_DIGEST,allowed_scopes=("text-count","text-inspect"))
+        profile = InvocationGovernanceProfile(tool_id,revision,(EffectDeclaration(effect_type="none",target_category="text",scope="local",reversibility="not_applicable",verification_required=False,approval_required=False,idempotency_required=False),),(PermissionRequirement(permission_id=permission,tenant_scope="caller_tenant",resource_scope=str(capability["application_id"])),),AuthorityGrant(scopes=(permission,),tenant_ref="local"),ExecutionBudget(),"low",bundle.bundle_id,bundle.version,bundle.digest)
+        host = self.host
+        class Adapter:
+            def invoke(self, value):
+                started=datetime.now(timezone.utc)
+                data=host.invoke(tool_id,value.spec.arguments)
+                completed=datetime.now(timezone.utc)
+                return ToolResult(apiVersion="servicefabric.ai/v1alpha1",kind="ToolResult",status="success",invocation_id=value.spec.request_id,tool_id=tool_id,revision_ref=revision,started_at=started,completed_at=completed,duration=completed-started,data=data)
+        boundary=GovernedInvocationBoundary(evaluator=VersionedPolicyEvaluator((bundle,)),approvals=ApprovalService(),runtime=Adapter(),profiles=(profile,))
+        return request,boundary.invoke(request,trusted_adapter_ref="trusted-local-cli",now=datetime.now(timezone.utc))
+
     def invoke_math(self, arguments: dict[str, object]):
         request_id = "local-request-" + uuid4().hex[:16]
         request = ToolInvocationRequest(
@@ -301,11 +320,20 @@ def parser() -> ServiceFabricArgumentParser:
     apps = commands.add_parser("apps", help="inspect and build reviewed applications")
     app_actions = apps.add_subparsers(dest="action", required=True)
     app_actions.add_parser("list", help="list reviewed applications")
+    install = app_actions.add_parser("install", help="install a reviewed local application")
+    install.add_argument("source")
     app = app_actions.add_parser("describe", help="describe an application")
     app.add_argument("application_id")
     build = app_actions.add_parser("build", help="build an immutable local artifact")
     build.add_argument("application_id")
-    build.add_argument("--revision", required=True)
+    build.add_argument("--revision")
+    for action in ("start", "status", "resources", "stop"):
+        command = app_actions.add_parser(action, help=f"{action} a hosted local application")
+        command.add_argument("application_id")
+
+    call = commands.add_parser("call", help="call a governed hosted application capability")
+    call.add_argument("tool_id")
+    call.add_argument("--input", required=True, metavar="JSON")
 
     artifacts = commands.add_parser("artifacts", help="inspect immutable artifacts")
     artifact_actions = artifacts.add_subparsers(dest="action", required=True)
@@ -421,6 +449,19 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "json_mode": json_mode,
         }
     if args.command == "tools":
+        hosted = [
+            {
+                key: item[key]
+                for key in (
+                    "tool_id",
+                    "revision",
+                    "application_id",
+                    "description",
+                    "effects",
+                )
+            }
+            for item in runtime.host.capabilities()
+        ]
         if args.action == "list":
             return 0, "tools-list", {
                 "tools": [
@@ -429,7 +470,14 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                         "revision": "1.0.0",
                         "description": "Deterministic arithmetic calculation.",
                     }
-                ],
+                ] + hosted,
+                "json_mode": json_mode,
+            }
+        if args.tool_id in {item["tool_id"] for item in hosted}:
+            item = next(value for value in hosted if value["tool_id"] == args.tool_id)
+            return 0, "tools-describe", {
+                **item,
+                "machine_callable": True,
                 "json_mode": json_mode,
             }
         if args.tool_id != "math.calculate":
@@ -470,10 +518,19 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                 "Projected the canonical result.",
             ]
         return 0, "invoke", value
+    if args.command == "call":
+        runtime.host.describe_capability(args.tool_id)
+        request,result=runtime.invoke_application(args.tool_id,_parse_arguments(args.input))
+        return 0,"call",{"request_id":request.spec.request_id,"revision":request.spec.target.revision_ref,"policy_outcome":"allow","result":result,"json_mode":json_mode}
     if args.command == "apps":
+        if args.action == "install":
+            return 0,"apps-install",{**runtime.host.install(Path(args.source)),"json_mode":json_mode}
+        if args.action in {"start","status","resources","stop"}:
+            method=getattr(runtime.host,args.action)
+            return 0,f"apps-{args.action}",{args.action:method(args.application_id),"json_mode":json_mode}
         if args.action == "list":
             return 0, "apps-list", {
-                "applications": list(runtime.applications.list_applications()),
+                "applications": sorted(set(runtime.applications.list_applications()) | set(runtime.host.list_applications())),
                 "json_mode": json_mode,
             }
         if args.action == "describe":
@@ -481,6 +538,10 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                 "application": runtime.applications.describe_application(args.application_id),
                 "json_mode": json_mode,
             }
+        if args.application_id == "text-utility":
+            return 0,"apps-build",{"build":runtime.host.build(args.application_id),"json_mode":json_mode}
+        if not args.revision:
+            raise ValueError("--revision is required for immutable static applications")
         request_id = "local-build-{}-{}".format(
             args.application_id.replace(".", "-"), args.revision.replace(".", "-")
         )
@@ -514,11 +575,11 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             }
         if args.action == "describe":
             return 0, "artifacts-describe", {
-                "artifact": runtime.artifacts.get_manifest(args.digest),
+                "artifact": runtime.applications.get_artifact_manifest(args.digest),
                 "json_mode": json_mode,
             }
         return 0, "artifacts-verify", {
-            "verification": runtime.artifacts.verify_artifact(args.digest),
+            "verification": runtime.applications.verify_artifact(args.digest),
             "json_mode": json_mode,
         }
     if args.command == "capsules":
@@ -665,11 +726,26 @@ def human_output(command: str, value: object) -> str:
         if "explain" in data:
             lines.extend(["", "How this ran:", *[f"  - {item}" for item in data["explain"]]])
         return "\n".join([*lines, ""])
+    if command == "call":
+        result = data["result"]
+        if result["status"] == "success":
+            return f"{result['tool_id']} -> {json.dumps(result['data'], sort_keys=True)}\n  Revision: {data['revision']}  Policy: {data['policy_outcome']}\n"
+        return f"{result['tool_id']} failed: {result['error']['message']}\n"
     if command == "apps-list":
         return "\n".join(["Reviewed applications", *[f"  {item}" for item in data["applications"]], ""])
     if command == "apps-describe":
         app = data["application"]
         return "\n".join([app["spec"]["display_name"], f"  ID: {app['spec']['application_id']}", f"  {app['spec']['description']}", ""])
+    if command == "apps-install":
+        action = "Installed" if data["installed"] else "Already installed"
+        return f"{action}: {data['application_id']}\n"
+    if command in {"apps-start", "apps-status", "apps-stop"}:
+        operation = data[command.removeprefix("apps-")]
+        return f"{operation['application_id']}: {operation['state']} (health: {operation['health']})\n"
+    if command == "apps-resources":
+        resources = data["resources"]
+        measured = resources["measured"]
+        return "\n".join(["Text Utility resources", f"  Declared memory: {resources['declared']['memory_mib']} MiB", f"  Current memory: {measured['current_memory_bytes'] or 'unavailable'} bytes", f"  Peak memory: {measured['peak_memory_bytes'] or 'unavailable'} bytes", f"  Recent CPU: {measured['recent_cpu_percent'] if measured['recent_cpu_percent'] is not None else 'unavailable'}", f"  Startup: {measured['startup_duration_ms']} ms", f"  Requests: {measured['request_count']}", f"  Health: {measured['health']}", f"  Restarts: {measured['restart_count']}", ""])
     if command == "apps-build":
         build = data["build"]
         if build["status"] == "success":

@@ -1,8 +1,8 @@
 # Current Milestone
 
-- ID: `v4-00`
-- Title: MCP projection and harness ecosystem
+- ID: `ap-01a-first-hosted-vertical-slice`
+- Title: First hosted vertical slice
 - Status: current
-- Workplan: `docs/workplans/milestones/v4-00-mcp-projection-and-harness-ecosystem.md`
-- Configuration key: `v4-00`
+- Workplan: `docs/workplans/milestones/ap-01a-first-hosted-vertical-slice.md`
+- Configuration key: `ap-01a-first-hosted-vertical-slice`
 - Commands: `make agent-preflight`, `make agent-context`, `make verify-current`, `make agent-handoff`
