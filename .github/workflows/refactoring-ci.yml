@@ -161,6 +161,9 @@ jobs:
       - name: Run application model contract tests
         run: python3 -m unittest discover -s tests/modules -v
 
+      - name: Run framework kits planning tests
+        run: python3 -m unittest discover -s tests/framework_kits -v
+
       - name: Run workspace architecture boundaries
         run: |
           python3 -m unittest \
