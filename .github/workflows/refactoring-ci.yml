@@ -78,6 +78,9 @@ jobs:
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_capsules
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_governance
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_operations
+          python3 -m pip install --no-build-isolation --no-deps -e services/tool_runtime
+          python3 -m pip install --no-build-isolation --no-deps -e services/application_builder
+          python3 -m pip install --no-build-isolation --no-deps -e services/capsule_host
           python3 -m pip install --no-build-isolation --no-deps -e services/governance_operations
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_mcp_projection
           python3 -m pip install --no-build-isolation --no-deps -e packages/servicefabric_mcp_harness
