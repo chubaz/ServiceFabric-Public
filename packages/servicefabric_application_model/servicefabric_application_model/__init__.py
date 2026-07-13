@@ -15,7 +15,7 @@ from servicefabric_application_model.loader import (
     load_module_definition_from_dict,
     load_module_definition_from_file,
 )
-from servicefabric_application_model.modules import ModuleDefinition
+from servicefabric_application_model.modules import ModuleDefinition, ResourceExpectations
 from servicefabric_application_model.primitives import VALID_PRIMITIVES, PrimitiveKind, validate_primitive
 from servicefabric_application_model.resources import ResourceRequest
 from servicefabric_application_model.validation import validate_module_graph
@@ -34,6 +34,7 @@ __all__ = [
     "load_module_definition_from_dict",
     "load_module_definition_from_file",
     "ModuleDefinition",
+    "ResourceExpectations",
     "VALID_PRIMITIVES",
     "PrimitiveKind",
     "validate_primitive",

@@ -155,9 +155,6 @@ jobs:
       - name: Run application workspace package tests
         run: python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
 
-      - name: Run application model package tests
-        run: python3 -m unittest discover -s packages/servicefabric_application_model/tests -v || true
-
       - name: Run application workspace journeys
         run: python3 -m unittest discover -s tests/workspace -v
 

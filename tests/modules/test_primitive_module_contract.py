@@ -1,4 +1,4 @@
-"""Acceptance and unit tests for the AP-00A Primitive and Module Contract."""
+"""Acceptance and unit tests for the AP-00A Primitive and Module Contract (Hardened)."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ from servicefabric_application_model import (
     ProvidedInterface,
     ReadinessProbe,
     RequiredInterface,
+    ResourceExpectations,
     ResourceRequest,
     ShutdownConfig,
     ValidationError,
@@ -45,7 +46,7 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             },
             "spec": {
                 "primitive": "service",
-                "kit": "fastapi-service",
+                "kit": "fastapi-service @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
                 "source": "modules/api",
                 "provides": [
                     {
@@ -77,6 +78,10 @@ class TestPrimitiveModuleContract(unittest.TestCase):
                     "shutdown": {
                         "timeoutSeconds": 15,
                     }
+                },
+                "resourceExpectations": {
+                    "memoryMiB": 256,
+                    "cpuCores": 0.25
                 }
             }
         }
@@ -86,7 +91,7 @@ class TestPrimitiveModuleContract(unittest.TestCase):
         self.assertEqual(mod.module_id, "api")
         self.assertEqual(mod.version, "1.2.3")
         self.assertEqual(mod.primitive, "service")
-        self.assertEqual(mod.kit, "fastapi-service")
+        self.assertEqual(mod.kit, "fastapi-service @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json")
         self.assertEqual(mod.source, "modules/api")
 
         # Verify provided interfaces
@@ -112,21 +117,58 @@ class TestPrimitiveModuleContract(unittest.TestCase):
         self.assertEqual(mod.lifecycle.readiness, ReadinessProbe(type="http", path="/health/ready", port=8000))
         self.assertEqual(mod.lifecycle.shutdown, ShutdownConfig(timeout_seconds=15))
 
-    def test_manifest_validation_failures(self) -> None:
-        # 1. Missing apiVersion
-        with self.assertRaises(InvalidModuleDefinition):
-            load_module_definition_from_dict({"kind": "ApplicationModule"})
+        # Verify resourceExpectations
+        self.assertIsNotNone(mod.resource_expectations)
+        self.assertEqual(mod.resource_expectations.memory_mib, 256)
+        self.assertEqual(mod.resource_expectations.cpu_cores, 0.25)
 
-        # 2. Missing kind
-        with self.assertRaises(InvalidModuleDefinition):
-            load_module_definition_from_dict({"apiVersion": "servicefabric.local/v1"})
-
-        # 3. Missing metadata.id
+    def test_strict_manifest_validation_failures(self) -> None:
+        # 1. Unsupported root field
         with self.assertRaises(InvalidModuleDefinition):
             load_module_definition_from_dict({
                 "apiVersion": "servicefabric.local/v1",
                 "kind": "ApplicationModule",
-                "metadata": {"version": "0.1.0"},
+                "metadata": {"id": "api"},
+                "spec": {"primitive": "service", "kit": "fastapi-service @ServiceFabric/p"},
+                "extraField": "forbidden",
+            })
+
+        # 2. Malformed version format
+        with self.assertRaises(InvalidModuleDefinition):
+            load_module_definition_from_dict({
+                "apiVersion": "servicefabric.local/v1",
+                "kind": "ApplicationModule",
+                "metadata": {"id": "api", "version": "invalid-semver"},
+                "spec": {"primitive": "service", "kit": "fastapi-service @ServiceFabric/p"},
+            })
+
+        # 3. Path safety violation (escaping path traversal)
+        with self.assertRaises(InvalidModuleDefinition):
+            load_module_definition_from_dict({
+                "apiVersion": "servicefabric.local/v1",
+                "kind": "ApplicationModule",
+                "metadata": {"id": "api"},
+                "spec": {
+                    "primitive": "service",
+                    "kit": "fastapi-service @ServiceFabric/p",
+                    "source": "../../escaped",
+                },
+            })
+
+        # 4. Missing required resource type
+        with self.assertRaises(InvalidModuleDefinition):
+            load_module_definition_from_dict({
+                "apiVersion": "servicefabric.local/v1",
+                "kind": "ApplicationModule",
+                "metadata": {"id": "api"},
+                "spec": {
+                    "primitive": "service",
+                    "kit": "fastapi-service @ServiceFabric/p",
+                    "source": "modules/api",
+                    "requires": {
+                        "resources": [{"id": "no-type"}]
+                    }
+                },
             })
 
     def test_complete_research_notes_module_graph_parses_successfully(self) -> None:
@@ -137,7 +179,7 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             "metadata": {"id": "domain", "version": "0.1.0"},
             "spec": {
                 "primitive": "library",
-                "kit": "python-library",
+                "kit": "python-library @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
                 "source": "modules/domain",
                 "provides": [
                     {"id": "notes-domain-pkg", "type": "python-package"}
@@ -152,14 +194,14 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             "metadata": {"id": "api", "version": "0.1.0"},
             "spec": {
                 "primitive": "service",
-                "kit": "fastapi-service",
+                "kit": "fastapi-service @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
                 "source": "modules/api",
                 "provides": [
                     {"id": "notes-api-http", "type": "http"}
                 ],
                 "requires": {
-                    "interfaces": ["notes-domain-pkg"],
-                    "resources": ["primary-store"]
+                    "interfaces": [{"id": "notes-domain-pkg"}],
+                    "resources": [{"id": "primary-store", "type": "relational-database"}]
                 },
                 "lifecycle": {
                     "startAfter": ["primary-store"],
@@ -175,10 +217,10 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             "metadata": {"id": "frontend", "version": "0.1.0"},
             "spec": {
                 "primitive": "web",
-                "kit": "react-web",
+                "kit": "react-web @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
                 "source": "modules/frontend",
                 "requires": {
-                    "interfaces": ["notes-api-http"]
+                    "interfaces": [{"id": "notes-api-http"}]
                 }
             }
         })
@@ -190,11 +232,11 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             "metadata": {"id": "processor", "version": "0.1.0"},
             "spec": {
                 "primitive": "worker",
-                "kit": "python-worker",
+                "kit": "python-worker @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
                 "source": "modules/processor",
                 "requires": {
-                    "interfaces": ["notes-domain-pkg"],
-                    "resources": ["jobs-queue"]
+                    "interfaces": [{"id": "notes-domain-pkg"}],
+                    "resources": [{"id": "jobs-queue", "type": "message-queue"}]
                 }
             }
         })
@@ -206,74 +248,42 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             "metadata": {"id": "daily-import", "version": "0.1.0"},
             "spec": {
                 "primitive": "job",
-                "kit": "python-job",
+                "kit": "python-job @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
                 "source": "modules/daily-import",
                 "requires": {
-                    "resources": ["primary-store"]
+                    "resources": [{"id": "primary-store", "type": "relational-database"}]
                 }
             }
         })
 
         # Verify that the complete 5-node modular graph validates beautifully!
         modules_graph = [domain, api, frontend, worker, job]
-        validate_module_graph(modules_graph)
+        graph = validate_module_graph(modules_graph)
 
-    def test_unresolved_dependencies_fail_safely(self) -> None:
-        # Module requires an interface that is not provided by any other module
-        api = load_module_definition_from_dict({
-            "apiVersion": "servicefabric.local/v1",
-            "kind": "ApplicationModule",
-            "metadata": {"id": "api", "version": "0.1.0"},
-            "spec": {
-                "primitive": "service",
-                "kit": "fastapi-service",
-                "source": "modules/api",
-                "requires": {
-                    "interfaces": ["non-existent-interface"]
-                }
-            }
-        })
+        # Verify deterministic topological dependency_order (alphabetical when tie)
+        # daily-import and domain have 0 in-degree initially. alphabetical: daily-import first, then domain
+        self.assertEqual(graph.dependency_order[0], "daily-import")
+        self.assertEqual(graph.dependency_order[1], "domain")
+        # After resolving domain, api and processor have 0 in-degree. alphabetical: api first, then processor
+        self.assertEqual(graph.dependency_order[2], "api")
+        # After resolving api, frontend has 0 in-degree.
+        # Queue contains frontend and processor. Alphabetical sorting puts frontend before processor!
+        self.assertEqual(graph.dependency_order[3], "frontend")
+        self.assertEqual(graph.dependency_order[4], "processor")
 
-        with self.assertRaises(DependencyError):
-            validate_module_graph([api])
+        # Verify shutdown order is exact reverse
+        self.assertEqual(graph.shutdown_order, ("processor", "frontend", "api", "domain", "daily-import"))
 
-    def test_duplicate_module_identities_fail_safely(self) -> None:
-        m1 = load_module_definition_from_dict({
-            "apiVersion": "servicefabric.local/v1",
-            "kind": "ApplicationModule",
-            "metadata": {"id": "api", "version": "0.1.0"},
-            "spec": {
-                "primitive": "service",
-                "kit": "fastapi-service",
-                "source": "modules/api"
-            }
-        })
-        m2 = load_module_definition_from_dict({
-            "apiVersion": "servicefabric.local/v1",
-            "kind": "ApplicationModule",
-            "metadata": {"id": "api", "version": "0.2.0"},
-            "spec": {
-                "primitive": "service",
-                "kit": "fastapi-service",
-                "source": "modules/api2"
-            }
-        })
-
-        with self.assertRaises(ValidationError):
-            validate_module_graph([m1, m2])
-
-    def test_dependency_cycles_fail_safely(self) -> None:
-        # m1 requires m2 interface, m2 requires m1 interface
+    def test_duplicate_interface_providers_raise_collision_error(self) -> None:
         m1 = load_module_definition_from_dict({
             "apiVersion": "servicefabric.local/v1",
             "kind": "ApplicationModule",
             "metadata": {"id": "module-1", "version": "0.1.0"},
             "spec": {
                 "primitive": "service",
-                "kit": "fastapi-service",
+                "kit": "fastapi-service @ServiceFabric/p",
                 "source": "modules/m1",
-                "provides": [{"id": "m1-interface", "type": "http"}],
-                "requires": {"interfaces": ["m2-interface"]}
+                "provides": [{"id": "colliding-interface", "type": "http"}]
             }
         })
         m2 = load_module_definition_from_dict({
@@ -282,14 +292,93 @@ class TestPrimitiveModuleContract(unittest.TestCase):
             "metadata": {"id": "module-2", "version": "0.1.0"},
             "spec": {
                 "primitive": "service",
-                "kit": "fastapi-service",
+                "kit": "fastapi-service @ServiceFabric/p",
                 "source": "modules/m2",
-                "provides": [{"id": "m2-interface", "type": "http"}],
-                "requires": {"interfaces": ["m1-interface"]}
+                "provides": [{"id": "colliding-interface", "type": "http"}]
             }
         })
 
-        with self.assertRaises(DependencyError):
+        with self.assertRaisesRegex(ValidationError, "Collision: both module 'module-2' and module 'module-1'"):
+            validate_module_graph([m1, m2])
+
+    def test_duplicate_local_interface_declaration_raises_error(self) -> None:
+        m1 = load_module_definition_from_dict({
+            "apiVersion": "servicefabric.local/v1",
+            "kind": "ApplicationModule",
+            "metadata": {"id": "module-1", "version": "0.1.0"},
+            "spec": {
+                "primitive": "service",
+                "kit": "fastapi-service @ServiceFabric/p",
+                "source": "modules/m1",
+                "provides": [
+                    {"id": "duplicate-interface", "type": "http"},
+                    {"id": "duplicate-interface", "type": "http"}
+                ]
+            }
+        })
+
+        with self.assertRaisesRegex(ValidationError, "declares duplicate provided interface"):
+            validate_module_graph([m1])
+
+    def test_unknown_lifecycle_startup_target_raises_error(self) -> None:
+        m1 = load_module_definition_from_dict({
+            "apiVersion": "servicefabric.local/v1",
+            "kind": "ApplicationModule",
+            "metadata": {"id": "module-1", "version": "0.1.0"},
+            "spec": {
+                "primitive": "service",
+                "kit": "fastapi-service @ServiceFabric/p",
+                "source": "modules/m1",
+                "lifecycle": {
+                    "startAfter": ["unknown-module-id"]
+                }
+            }
+        })
+
+        with self.assertRaisesRegex(DependencyError, "declares 'startAfter' dependency on unknown module or resource ID"):
+            validate_module_graph([m1])
+
+    def test_self_dependency_raises_circular_error(self) -> None:
+        m1 = load_module_definition_from_dict({
+            "apiVersion": "servicefabric.local/v1",
+            "kind": "ApplicationModule",
+            "metadata": {"id": "module-1", "version": "0.1.0"},
+            "spec": {
+                "primitive": "service",
+                "kit": "fastapi-service @ServiceFabric/p",
+                "source": "modules/m1",
+                "lifecycle": {
+                    "startAfter": ["module-1"]
+                }
+            }
+        })
+
+        with self.assertRaisesRegex(DependencyError, "cannot declare a lifecycle dependency on itself"):
+            validate_module_graph([m1])
+
+    def test_source_directory_collisions_raise_error(self) -> None:
+        m1 = load_module_definition_from_dict({
+            "apiVersion": "servicefabric.local/v1",
+            "kind": "ApplicationModule",
+            "metadata": {"id": "module-1", "version": "0.1.0"},
+            "spec": {
+                "primitive": "service",
+                "kit": "fastapi-service @ServiceFabric/p",
+                "source": "modules/same"
+            }
+        })
+        m2 = load_module_definition_from_dict({
+            "apiVersion": "servicefabric.local/v1",
+            "kind": "ApplicationModule",
+            "metadata": {"id": "module-2", "version": "0.1.0"},
+            "spec": {
+                "primitive": "service",
+                "kit": "fastapi-service @ServiceFabric/p",
+                "source": "modules/same"
+            }
+        })
+
+        with self.assertRaisesRegex(ValidationError, "Collision: both module 'module-2' and module 'module-1' attempt to use the identical source directory"):
             validate_module_graph([m1, m2])
 
 

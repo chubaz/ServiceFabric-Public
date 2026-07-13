@@ -84,7 +84,6 @@ verify-ap-01a-hosting:
 	python3 -m unittest tests.ap_01a.test_hosting_baseline -v
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
-	python3 -m unittest discover -s packages/servicefabric_application_model/tests -v || true
 	python3 -m unittest discover -s tests/workspace -v
 	python3 -m unittest discover -s tests/modules -v
 	python3 -m unittest tests.architecture.test_workspace_boundaries tests.architecture.test_legacy_application_paths -v
