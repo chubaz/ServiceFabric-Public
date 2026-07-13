@@ -13,7 +13,7 @@
   "current_milestone": "ap-01a-first-hosted-vertical-slice",
   "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "AP-01A review completion passes 26 isolated installed-CLI and adversarial tests, 3 focused hosting-boundary tests, and the inherited V1-V4 regression chain.",
+  "last_verification_summary": "AP-01A review completion passes 27 isolated installed-CLI and adversarial tests, 3 focused hosting-boundary tests, and the inherited V1-V4 regression chain.",
   "next_action": "Review and merge AP-01A; keep AP-00 planned until the post-merge handoff.",
   "programme_version": 1,
   "remaining_phases": []

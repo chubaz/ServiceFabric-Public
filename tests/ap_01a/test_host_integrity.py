@@ -109,6 +109,30 @@ class HostIntegrityTests(unittest.TestCase):
         self.assertEqual(returned_pids, {status["pid"]})
         self.assertEqual(status["state"], "running")
 
+    def test_stop_during_startup_leaves_no_orphan_process(self) -> None:
+        self.install()
+        self.build()
+        process = self.popen("apps", "start", "text-utility", "--json")
+        state_path = self.home / "hosted-applications/text-utility/application.json"
+        launched_pid = None
+        deadline = time.monotonic() + 10
+        while time.monotonic() < deadline:
+            record = json.loads(state_path.read_text(encoding="utf-8"))
+            if record.get("state") == "starting":
+                launched_pid = int(record["pid"])
+                break
+            time.sleep(0.005)
+        self.assertIsNotNone(launched_pid)
+        stopped = self.command("apps", "stop", "text-utility")
+        process.communicate(timeout=30)
+        status = json.loads(
+            self.command("apps", "status", "text-utility", "--json", check=True).stdout
+        )["status"]
+        self.assertEqual(stopped.returncode, 0, stopped.stderr)
+        self.assertEqual(status["state"], "stopped")
+        with self.assertRaises(ProcessLookupError):
+            os.kill(launched_pid, 0)
+
     def test_starting_state_is_observable_and_rejects_calls(self) -> None:
         self.install()
         self.build()

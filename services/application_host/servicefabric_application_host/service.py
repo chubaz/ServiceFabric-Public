@@ -533,7 +533,7 @@ class LocalApplicationHost:
         with self._lock(application_id):
             current = self._record(application_id)
             if current.get("pid") == process.pid:
-                self._terminate_owned(current)
+                self._terminate_process(current)
                 try:
                     process.wait(timeout=1)
                 except subprocess.TimeoutExpired:
@@ -610,32 +610,37 @@ class LocalApplicationHost:
         except (OSError, ValueError, IndexError):
             return None
 
-    def _terminate_owned(self, record: dict[str, object]) -> None:
-        if not self._owned_process(record):
+    def _terminate_process(
+        self, record: dict[str, object], *, starting: bool = False
+    ) -> None:
+        matches = self._same_process if starting else self._owned_process
+        if not matches(record):
             return
         pid = int(record["pid"])
         os.killpg(pid, signal.SIGTERM)
         deadline = time.monotonic() + 5
-        while time.monotonic() < deadline and self._owned_process(record):
+        while time.monotonic() < deadline and matches(record):
             time.sleep(0.05)
-        if self._owned_process(record):
+        if matches(record):
             os.killpg(pid, signal.SIGKILL)
             deadline = time.monotonic() + 2
-            while time.monotonic() < deadline and self._owned_process(record):
+            while time.monotonic() < deadline and matches(record):
                 time.sleep(0.05)
-        if self._owned_process(record):
+        if matches(record):
             raise ApplicationHostError("application process did not stop within host limits")
 
     def stop(self, application_id: str) -> dict[str, object]:
         with self._lock(application_id):
             record = self._record(application_id)
-            if record.get("pid") and not self._owned_process(record):
+            starting = record.get("state") == "starting"
+            matches = self._same_process(record) if starting else self._owned_process(record)
+            if record.get("pid") and not matches:
                 if record.get("state") in {"starting", "running"}:
                     record["state"] = "failed"
                 record.update({"pid": None, "port": None, "process_start_ticks": None})
                 _atomic(self._directory(application_id) / "application.json", record)
                 return self._status_value(record)
-            self._terminate_owned(record)
+            self._terminate_process(record, starting=starting)
             record.update(
                 {
                     "state": "stopped",
