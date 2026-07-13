@@ -55,4 +55,6 @@ class LocalServicePackagingTests(unittest.TestCase):
     def test_runtime_service_constructs_from_the_canonical_kernel(self) -> None:
         portfolio = FilePortfolio(ROOT / "packages" / "servicefabric_runtime" / "portfolios")
 
-        self.assertIsInstance(ToolRuntimeService(InvocationKernel(portfolio)), ToolRuntimeService)
+        runtime = ToolRuntimeService(InvocationKernel(portfolio), toolset="research-demo")
+
+        self.assertEqual(runtime.toolset, "research-demo")
