@@ -5,9 +5,11 @@ from .models import (
     McpEnvelope, McpProgressNotification, McpProtocolError, McpServerCapabilities,
     McpSessionContext, McpTaskView, McpToolPage, ProjectedMcpTool,
 )
+from .discovery import DiscoveryService, ProjectionCandidate
 
 __all__ = [
     "McpCallRequest", "McpCallResponse", "McpCancellationRequest", "McpClientCapabilities",
     "McpEnvelope", "McpProgressNotification", "McpProtocolError", "McpServerCapabilities",
     "McpSessionContext", "McpTaskView", "McpToolPage", "ProjectedMcpTool",
+    "DiscoveryService", "ProjectionCandidate",
 ]
