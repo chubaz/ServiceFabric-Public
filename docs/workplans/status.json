@@ -12,7 +12,7 @@
   "current_milestone": "v4-00",
   "current_phase": "completed",
   "known_blockers": [],
-  "last_verification_summary": "V3-00 was merged into main after its completion suite, V2-01 regression gate, dependency checks, architecture checks, schema checks, and CI portability checks passed.",
+  "last_verification_summary": "V4-00 completion passed all configured projection, harness, architecture, dependency, compilation, pip, diff, and inherited V3 regression checks in the external environment.",
   "next_action": "Review and merge V4-00, then prepare the post-merge programme handoff without implementing V5 on this branch.",
   "programme_version": 1,
   "remaining_phases": [
