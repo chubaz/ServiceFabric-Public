@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime,timedelta,timezone
 from pydantic import ValidationError
-from servicefabric_mcp_projection import McpCallRequest,McpEnvelope,McpSessionContext,ProjectedMcpTool
+from servicefabric_mcp_projection import MCP_PROTOCOL_PROFILE,McpCallRequest,McpEnvelope,McpSessionContext,ProjectedMcpTool
 NOW=datetime(2030,1,1,tzinfo=timezone.utc)
 CALLER={"subject_ref":"user-alice","principal_type":"human","tenant_ref":"tenant-demo","issuer":"servicefabric-identity","scopes":["math-calculate"],"authentication_strength":"multi_factor"}
 class ProjectionContractTests(unittest.TestCase):
@@ -16,4 +16,6 @@ class ProjectionContractTests(unittest.TestCase):
   session=McpSessionContext(session_id="session-1",caller=CALLER,adapter_ref="trusted-mcp-adapter",negotiated_capabilities={},created_at=NOW,expires_at=NOW+timedelta(minutes=5))
   self.assertEqual(session.caller.subject_ref,"user-alice")
   with self.assertRaises(ValidationError):McpEnvelope(message_type="tools_call",payload={"authorization":"secret"})
+ def test_profile_matches_the_architecture_pinned_profile(self):
+  self.assertEqual(MCP_PROTOCOL_PROFILE,"2025-11-25");self.assertEqual(McpEnvelope(message_type="initialize").protocol_version,MCP_PROTOCOL_PROFILE)
 if __name__=="__main__":unittest.main()

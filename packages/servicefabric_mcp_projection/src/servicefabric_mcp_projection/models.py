@@ -5,6 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from servicefabric_contracts.caller import CallerContext
 from servicefabric_contracts.common import Identifier, ToolIdentifier, has_secret_like_key, is_json_value
+from .profile import MCP_PROTOCOL_PROFILE
 
 class ProjectionModel(BaseModel):
  model_config=ConfigDict(extra="forbid",validate_assignment=True,str_strip_whitespace=True)
@@ -68,6 +69,7 @@ class McpCallRequest(ProjectionModel):
  correlation_id:Identifier
  deadline_at:datetime|None=None
  idempotency_digest:str|None=Field(default=None,pattern=r"^sha256:[a-f0-9]{64}$")
+ approval_binding_ref:Identifier|None=None
  @field_validator("arguments")
  @classmethod
  def json_args(cls,value):
@@ -111,7 +113,7 @@ class McpTaskView(ProjectionModel):
  result_ref:Identifier|None=None
  error:McpProtocolError|None=None
 class McpEnvelope(ProjectionModel):
- protocol_version:Literal["2025-03-26"]="2025-03-26"
+ protocol_version:Literal[MCP_PROTOCOL_PROFILE]=MCP_PROTOCOL_PROFILE
  message_type:Literal["initialize","tools_list","tools_call","progress","cancel","task"]
  session_id:Identifier|None=None
  payload:dict[str,object]=Field(default_factory=dict,max_length=128)

@@ -7,7 +7,8 @@ from .models import (
 )
 from .discovery import DiscoveryService, ProjectionCandidate
 from .translation import CallTranslationError, CallTranslator
-from .results import project_error, project_result
+from .results import project_acceptance, project_error, project_result
+from .profile import MCP_PROTOCOL_PROFILE
 from .progress import CancellationProjector, ProgressProjector
 from .tasks import project_task
 from .sessions import SessionError, SessionManager, TrustedMcpTransportContext
@@ -19,7 +20,7 @@ __all__ = [
     "McpSessionContext", "McpTaskView", "McpToolPage", "ProjectedMcpTool",
     "DiscoveryService", "ProjectionCandidate",
     "CallTranslationError", "CallTranslator",
-    "project_error", "project_result",
+    "project_acceptance", "project_error", "project_result", "MCP_PROTOCOL_PROFILE",
     "CancellationProjector", "ProgressProjector",
     "project_task",
     "SessionError", "SessionManager", "TrustedMcpTransportContext",
