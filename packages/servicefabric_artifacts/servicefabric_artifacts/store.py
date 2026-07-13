@@ -85,6 +85,21 @@ class FileArtifactStore:
             raise FileNotFoundError("artifact not found")
         return ApplicationArtifactManifest.model_validate_json(path.read_text(encoding="utf-8"))
 
+    def list_artifacts(self) -> tuple[str, ...]:
+        """List only complete immutable artifacts, in deterministic digest order."""
+        root = self.root / "sha256"
+        if not root.is_dir():
+            return ()
+        digests = []
+        for manifest_path in root.glob("*/*/manifest.json"):
+            digest = "sha256:" + manifest_path.parent.name
+            try:
+                self.get_manifest(digest)
+            except (FileNotFoundError, ValueError):
+                continue
+            digests.append(digest)
+        return tuple(sorted(digests))
+
     def open_file(self, artifact_digest: str, relative: str) -> bytes:
         path = PurePosixPath(relative)
         if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):

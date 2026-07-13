@@ -68,6 +68,36 @@ class LocalDeveloperUxTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0)
             self.assertEqual(json.loads(result.stdout)["result"]["data"]["value"], 42)
 
+    def test_build_lists_artifact_and_dispatches_reviewed_capsule(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary) / "workspace"
+            self.assertEqual(self.command("init", home=home).returncode, 0)
+            build = self.command(
+                "apps",
+                "build",
+                "examples.hello-static",
+                "--revision",
+                "1.0.0",
+                home=home,
+            )
+            artifacts = self.command("artifacts", "list", "--json", home=home)
+            capsule = self.command(
+                "capsules",
+                "dispatch",
+                "--request-file",
+                "packages/servicefabric_contracts/tests/fixtures/capsule_host_request_hello.json",
+                "--path",
+                "/",
+                home=home,
+            )
+
+            self.assertEqual(build.returncode, 0)
+            self.assertIn("Built examples.hello-static", build.stdout)
+            self.assertEqual(artifacts.returncode, 0)
+            self.assertEqual(len(json.loads(artifacts.stdout)["artifacts"]), 1)
+            self.assertEqual(capsule.returncode, 0)
+            self.assertIn("examples.hello-capsule 1.0.0 -> 200", capsule.stdout)
+
     def test_safe_errors_and_help(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             home = Path(temporary) / "workspace"

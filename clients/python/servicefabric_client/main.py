@@ -15,7 +15,9 @@ from uuid import uuid4
 
 from servicefabric_application_builder import create_application_builder_service
 from servicefabric_artifacts import FileArtifactStore
+from servicefabric_capsule_host import create_capsule_host_service
 from servicefabric_contracts import ApplicationBuildRequest, ToolInvocationRequest
+from servicefabric_contracts import CapsuleHostRequest
 from servicefabric_contracts.budgets import ExecutionBudget
 from servicefabric_contracts.caller import CallerContext
 from servicefabric_contracts.effects import EffectDeclaration
@@ -35,6 +37,8 @@ from servicefabric_operations import DurableOperationStore, IdempotencyRepositor
 from servicefabric_runtime import FilePortfolio, InvocationKernel
 from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
+
+from .capsules import CapsuleClient
 
 
 VERSION = "0.1.0a1"
@@ -144,6 +148,13 @@ class LocalRuntime:
             portfolio_root=repository / "portfolio" / "applications",
             artifact_store_root=home / "artifacts",
         )
+        self.capsules = CapsuleClient(
+            create_capsule_host_service(
+                capsule_portfolio_root=repository / "portfolio" / "capsules",
+                application_portfolio_root=repository / "portfolio" / "applications",
+                artifact_store_root=home / "artifacts",
+            )
+        )
 
     def invoke_math(self, arguments: dict[str, object]):
         request_id = "local-request-" + uuid4().hex[:16]
@@ -247,10 +258,20 @@ def parser() -> ServiceFabricArgumentParser:
 
     artifacts = commands.add_parser("artifacts", help="inspect immutable artifacts")
     artifact_actions = artifacts.add_subparsers(dest="action", required=True)
+    artifact_actions.add_parser("list", help="list locally published artifacts")
     artifact = artifact_actions.add_parser("describe", help="describe an artifact")
     artifact.add_argument("digest")
     artifact = artifact_actions.add_parser("verify", help="verify artifact content")
     artifact.add_argument("digest")
+
+    capsules = commands.add_parser("capsules", help="dispatch reviewed static capsules locally")
+    capsule_actions = capsules.add_subparsers(dest="action", required=True)
+    dispatch = capsule_actions.add_parser(
+        "dispatch", help="open, dispatch, and close a local loopback capsule session"
+    )
+    dispatch.add_argument("--request-file", required=True, metavar="PATH")
+    dispatch.add_argument("--method", default="GET", choices=("GET", "HEAD"))
+    dispatch.add_argument("--path", default="/", help="declared capsule route")
     return root
 
 
@@ -409,6 +430,11 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "json_mode": json_mode,
         }
     if args.command == "artifacts":
+        if args.action == "list":
+            return 0, "artifacts-list", {
+                "artifacts": list(runtime.applications.list_artifacts()),
+                "json_mode": json_mode,
+            }
         if args.action == "describe":
             return 0, "artifacts-describe", {
                 "artifact": runtime.artifacts.get_manifest(args.digest),
@@ -418,6 +444,28 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "verification": runtime.artifacts.verify_artifact(args.digest),
             "json_mode": json_mode,
         }
+    if args.command == "capsules":
+        try:
+            request = CapsuleHostRequest.model_validate_json(
+                Path(args.request_file).read_text(encoding="utf-8")
+            )
+        except (OSError, ValueError) as error:
+            raise ValueError("capsule request file is not a valid canonical request") from error
+        session = runtime.capsules.open_session(request)
+        try:
+            response = runtime.capsules.dispatch(
+                session, args.method, args.path, head_only=args.method == "HEAD"
+            )
+            return 0, "capsules-dispatch", {
+                "capsule_id": request.spec.capsule_id,
+                "revision": request.spec.capsule_revision,
+                "status": response.status,
+                "content_type": response.headers.get("Content-Type"),
+                "body": response.body.decode("utf-8", errors="replace"),
+                "json_mode": json_mode,
+            }
+        finally:
+            runtime.capsules.close_session(session)
     raise ValueError("unsupported command")
 
 
@@ -480,11 +528,27 @@ def human_output(command: str, value: object) -> str:
     if command == "artifacts-describe":
         artifact = data["artifact"]
         return f"Artifact {artifact['spec']['artifact_digest']}\n  Files: {len(artifact['spec']['files'])}\n"
+    if command == "artifacts-list":
+        artifacts = data["artifacts"]
+        if not artifacts:
+            return "No local artifacts yet. Build an application first.\n"
+        return "\n".join(["Local artifacts", *[f"  {digest}" for digest in artifacts], ""])
     if command == "artifacts-verify":
         verification = data["verification"]
         if verification["valid"]:
             return f"Artifact verified: {verification['artifact_digest']}\n  Files: {len(verification['verified_files'])}\n"
         return f"Artifact verification failed: {verification['artifact_digest']}\n"
+    if command == "capsules-dispatch":
+        if data["status"] == 200:
+            return "\n".join(
+                [
+                    f"{data['capsule_id']} {data['revision']} -> {data['status']}",
+                    f"  Content type: {data['content_type']}",
+                    "  Session closed after local dispatch.",
+                    "",
+                ]
+            )
+        return f"Capsule route unavailable ({data['status']}).\n"
     return json_output(data)
 
 

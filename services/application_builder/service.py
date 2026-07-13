@@ -80,6 +80,9 @@ class ApplicationBuilderService:
     def get_artifact_manifest(self, artifact_digest: str):
         return self.store.get_manifest(artifact_digest)
 
+    def list_artifacts(self) -> tuple[str, ...]:
+        return self.store.list_artifacts()
+
     def verify_artifact(self, artifact_digest: str):
         return self.store.verify_artifact(artifact_digest)
 

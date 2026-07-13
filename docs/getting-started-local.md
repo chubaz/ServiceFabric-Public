@@ -30,4 +30,21 @@ servicefabric invoke math.calculate --arguments '{"expression":"1+1"}' --explain
 
 Available commands include `status`, `doctor`, `tools`, `invoke`, `apps`, and `artifacts`. Default output is concise and task-oriented; add `--json` anywhere in a command when another tool needs deterministic structured output. Failures return nonzero without a traceback unless `--debug` is supplied.
 
+Build output is immutable and can be found again without copying a digest from earlier output:
+
+```bash
+servicefabric apps build examples.hello-static --revision 1.0.0
+servicefabric artifacts list
+servicefabric artifacts verify sha256:YOUR_ARTIFACT_DIGEST
+```
+
+The reviewed hello capsule can be dispatched locally once its static artifact has been built. This is a one-shot in-process loopback session, not a public server:
+
+```bash
+servicefabric capsules dispatch \
+  --request-file packages/servicefabric_contracts/tests/fixtures/capsule_host_request_hello.json \
+  --method GET \
+  --path /
+```
+
 The local command is intentionally limited: there is no public HTTP or MCP transport, production identity, external provider execution, deployment orchestration, or V5 control plane.
