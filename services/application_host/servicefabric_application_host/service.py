@@ -125,10 +125,15 @@ def _limit_child_log() -> None:
 class LocalApplicationHost:
     """Hosts only packages using the reviewed-fastapi-v1 adapter on loopback."""
 
-    def __init__(self, workspace: Path) -> None:
+    def __init__(
+        self, workspace: Path, *, health_timeout_seconds: float = 10.0
+    ) -> None:
+        if health_timeout_seconds < 0.1 or health_timeout_seconds > 10.0:
+            raise ValueError("health timeout must be between 0.1 and 10 seconds")
         self.root = workspace / "hosted-applications"
         self.root.mkdir(parents=True, exist_ok=True)
         self.artifacts = FileArtifactStore(workspace / "artifacts")
+        self._health_timeout_seconds = health_timeout_seconds
 
     def _directory(self, application_id: str) -> Path:
         if application_id != "text-utility":
@@ -483,7 +488,7 @@ class LocalApplicationHost:
                 }
             )
             _atomic(self._directory(application_id) / "application.json", record)
-        deadline = time.monotonic() + 10
+        deadline = time.monotonic() + self._health_timeout_seconds
         while time.monotonic() < deadline:
             if process.poll() is not None:
                 with self._lock(application_id):
@@ -529,6 +534,10 @@ class LocalApplicationHost:
             current = self._record(application_id)
             if current.get("pid") == process.pid:
                 self._terminate_owned(current)
+                try:
+                    process.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    pass
                 current["state"] = "failed"
                 _atomic(self._directory(application_id) / "application.json", current)
         raise ApplicationHostError("application health check timed out")

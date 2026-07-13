@@ -12,6 +12,8 @@ import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from unittest.mock import patch
+from urllib.error import URLError
 
 from servicefabric_application_host import LocalApplicationHost
 from servicefabric_client.main import LocalRuntime
@@ -159,6 +161,20 @@ class HostIntegrityTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("integrity verification", result.stderr)
         self.assertNotIn("Traceback", result.stderr)
+
+    def test_health_timeout_stops_real_process_and_records_failure(self) -> None:
+        host = LocalApplicationHost(self.home, health_timeout_seconds=1.0)
+        host.install(EXAMPLE)
+        host.build("text-utility")
+        with patch(
+            "servicefabric_application_host.service.urlopen",
+            side_effect=URLError("controlled unavailable probe"),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "health check timed out"):
+                host.start("text-utility")
+        status = host.status("text-utility")
+        self.assertEqual(status["state"], "failed")
+        self.assertEqual(status["health"], "unavailable")
 
     def test_invalid_arguments_never_reach_application(self) -> None:
         self.install()
