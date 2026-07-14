@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-02",
-  "overall": "READY FOR COMPLETION INTEGRATION",
+  "overall": "WAVE COMPLETE",
   "lanes": {
     "runtime-bindings": "integrated",
     "kit-execution": "integrated",
     "reference-app": "integrated",
     "supervisor": "integrated",
-    "integration": "active"
+    "integration": "integrated"
   },
-  "next_action": "Perform integration-owned application composition, CLI implementation, acceptance-journey work, and final Wave-2 verification."
+  "next_action": "Ready for pull request review; no automatic merge performed."
 }

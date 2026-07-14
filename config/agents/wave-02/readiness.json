@@ -41,7 +41,7 @@
     }
   },
   "integration": {
-    "current_integration_head": "a54b822aa4ec843d039c96cff50babe9adfcf012",
+    "current_integration_head": "8521716a935fc511e22d47d0dbc552c3a307c20c",
     "contracts_status": "frozen",
     "accepted_lane_commits": [
       "aea040ca22f02f484a97474d91027c7947ffbee9",
@@ -50,7 +50,16 @@
       "1f3d655df06aed8712c6f5ac0b6918bdb88bfa26"
     ],
     "candidate_review_status": "all specialist candidates accepted",
-    "final_verification_status": "not-run",
-    "wave_completion_status": "in-progress"
+    "integration_owned_commits": [
+      "62a0139b2004f4a68ea822bd679a4e837190c0b1",
+      "592e7f1a6240c05ca5682666f0e94d23e2d0fec2",
+      "0f8cca95868a77ede59e46b4453728e89cbb9882",
+      "702dd34dd4cb40c1039f452ad6dcf9d31ca8b9bd",
+      "2e43d222bc15fd1b6fc17d7cb27eef390c48cdbf",
+      "98591e3807d18f8c9ec7759e47877e740ea17ab7",
+      "8521716a935fc511e22d47d0dbc552c3a307c20c"
+    ],
+    "final_verification_status": "passed",
+    "wave_completion_status": "complete"
   }
 }
