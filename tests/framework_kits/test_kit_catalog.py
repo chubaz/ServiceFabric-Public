@@ -15,6 +15,8 @@ from servicefabric_framework_kits import (
     PrimitiveMismatch,
 )
 from servicefabric_framework_kits.fastapi_service.adapter import FastAPIServiceAdapter
+from servicefabric_framework_kits.python_library.adapter import PythonLibraryAdapter
+from servicefabric_framework_kits.react_web.adapter import ReactWebAdapter
 
 
 class TestKitCatalog(unittest.TestCase):
@@ -46,6 +48,21 @@ class TestKitCatalog(unittest.TestCase):
         # Registering the identical kit reference again must raise DuplicateKitRegistration
         with self.assertRaises(DuplicateKitRegistration):
             catalog.register(definition, adapter)
+
+    def test_default_catalog_registers_all_reviewed_kit_primitives(self) -> None:
+        catalog = get_default_catalog()
+
+        react_definition, react_adapter = catalog.resolve(
+            KitReference(kit_id="react-web", version="1.0.0")
+        )
+        library_definition, library_adapter = catalog.resolve(
+            KitReference(kit_id="python-library", version="1.0.0")
+        )
+
+        self.assertEqual(react_definition.primitive, "web")
+        self.assertIsInstance(react_adapter, ReactWebAdapter)
+        self.assertEqual(library_definition.primitive, "library")
+        self.assertIsInstance(library_adapter, PythonLibraryAdapter)
 
     def test_reject_unknown_kit_reference(self) -> None:
         catalog = FrameworkKitCatalog()
