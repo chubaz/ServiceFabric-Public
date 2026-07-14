@@ -108,6 +108,7 @@ verify-wave-01:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE01_PYTHONPATH)" $(WAVE01_PYTHON) -m compileall packages/servicefabric_application_assembly packages/servicefabric_application_model packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_process_runtime packages/servicefabric_resource_bindings packages/servicefabric_workspace services/application_host clients/python tests/application_assembly tests/resource_bindings tests/framework_kits tests/blueprints tests/integration tests/adversarial tests/architecture tests/modules tests/workspace tests/ap_01a tests/local_ux
 	git diff --check
 verify-wave-02:
+	# Keep the wave gate focused; milestone-wide regressions are owned by verify-current.
 	python3 -m unittest tests.agent.test_wave_harness tests.agent.test_wave_operational_scripts tests.agent.test_wave_rollover_scripts -v
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/wave_02 -v
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/application_dev_supervisor -v
@@ -117,15 +118,9 @@ verify-wave-02:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/application_assembly -v
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/integration -p 'test_wave_01_acceptance.py' -v
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/adversarial -v
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/modules -v
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s packages/servicefabric_workspace/tests -v
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/workspace -v
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/ap_01a -v
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/local_ux -v
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/architecture -v
 	python3 scripts/dependencies/check_python_locks.py
 	python3 -m pip check
-	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m compileall packages/servicefabric_application_assembly packages/servicefabric_application_model packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_process_runtime packages/servicefabric_resource_bindings packages/servicefabric_workspace services/application_dev_supervisor services/application_host clients/python tests/wave_02 tests/application_dev_supervisor tests/application_assembly tests/resource_bindings tests/framework_kits tests/blueprints tests/integration tests/adversarial tests/architecture tests/modules tests/workspace tests/ap_01a tests/local_ux
+	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m compileall clients/python/servicefabric_client/development.py clients/python/servicefabric_client/static_web_server.py clients/python/servicefabric_client/main.py services/application_dev_supervisor tests/wave_02
 	git diff --check
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
