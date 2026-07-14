@@ -11,8 +11,10 @@ import unittest
 from pathlib import Path
 
 
+import sys
+
 ROOT = Path(__file__).resolve().parents[2]
-VENV_BIN = Path("/home/lorenzoccasoni/.virtualenvs/servicefabric/bin")
+VENV_BIN = Path(sys.executable).parent
 
 
 class CliWorkspaceJourneysTests(unittest.TestCase):

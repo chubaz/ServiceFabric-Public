@@ -152,6 +152,28 @@ jobs:
       - name: Run V4-00 completion verification
         run: python3 scripts/agent/verify.py --milestone v4-00 --phase completion
 
+      - name: Run application workspace package tests
+        run: python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
+
+      - name: Run application workspace journeys
+        run: python3 -m unittest discover -s tests/workspace -v
+
+      - name: Run application model contract tests
+        run: python3 -m unittest discover -s tests/modules -v
+
+      - name: Run framework kits planning tests
+        run: python3 -m unittest discover -s tests/framework_kits -v
+
+      - name: Run workspace architecture boundaries
+        run: |
+          python3 -m unittest \
+            tests.architecture.test_workspace_boundaries \
+            tests.architecture.test_legacy_application_paths \
+            -v
+
+      - name: Run existing local UX regressions
+        run: python3 -m unittest discover -s tests/local_ux -v
+
       - name: Run AP-01A hosting baseline
         run: python3 -m unittest tests.ap_01a.test_hosting_baseline -v
 

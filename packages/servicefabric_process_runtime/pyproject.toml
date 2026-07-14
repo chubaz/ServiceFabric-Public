@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-process-runtime"
+version = "0.1.0a1"
+description = "Deterministic loopback subprocess management, health polling, and resource observation for ServiceFabric."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "pyyaml==6.0.3",
+  "servicefabric-workspace==0.1.0a1",
+  "servicefabric-framework-kits==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["servicefabric_process_runtime*"]

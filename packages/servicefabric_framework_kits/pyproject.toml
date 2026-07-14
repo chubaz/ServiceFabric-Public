@@ -3,12 +3,13 @@ requires = ["setuptools==80.9.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "servicefabric-workspace"
+name = "servicefabric-framework-kits"
 version = "0.1.0a1"
-description = "Deterministic workspace and application lifecycle layout authority for ServiceFabric."
+description = "Deterministic framework kit adapters and static catalog for ServiceFabric."
 requires-python = ">=3.11,<3.12"
 dependencies = [
   "pyyaml==6.0.3",
+  "servicefabric-application-model==0.1.0a1",
 ]
 
 [tool.setuptools]
@@ -16,4 +17,4 @@ package-dir = {"" = "."}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["servicefabric_workspace*"]
+include = ["servicefabric_framework_kits*"]

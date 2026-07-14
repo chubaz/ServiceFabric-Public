@@ -1,0 +1,57 @@
+{
+  "apiVersion": "servicefabric.ai/v1alpha1",
+  "kind": "ApplicationArtifactManifest",
+  "metadata": {
+    "annotations": {},
+    "description": "Immutable reviewed FastAPI source artifact.",
+    "id": "artifact.6b30b6833d9f59fa511f460f776f8ef8",
+    "labels": {},
+    "name": "Text Utility 1.0.0",
+    "namespace": null,
+    "owner_ref": {
+      "id": "application-host",
+      "kind": "service"
+    }
+  },
+  "spec": {
+    "application_id": "text-utility",
+    "application_revision": "1.0.0",
+    "artifact_digest": "sha256:6b30b6833d9f59fa511f460f776f8ef807454ed28f52b2734a1a5f295ff8c441",
+    "artifact_id": "artifact.6b30b6833d9f59fa511f460f776f8ef8",
+    "build_spec_digest": "sha256:8e04440b53f3b7ba5875dcbb90004e2e5c5d89df70912c47406145cdb2c0611d",
+    "builder_id": "reviewed-fastapi-source-builder",
+    "builder_revision": "1.0.0",
+    "created_at": null,
+    "entry_document": "app.py",
+    "files": [
+      {
+        "content_digest": "sha256:46375c58efbb5b6baacd817e4b0fe3f4515989c54340bf523ee0b14d20110b89",
+        "media_type": "text/x-python",
+        "path": "app.py",
+        "size_bytes": 1020
+      },
+      {
+        "content_digest": "sha256:5b2cef6fcc362121b5777f03911ca65dfa3d398995e63badf39473d13697075c",
+        "media_type": "application/octet-stream",
+        "path": "pyproject.toml",
+        "size_bytes": 250
+      },
+      {
+        "content_digest": "sha256:a6d917165d14ad6dc5d530848fc5c30d1b2d9cc9983587d8728bdda745b7d401",
+        "media_type": "application/json",
+        "path": "servicefabric-package.json",
+        "size_bytes": 904
+      }
+    ],
+    "provenance": {
+      "build_spec_digest": "sha256:8e04440b53f3b7ba5875dcbb90004e2e5c5d89df70912c47406145cdb2c0611d",
+      "builder_id": "reviewed-fastapi-source-builder",
+      "builder_revision": "1.0.0",
+      "source_digest": "sha256:a77374c07fc70358c2cd652d75e56af0ca77619fec066b1deeaca339ecf48e46",
+      "source_manifest_ref": "text-utility-source"
+    },
+    "reproducibility": "reproducible",
+    "source_digest": "sha256:a77374c07fc70358c2cd652d75e56af0ca77619fec066b1deeaca339ecf48e46",
+    "total_size_bytes": 2174
+  }
+}

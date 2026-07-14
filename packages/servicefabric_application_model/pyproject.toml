@@ -3,9 +3,9 @@ requires = ["setuptools==80.9.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "servicefabric-workspace"
+name = "servicefabric-application-model"
 version = "0.1.0a1"
-description = "Deterministic workspace and application lifecycle layout authority for ServiceFabric."
+description = "Canonical module definitions, primitives, and application models for ServiceFabric."
 requires-python = ">=3.11,<3.12"
 dependencies = [
   "pyyaml==6.0.3",
@@ -16,4 +16,4 @@ package-dir = {"" = "."}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["servicefabric_workspace*"]
+include = ["servicefabric_application_model*"]

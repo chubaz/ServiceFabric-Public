@@ -1,0 +1,31 @@
+{
+  "application_id": "text-utility",
+  "version": "1.0.0",
+  "framework": "fastapi",
+  "adapter": "reviewed-fastapi-v1",
+  "module": "app:app",
+  "build": {"kind": "reviewed-python-source"},
+  "start": {"adapter": "reviewed-fastapi-v1", "module": "app:app"},
+  "health_path": "/health",
+  "source_files": [
+    {
+      "path": "app.py",
+      "sha256": "46375c58efbb5b6baacd817e4b0fe3f4515989c54340bf523ee0b14d20110b89"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "5b2cef6fcc362121b5777f03911ca65dfa3d398995e63badf39473d13697075c"
+    }
+  ],
+  "declared_resources": {
+    "memory_mib": 128,
+    "cpu_cores": 0.25,
+    "storage_mib": 16,
+    "network": "loopback-only"
+  },
+  "entrypoints": ["web", "health", "capability-adapter"],
+  "capabilities": [
+    {"tool_id": "text.count_words", "path": "/actions/count-words"},
+    {"tool_id": "text.inspect", "path": "/actions/inspect"}
+  ]
+}
