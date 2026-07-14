@@ -23,12 +23,12 @@
     },
     "reference-app": {
       "original_base_sha": "715de644eff2ee003469f14d574c4b70706bc70a",
-      "candidate_head": "766287113428ce6c3f003f766c38abc227f66203",
-      "accepted_commit": null,
-      "integration_decision": "returned-for-correction",
-      "integration_commit": null,
-      "final_state": "revision-requested",
-      "focused_verification": "passed-lane-suite; failed-exact-kit-resolution"
+      "candidate_head": "760c5168055f0e4b1f8b90641beb746c1b0ce92f",
+      "accepted_commit": "760c5168055f0e4b1f8b90641beb746c1b0ce92f",
+      "integration_decision": "accepted",
+      "integration_commit": "a54b822aa4ec843d039c96cff50babe9adfcf012",
+      "final_state": "integrated",
+      "focused_verification": "passed"
     },
     "supervisor": {
       "original_base_sha": "715de644eff2ee003469f14d574c4b70706bc70a",
@@ -41,14 +41,15 @@
     }
   },
   "integration": {
-    "current_integration_head": "704d4c068e10fd03027b25af0566e9119c5d0efc",
+    "current_integration_head": "a54b822aa4ec843d039c96cff50babe9adfcf012",
     "contracts_status": "frozen",
     "accepted_lane_commits": [
       "aea040ca22f02f484a97474d91027c7947ffbee9",
       "a3863eb75d51d5ca485ab80e3a6c93a3391cc524",
+      "760c5168055f0e4b1f8b90641beb746c1b0ce92f",
       "1f3d655df06aed8712c6f5ac0b6918bdb88bfa26"
     ],
-    "candidate_review_status": "reference-app revision requested",
+    "candidate_review_status": "all specialist candidates accepted",
     "final_verification_status": "not-run",
     "wave_completion_status": "in-progress"
   }
