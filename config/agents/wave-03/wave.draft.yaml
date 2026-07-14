@@ -1,0 +1,40 @@
+wave_id: wave-03
+status: draft
+base_commit: TO_BE_SELECTED_AFTER_WAVE_02_MERGE
+objective: Define the next bounded increment after Wave 2 before launch.
+lanes:
+  - integration
+  - supervisor
+  - runtime-bindings
+  - kit-execution
+  - reference-app
+owned_paths:
+  integration:
+    - shared contracts
+    - CLI, Makefile, CI, locks, acceptance, closure
+  supervisor:
+    - services/application_dev_supervisor/**
+    - tests/application_dev_supervisor/**
+  runtime-bindings:
+    - packages/servicefabric_resource_bindings/**
+    - tests/resource_bindings/**
+  kit-execution:
+    - packages/servicefabric_framework_kits/**
+    - packages/servicefabric_blueprints/**
+    - tests/framework_kits/**
+    - tests/blueprints/**
+  reference-app:
+    - examples/research-notes/**
+    - tests/wave_03/**
+frozen_contracts: []
+acceptance_journey: Define before specialist launch; must cover end-to-end outcome, deterministic behavior, safe failures, lifecycle cleanup, and Wave-1/Wave-2 regression preservation.
+exclusions:
+  - automatic merges
+  - force pushes
+  - branch or worktree deletion
+  - remote execution
+  - production deployment
+  - containers
+  - distributed resources
+  - capability publication
+  - MCP expansion
