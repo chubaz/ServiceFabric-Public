@@ -10,16 +10,26 @@ from scripts.agent.common import ROOT, git, read_json, safe_path
 WAVE_DIR = "config/agent/waves"
 
 
+def manifest_path(wave_id: str) -> str:
+    modern = ROOT / "config" / "agents" / wave_id / "wave.yaml"
+    if modern.is_file():
+        return str(modern.relative_to(ROOT))
+    legacy_id = wave_id
+    if wave_id.startswith("wave-0") and wave_id[6:].isdigit():
+        legacy_id = f"wave-{int(wave_id[5:])}"
+    return f"{WAVE_DIR}/{legacy_id}.json"
+
+
 def wave(wave_id: str) -> dict[str, object]:
-    return read_json(f"{WAVE_DIR}/{wave_id}.json")
+    return read_json(manifest_path(wave_id))
 
 
 def task(task_id: str, wave_id: str = "wave-1") -> dict[str, object]:
-    return read_json(f"{WAVE_DIR}/{wave_id}/tasks/{task_id}.json")
+    return read_json(f"{wave(wave_id)['task_manifest_dir']}/{task_id}.json")
 
 
 def task_ids(wave_id: str = "wave-1") -> list[str]:
-    directory = safe_path(f"{WAVE_DIR}/{wave_id}/tasks")
+    directory = safe_path(str(wave(wave_id)["task_manifest_dir"]))
     return sorted(path.stem for path in directory.glob("*.json"))
 
 
@@ -31,18 +41,22 @@ def canonical_handoff_path(task_id: str, wave_id: str = "wave-1") -> Path:
     handoffs = w.get("canonical_handoffs", {})
     if isinstance(handoffs, dict) and task_id in handoffs:
         return safe_path(str(handoffs[task_id]))
-    directory = str(w.get("canonical_handoff_dir", "docs/handoffs/wave-01"))
+    directory = str(w.get("canonical_handoff_dir", f"docs/handoffs/{wave_id}"))
     return safe_path(f"{directory}/{task_id}.md")
+
+
+def runtime_wave_id(wave_id: str) -> str:
+    return str(wave(wave_id).get("runtime_wave_id", wave_id))
 
 
 def committed_readiness_path(wave_id: str = "wave-1") -> Path:
     w = wave(wave_id)
-    return safe_path(str(w.get("readiness_metadata", f"{WAVE_DIR}/{wave_id}/readiness.json")))
+    return safe_path(str(w.get("readiness_metadata", f"config/agents/{wave_id}/readiness.json")))
 
 
 def integration_queue_path(wave_id: str = "wave-1") -> Path:
     w = wave(wave_id)
-    return safe_path(str(w.get("integration_queue", f"{WAVE_DIR}/{wave_id}/integration-queue.json")))
+    return safe_path(str(w.get("integration_queue", f"config/agents/{wave_id}/integration-queue.json")))
 
 
 def current_branch() -> str:

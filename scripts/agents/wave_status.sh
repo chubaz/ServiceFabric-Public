@@ -5,7 +5,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 # shellcheck source=lib_wave.sh
 source "$SCRIPT_DIR/lib_wave.sh"
 
-sf_load_config
+WAVE_ID=""
+if [[ "${1:-}" == "--wave" ]]; then
+    WAVE_ID="${2:-}"
+    shift 2
+fi
+[[ $# -eq 0 ]] || { echo "Usage: wave_status.sh [--wave WAVE]" >&2; exit 2; }
+sf_load_config "$WAVE_ID"
 
 BOOTSTRAP_SHA="unknown"
 [[ -f "$(sf_bootstrap_path)" ]] && BOOTSTRAP_SHA="$(cat "$(sf_bootstrap_path)")"
@@ -18,20 +24,27 @@ READY=1
 CANDIDATES=0
 COMMITTED_QUEUE="missing"
 WAVE_COMPLETE=0
-if [[ -f "$(sf_integration_queue_path)" ]]; then
-    COMMITTED_QUEUE="$(python3 - <<'PY'
+if [[ -n "$(sf_integration_queue_path)" && -f "$(sf_integration_queue_path)" ]]; then
+    COMMITTED_QUEUE="$(SF_WAVE_ID="$SF_WAVE_ID" python3 - <<'PY'
 import json
-with open("config/agent/waves/wave-1/integration-queue.json", encoding="utf-8") as handle:
+from scripts.agent.wave_common import integration_queue_path
+import os
+with open(integration_queue_path(os.environ["SF_WAVE_ID"]), encoding="utf-8") as handle:
     print(json.load(handle).get("overall", "missing"))
 PY
 )"
 fi
-if [[ "$COMMITTED_QUEUE" == "WAVE COMPLETE" ]] && python3 scripts/agent/wave_completion.py --wave "$(sf_manifest_wave_id)" >/dev/null 2>&1; then
+if [[ "$COMMITTED_QUEUE" == "WAVE COMPLETE" ]] && python3 scripts/agent/wave_completion.py --wave "$SF_WAVE_ID" >/dev/null 2>&1; then
     WAVE_COMPLETE=1
 fi
 
 printf '%-16s %-46s %-28s %-12s %-12s %-7s %-8s %-9s %-7s %-8s %-10s %-12s\n' \
     LANE WORKTREE BRANCH HEAD EXPECTED CLEAN RUNTIME PREFLIGHT PROMPT HANDOFF CANDIDATE QUEUE
+
+INTEGRATION_HEAD=""
+if sf_is_valid_worktree "$(sf_lane_path integration)"; then
+    INTEGRATION_HEAD="$(sf_head "$(sf_lane_path integration)")"
+fi
 
 for lane in $(sf_lanes); do
     path="$(sf_lane_path "$lane")"
@@ -56,7 +69,9 @@ for lane in $(sf_lanes); do
             sf_mirror_handoff "$lane" || true
             handoff="present"
         fi
-        if [[ "$WAVE_COMPLETE" != "1" && "$BOOTSTRAP_SHA" != "unknown" ]] && ! git -C "$path" merge-base --is-ancestor HEAD "$BOOTSTRAP_SHA" 2>/dev/null; then
+        # A specialist candidate remains pending only while its head has not
+        # already been incorporated into the integration branch.
+        if [[ "$lane" != "integration" && "$WAVE_COMPLETE" != "1" && -n "$INTEGRATION_HEAD" ]] && ! git -C "$path" merge-base --is-ancestor HEAD "$INTEGRATION_HEAD" 2>/dev/null; then
             candidate="present"
             queue="pending"
             CANDIDATES=1
@@ -98,6 +113,8 @@ elif [[ "$READY" != "1" ]]; then
     OVERALL="NOT READY"
 elif [[ "$CANDIDATES" == "1" ]]; then
     OVERALL="INTEGRATION REQUIRED"
+elif [[ "$COMMITTED_QUEUE" == "READY FOR COMPLETION INTEGRATION" ]]; then
+    OVERALL="READY FOR COMPLETION INTEGRATION"
 elif [[ "$CONTRACTS_STATUS" != "frozen" ]]; then
     OVERALL="READY FOR INTEGRATION AGENT"
 else

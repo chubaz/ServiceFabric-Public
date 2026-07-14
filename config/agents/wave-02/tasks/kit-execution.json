@@ -1,0 +1,10 @@
+{
+  "lane": "kit-execution", "branch": "agent/w2-kit-execution", "worktree": "SF_WT_KIT_EXECUTION",
+  "handoff_path": "docs/handoffs/wave-02/kit-execution.md", "handoff_required": true,
+  "objective": "Implement reviewed FastAPI and React runtime planning plus Python library preparation descriptions without subprocess ownership or arbitrary application shell commands.",
+  "allowed_paths": ["packages/servicefabric_framework_kits", "packages/servicefabric_blueprints", "tests/framework_kits", "tests/blueprints", "docs/handoffs/wave-02/kit-execution.md"],
+  "forbidden_paths": [".github", "Makefile", "clients/python", "config", "docs/workplans", "packages/servicefabric_application_model", "packages/servicefabric_application_assembly", "packages/servicefabric_process_runtime", "packages/servicefabric_resource_bindings", "schemas", "scripts", "services/application_dev_supervisor"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-02/objective.md", "docs/workplans/parallel/wave-02/frozen-contracts.md", "packages/servicefabric_framework_kits", "packages/servicefabric_blueprints"],
+  "required_tests": ["python3 -m unittest discover -s tests/framework_kits -v", "python3 -m unittest discover -s tests/blueprints -v", "git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(kits):", "feat(blueprints):", "test(kits):", "test(blueprints):", "docs(kits):", "fix(kits):"]}
+}

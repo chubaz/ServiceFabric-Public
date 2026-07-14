@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-02",
+  "overall": "WAVE COMPLETE",
+  "lanes": {
+    "runtime-bindings": "integrated",
+    "kit-execution": "integrated",
+    "reference-app": "integrated",
+    "supervisor": "integrated",
+    "integration": "integrated"
+  },
+  "next_action": "Ready for pull request review; no automatic merge performed."
+}

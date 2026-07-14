@@ -7,9 +7,11 @@ source "$SCRIPT_DIR/lib_wave.sh"
 
 DRY_RUN=0
 BOOTSTRAP_SHA=""
+WAVE_ID=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --wave) WAVE_ID="${2:-}"; shift 2 ;;
         --bootstrap-sha) BOOTSTRAP_SHA="${2:-}"; shift 2 ;;
         --dry-run) DRY_RUN=1; shift ;;
         *) echo "Unknown argument: $1" >&2; exit 2 ;;
@@ -17,7 +19,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$BOOTSTRAP_SHA" ]] || { echo "--bootstrap-sha is required" >&2; exit 2; }
-sf_load_config
+sf_load_config "$WAVE_ID"
 
 ROOT="$(sf_repo_root)"
 CURRENT_ROOT="$(pwd -P)"
@@ -34,7 +36,7 @@ git cat-file -e "${BOOTSTRAP_SHA}^{commit}" >/dev/null 2>&1 || {
 
 WAVE_BASE="$(sf_wave_base)"
 git merge-base --is-ancestor "$WAVE_BASE" "$BOOTSTRAP_SHA" || {
-    echo "Bootstrap SHA does not descend from Wave-1 base $WAVE_BASE" >&2
+    echo "Bootstrap SHA does not descend from $SF_WAVE_ID base $WAVE_BASE" >&2
     exit 2
 }
 
@@ -58,7 +60,7 @@ verify_lane() {
         exit 2
     }
     git -C "$path" merge-base --is-ancestor "$WAVE_BASE" HEAD || {
-        echo "$lane: branch does not descend from Wave-1 base $WAVE_BASE" >&2
+    echo "$lane: branch does not descend from $SF_WAVE_ID base $WAVE_BASE" >&2
         exit 2
     }
     if [[ "$lane" == "integration" ]]; then
@@ -105,8 +107,8 @@ for lane in $(sf_lanes); do
 
     if [[ "$DRY_RUN" == "1" ]]; then
         echo "DRY-RUN: git -C $path status --short"
-        echo "DRY-RUN: python3 scripts/agent/wave_task_preflight.py --task $lane"
-        echo "DRY-RUN: python3 scripts/agent/render_wave_prompt.py --task $lane --output .agent-runs/$SF_WAVE_ID/$lane/prompt.md"
+        echo "DRY-RUN: python3 scripts/agent/wave_task_preflight.py --wave $SF_WAVE_ID --task $lane"
+        echo "DRY-RUN: python3 scripts/agent/render_wave_prompt.py --wave $SF_WAVE_ID --task $lane --output .agent-runs/$SF_WAVE_ID/$lane/prompt.md"
         continue
     fi
 
@@ -115,8 +117,8 @@ for lane in $(sf_lanes); do
         cd "$path"
         # shellcheck disable=SC1091
         source .agent-runtime.env
-        python3 scripts/agent/wave_task_preflight.py --task "$lane" >"$preflight_log" 2>&1
-        python3 scripts/agent/render_wave_prompt.py --task "$lane" --output ".agent-runs/$SF_WAVE_ID/$lane/prompt.md" >/dev/null
+        python3 scripts/agent/wave_task_preflight.py --wave "$SF_WAVE_ID" --task "$lane" >"$preflight_log" 2>&1
+        python3 scripts/agent/render_wave_prompt.py --wave "$SF_WAVE_ID" --task "$lane" --output ".agent-runs/$SF_WAVE_ID/$lane/prompt.md" >/dev/null
     ); then
         cat "$preflight_log" >&2
         echo "$lane: preflight or prompt rendering failed" >&2
@@ -135,5 +137,5 @@ for lane in $(sf_lanes); do
   "waveId": "$SF_WAVE_ID"
 }
 EOF
-    echo "$lane launch: $path/scripts/agents/launch_lane.sh $lane --interactive"
+    echo "$lane launch: $path/scripts/agents/launch_lane.sh --wave $SF_WAVE_ID $lane --interactive"
 done

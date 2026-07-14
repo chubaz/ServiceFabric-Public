@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.agent.common import ROOT
-from scripts.agent.wave_common import canonical_handoff_path, task, wave
+from scripts.agent.wave_common import canonical_handoff_path, runtime_wave_id, task, wave
 
 
 def render(task_id: str, wave_id: str = "wave-1") -> str:
@@ -20,7 +20,8 @@ def render(task_id: str, wave_id: str = "wave-1") -> str:
     tests = "\n".join(f"- `{item}`" for item in t["required_tests"])
     handoff_path = canonical_handoff_path(task_id, wave_id).relative_to(ROOT)
     authority = "You are the integration authority. Accept, reject, or return candidate commits with recorded reasons." if task_id == "integration" else "Create focused candidate commits only after tests pass. Do not merge your branch."
-    return f"""You are the ServiceFabric Wave-1 `{task_id}` specialist.
+    runtime_id = runtime_wave_id(wave_id)
+    return f"""You are the ServiceFabric `{w["wave_id"]}` `{task_id}` specialist.
 
 Repository: ServiceFabric
 Wave: `{w["wave_id"]}`
@@ -30,10 +31,10 @@ Worktree: `{t["worktree"]}`
 
 Objective: {t["objective"]}
 
-Start by reading AGENTS.md, the Wave-1 shared docs, and required context. Run:
+Start by reading AGENTS.md, the shared wave docs, and required context. Run:
 
 ```bash
-python3 scripts/agent/wave_task_preflight.py --task {task_id}
+python3 scripts/agent/wave_task_preflight.py --wave {wave_id} --task {task_id}
 ```
 
 Allowed paths:
@@ -48,7 +49,7 @@ Required context:
 Required tests before candidate commit:
 {tests}
 
-Write test evidence to `{w["local_run_dir"]}/{task_id}/tests.json` and the committed handoff to `{handoff_path}` using `{w["handoff_template"]}`. Runtime `.agent-runs/{task_id}/handoff.md` files are generated mirrors, not authoritative handoffs. {authority} Stop and escalate if frozen contracts or another lane must change.
+Write test evidence to `{w["local_run_dir"]}/{task_id}/tests.json` and the committed handoff to `{handoff_path}` using `{w["handoff_template"]}`. Runtime `.agent-runs/{runtime_id}/{task_id}/handoff.md` files are generated mirrors, not authoritative handoffs. {authority} Stop and escalate if frozen contracts or another lane must change.
 """
 
 

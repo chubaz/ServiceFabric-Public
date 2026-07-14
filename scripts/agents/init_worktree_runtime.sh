@@ -18,6 +18,10 @@ HOME_DIR="$RUNTIME_ROOT/home"
 TMP_DIR="$RUNTIME_ROOT/tmp"
 LOG_DIR="$WORKTREE/.agent-runs/$WAVE_ID/$LANE/logs"
 RUN_DIR="$WORKTREE/.agent-runs/$WAVE_ID/$LANE"
+WORKTREES_ENV_EXPORT=""
+if [[ -n "${SF_AGENT_WORKTREES_ENV:-}" ]]; then
+    WORKTREES_ENV_EXPORT="export SF_AGENT_WORKTREES_ENV=$(printf '%q' "$SF_AGENT_WORKTREES_ENV")"
+fi
 
 mkdir -p "$RUNTIME_ROOT" "$WORKSPACE" "$HOME_DIR" "$TMP_DIR" "$LOG_DIR" "$RUN_DIR"
 
@@ -32,6 +36,7 @@ cat > "$WORKTREE/.agent-runtime.env" <<EOF
 export SF_AGENT_LANE="$(printf '%s' "$LANE")"
 export SF_AGENT_WAVE_ID="$(printf '%s' "$WAVE_ID")"
 export SF_AGENT_RUN_DIR="$(printf '%s' "$RUN_DIR")"
+$WORKTREES_ENV_EXPORT
 export SERVICEFABRIC_WORKSPACE="$(printf '%s' "$WORKSPACE")"
 export SERVICEFABRIC_HOME="$(printf '%s' "$HOME_DIR")"
 export TMPDIR="$(printf '%s' "$TMP_DIR")"

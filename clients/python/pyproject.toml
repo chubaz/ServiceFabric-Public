@@ -8,8 +8,11 @@ version = "0.1.0a1"
 description = "Python client for canonical ServiceFabric boundaries."
 requires-python = ">=3.11,<3.12"
 dependencies = [
+  "servicefabric-application-assembly==0.1.0a1",
   "servicefabric-application-builder==0.1.0a1",
+  "servicefabric-application-dev-supervisor==0.1.0a1",
   "servicefabric-application-host==0.1.0a1",
+  "servicefabric-application-model==0.1.0a1",
   "servicefabric-artifacts==0.1.0a1",
   "servicefabric-builder==0.1.0a1",
   "servicefabric-capsule-host==0.1.0a1",
@@ -19,6 +22,9 @@ dependencies = [
   "servicefabric-mcp-gateway==0.1.0a1",
   "servicefabric-mcp-projection==0.1.0a1",
   "servicefabric-operations==0.1.0a1",
+  "servicefabric-process-runtime==0.1.0a1",
+  "servicefabric-resource-bindings==0.1.0a1",
+  "servicefabric-framework-kits==0.1.0a1",
   "servicefabric-runtime==0.1.0a1",
   "servicefabric-tool-runtime-service==0.1.0a1",
   "servicefabric-workspace==0.1.0a1",
