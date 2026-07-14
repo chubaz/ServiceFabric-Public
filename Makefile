@@ -119,7 +119,7 @@ verify-wave-02:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/integration -p 'test_wave_01_acceptance.py' -v
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m unittest discover -s tests/adversarial -v
 	python3 scripts/dependencies/check_python_locks.py
-	python3 -m pip check
+	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" python3 -m pip check
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m compileall clients/python/servicefabric_client/development.py clients/python/servicefabric_client/static_web_server.py clients/python/servicefabric_client/main.py services/application_dev_supervisor tests/wave_02
 	git diff --check
 verify-application-workspace:
