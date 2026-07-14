@@ -7,6 +7,24 @@ import tempfile
 import unittest
 import urllib.request
 from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+for package in (
+    "servicefabric_application_assembly",
+    "servicefabric_application_model",
+    "servicefabric_artifacts",
+    "servicefabric_blueprints",
+    "servicefabric_contracts",
+    "servicefabric_framework_kits",
+    "servicefabric_process_runtime",
+    "servicefabric_resource_bindings",
+    "servicefabric_workspace",
+):
+    sys.path.insert(0, str(ROOT / "packages" / package))
+sys.path.insert(0, str(ROOT / "packages" / "servicefabric_contracts" / "src"))
+sys.path.insert(0, str(ROOT / "services" / "application_dev_supervisor"))
+sys.path.insert(0, str(ROOT / "clients" / "python"))
 
 from servicefabric_client.development import APPLICATION_ID, ResearchNotesDevelopmentService
 from servicefabric_client.main import dispatch
