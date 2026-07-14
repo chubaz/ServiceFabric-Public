@@ -1,0 +1,62 @@
+{
+  "allowed_paths": [
+    ".github",
+    "Makefile",
+    "clients/python",
+    "config/agent",
+    "docs/handoffs",
+    "docs/workplans",
+    "packages/servicefabric_application_assembly",
+    "packages/servicefabric_blueprints",
+    "packages/servicefabric_framework_kits",
+    "packages/servicefabric_resource_bindings",
+    "schemas",
+    "scripts/agent",
+    "services/development_supervisor",
+    "tests"
+  ],
+  "branch": "integration/phase1-wave1",
+  "candidate_commit_policy": {
+    "allow_merge_commits": true,
+    "allowed_prefixes": [
+      "chore(integration):",
+      "feat(cli):",
+      "feat(supervisor):",
+      "test(integration):",
+      "docs(integration):",
+      "fix(integration):",
+      "Merge "
+    ]
+  },
+  "forbidden_paths": [
+    "1_proxy",
+    "2_backend_api/service_fabric/api/migrations",
+    "3_service_templates",
+    "4_generated_services",
+    "5_core_services",
+    "6_service_catalog"
+  ],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/integration.md",
+  "lane": "integration",
+  "objective": "Act as Wave-1 integration authority: review candidate commits, accept or return them, and perform shared integration changes only when explicitly approved.",
+  "prohibited_overlap": [
+    "Do not accept feature branch changes that violate lane ownership.",
+    "Do not weaken AP-00C regressions, architecture tests, or frozen contract checks."
+  ],
+  "required_context_files": [
+    "AGENTS.md",
+    "docs/workplans/waves/wave-1.md",
+    "config/agent/waves/wave-1.json",
+    "docs/workplans/current.md",
+    "config/agent/milestones.json"
+  ],
+  "required_tests": [
+    "python3 -m unittest discover -s tests/agent -v",
+    "python3 scripts/agent/wave_completion.py --wave wave-1",
+    "make verify-wave-01",
+    "make verify-current",
+    "git diff --check"
+  ],
+  "worktree": "../servicefabric-wave1-integration"
+}

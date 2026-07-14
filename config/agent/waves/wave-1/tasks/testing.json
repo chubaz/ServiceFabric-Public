@@ -1,0 +1,51 @@
+{
+  "allowed_paths": [
+    "tests/adversarial",
+    "tests/architecture",
+    "docs/workplans/reviews",
+    "docs/handoffs/wave-01/testing.md"
+  ],
+  "branch": "feature/wave1-testing",
+  "candidate_commit_policy": {
+    "allow_merge_commits": false,
+    "allowed_prefixes": [
+      "test(adversarial):",
+      "test(architecture):",
+      "docs(review):",
+      "fix(tests):"
+    ]
+  },
+  "forbidden_paths": [
+    ".github",
+    "Makefile",
+    "clients/python",
+    "config/agent",
+    "docs/workplans/status.json",
+    "packages",
+    "schemas",
+    "scripts/agent",
+    "services"
+  ],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/testing.md",
+  "lane": "testing",
+  "objective": "Add adversarial tests, architecture regression coverage, and AP-00C review documentation without changing implementation code.",
+  "prohibited_overlap": [
+    "Do not modify shared CLI, CI, Makefile, dependency locks, common schemas, milestone state, or feature implementation packages.",
+    "Do not implement application assembly, resource bindings, framework kits, blueprints, development supervisor, or capability connection system."
+  ],
+  "required_context_files": [
+    "AGENTS.md",
+    "docs/workplans/waves/wave-1.md",
+    "docs/contracts/application-module-v0.1.md",
+    "tests/ap_01a",
+    "tests/framework_kits",
+    "packages/servicefabric_process_runtime"
+  ],
+  "required_tests": [
+    "python3 -m unittest discover -s tests/adversarial -v",
+    "python3 -m unittest discover -s tests/architecture -v",
+    "git diff --check"
+  ],
+  "worktree": "../servicefabric-wave1-testing"
+}

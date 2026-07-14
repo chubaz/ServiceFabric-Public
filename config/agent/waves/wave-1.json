@@ -1,0 +1,81 @@
+{
+  "base_commit": "5606a0556a3bb822e0168e59c4de421ccb963860",
+  "frozen_contracts": [
+    "docs/contracts/application-module-v0.1.md",
+    "schemas/servicefabric/local/v1",
+    "packages/servicefabric_application_model",
+    "packages/servicefabric_process_runtime",
+    "packages/servicefabric_workspace",
+    "services/application_host",
+    "examples/text-utility",
+    "tests/ap_01a",
+    "tests/modules",
+    "tests/workspace"
+  ],
+  "handoff_template": "docs/workplans/handoffs/wave-1/task-handoff-v1.md",
+  "canonical_handoff_dir": "docs/handoffs/wave-01",
+  "canonical_handoffs": {
+    "assembly": "docs/handoffs/wave-01/assembly.md",
+    "integration": "docs/handoffs/wave-01/integration.md",
+    "kits-blueprints": "docs/handoffs/wave-01/kits-blueprints.md",
+    "resources": "docs/handoffs/wave-01/resources.md",
+    "testing": "docs/handoffs/wave-01/testing.md"
+  },
+  "readiness_metadata": "config/agent/waves/wave-1/readiness.json",
+  "integration_queue": "config/agent/waves/wave-1/integration-queue.json",
+  "integration_branch": "integration/phase1-wave1",
+  "integration_order": [
+    "testing",
+    "kits-blueprints",
+    "resources",
+    "assembly",
+    "integration"
+  ],
+  "local_run_dir": "codex/runs/wave-1",
+  "operational_policies": {
+    "ap00c_complete_not_specialist_lane": true,
+    "automatic_merger": false,
+    "background_branch_watcher": false,
+    "candidate_commits_allowed": true,
+    "contracts_freeze_required_before_specialists": true,
+    "integration_agent_launches_first": true,
+    "integration_gates": [
+      "midday",
+      "end-of-day"
+    ],
+    "integration_authority_accepts_or_rejects": true,
+    "runtime_state_isolated_per_worktree": true,
+    "specialists_may_merge_or_pull_feature_branches": false
+  },
+  "shared_docs": "docs/workplans/waves/wave-1.md",
+  "shared_objectives": [
+    "Prepare the first parallel development wave without implementing Wave-1 runtime features.",
+    "Keep AP-00C managed process, primitive module, framework kit, and workspace contracts frozen unless the integration authority explicitly approves a contract change.",
+    "Allow feature agents to create focused candidate commits while leaving integration acceptance to the integration authority."
+  ],
+  "specialist_branches": {
+    "assembly": "feature/wave1-assembly",
+    "integration": "integration/phase1-wave1",
+    "kits-blueprints": "feature/wave1-kits-blueprints",
+    "resources": "feature/wave1-resources",
+    "testing": "feature/wave1-testing"
+  },
+  "task_manifest_dir": "config/agent/waves/wave-1/tasks",
+  "verification_gates": [
+    "python3 -m unittest discover -s tests/agent -v",
+    "python3 scripts/agent/wave_task_preflight.py --task <task>",
+    "python3 scripts/agent/wave_task_completion.py --task <task> --test-log <test-log>",
+    "python3 scripts/agent/wave_completion.py --wave wave-1",
+    "make verify-wave-01",
+    "make verify-current",
+    "git diff --check"
+  ],
+  "wave_id": "wave-1",
+  "worktree_names": {
+    "assembly": "../servicefabric-wave1-assembly",
+    "integration": "../servicefabric-wave1-integration",
+    "kits-blueprints": "../servicefabric-wave1-kits-blueprints",
+    "resources": "../servicefabric-wave1-resources",
+    "testing": "../servicefabric-wave1-testing"
+  }
+}

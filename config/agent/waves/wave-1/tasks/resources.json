@@ -1,0 +1,50 @@
+{
+  "allowed_paths": [
+    "packages/servicefabric_resource_bindings",
+    "tests/resource_bindings",
+    "docs/handoffs/wave-01/resources.md"
+  ],
+  "branch": "feature/wave1-resources",
+  "candidate_commit_policy": {
+    "allow_merge_commits": false,
+    "allowed_prefixes": [
+      "feat(resources):",
+      "test(resources):",
+      "docs(resources):",
+      "fix(resources):"
+    ]
+  },
+  "forbidden_paths": [
+    ".github",
+    "Makefile",
+    "clients/python",
+    "config/agent",
+    "docs/workplans/status.json",
+    "packages/servicefabric_application_model",
+    "packages/servicefabric_process_runtime",
+    "packages/servicefabric_workspace",
+    "schemas",
+    "scripts/agent",
+    "services/application_host"
+  ],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/resources.md",
+  "lane": "resources",
+  "objective": "Implement local resource binding abstractions only within the owned package and tests after this bootstrap commit.",
+  "prohibited_overlap": [
+    "Do not modify AP-00C resource observation or managed-process runtime contracts.",
+    "Do not implement application assembly, framework kits, blueprints, development supervisor, or capability connection system."
+  ],
+  "required_context_files": [
+    "AGENTS.md",
+    "docs/workplans/waves/wave-1.md",
+    "packages/servicefabric_process_runtime",
+    "services/application_host",
+    "tests/ap_01a"
+  ],
+  "required_tests": [
+    "python3 -m unittest discover -s tests/resource_bindings -v",
+    "git diff --check"
+  ],
+  "worktree": "../servicefabric-wave1-resources"
+}

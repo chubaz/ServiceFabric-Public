@@ -1,0 +1,63 @@
+{
+  "contractsStatus": "frozen",
+  "integration": {
+    "accepted_lane_commits": {
+      "assembly": [
+        "5088719514dd6dc6bfaee7341454f324b1099430",
+        "2045e2b4a0ec2e3ec0513f6f01fc5cddba69b6cf"
+      ],
+      "kits-blueprints": [
+        "1cd017cacb53c8b8a0ce7f315e6eb02f39717def"
+      ],
+      "resources": [
+        "c18045780fab83fb04e3550d51898b7aaa08b435"
+      ],
+      "testing": [
+        "31f72ba32195f475a3fa6b72c6b30aaf4243ec34"
+      ]
+    },
+    "contracts_status": "frozen",
+    "current_integration_head": "HEAD",
+    "final_verification_status": "passed",
+    "wave_completion_status": "complete"
+  },
+  "lanes": {
+    "assembly": {
+      "accepted_commit": "724b7bf",
+      "candidate_head": "2045e2b4a0ec2e3ec0513f6f01fc5cddba69b6cf",
+      "final_state": "integrated",
+      "focused_verification": "passed",
+      "integration_commit": "724b7bf",
+      "integration_decision": "accepted",
+      "original_base_sha": "5606a0556a3bb822e0168e59c4de421ccb963860"
+    },
+    "kits-blueprints": {
+      "accepted_commit": "e383cb2",
+      "candidate_head": "1cd017cacb53c8b8a0ce7f315e6eb02f39717def",
+      "final_state": "integrated",
+      "focused_verification": "passed",
+      "integration_commit": "e383cb2",
+      "integration_decision": "accepted",
+      "original_base_sha": "5606a0556a3bb822e0168e59c4de421ccb963860"
+    },
+    "resources": {
+      "accepted_commit": "c9d51c2",
+      "candidate_head": "c18045780fab83fb04e3550d51898b7aaa08b435",
+      "final_state": "integrated",
+      "focused_verification": "passed",
+      "integration_commit": "c9d51c2",
+      "integration_decision": "accepted",
+      "original_base_sha": "5606a0556a3bb822e0168e59c4de421ccb963860"
+    },
+    "testing": {
+      "accepted_commit": "8ded900",
+      "candidate_head": "31f72ba32195f475a3fa6b72c6b30aaf4243ec34",
+      "final_state": "integrated",
+      "focused_verification": "passed",
+      "integration_commit": "8ded900",
+      "integration_decision": "accepted",
+      "original_base_sha": "5606a0556a3bb822e0168e59c4de421ccb963860"
+    }
+  },
+  "wave": "wave-1"
+}

@@ -1,0 +1,57 @@
+{
+  "allowed_paths": [
+    "packages/servicefabric_framework_kits",
+    "packages/servicefabric_blueprints",
+    "tests/framework_kits",
+    "tests/blueprints",
+    "examples/research-notes",
+    "examples/text-utility",
+    "docs/handoffs/wave-01/kits-blueprints.md"
+  ],
+  "branch": "feature/wave1-kits-blueprints",
+  "candidate_commit_policy": {
+    "allow_merge_commits": false,
+    "allowed_prefixes": [
+      "feat(kits):",
+      "feat(blueprints):",
+      "test(kits):",
+      "test(blueprints):",
+      "docs(kits):",
+      "fix(kits):"
+    ]
+  },
+  "forbidden_paths": [
+    ".github",
+    "Makefile",
+    "clients/python",
+    "config/agent",
+    "docs/workplans/status.json",
+    "packages/servicefabric_application_model",
+    "packages/servicefabric_process_runtime",
+    "packages/servicefabric_workspace",
+    "schemas",
+    "scripts/agent",
+    "services/application_host"
+  ],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/kits-blueprints.md",
+  "lane": "kits-blueprints",
+  "objective": "Implement framework kits and blueprints only within owned packages, tests, and explicitly approved application fixtures after this bootstrap commit.",
+  "prohibited_overlap": [
+    "Do not alter primitive module schemas, AP-00C process runtime contracts, shared CLI, CI, Makefile, dependency locks, or milestone state.",
+    "Do not implement application assembly, local resource bindings, development supervisor, or capability connection system."
+  ],
+  "required_context_files": [
+    "AGENTS.md",
+    "docs/workplans/waves/wave-1.md",
+    "docs/contracts/application-module-v0.1.md",
+    "packages/servicefabric_framework_kits",
+    "tests/framework_kits"
+  ],
+  "required_tests": [
+    "python3 -m unittest discover -s tests/framework_kits -v",
+    "python3 -m unittest discover -s tests/blueprints -v",
+    "git diff --check"
+  ],
+  "worktree": "../servicefabric-wave1-kits-blueprints"
+}
