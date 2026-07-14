@@ -521,12 +521,12 @@ class LocalApplicationHost:
             try:
                 status = self.controller.start(plan, on_start=on_start)
             except Exception as exc:
-                with self._lock(application_id):
-                    rec = self._record(application_id)
-                    rec["state"] = "failed"
-                    rec["pid"] = None
-                    rec["process_start_ticks"] = None
-                    _atomic(self._directory(application_id) / "application.json", rec)
+                # start() already holds this application's exclusive lock.
+                rec = self._record(application_id)
+                rec["state"] = "failed"
+                rec["pid"] = None
+                rec["process_start_ticks"] = None
+                _atomic(self._directory(application_id) / "application.json", rec)
                 raise ApplicationHostError(str(exc)) from exc
 
             # Update the local hosted application.json record to match
