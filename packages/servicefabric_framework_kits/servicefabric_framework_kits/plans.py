@@ -51,14 +51,61 @@ class ASGIProcessPlan:
     access_log: bool = True
 
 
-ProcessPlan = ASGIProcessPlan
+@dataclass(frozen=True)
+class ViteDevelopmentPlan:
+    """Bounded development-server description for a reviewed React web module.
+
+    This is declarative only.  Port allocation and process ownership remain with
+    the development supervisor.
+    """
+
+    adapter_id: Literal["node-vite"]
+    module_id: str
+    working_directory: str
+    host: Literal["127.0.0.1"] = "127.0.0.1"
+    port_binding: Literal["allocated"] = "allocated"
+    api_base_url_environment: str = "SF_API_BASE_URL"
+
+
+@dataclass(frozen=True)
+class StaticWebRuntimePlan:
+    """Static asset handoff for a reviewed React web module.
+
+    The kit identifies the artifact; it does not start or serve it.
+    """
+
+    adapter_id: Literal["static-web"]
+    module_id: str
+    working_directory: str
+    assets_directory: str
+
+
+@dataclass(frozen=True)
+class PythonLibraryPreparationPlan:
+    """Preparation description for a Python library with no runtime process."""
+
+    adapter_id: Literal["python-library"]
+    module_id: str
+    working_directory: str
+    manifest_path: str = "pyproject.toml"
+    test_target: str = "tests"
+
+
+# Retained as the protocol-facing name for all bounded execution or preparation
+# descriptions.  These plans never own a subprocess.
+ProcessPlan = (
+    ASGIProcessPlan
+    | ViteDevelopmentPlan
+    | StaticWebRuntimePlan
+    | PythonLibraryPreparationPlan
+)
 
 
 @dataclass(frozen=True)
 class HealthPlan:
     """Service runtime health monitoring and probe plan."""
 
-    probe_type: Literal["http", "tcp", "process"]
+    probe_type: Literal["http", "tcp", "process", "none"]
     path: str | None
     timeout_seconds: float
 

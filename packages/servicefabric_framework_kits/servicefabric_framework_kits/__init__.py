@@ -21,6 +21,9 @@ from servicefabric_framework_kits.plans import (
     KitValidationFinding,
     ProcessPlan,
     ASGIProcessPlan,
+    ViteDevelopmentPlan,
+    StaticWebRuntimePlan,
+    PythonLibraryPreparationPlan,
 )
 from servicefabric_framework_kits.protocol import FrameworkKitAdapter
 from servicefabric_framework_kits.validation import require_valid_module
@@ -44,6 +47,9 @@ __all__ = [
     "KitValidationFinding",
     "ProcessPlan",
     "ASGIProcessPlan",
+    "ViteDevelopmentPlan",
+    "StaticWebRuntimePlan",
+    "PythonLibraryPreparationPlan",
     "FrameworkKitAdapter",
     "require_valid_module",
 ]
