@@ -92,8 +92,8 @@ class FastAPIServiceAdapter:
         if module.raw_data and "spec" in module.raw_data:
             spec_data = module.raw_data["spec"]
             if "kitConfiguration" in spec_data:
-                return spec_data["kitConfiguration"].get("application", "app.main:app")
-        return "app.main:app"
+                return spec_data["kitConfiguration"].get("application", "app:app")
+        return "app:app"
 
     def development_plan(
         self,
