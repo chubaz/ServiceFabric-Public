@@ -102,6 +102,10 @@ sf_specialist_lanes() {
 }
 
 sf_state_dir() {
+    if [[ "$(basename "$SF_STATE_BASE")" == "$SF_WAVE_ID" ]]; then
+        printf '%s\n' "$SF_STATE_BASE"
+        return 0
+    fi
     printf '%s/%s\n' "$SF_STATE_BASE" "$SF_WAVE_ID"
 }
 
