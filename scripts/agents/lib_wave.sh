@@ -6,7 +6,8 @@ sf_config_file() {
 }
 
 sf_load_config() {
-    local config_file
+    local config_file requested_wave
+    requested_wave="${SF_WAVE_ID:-}"
     config_file="$(sf_config_file)"
     if [[ ! -f "$config_file" ]]; then
         echo "Missing worktree configuration: $config_file" >&2
@@ -15,6 +16,9 @@ sf_load_config() {
     fi
     # shellcheck disable=SC1090
     source "$config_file"
+    if [[ -n "$requested_wave" ]]; then
+        SF_WAVE_ID="$requested_wave"
+    fi
     : "${SF_WAVE_ID:?SF_WAVE_ID is required}"
     : "${SF_STATE_BASE:?SF_STATE_BASE is required}"
     : "${SF_WT_INTEGRATION:?SF_WT_INTEGRATION is required}"
