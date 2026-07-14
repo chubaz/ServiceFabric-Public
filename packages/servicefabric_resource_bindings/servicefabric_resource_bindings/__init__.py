@@ -11,6 +11,7 @@ from servicefabric_resource_bindings.errors import (
     ResourceBindingTypeMismatch,
 )
 from servicefabric_resource_bindings.identifiers import environment_key_for
+from servicefabric_resource_bindings.local import ApplicationLocalBindings
 from servicefabric_resource_bindings.models import (
     BoundResource,
     LocalResourceDefinition,
@@ -21,6 +22,7 @@ from servicefabric_resource_bindings.providers import StaticLocalResourceProvide
 
 __all__ = [
     "BoundResource",
+    "ApplicationLocalBindings",
     "DuplicateResourceBinding",
     "InvalidResourceBinding",
     "LocalResourceDefinition",
