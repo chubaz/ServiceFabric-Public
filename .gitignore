@@ -58,4 +58,9 @@ yarn-error.log*
 # Docker
 .dockerignore
 .agent/
+.agent-runs/
+.agent-runtime.env
+.agent-worktrees.env
+.sf-agent-runtime/
+.venv/
 codex/runs/

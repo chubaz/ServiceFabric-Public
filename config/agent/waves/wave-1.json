@@ -22,6 +22,21 @@
     "integration"
   ],
   "local_run_dir": "codex/runs/wave-1",
+  "operational_policies": {
+    "ap00c_complete_not_specialist_lane": true,
+    "automatic_merger": false,
+    "background_branch_watcher": false,
+    "candidate_commits_allowed": true,
+    "contracts_freeze_required_before_specialists": true,
+    "integration_agent_launches_first": true,
+    "integration_gates": [
+      "midday",
+      "end-of-day"
+    ],
+    "integration_authority_accepts_or_rejects": true,
+    "runtime_state_isolated_per_worktree": true,
+    "specialists_may_merge_or_pull_feature_branches": false
+  },
   "shared_docs": "docs/workplans/waves/wave-1.md",
   "shared_objectives": [
     "Prepare the first parallel development wave without implementing Wave-1 runtime features.",
@@ -30,7 +45,7 @@
   ],
   "specialist_branches": {
     "assembly": "feature/wave1-assembly",
-    "integration": "integration/wave1-authority",
+    "integration": "integration/phase1-wave1",
     "kits-blueprints": "feature/wave1-kits-blueprints",
     "resources": "feature/wave1-resources",
     "testing": "feature/wave1-testing"

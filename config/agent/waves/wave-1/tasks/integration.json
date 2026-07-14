@@ -14,7 +14,7 @@
     "services/development_supervisor",
     "tests"
   ],
-  "branch": "integration/wave1-authority",
+  "branch": "integration/phase1-wave1",
   "candidate_commit_policy": {
     "allow_merge_commits": true,
     "allowed_prefixes": [
