@@ -3,7 +3,7 @@
 Lane: assembly
 Branch: feature/wave1-assembly
 Base commit: 5606a0556a3bb822e0168e59c4de421ccb963860
-Head commit: pending candidate commit
+Head commit: branch HEAD after candidate handoff commit
 Worktree: ../servicefabric-wave1-assembly
 
 ## Objective
@@ -17,7 +17,8 @@ Implement application assembly only within the owned package and tests after the
 
 ## Candidate Commits
 
-- pending
+- 5088719514dd6dc6bfaee7341454f324b1099430 feat(assembly): add deterministic application assembly graph
+- docs(assembly): finalize assembly handoff metadata
 
 ## Tests Executed
 
