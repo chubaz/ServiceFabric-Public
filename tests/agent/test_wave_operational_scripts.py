@@ -129,7 +129,10 @@ class WaveOperationalScriptTests(unittest.TestCase):
                         wave_id,
                     ],
                     ROOT,
-                    {"SF_AGENT_SKIP_VENV": "1"},
+                    {
+                        "SF_AGENT_SKIP_VENV": "1",
+                        "SF_AGENT_WORKTREES_ENV": "/tmp/wave-worktrees.env",
+                    },
                 )
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 runtime = worktree / ".agent-runtime.env"
@@ -137,6 +140,7 @@ class WaveOperationalScriptTests(unittest.TestCase):
                 content = runtime.read_text(encoding="utf-8")
                 self.assertIn(f'SF_AGENT_LANE="{lane}"', content)
                 self.assertIn(f'SF_AGENT_WAVE_ID="{wave_id}"', content)
+                self.assertIn("SF_AGENT_WORKTREES_ENV=/tmp/wave-worktrees.env", content)
 
     def test_wave_02_options_are_accepted_by_operational_scripts(self) -> None:
         env = {"SF_AGENT_WORKTREES_ENV": "/tmp/servicefabric-missing-wave-02.env"}

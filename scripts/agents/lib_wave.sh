@@ -20,6 +20,8 @@ sf_load_config() {
         echo "Create it from the selected wave's worktrees.local.example.env." >&2
         return 2
     fi
+    config_file="$(cd "$(dirname "$config_file")" && pwd -P)/$(basename "$config_file")"
+    export SF_AGENT_WORKTREES_ENV="$config_file"
     # shellcheck disable=SC1090
     source "$config_file"
     : "${SF_WAVE_ID:?SF_WAVE_ID is required}"
