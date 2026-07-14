@@ -62,6 +62,7 @@ yarn-error.log*
 .agent-runtime.env
 .agent-worktrees.env
 .agent-worktrees-wave-02.env
+.agent-worktrees.wave-02.env
 .sf-agent-runtime/
 .venv/
 codex/runs/

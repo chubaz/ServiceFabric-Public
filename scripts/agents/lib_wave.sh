@@ -10,6 +10,8 @@ sf_load_config() {
     local config_file
     if [[ -z "${SF_AGENT_WORKTREES_ENV:-}" && -n "$requested_wave" && -f ".agent-worktrees-$requested_wave.env" ]]; then
         config_file=".agent-worktrees-$requested_wave.env"
+    elif [[ -z "${SF_AGENT_WORKTREES_ENV:-}" && -n "$requested_wave" && -f ".agent-worktrees.$requested_wave.env" ]]; then
+        config_file=".agent-worktrees.$requested_wave.env"
     else
         config_file="$(sf_config_file)"
     fi
