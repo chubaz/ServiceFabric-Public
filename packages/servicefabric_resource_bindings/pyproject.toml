@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-resource-bindings"
+version = "0.1.0a1"
+description = "Local resource binding abstractions for ServiceFabric development workflows."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-application-model==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["servicefabric_resource_bindings*"]
