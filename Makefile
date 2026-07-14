@@ -105,6 +105,9 @@ verify-wave-01:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" python3 -m pip check
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE01_PYTHONPATH)" $(WAVE01_PYTHON) -m compileall packages/servicefabric_application_assembly packages/servicefabric_application_model packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_process_runtime packages/servicefabric_resource_bindings packages/servicefabric_workspace services/application_host clients/python tests/application_assembly tests/resource_bindings tests/framework_kits tests/blueprints tests/integration tests/adversarial tests/architecture tests/modules tests/workspace tests/ap_01a tests/local_ux
 	git diff --check
+verify-wave-02:
+	python3 -m unittest tests.agent.test_wave_harness tests.agent.test_wave_operational_scripts -v
+	git diff --check
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
 	python3 -m unittest discover -s tests/workspace -v

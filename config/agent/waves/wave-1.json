@@ -24,6 +24,26 @@
   "readiness_metadata": "config/agent/waves/wave-1/readiness.json",
   "integration_queue": "config/agent/waves/wave-1/integration-queue.json",
   "integration_branch": "integration/phase1-wave1",
+  "lanes": [
+    "integration",
+    "assembly",
+    "resources",
+    "kits-blueprints",
+    "testing"
+  ],
+  "specialist_lanes": [
+    "assembly",
+    "resources",
+    "kits-blueprints",
+    "testing"
+  ],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "assembly": "SF_WT_ASSEMBLY",
+    "resources": "SF_WT_RESOURCES",
+    "kits-blueprints": "SF_WT_KITS_BLUEPRINTS",
+    "testing": "SF_WT_TESTING"
+  },
   "integration_order": [
     "testing",
     "kits-blueprints",
@@ -71,6 +91,7 @@
     "git diff --check"
   ],
   "wave_id": "wave-1",
+  "runtime_wave_id": "wave-01",
   "worktree_names": {
     "assembly": "../servicefabric-wave1-assembly",
     "integration": "../servicefabric-wave1-integration",

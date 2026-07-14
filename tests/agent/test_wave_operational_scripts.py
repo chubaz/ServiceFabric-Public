@@ -113,6 +113,43 @@ class TempWaveRepository:
 
 
 class WaveOperationalScriptTests(unittest.TestCase):
+    def test_runtime_initializer_accepts_four_positional_arguments_for_both_waves(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for wave_id, lane in (("wave-01", "assembly"), ("wave-02", "supervisor")):
+                worktree = root / wave_id / "worktree"
+                state = root / wave_id / "state"
+                worktree.mkdir(parents=True)
+                result = run(
+                    [
+                        "scripts/agents/init_worktree_runtime.sh",
+                        lane,
+                        str(worktree),
+                        str(state),
+                        wave_id,
+                    ],
+                    ROOT,
+                    {"SF_AGENT_SKIP_VENV": "1"},
+                )
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                runtime = worktree / ".agent-runtime.env"
+                self.assertTrue(runtime.is_file())
+                content = runtime.read_text(encoding="utf-8")
+                self.assertIn(f'SF_AGENT_LANE="{lane}"', content)
+                self.assertIn(f'SF_AGENT_WAVE_ID="{wave_id}"', content)
+
+    def test_wave_02_options_are_accepted_by_operational_scripts(self) -> None:
+        env = {"SF_AGENT_WORKTREES_ENV": "/tmp/servicefabric-missing-wave-02.env"}
+        for command in (
+            ["scripts/agents/finalize_existing_worktrees.sh", "--wave", "wave-02", "--bootstrap-sha", "HEAD", "--dry-run"],
+            ["scripts/agents/wave_status.sh", "--wave", "wave-02"],
+            ["scripts/agents/launch_lane.sh", "--wave", "wave-02", "supervisor", "--interactive"],
+        ):
+            result = run(command, ROOT, env)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertNotIn("Unknown argument", result.stderr)
+            self.assertIn("Missing worktree configuration", result.stderr)
+
     def test_missing_worktree_configuration_fails(self) -> None:
         result = run(
             ["scripts/agents/wave_status.sh"],
@@ -158,7 +195,7 @@ class WaveOperationalScriptTests(unittest.TestCase):
             run(["git", "branch", "-M", "feature/wave1-assembly"], path)
             result = repo.finalize("--dry-run")
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("does not descend from Wave-1 base", result.stderr)
+        self.assertIn("does not descend from wave-01 base", result.stderr)
 
     def test_specialist_branch_with_unexpected_commits_fails(self) -> None:
         with TempWaveRepository() as repo:

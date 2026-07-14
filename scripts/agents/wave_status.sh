@@ -5,7 +5,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 # shellcheck source=lib_wave.sh
 source "$SCRIPT_DIR/lib_wave.sh"
 
-sf_load_config
+WAVE_ID=""
+if [[ "${1:-}" == "--wave" ]]; then
+    WAVE_ID="${2:-}"
+    shift 2
+fi
+[[ $# -eq 0 ]] || { echo "Usage: wave_status.sh [--wave WAVE]" >&2; exit 2; }
+sf_load_config "$WAVE_ID"
 
 BOOTSTRAP_SHA="unknown"
 [[ -f "$(sf_bootstrap_path)" ]] && BOOTSTRAP_SHA="$(cat "$(sf_bootstrap_path)")"
@@ -18,15 +24,17 @@ READY=1
 CANDIDATES=0
 COMMITTED_QUEUE="missing"
 WAVE_COMPLETE=0
-if [[ -f "$(sf_integration_queue_path)" ]]; then
-    COMMITTED_QUEUE="$(python3 - <<'PY'
+if [[ -n "$(sf_integration_queue_path)" && -f "$(sf_integration_queue_path)" ]]; then
+    COMMITTED_QUEUE="$(SF_WAVE_ID="$SF_WAVE_ID" python3 - <<'PY'
 import json
-with open("config/agent/waves/wave-1/integration-queue.json", encoding="utf-8") as handle:
+from scripts.agent.wave_common import integration_queue_path
+import os
+with open(integration_queue_path(os.environ["SF_WAVE_ID"]), encoding="utf-8") as handle:
     print(json.load(handle).get("overall", "missing"))
 PY
 )"
 fi
-if [[ "$COMMITTED_QUEUE" == "WAVE COMPLETE" ]] && python3 scripts/agent/wave_completion.py --wave "$(sf_manifest_wave_id)" >/dev/null 2>&1; then
+if [[ "$COMMITTED_QUEUE" == "WAVE COMPLETE" ]] && python3 scripts/agent/wave_completion.py --wave "$SF_WAVE_ID" >/dev/null 2>&1; then
     WAVE_COMPLETE=1
 fi
 
