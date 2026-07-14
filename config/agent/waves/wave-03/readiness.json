@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-03",
+  "base_commit": "715de644eff2ee003469f14d574c4b70706bc70a",
+  "contractsStatus": "bootstrap-pending-freeze",
+  "lanes": {
+    "generator": {"state": "bootstrap-pending", "branch": "agent/w3-generator"},
+    "application-builder": {"state": "bootstrap-pending", "branch": "agent/w3-application-builder"},
+    "agent-guidance": {"state": "bootstrap-pending", "branch": "agent/w3-agent-guidance"},
+    "acceptance": {"state": "bootstrap-pending", "branch": "agent/w3-acceptance"}
+  },
+  "integration": {"state": "bootstrap-pending", "branch": "integration/phase1-wave3"}
+}

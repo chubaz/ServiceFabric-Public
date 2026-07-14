@@ -5,8 +5,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 # shellcheck source=lib_wave.sh
 source "$SCRIPT_DIR/lib_wave.sh"
 
+WAVE_ID=""
+if [[ "${1:-}" == "--wave" ]]; then
+    WAVE_ID="${2:-}"
+    shift 2
+fi
 LANE="${1:-}"
-[[ -n "$LANE" ]] || { echo "Usage: launch_lane.sh LANE [--interactive|--exec]" >&2; exit 2; }
+[[ -n "$LANE" ]] || { echo "Usage: launch_lane.sh [--wave WAVE_ID] LANE [--interactive|--exec]" >&2; exit 2; }
 shift
 LANE="$(sf_task_name "$LANE")"
 
@@ -20,6 +25,7 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -n "$MODE" ]] || MODE="interactive"
 
+[[ -n "$WAVE_ID" ]] && export SF_WAVE_ID="$WAVE_ID"
 sf_load_config
 WORKTREE="$(sf_lane_path "$LANE")"
 EXPECTED_BRANCH="$(sf_lane_branch "$LANE")"
@@ -46,12 +52,12 @@ fi
     cd "$WORKTREE"
     # shellcheck disable=SC1091
     source .agent-runtime.env
-    python3 scripts/agent/wave_task_preflight.py --task "$LANE" >/dev/null
+    python3 scripts/agent/wave_task_preflight.py --wave "$SF_WAVE_ID" --task "$LANE" >/dev/null
 )
 
 if [[ "$MODE" == "interactive" ]]; then
     echo "Prompt: $PROMPT"
-    echo "Read and execute the rendered Wave-1 prompt at $PROMPT."
+    echo "Read and execute the rendered ${SF_WAVE_ID} prompt at $PROMPT."
     cd "$WORKTREE"
     # shellcheck disable=SC1091
     source .agent-runtime.env

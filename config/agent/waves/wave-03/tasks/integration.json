@@ -1,0 +1,12 @@
+{
+  "allowed_paths": [".github", "Makefile", "clients/python", "config/agent/waves/wave-03", "config/agents/wave-03", "docs/handoffs/wave-03/integration.md", "docs/workplans/parallel/wave-03", "scripts/agents", "scripts/agent"],
+  "branch": "integration/phase1-wave3",
+  "forbidden_paths": ["packages/servicefabric_application_generator", "packages/servicefabric_application_builder", "packages/servicefabric_agent_guidance", "tests/application_generator", "tests/application_builder", "tests/agent_guidance", "tests/wave_03"],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-03/integration.md",
+  "lane": "integration",
+  "objective": "Coordinate Wave-3 contract freeze, candidate acceptance, cross-package composition, shared CLI and verification, and formal completion integration without implementing specialist feature functionality.",
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-03/objective.md", "docs/workplans/parallel/wave-03/frozen-contracts.md", "docs/workplans/parallel/wave-03/integration-order.md", "config/agent/waves/wave-03.json"],
+  "required_tests": ["python3 -m unittest discover -s tests/agent -v", "make verify-wave-03", "make verify-current", "git diff --check"],
+  "worktree": "../servicefabric-wave3-integration"
+}

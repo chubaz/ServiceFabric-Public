@@ -5,6 +5,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 # shellcheck source=lib_wave.sh
 source "$SCRIPT_DIR/lib_wave.sh"
 
+if [[ "${1:-}" == "--wave" ]]; then
+    export SF_WAVE_ID="${2:?--wave requires a value}"
+    shift 2
+fi
+[[ $# -eq 0 ]] || { echo "Usage: wave_status.sh [--wave WAVE_ID]" >&2; exit 2; }
 sf_load_config
 
 BOOTSTRAP_SHA="unknown"
@@ -19,9 +24,10 @@ CANDIDATES=0
 COMMITTED_QUEUE="missing"
 WAVE_COMPLETE=0
 if [[ -f "$(sf_integration_queue_path)" ]]; then
-    COMMITTED_QUEUE="$(python3 - <<'PY'
+    COMMITTED_QUEUE="$(python3 - "$(sf_integration_queue_path)" <<'PY'
 import json
-with open("config/agent/waves/wave-1/integration-queue.json", encoding="utf-8") as handle:
+import sys
+with open(sys.argv[1], encoding="utf-8") as handle:
     print(json.load(handle).get("overall", "missing"))
 PY
 )"

@@ -10,16 +10,20 @@ from scripts.agent.common import ROOT, git, read_json, safe_path
 WAVE_DIR = "config/agent/waves"
 
 
+def manifest_id(wave_id: str) -> str:
+    return "wave-1" if wave_id == "wave-01" else wave_id
+
+
 def wave(wave_id: str) -> dict[str, object]:
-    return read_json(f"{WAVE_DIR}/{wave_id}.json")
+    return read_json(f"{WAVE_DIR}/{manifest_id(wave_id)}.json")
 
 
 def task(task_id: str, wave_id: str = "wave-1") -> dict[str, object]:
-    return read_json(f"{WAVE_DIR}/{wave_id}/tasks/{task_id}.json")
+    return read_json(f"{WAVE_DIR}/{manifest_id(wave_id)}/tasks/{task_id}.json")
 
 
 def task_ids(wave_id: str = "wave-1") -> list[str]:
-    directory = safe_path(f"{WAVE_DIR}/{wave_id}/tasks")
+    directory = safe_path(f"{WAVE_DIR}/{manifest_id(wave_id)}/tasks")
     return sorted(path.stem for path in directory.glob("*.json"))
 
 

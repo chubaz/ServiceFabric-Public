@@ -10,7 +10,7 @@ sf_load_config() {
     config_file="$(sf_config_file)"
     if [[ ! -f "$config_file" ]]; then
         echo "Missing worktree configuration: $config_file" >&2
-        echo "Create it from config/agents/wave-01/worktrees.local.example.env." >&2
+        echo "Create it from the matching config/agents/<wave>/worktrees.local.example.env." >&2
         return 2
     fi
     # shellcheck disable=SC1090
@@ -18,10 +18,19 @@ sf_load_config() {
     : "${SF_WAVE_ID:?SF_WAVE_ID is required}"
     : "${SF_STATE_BASE:?SF_STATE_BASE is required}"
     : "${SF_WT_INTEGRATION:?SF_WT_INTEGRATION is required}"
-    : "${SF_WT_ASSEMBLY:?SF_WT_ASSEMBLY is required}"
-    : "${SF_WT_RESOURCES:?SF_WT_RESOURCES is required}"
-    : "${SF_WT_KITS_BLUEPRINTS:?SF_WT_KITS_BLUEPRINTS is required}"
-    : "${SF_WT_TESTING:?SF_WT_TESTING is required}"
+    for lane in $(sf_lanes); do
+        case "$lane" in
+            integration) : "${SF_WT_INTEGRATION:?SF_WT_INTEGRATION is required}" ;;
+            assembly) : "${SF_WT_ASSEMBLY:?SF_WT_ASSEMBLY is required}" ;;
+            resources) : "${SF_WT_RESOURCES:?SF_WT_RESOURCES is required}" ;;
+            kits-blueprints) : "${SF_WT_KITS_BLUEPRINTS:?SF_WT_KITS_BLUEPRINTS is required}" ;;
+            testing) : "${SF_WT_TESTING:?SF_WT_TESTING is required}" ;;
+            generator) : "${SF_WT_GENERATOR:?SF_WT_GENERATOR is required}" ;;
+            application-builder) : "${SF_WT_APPLICATION_BUILDER:?SF_WT_APPLICATION_BUILDER is required}" ;;
+            agent-guidance) : "${SF_WT_AGENT_GUIDANCE:?SF_WT_AGENT_GUIDANCE is required}" ;;
+            acceptance) : "${SF_WT_ACCEPTANCE:?SF_WT_ACCEPTANCE is required}" ;;
+        esac
+    done
 }
 
 sf_repo_root() {
@@ -46,6 +55,10 @@ sf_lane_path() {
         resources) printf '%s\n' "$SF_WT_RESOURCES" ;;
         kits-blueprints) printf '%s\n' "$SF_WT_KITS_BLUEPRINTS" ;;
         testing) printf '%s\n' "$SF_WT_TESTING" ;;
+        generator) printf '%s\n' "$SF_WT_GENERATOR" ;;
+        application-builder) printf '%s\n' "$SF_WT_APPLICATION_BUILDER" ;;
+        agent-guidance) printf '%s\n' "$SF_WT_AGENT_GUIDANCE" ;;
+        acceptance) printf '%s\n' "$SF_WT_ACCEPTANCE" ;;
         *) echo "Unknown lane: $1" >&2; return 2 ;;
     esac
 }
@@ -53,9 +66,11 @@ sf_lane_path() {
 sf_lane_branch() {
     local lane="$1"
     python3 - "$lane" <<'PY'
-import json, sys
+import json, os, sys
 lane = sys.argv[1]
-path = "config/agent/waves/wave-1.json" if lane == "integration" else f"config/agent/waves/wave-1/tasks/{lane}.json"
+wave = os.environ.get("SF_WAVE_ID", "wave-01")
+manifest = "wave-1" if wave == "wave-01" else wave
+path = f"config/agent/waves/{manifest}.json" if lane == "integration" else f"config/agent/waves/{manifest}/tasks/{lane}.json"
 with open(path, encoding="utf-8") as handle:
     data = json.load(handle)
 print(data["integration_branch"] if lane == "integration" else data["branch"])
@@ -68,18 +83,24 @@ sf_wave_base() {
         return 0
     fi
     python3 - <<'PY'
-import json
-with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+import json, os
+wave = os.environ.get("SF_WAVE_ID", "wave-01")
+manifest = "wave-1" if wave == "wave-01" else wave
+with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
     print(json.load(handle)["base_commit"])
 PY
 }
 
 sf_lanes() {
-    printf '%s\n' integration assembly resources kits-blueprints testing
+    case "${SF_WAVE_ID:-wave-01}" in
+        wave-01|wave-1) printf '%s\n' integration assembly resources kits-blueprints testing ;;
+        wave-03|wave-3) printf '%s\n' integration generator application-builder agent-guidance acceptance ;;
+        *) echo "Unknown wave: ${SF_WAVE_ID:-}" >&2; return 2 ;;
+    esac
 }
 
 sf_specialist_lanes() {
-    printf '%s\n' assembly resources kits-blueprints testing
+    sf_lanes | sed '/^integration$/d'
 }
 
 sf_state_dir() {
@@ -105,9 +126,11 @@ sf_readiness_path() {
 sf_canonical_handoff_path() {
     local lane="$1"
     python3 - "$lane" <<'PY'
-import json, sys
+import json, os, sys
 lane = sys.argv[1]
-with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+wave = os.environ.get("SF_WAVE_ID", "wave-01")
+manifest = "wave-1" if wave == "wave-01" else wave
+with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
     data = json.load(handle)
 print(data["canonical_handoffs"][lane])
 PY
@@ -115,8 +138,10 @@ PY
 
 sf_committed_readiness_path() {
     python3 - <<'PY'
-import json
-with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+import json, os
+wave = os.environ.get("SF_WAVE_ID", "wave-01")
+manifest = "wave-1" if wave == "wave-01" else wave
+with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
     data = json.load(handle)
 print(data["readiness_metadata"])
 PY
@@ -124,8 +149,10 @@ PY
 
 sf_integration_queue_path() {
     python3 - <<'PY'
-import json
-with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+import json, os
+wave = os.environ.get("SF_WAVE_ID", "wave-01")
+manifest = "wave-1" if wave == "wave-01" else wave
+with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
     data = json.load(handle)
 print(data["integration_queue"])
 PY
@@ -138,7 +165,7 @@ sf_mirror_handoff() {
     path="$(sf_lane_path "$lane")"
     canonical="$(sf_repo_root)/$(sf_canonical_handoff_path "$lane")"
     [[ -f "$canonical" ]] || return 1
-    python3 scripts/agent/sync_wave_handoffs.py --best-effort --task "$lane" --worktree "$path" >/dev/null
+    python3 scripts/agent/sync_wave_handoffs.py --best-effort --wave "$SF_WAVE_ID" --task "$lane" --worktree "$path" >/dev/null
 }
 
 sf_contracts_path() {
