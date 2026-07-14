@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import unittest
 import sys
+import json
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -22,11 +24,58 @@ from servicefabric_resource_bindings import (
     ResourceBindingRequest,
     ResourceBindingTypeMismatch,
     StaticLocalResourceProvider,
+    ApplicationLocalBindings,
     environment_key_for,
 )
 
 
 class ResourceBindingTests(unittest.TestCase):
+    def test_application_local_bindings_persist_and_project_resources(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            bindings = ApplicationLocalBindings("research-notes", Path(temporary))
+            plan = bindings.plan("api", [
+                ResourceBindingRequest(id="notes-db", type="sqlite"),
+                ResourceBindingRequest(id="attachments", type="filesystem"),
+                ResourceBindingRequest(id="api-listener", type="loopback"),
+            ])
+
+            self.assertTrue(Path(plan.environment["SF_NOTES_DB_PATH"]).is_file())
+            self.assertTrue(Path(plan.environment["SF_ATTACHMENTS_PATH"]).is_dir())
+            self.assertEqual(plan.environment["SF_API_LISTENER_HOST"], "127.0.0.1")
+            self.assertTrue((Path(temporary) / "resolved-bindings.json").is_file())
+
+            repeated = bindings.plan("worker", [ResourceBindingRequest(id="notes-db", type="sqlite")])
+            self.assertEqual(repeated.environment["SF_NOTES_DB_PATH"], plan.environment["SF_NOTES_DB_PATH"])
+
+    def test_release_only_releases_loopback_and_preserves_data_bindings(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            bindings = ApplicationLocalBindings("research-notes", Path(temporary))
+            initial = bindings.plan("api", [
+                ResourceBindingRequest(id="notes-db", type="sqlite"),
+                ResourceBindingRequest(id="api-listener", type="loopback"),
+            ])
+            database = initial.environment["SF_NOTES_DB_PATH"]
+            bindings.release()
+            resumed = bindings.plan("api", [
+                ResourceBindingRequest(id="notes-db", type="sqlite"),
+                ResourceBindingRequest(id="api-listener", type="loopback"),
+            ])
+
+            self.assertEqual(resumed.environment["SF_NOTES_DB_PATH"], database)
+            self.assertTrue(Path(database).is_file())
+            self.assertTrue(resumed.environment["SF_API_LISTENER_PORT"].isdigit())
+            state = json.loads((Path(temporary) / "resolved-bindings.json").read_text())
+            self.assertEqual(state["bindings"]["api-listener"]["status"], "active")
+
+    def test_application_binding_state_cannot_be_reused_by_another_application(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            ApplicationLocalBindings("first-app", Path(temporary)).resolve(
+                [ResourceBindingRequest(id="data", type="filesystem")]
+            )
+            with self.assertRaisesRegex(InvalidResourceBinding, "does not match"):
+                ApplicationLocalBindings("second-app", Path(temporary)).resolve(
+                    [ResourceBindingRequest(id="data", type="filesystem")]
+                )
     def test_static_provider_binds_canonical_resource_request(self) -> None:
         provider = StaticLocalResourceProvider(
             [
