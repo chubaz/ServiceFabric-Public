@@ -1,0 +1,49 @@
+{
+  "allowed_paths": [
+    "packages/servicefabric_application_assembly",
+    "tests/application_assembly"
+  ],
+  "branch": "feature/wave1-assembly",
+  "candidate_commit_policy": {
+    "allow_merge_commits": false,
+    "allowed_prefixes": [
+      "feat(assembly):",
+      "test(assembly):",
+      "docs(assembly):",
+      "fix(assembly):"
+    ]
+  },
+  "forbidden_paths": [
+    ".github",
+    "Makefile",
+    "clients/python",
+    "config/agent",
+    "docs/workplans/status.json",
+    "packages/servicefabric_application_model",
+    "packages/servicefabric_process_runtime",
+    "packages/servicefabric_workspace",
+    "schemas",
+    "scripts/agent",
+    "services/application_host"
+  ],
+  "handoff_required": true,
+  "lane": "assembly",
+  "objective": "Implement application assembly only within the owned package and tests after this bootstrap commit.",
+  "prohibited_overlap": [
+    "Do not modify AP-00C managed process runtime, primitive module model, workspace, shared CLI, CI, Makefile, dependency locks, common schemas, or milestone state.",
+    "Do not implement resource providers, framework kits, blueprints, development supervisor, or capability connection system."
+  ],
+  "required_context_files": [
+    "AGENTS.md",
+    "docs/workplans/waves/wave-1.md",
+    "docs/contracts/application-module-v0.1.md",
+    "packages/servicefabric_application_model",
+    "packages/servicefabric_process_runtime",
+    "services/application_host"
+  ],
+  "required_tests": [
+    "python3 -m unittest discover -s tests/application_assembly -v",
+    "git diff --check"
+  ],
+  "worktree": "../servicefabric-wave1-assembly"
+}

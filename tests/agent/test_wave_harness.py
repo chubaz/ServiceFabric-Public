@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+import unittest
+
+from scripts.agent.render_wave_prompt import render
+from scripts.agent.wave_common import ROOT, task, task_ids, wave
+
+
+class WaveHarnessTests(unittest.TestCase):
+    def test_wave_manifest_records_required_bootstrap_fields(self) -> None:
+        value = wave("wave-1")
+        self.assertEqual(value["wave_id"], "wave-1")
+        self.assertEqual(value["base_commit"], "5606a0556a3bb822e0168e59c4de421ccb963860")
+        self.assertEqual(value["integration_branch"], "integration/phase1-wave1")
+        self.assertEqual(
+            set(value["specialist_branches"]),
+            {"assembly", "resources", "kits-blueprints", "testing", "integration"},
+        )
+        self.assertIn("make verify-current", value["verification_gates"])
+
+    def test_task_manifests_are_structured_and_bounded(self) -> None:
+        for task_id in task_ids("wave-1"):
+            value = task(task_id, "wave-1")
+            self.assertTrue(value["allowed_paths"], task_id)
+            self.assertTrue(value["forbidden_paths"], task_id)
+            self.assertTrue(value["required_context_files"], task_id)
+            self.assertTrue(value["required_tests"], task_id)
+            self.assertFalse(set(value["allowed_paths"]) & set(value["forbidden_paths"]), task_id)
+
+    def test_specialists_cannot_modify_shared_controls(self) -> None:
+        shared = {"Makefile", ".github", "clients/python", "schemas", "config/agent"}
+        for task_id in {"assembly", "resources", "kits-blueprints", "testing"}:
+            value = task(task_id, "wave-1")
+            self.assertFalse(shared & set(value["allowed_paths"]), task_id)
+
+    def test_prompt_renderer_is_concise_and_lane_specific(self) -> None:
+        prompt = render("assembly", "wave-1")
+        self.assertIn("feature/wave1-assembly", prompt)
+        self.assertIn("wave_task_preflight.py --task assembly", prompt)
+        self.assertIn("packages/servicefabric_application_assembly", prompt)
+        self.assertLess(len(prompt.split()), 260)
+
+    def test_handoff_template_is_versioned(self) -> None:
+        path = ROOT / "docs/workplans/handoffs/wave-1/task-handoff-v1.md"
+        self.assertTrue(path.is_file())
+        self.assertIn("Wave-1 Task Handoff v1", path.read_text(encoding="utf-8"))
+
+
+if __name__ == "__main__":
+    unittest.main()
