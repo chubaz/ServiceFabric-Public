@@ -3,7 +3,6 @@ requires = ["setuptools==80.9.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "servicefabric-example-research-notes-api"
+name = "research-notes-domain"
 version = "0.2.0"
 requires-python = ">=3.11,<3.12"
-dependencies = ["fastapi==0.139.0", "uvicorn==0.51.0"]

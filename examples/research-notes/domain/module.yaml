@@ -1,0 +1,18 @@
+apiVersion: servicefabric.local/v1
+kind: ApplicationModule
+metadata:
+  id: notes-domain
+  version: 0.2.0
+spec:
+  primitive: library
+  kit: python-library @ServiceFabric/research-notes/domain
+  source: examples/research-notes/domain
+  provides:
+    - id: notes-domain
+      type: python-library
+  lifecycle:
+    shutdown:
+      timeoutSeconds: 5
+  resourceExpectations:
+    memoryMiB: 64
+    cpuCores: 0.1

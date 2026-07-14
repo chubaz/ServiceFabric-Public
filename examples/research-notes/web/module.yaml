@@ -1,0 +1,27 @@
+apiVersion: servicefabric.local/v1
+kind: ApplicationModule
+metadata:
+  id: notes-web
+  version: 0.2.0
+spec:
+  primitive: web
+  kit: static-web @ServiceFabric/research-notes/web
+  source: examples/research-notes/web
+  provides:
+    - id: notes-web
+      type: http
+      protocol: http
+  requires:
+    interfaces:
+      - id: notes-api
+  lifecycle:
+    startAfter:
+      - notes-api
+    readiness:
+      type: http
+      path: /
+    shutdown:
+      timeoutSeconds: 10
+  resourceExpectations:
+    memoryMiB: 128
+    cpuCores: 0.1

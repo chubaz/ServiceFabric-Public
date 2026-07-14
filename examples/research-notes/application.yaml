@@ -1,0 +1,17 @@
+apiVersion: servicefabric.local/v1
+kind: Application
+metadata:
+  id: research-notes
+  name: Research Notes
+spec:
+  status: development
+  modules:
+    - id: notes-domain
+      kind: library
+      kit: python-library
+    - id: notes-api
+      kind: service
+      kit: fastapi-service
+    - id: notes-web
+      kind: web
+      kit: static-web
