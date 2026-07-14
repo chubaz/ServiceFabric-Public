@@ -41,6 +41,11 @@ fi
 printf '%-16s %-46s %-28s %-12s %-12s %-7s %-8s %-9s %-7s %-8s %-10s %-12s\n' \
     LANE WORKTREE BRANCH HEAD EXPECTED CLEAN RUNTIME PREFLIGHT PROMPT HANDOFF CANDIDATE QUEUE
 
+INTEGRATION_HEAD=""
+if sf_is_valid_worktree "$(sf_lane_path integration)"; then
+    INTEGRATION_HEAD="$(sf_head "$(sf_lane_path integration)")"
+fi
+
 for lane in $(sf_lanes); do
     path="$(sf_lane_path "$lane")"
     branch="invalid"
@@ -64,7 +69,9 @@ for lane in $(sf_lanes); do
             sf_mirror_handoff "$lane" || true
             handoff="present"
         fi
-        if [[ "$WAVE_COMPLETE" != "1" && "$BOOTSTRAP_SHA" != "unknown" ]] && ! git -C "$path" merge-base --is-ancestor HEAD "$BOOTSTRAP_SHA" 2>/dev/null; then
+        # A specialist candidate remains pending only while its head has not
+        # already been incorporated into the integration branch.
+        if [[ "$lane" != "integration" && "$WAVE_COMPLETE" != "1" && -n "$INTEGRATION_HEAD" ]] && ! git -C "$path" merge-base --is-ancestor HEAD "$INTEGRATION_HEAD" 2>/dev/null; then
             candidate="present"
             queue="pending"
             CANDIDATES=1

@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-02",
+  "overall": "INTEGRATION REQUIRED",
+  "lanes": {
+    "runtime-bindings": "integrated",
+    "kit-execution": "integrated",
+    "reference-app": "revision-requested",
+    "supervisor": "integrated",
+    "integration": "active"
+  },
+  "next_action": "Return the reference-app manifest corrections, then review the revised candidate before cross-package composition."
+}

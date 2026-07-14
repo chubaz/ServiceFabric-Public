@@ -5,6 +5,8 @@
   "integration_branch": "integration/phase1-wave2",
   "task_manifest_dir": "config/agents/wave-02/tasks",
   "canonical_handoff_dir": "docs/handoffs/wave-02",
+  "readiness_metadata": "config/agents/wave-02/readiness.json",
+  "integration_queue": "config/agents/wave-02/integration-queue.json",
   "handoff_template": "docs/handoffs/wave-02/task-handoff-template.md",
   "local_run_dir": ".agent-runs/wave-02",
   "shared_docs": "docs/workplans/parallel/wave-02/objective.md",

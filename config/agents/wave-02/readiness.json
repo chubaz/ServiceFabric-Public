@@ -1,0 +1,55 @@
+{
+  "wave_id": "wave-02",
+  "base_commit": "715de644eff2ee003469f14d574c4b70706bc70a",
+  "contractsStatus": "frozen",
+  "lanes": {
+    "runtime-bindings": {
+      "original_base_sha": "715de644eff2ee003469f14d574c4b70706bc70a",
+      "candidate_head": "41e794751f539c1890bd57037e92375ad5000578",
+      "accepted_commit": "aea040ca22f02f484a97474d91027c7947ffbee9",
+      "integration_decision": "accepted",
+      "integration_commit": "f47477fe593ca470d431e4b4959c7393a8251c85",
+      "final_state": "integrated",
+      "focused_verification": "passed"
+    },
+    "kit-execution": {
+      "original_base_sha": "715de644eff2ee003469f14d574c4b70706bc70a",
+      "candidate_head": "f63bd27118ecb6d31da8f4b3b58bc2dea6160cb7",
+      "accepted_commit": "a3863eb75d51d5ca485ab80e3a6c93a3391cc524",
+      "integration_decision": "accepted",
+      "integration_commit": "678eacceb9b5b7ab47480df5c01ca0521aa6ba83",
+      "final_state": "integrated",
+      "focused_verification": "passed"
+    },
+    "reference-app": {
+      "original_base_sha": "715de644eff2ee003469f14d574c4b70706bc70a",
+      "candidate_head": "766287113428ce6c3f003f766c38abc227f66203",
+      "accepted_commit": null,
+      "integration_decision": "returned-for-correction",
+      "integration_commit": null,
+      "final_state": "revision-requested",
+      "focused_verification": "passed-lane-suite; failed-exact-kit-resolution"
+    },
+    "supervisor": {
+      "original_base_sha": "715de644eff2ee003469f14d574c4b70706bc70a",
+      "candidate_head": "620af1e75b3f7af8b43b74c118ca9887b2f9d675",
+      "accepted_commit": "1f3d655df06aed8712c6f5ac0b6918bdb88bfa26",
+      "integration_decision": "accepted",
+      "integration_commit": "704d4c068e10fd03027b25af0566e9119c5d0efc",
+      "final_state": "integrated",
+      "focused_verification": "passed"
+    }
+  },
+  "integration": {
+    "current_integration_head": "704d4c068e10fd03027b25af0566e9119c5d0efc",
+    "contracts_status": "frozen",
+    "accepted_lane_commits": [
+      "aea040ca22f02f484a97474d91027c7947ffbee9",
+      "a3863eb75d51d5ca485ab80e3a6c93a3391cc524",
+      "1f3d655df06aed8712c6f5ac0b6918bdb88bfa26"
+    ],
+    "candidate_review_status": "reference-app revision requested",
+    "final_verification_status": "not-run",
+    "wave_completion_status": "in-progress"
+  }
+}
