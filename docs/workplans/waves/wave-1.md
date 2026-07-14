@@ -66,7 +66,7 @@ Testing starts first to sharpen AP-00C regression coverage. Kits and resources m
 2. Launch one Codex session per lane using prompts rendered by `scripts/agent/render_wave_prompt.py`.
 3. Require each feature lane to run preflight before editing.
 4. Require each feature lane to create candidate commits only after its required tests pass.
-5. Run completion checks against each candidate branch and handoff.
+5. Run completion checks against each candidate branch and the canonical committed handoff.
 6. Integrate in the manifest order: testing, kits-blueprints, resources, assembly, integration.
 7. The integration authority accepts, rejects, or returns candidate commits with a recorded reason.
 
@@ -78,14 +78,14 @@ Feature agents must:
 2. Run `python3 scripts/agent/wave_task_preflight.py --task TASK`.
 3. Modify only allowed paths.
 4. Run required tests and write a JSON test log under `codex/runs/wave-1/TASK/tests.json`.
-5. Write a handoff from `docs/workplans/handoffs/wave-1/task-handoff-v1.md`.
+5. Write a handoff from `docs/workplans/handoffs/wave-1/task-handoff-v1.md` to the lane's canonical `docs/handoffs/wave-01/<lane>.md` path.
 6. Commit focused changes with the lane prefix policy.
-7. Run `python3 scripts/agent/wave_task_completion.py --task TASK --test-log TEST_LOG --handoff HANDOFF`.
+7. Run `python3 scripts/agent/wave_task_completion.py --task TASK --test-log TEST_LOG`.
 8. Stop without merging.
 
 ## Handoff Format
 
-Use the versioned handoff template at `docs/workplans/handoffs/wave-1/task-handoff-v1.md`.
+Use the versioned handoff template at `docs/workplans/handoffs/wave-1/task-handoff-v1.md`. The only committed authoritative handoff location is `docs/handoffs/wave-01/`. Runtime `.agent-runs/wave-01/<lane>/handoff.md` files are ignored mirrors generated from those canonical files.
 
 Handoffs must record lane, branch, base, head, changed paths, tests executed, candidate commits, deviations, blockers, rollback, and next action.
 

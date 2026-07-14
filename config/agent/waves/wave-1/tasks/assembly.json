@@ -1,7 +1,8 @@
 {
   "allowed_paths": [
     "packages/servicefabric_application_assembly",
-    "tests/application_assembly"
+    "tests/application_assembly",
+    "docs/handoffs/wave-01/assembly.md"
   ],
   "branch": "feature/wave1-assembly",
   "candidate_commit_policy": {
@@ -27,6 +28,7 @@
     "services/application_host"
   ],
   "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/assembly.md",
   "lane": "assembly",
   "objective": "Implement application assembly only within the owned package and tests after this bootstrap commit.",
   "prohibited_overlap": [

@@ -23,6 +23,28 @@ def task_ids(wave_id: str = "wave-1") -> list[str]:
     return sorted(path.stem for path in directory.glob("*.json"))
 
 
+def canonical_handoff_path(task_id: str, wave_id: str = "wave-1") -> Path:
+    t = task(task_id, wave_id)
+    if "handoff_path" in t:
+        return safe_path(str(t["handoff_path"]))
+    w = wave(wave_id)
+    handoffs = w.get("canonical_handoffs", {})
+    if isinstance(handoffs, dict) and task_id in handoffs:
+        return safe_path(str(handoffs[task_id]))
+    directory = str(w.get("canonical_handoff_dir", "docs/handoffs/wave-01"))
+    return safe_path(f"{directory}/{task_id}.md")
+
+
+def committed_readiness_path(wave_id: str = "wave-1") -> Path:
+    w = wave(wave_id)
+    return safe_path(str(w.get("readiness_metadata", f"{WAVE_DIR}/{wave_id}/readiness.json")))
+
+
+def integration_queue_path(wave_id: str = "wave-1") -> Path:
+    w = wave(wave_id)
+    return safe_path(str(w.get("integration_queue", f"{WAVE_DIR}/{wave_id}/integration-queue.json")))
+
+
 def current_branch() -> str:
     return git("branch", "--show-current").stdout.strip() or "detached"
 

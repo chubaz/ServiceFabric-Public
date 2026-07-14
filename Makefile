@@ -82,6 +82,24 @@ verify-current:
 	python3 scripts/agent/verify.py --milestone $(MILESTONE) --phase readiness
 verify-ap-01a-hosting:
 	python3 -m unittest tests.ap_01a.test_hosting_baseline -v
+verify-wave-01:
+	python3 scripts/agent/wave_completion.py --wave wave-1
+	python3 -m unittest discover -s tests/application_assembly -v
+	python3 -m unittest discover -s tests/resource_bindings -v
+	python3 -m unittest discover -s tests/framework_kits -v
+	python3 -m unittest discover -s tests/blueprints -v
+	python3 -m unittest discover -s tests/integration -p 'test_wave_01_acceptance.py' -v
+	python3 -m unittest discover -s tests/adversarial -v
+	python3 -m unittest discover -s tests/architecture -v
+	python3 -m unittest discover -s tests/modules -v
+	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
+	python3 -m unittest discover -s tests/workspace -v
+	python3 -m unittest discover -s tests/ap_01a -v
+	python3 -m unittest discover -s tests/local_ux -v
+	python3 scripts/dependencies/check_python_locks.py
+	python3 -m pip check
+	python3 -m compileall packages/servicefabric_application_assembly packages/servicefabric_application_model packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_process_runtime packages/servicefabric_resource_bindings packages/servicefabric_workspace services/application_host clients/python tests/application_assembly tests/resource_bindings tests/framework_kits tests/blueprints tests/integration tests/adversarial tests/architecture tests/modules tests/workspace tests/ap_01a tests/local_ux
+	git diff --check
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
 	python3 -m unittest discover -s tests/workspace -v

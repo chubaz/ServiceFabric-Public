@@ -4,6 +4,7 @@
     "Makefile",
     "clients/python",
     "config/agent",
+    "docs/handoffs",
     "docs/workplans",
     "packages/servicefabric_application_assembly",
     "packages/servicefabric_blueprints",
@@ -36,6 +37,7 @@
     "6_service_catalog"
   ],
   "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/integration.md",
   "lane": "integration",
   "objective": "Act as Wave-1 integration authority: review candidate commits, accept or return them, and perform shared integration changes only when explicitly approved.",
   "prohibited_overlap": [
@@ -51,6 +53,8 @@
   ],
   "required_tests": [
     "python3 -m unittest discover -s tests/agent -v",
+    "python3 scripts/agent/wave_completion.py --wave wave-1",
+    "make verify-wave-01",
     "make verify-current",
     "git diff --check"
   ],

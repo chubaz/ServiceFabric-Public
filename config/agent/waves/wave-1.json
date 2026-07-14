@@ -13,6 +13,16 @@
     "tests/workspace"
   ],
   "handoff_template": "docs/workplans/handoffs/wave-1/task-handoff-v1.md",
+  "canonical_handoff_dir": "docs/handoffs/wave-01",
+  "canonical_handoffs": {
+    "assembly": "docs/handoffs/wave-01/assembly.md",
+    "integration": "docs/handoffs/wave-01/integration.md",
+    "kits-blueprints": "docs/handoffs/wave-01/kits-blueprints.md",
+    "resources": "docs/handoffs/wave-01/resources.md",
+    "testing": "docs/handoffs/wave-01/testing.md"
+  },
+  "readiness_metadata": "config/agent/waves/wave-1/readiness.json",
+  "integration_queue": "config/agent/waves/wave-1/integration-queue.json",
   "integration_branch": "integration/phase1-wave1",
   "integration_order": [
     "testing",
@@ -54,7 +64,9 @@
   "verification_gates": [
     "python3 -m unittest discover -s tests/agent -v",
     "python3 scripts/agent/wave_task_preflight.py --task <task>",
-    "python3 scripts/agent/wave_task_completion.py --task <task> --test-log <test-log> --handoff <handoff>",
+    "python3 scripts/agent/wave_task_completion.py --task <task> --test-log <test-log>",
+    "python3 scripts/agent/wave_completion.py --wave wave-1",
+    "make verify-wave-01",
     "make verify-current",
     "git diff --check"
   ],

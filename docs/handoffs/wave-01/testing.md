@@ -3,7 +3,7 @@
 Lane: testing
 Branch: feature/wave1-testing
 Base commit: 5606a0556a3bb822e0168e59c4de421ccb963860
-Head commit: candidate branch HEAD
+Head commit: 31f72ba32195f475a3fa6b72c6b30aaf4243ec34
 Worktree: ../servicefabric-wave1-testing
 
 ## Objective
@@ -12,8 +12,7 @@ Add adversarial tests, architecture regression coverage, and AP-00C review docum
 
 ## Changed Paths
 
-- `codex/runs/wave-1/testing/tests.json`
-- `docs/workplans/handoffs/wave-1/testing-handoff.md`
+- `docs/handoffs/wave-01/testing.md`
 - `docs/workplans/reviews/ap-00c-testing-review.md`
 - `tests/adversarial/test_process_runtime_adversarial.py`
 - `tests/architecture/test_ap_00c_process_runtime_boundaries.py`
@@ -21,7 +20,7 @@ Add adversarial tests, architecture regression coverage, and AP-00C review docum
 
 ## Candidate Commits
 
-- `test(adversarial): add AP-00C regressions`
+- `31f72ba32195f475a3fa6b72c6b30aaf4243ec34 test(adversarial): add AP-00C regressions`
 
 ## Tests Executed
 
@@ -39,8 +38,9 @@ none
 
 ## Deviations
 
-- `tests/architecture/test_repository_boundaries.py` now accepts both existing ADR status styles: `Status: Accepted` with `Date:` and heading-style `## Status` followed by `Accepted`. This was needed for the prompt-required architecture discovery command to pass against current repository ADR files.
+- `tests/architecture/test_repository_boundaries.py` now accepts both existing ADR status styles: `Status: Accepted` with `Date:` and heading-style `## Status` followed by `Accepted`.
 - `tests/adversarial/test_process_runtime_adversarial.py` prepends local package paths because the prompt-required raw unittest command does not install editable packages before discovery.
+- The initial lane did not write `.agent-runs/wave-01/testing/handoff.md`; Wave-1 closure moved the authoritative handoff to `docs/handoffs/wave-01/testing.md`.
 
 ## Blockers
 
@@ -48,8 +48,8 @@ none
 
 ## Rollback
 
-Revert the testing-lane candidate commit to remove the adversarial tests, architecture regression, review note, evidence log, and handoff updates.
+Revert merge commit 8ded900 and the testing-lane candidate commit it accepted.
 
 ## Next Action
 
-Integration authority should run Wave-1 testing completion checks and decide whether to accept the candidate commit.
+Accepted into integration/phase1-wave1.

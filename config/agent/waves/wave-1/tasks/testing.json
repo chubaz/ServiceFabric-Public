@@ -3,7 +3,7 @@
     "tests/adversarial",
     "tests/architecture",
     "docs/workplans/reviews",
-    "docs/workplans/handoffs/wave-1"
+    "docs/handoffs/wave-01/testing.md"
   ],
   "branch": "feature/wave1-testing",
   "candidate_commit_policy": {
@@ -27,6 +27,7 @@
     "services"
   ],
   "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/testing.md",
   "lane": "testing",
   "objective": "Add adversarial tests, architecture regression coverage, and AP-00C review documentation without changing implementation code.",
   "prohibited_overlap": [

@@ -102,6 +102,45 @@ sf_readiness_path() {
     printf '%s/readiness.json\n' "$(sf_run_dir "$1")"
 }
 
+sf_canonical_handoff_path() {
+    local lane="$1"
+    python3 - "$lane" <<'PY'
+import json, sys
+lane = sys.argv[1]
+with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+    data = json.load(handle)
+print(data["canonical_handoffs"][lane])
+PY
+}
+
+sf_committed_readiness_path() {
+    python3 - <<'PY'
+import json
+with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+    data = json.load(handle)
+print(data["readiness_metadata"])
+PY
+}
+
+sf_integration_queue_path() {
+    python3 - <<'PY'
+import json
+with open("config/agent/waves/wave-1.json", encoding="utf-8") as handle:
+    data = json.load(handle)
+print(data["integration_queue"])
+PY
+}
+
+sf_mirror_handoff() {
+    local lane="$1"
+    local path
+    local canonical
+    path="$(sf_lane_path "$lane")"
+    canonical="$(sf_repo_root)/$(sf_canonical_handoff_path "$lane")"
+    [[ -f "$canonical" ]] || return 1
+    python3 scripts/agent/sync_wave_handoffs.py --task "$lane" --worktree "$path" >/dev/null
+}
+
 sf_contracts_path() {
     printf '%s/contracts.json\n' "$(sf_state_dir)"
 }

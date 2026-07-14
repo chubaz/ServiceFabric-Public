@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.agent.common import git, safe_path
 from scripts.agent.wave_common import (
+    canonical_handoff_path,
     changed_files,
     clean_tree,
     commits_since,
@@ -88,11 +89,11 @@ def main() -> int:
     parser.add_argument("--task", required=True)
     parser.add_argument("--wave", default="wave-1")
     parser.add_argument("--test-log", required=True)
-    parser.add_argument("--handoff", required=True)
+    parser.add_argument("--handoff")
     parser.add_argument("--format", choices=["text", "json"], default="text")
     args = parser.parse_args()
     test_log = safe_path(args.test_log)
-    handoff = safe_path(args.handoff)
+    handoff = safe_path(args.handoff) if args.handoff else canonical_handoff_path(args.task, args.wave)
     result = inspect(args.task, args.wave, test_log, handoff)
     if args.format == "json":
         print(json.dumps(result, sort_keys=True))

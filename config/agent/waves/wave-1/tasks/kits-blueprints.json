@@ -5,7 +5,8 @@
     "tests/framework_kits",
     "tests/blueprints",
     "examples/research-notes",
-    "examples/text-utility"
+    "examples/text-utility",
+    "docs/handoffs/wave-01/kits-blueprints.md"
   ],
   "branch": "feature/wave1-kits-blueprints",
   "candidate_commit_policy": {
@@ -33,6 +34,7 @@
     "services/application_host"
   ],
   "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/kits-blueprints.md",
   "lane": "kits-blueprints",
   "objective": "Implement framework kits and blueprints only within owned packages, tests, and explicitly approved application fixtures after this bootstrap commit.",
   "prohibited_overlap": [

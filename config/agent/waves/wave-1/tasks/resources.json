@@ -1,7 +1,8 @@
 {
   "allowed_paths": [
     "packages/servicefabric_resource_bindings",
-    "tests/resource_bindings"
+    "tests/resource_bindings",
+    "docs/handoffs/wave-01/resources.md"
   ],
   "branch": "feature/wave1-resources",
   "candidate_commit_policy": {
@@ -27,6 +28,7 @@
     "services/application_host"
   ],
   "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-01/resources.md",
   "lane": "resources",
   "objective": "Implement local resource binding abstractions only within the owned package and tests after this bootstrap commit.",
   "prohibited_overlap": [

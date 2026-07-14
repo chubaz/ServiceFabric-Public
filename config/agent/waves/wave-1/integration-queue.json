@@ -1,0 +1,24 @@
+{
+  "contractsStatus": "frozen",
+  "integrationAgent": "complete",
+  "lanes": {
+    "assembly": {
+      "decision": "accepted",
+      "state": "integrated"
+    },
+    "kits-blueprints": {
+      "decision": "accepted",
+      "state": "integrated"
+    },
+    "resources": {
+      "decision": "accepted",
+      "state": "integrated"
+    },
+    "testing": {
+      "decision": "accepted",
+      "state": "integrated"
+    }
+  },
+  "overall": "WAVE COMPLETE",
+  "wave": "wave-1"
+}
