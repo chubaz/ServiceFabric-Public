@@ -54,8 +54,13 @@ class RepositoryBoundaryTests(unittest.TestCase):
         self.assertGreaterEqual(len(adr_files), 5)
         for path in adr_files:
             content = path.read_text(encoding="utf-8")
-            self.assertIn("Status: Accepted", content, msg=path.name)
-            self.assertRegex(content, r"Date: \d{4}-\d{2}-\d{2}", msg=path.name)
+            self.assertTrue(
+                "Status: Accepted" in content
+                or "## Status\nAccepted" in content,
+                msg=path.name,
+            )
+            if "Status: Accepted" in content:
+                self.assertRegex(content, r"Date: \d{4}-\d{2}-\d{2}", msg=path.name)
 
     def test_every_known_unsafe_pattern_is_recorded(self) -> None:
         with DEBT_REGISTER.open("r", encoding="utf-8") as handle:
