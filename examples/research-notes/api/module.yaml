@@ -5,7 +5,7 @@ metadata:
   version: 0.2.0
 spec:
   primitive: service
-  kit: fastapi-service @ServiceFabric/portfolio/applications/revisions/examples.research-notes-0.2.0.json
+  kit: fastapi-service @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json
   source: examples/research-notes/api
   provides:
     - id: notes-api

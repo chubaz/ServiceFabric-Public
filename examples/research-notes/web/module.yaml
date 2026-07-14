@@ -5,7 +5,7 @@ metadata:
   version: 0.2.0
 spec:
   primitive: web
-  kit: static-web @ServiceFabric/research-notes/web
+  kit: react-web @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json
   source: examples/research-notes/web
   provides:
     - id: notes-web

@@ -2,8 +2,8 @@
 
 Lane: reference-app
 Branch: agent/w2-reference-app
-Base commit: 715de644eff2ee003469f14d574c4b70706bc70a
-Head commit: 679d72ad7b8b4959f9eeb721f6ac12fe63f9825b
+Base commit: 0740ed11c267337a4d8194248a34ae6beda3832f
+Head commit: correction commit recorded by this handoff
 Worktree: SF_WT_REFERENCE_APP
 
 ## Objective
@@ -23,10 +23,13 @@ Implemented the ordinary modular Research Notes source: a public Python domain l
 
 - 45f9735 feat(research-notes): add modular notes application
 - 679d72a test(research-notes): add persistence acceptance fixtures
+- correction commit: resolve all Research Notes module kits from the reviewed default catalogue
 
 ## Tests Executed
 
 - python3 -m unittest discover -s tests/wave_02 -v
+- python3 -m unittest discover -s tests/framework_kits -v
+- python3 -m unittest discover -s tests/blueprints -v
 - git diff --check
 
 Machine-readable evidence: `.agent-runs/wave-02/reference-app/tests.json`.
@@ -37,7 +40,7 @@ none
 
 ## Deviations
 
-- The local environment has no FastAPI installation, so process-level HTTP probing was not executed here. The API remains a standard FastAPI application and the focused suite verifies the dependency-free domain persistence, manifest wiring, and adversarial search behavior.
+- The local environment has no FastAPI installation, so process-level HTTP probing was not executed here. The API remains a standard FastAPI application and the focused suite verifies dependency-free persistence, manifest wiring, adversarial search behavior, and default-catalogue resolution for every module kit.
 
 ## Blockers
 
@@ -45,8 +48,8 @@ none
 
 ## Rollback
 
-Revert candidate commits `45f9735` and `679d72a` (and this handoff commit) to remove the reference application and its fixtures.
+Revert the correction commit (and, if needed, the two earlier reference-app candidate commits) to restore the preceding manifest references.
 
 ## Next Action
 
-Integrate with the Wave-2 framework-kit, runtime-binding, and supervisor lanes; run the canonical supervisor journey with the injected `SF_DATABASE_PRIMARY_URL` binding.
+Run the canonical supervisor journey with the injected `SF_DATABASE_PRIMARY_URL` binding.

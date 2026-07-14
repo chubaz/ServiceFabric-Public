@@ -5,7 +5,7 @@ metadata:
   version: 0.2.0
 spec:
   primitive: library
-  kit: python-library @ServiceFabric/research-notes/domain
+  kit: python-library @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json
   source: examples/research-notes/domain
   provides:
     - id: notes-domain

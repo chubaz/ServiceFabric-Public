@@ -10,9 +10,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DOMAIN = ROOT / "examples" / "research-notes" / "domain"
 API = ROOT / "examples" / "research-notes" / "api"
-sys.path[:0] = [str(DOMAIN), str(API)]
+sys.path[:0] = [
+    str(ROOT / "packages" / "servicefabric_application_model"),
+    str(ROOT / "packages" / "servicefabric_framework_kits"),
+    str(DOMAIN),
+    str(API),
+]
 
 from research_notes_domain import NoteNotFound, NotesService, SQLiteNoteRepository, ValidationError
+from servicefabric_framework_kits import get_default_catalog, parse_kit_reference
 
 
 class ResearchNotesPersistenceTests(unittest.TestCase):
@@ -58,6 +64,29 @@ class ResearchNotesPersistenceTests(unittest.TestCase):
 
 
 class ResearchNotesFixtureTests(unittest.TestCase):
+    def test_each_module_kit_reference_parses_and_resolves_from_the_default_catalog(self) -> None:
+        expected_kits = {
+            "api": ("fastapi-service", "service"),
+            "web": ("react-web", "web"),
+            "domain": ("python-library", "library"),
+        }
+        catalog = get_default_catalog()
+
+        for module, (kit_id, primitive) in expected_kits.items():
+            manifest = ROOT / "examples" / "research-notes" / module / "module.yaml"
+            kit_reference = next(
+                line.strip().removeprefix("kit: ")
+                for line in manifest.read_text(encoding="utf-8").splitlines()
+                if line.strip().startswith("kit:")
+            )
+
+            parsed = parse_kit_reference(kit_reference)
+            definition, _ = catalog.resolve(parsed)
+
+            self.assertEqual(parsed.kit_id, kit_id)
+            self.assertEqual(parsed.version, "1.0.0")
+            self.assertEqual(definition.primitive, primitive)
+
     def test_modules_are_declared_as_an_ordinary_library_service_and_web_app(self) -> None:
         application = (ROOT / "examples" / "research-notes" / "application.yaml").read_text(encoding="utf-8")
         api_manifest = (API / "module.yaml").read_text(encoding="utf-8")
