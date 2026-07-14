@@ -13,7 +13,9 @@ from servicefabric_framework_kits.plans import (
     KitPlanningContext,
     KitValidationFinding,
     ProcessPlan,
+    ASGIProcessPlan,
 )
+from servicefabric_framework_kits.validation import require_valid_module
 
 
 class FastAPIServiceAdapter:
@@ -64,7 +66,7 @@ class FastAPIServiceAdapter:
         context: KitPlanningContext,
     ) -> DependencyPlan:
         """Generates Python/Pip packaging dependency installation plans."""
-        self.validate_module(module)
+        require_valid_module(self, module)
         return DependencyPlan(
             ecosystem="python",
             manifest_path="pyproject.toml",
@@ -78,7 +80,7 @@ class FastAPIServiceAdapter:
         context: KitPlanningContext,
     ) -> BuildPlan:
         """Generates standard Python package builder plan."""
-        self.validate_module(module)
+        require_valid_module(self, module)
         return BuildPlan(
             adapter_id="python-package",
             source_directory=str(module.source),
@@ -86,21 +88,29 @@ class FastAPIServiceAdapter:
             inputs=("app", "pyproject.toml"),
         )
 
+    def _get_app_import(self, module: ModuleDefinition) -> str:
+        if module.raw_data and "spec" in module.raw_data:
+            spec_data = module.raw_data["spec"]
+            if "kitConfiguration" in spec_data:
+                return spec_data["kitConfiguration"].get("application", "app.main:app")
+        return "app.main:app"
+
     def development_plan(
         self,
         module: ModuleDefinition,
         context: KitPlanningContext,
     ) -> ProcessPlan:
         """Generates development process plan with hot-reloading enabled."""
-        self.validate_module(module)
-        return ProcessPlan(
+        require_valid_module(self, module)
+        return ASGIProcessPlan(
             adapter_id="python-asgi",
             module_id=module.module_id,
             working_directory=str(module.source),
-            entrypoint="uvicorn",
-            arguments=("app.main:app", "--reload", "--host", "127.0.0.1"),
-            environment_keys=("PYTHONPATH", "SF_MODULE_PORT"),
-            needs_allocated_port=True,
+            application_import=self._get_app_import(module),
+            reload=True,
+            host="127.0.0.1",
+            port_binding="allocated",
+            access_log=True,
         )
 
     def runtime_plan(
@@ -109,15 +119,16 @@ class FastAPIServiceAdapter:
         context: KitPlanningContext,
     ) -> ProcessPlan:
         """Generates runtime process plan for production-like execution."""
-        self.validate_module(module)
-        return ProcessPlan(
+        require_valid_module(self, module)
+        return ASGIProcessPlan(
             adapter_id="python-asgi",
             module_id=module.module_id,
             working_directory=str(module.source),
-            entrypoint="uvicorn",
-            arguments=("app.main:app", "--host", "127.0.0.1"),
-            environment_keys=("PYTHONPATH", "SF_MODULE_PORT"),
-            needs_allocated_port=True,
+            application_import=self._get_app_import(module),
+            reload=False,
+            host="127.0.0.1",
+            port_binding="allocated",
+            access_log=True,
         )
 
     def health_plan(
@@ -126,7 +137,7 @@ class FastAPIServiceAdapter:
         context: KitPlanningContext,
     ) -> HealthPlan:
         """Generates HTTP-probe health plan based on module configuration."""
-        self.validate_module(module)
+        require_valid_module(self, module)
         probe_path = "/health"
         if module.lifecycle.readiness and module.lifecycle.readiness.path:
             probe_path = module.lifecycle.readiness.path

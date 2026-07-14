@@ -1,0 +1,60 @@
+{
+  "application_id": "text-utility",
+  "artifact_digest": "sha256:6b30b6833d9f59fa511f460f776f8ef807454ed28f52b2734a1a5f295ff8c441",
+  "artifact_id": "artifact.6b30b6833d9f59fa511f460f776f8ef8",
+  "exit_code": 1,
+  "package": {
+    "adapter": "reviewed-fastapi-v1",
+    "application_id": "text-utility",
+    "build": {
+      "kind": "reviewed-python-source"
+    },
+    "capabilities": [
+      {
+        "path": "/actions/count-words",
+        "tool_id": "text.count_words"
+      },
+      {
+        "path": "/actions/inspect",
+        "tool_id": "text.inspect"
+      }
+    ],
+    "declared_resources": {
+      "cpu_cores": 0.25,
+      "memory_mib": 128,
+      "network": "loopback-only",
+      "storage_mib": 16
+    },
+    "entrypoints": [
+      "web",
+      "health",
+      "capability-adapter"
+    ],
+    "framework": "fastapi",
+    "health_path": "/health",
+    "module": "app:app",
+    "source_files": [
+      {
+        "path": "app.py",
+        "sha256": "46375c58efbb5b6baacd817e4b0fe3f4515989c54340bf523ee0b14d20110b89"
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "5b2cef6fcc362121b5777f03911ca65dfa3d398995e63badf39473d13697075c"
+      }
+    ],
+    "start": {
+      "adapter": "reviewed-fastapi-v1",
+      "module": "app:app"
+    },
+    "version": "1.0.0"
+  },
+  "peak_memory_bytes": 46964736,
+  "pid": 5136,
+  "port": 53179,
+  "process_start_ticks": 2956784,
+  "request_count": 1,
+  "restart_count": 1,
+  "startup_duration_ms": 493.615,
+  "state": "running"
+}

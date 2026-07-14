@@ -27,6 +27,7 @@ from servicefabric_contracts import ApplicationArtifactManifest
 
 
 from servicefabric_workspace import ApplicationHostPaths, WorkspaceLayout
+from servicefabric_process_runtime import ManagedProcessController, ResolvedProcessPlan, HealthTarget, ASGIProcessPlan
 
 MAX_RECORD_BYTES = 262_144
 MAX_ARTIFACT_BYTES = 16 * 1024 * 1024
@@ -141,18 +142,22 @@ class LocalApplicationHost:
             self.artifacts = FileArtifactStore(workspace.artifacts)
             self._locks_dir = workspace.locks
             self._logs_dir = workspace.logs
+            self.layout = WorkspaceLayout.from_root(workspace.root.parent, workspace.root.parent)
         elif isinstance(workspace, WorkspaceLayout):
             self.root = workspace.legacy_hosted_applications
             self.artifacts = FileArtifactStore(workspace.artifacts)
             self._locks_dir = workspace.locks
             self._logs_dir = workspace.logs
+            self.layout = workspace
         else:
             w_path = Path(workspace)
             self.root = w_path / "hosted-applications"
             self.artifacts = FileArtifactStore(w_path / "artifacts")
             self._locks_dir = w_path / "locks"
             self._logs_dir = w_path / "logs"
+            self.layout = WorkspaceLayout.from_root(w_path, w_path)
 
+        self.controller = ManagedProcessController(self.layout)
         self.root.mkdir(parents=True, exist_ok=True)
         self._health_timeout_seconds = health_timeout_seconds
 
@@ -475,133 +480,138 @@ class LocalApplicationHost:
                 target.write_bytes(self.artifacts.open_file(artifact, item.path))
             log_path = self._directory(application_id) / "application.log"
             log_path.write_bytes(b"")
-            started = time.monotonic()
-            with log_path.open("ab") as log:
-                process = subprocess.Popen(
-                    [
-                        sys.executable,
-                        "-m",
-                        "uvicorn",
-                        "app:app",
-                        "--host",
-                        "127.0.0.1",
-                        "--port",
-                        str(port),
-                        "--no-access-log",
-                    ],
-                    cwd=runtime_root,
-                    stdin=subprocess.DEVNULL,
-                    stdout=log,
-                    stderr=subprocess.STDOUT,
-                    start_new_session=True,
-                    preexec_fn=_limit_child_log,
-                )
-            process_fields = self._process_fields(process.pid)
-            if not process_fields:
-                process.terminate()
-                raise ApplicationHostError("application process identity is unavailable")
-            record.update(
-                {
-                    "state": "starting",
-                    "pid": process.pid,
-                    "port": port,
-                    "process_start_ticks": process_fields[1],
-                }
+
+            # Translate Text Utility into ResolvedProcessPlan
+            from servicefabric_process_runtime.models import HealthTarget
+            health_target = HealthTarget(
+                probe_type="http",
+                url=f"http://127.0.0.1:{port}/health",
+                timeout_seconds=self._health_timeout_seconds,
             )
-            _atomic(self._directory(application_id) / "application.json", record)
-        deadline = time.monotonic() + self._health_timeout_seconds
-        while time.monotonic() < deadline:
-            if process.poll() is not None:
-                with self._lock(application_id):
-                    current = self._record(application_id)
-                    if current.get("state") != "stopped":
-                        current.update({"state": "failed", "exit_code": process.returncode})
-                        _atomic(
-                            self._directory(application_id) / "application.json", current
-                        )
-                raise ApplicationHostError(
-                    "application process exited before becoming healthy"
-                )
+            plan = ResolvedProcessPlan(
+                application_id=application_id,
+                module_id=application_id,
+                adapter_id="python-asgi",
+                executable=Path(sys.executable),
+                arguments=(
+                    "-m",
+                    "uvicorn",
+                    "app:app",
+                    "--host",
+                    "127.0.0.1",
+                    "--port",
+                    str(port),
+                    "--no-access-log",
+                ),
+                working_directory=runtime_root,
+                environment=dict(os.environ),
+                log_path=log_path,
+                port=port,
+                health_target=health_target,
+                shutdown_timeout_seconds=10.0,
+            )
+
+            def on_start(pid: int, ticks: int) -> None:
+                record["state"] = "starting"
+                record["pid"] = pid
+                record["process_start_ticks"] = ticks
+                record["port"] = port
+                _atomic(self._directory(application_id) / "application.json", record)
+
             try:
-                with urlopen(f"http://127.0.0.1:{port}/health", timeout=0.5) as response:
-                    if response.status == 200:
-                        with self._lock(application_id):
-                            current = self._record(application_id)
-                            if (
-                                current.get("pid") != process.pid
-                                or current.get("state") != "starting"
-                                or not self._owned_process(current)
-                            ):
-                                raise ApplicationHostError(
-                                    "application startup was superseded"
-                                )
-                            current.update(
-                                {
-                                    "state": "running",
-                                    "startup_duration_ms": round(
-                                        (time.monotonic() - started) * 1000, 3
-                                    ),
-                                    "peak_memory_bytes": None,
-                                }
-                            )
-                            _atomic(
-                                self._directory(application_id) / "application.json",
-                                current,
-                            )
-                            return self._status_value(current)
-            except (OSError, URLError):
-                time.sleep(0.05)
-        with self._lock(application_id):
-            current = self._record(application_id)
-            if current.get("pid") == process.pid:
-                self._terminate_process(current)
-                try:
-                    process.wait(timeout=1)
-                except subprocess.TimeoutExpired:
-                    pass
-                current["state"] = "failed"
-                _atomic(self._directory(application_id) / "application.json", current)
-        raise ApplicationHostError("application health check timed out")
+                status = self.controller.start(plan, on_start=on_start)
+            except Exception as exc:
+                with self._lock(application_id):
+                    rec = self._record(application_id)
+                    rec["state"] = "failed"
+                    rec["pid"] = None
+                    rec["process_start_ticks"] = None
+                    _atomic(self._directory(application_id) / "application.json", rec)
+                raise ApplicationHostError(str(exc)) from exc
+
+            # Update the local hosted application.json record to match
+            record["state"] = status.state
+            if status.identity:
+                record["pid"] = status.identity.pid
+                record["process_start_ticks"] = status.identity.process_start_ticks
+            record["port"] = status.port
+            record["startup_duration_ms"] = status.startup_duration_ms
+            record["peak_memory_bytes"] = None
+            _atomic(self._directory(application_id) / "application.json", record)
+
+            return self._status_value(record)
+
+    def _sync_to_controller(self, application_id: str, record: dict[str, object]) -> None:
+        runtime_record = self.controller.store.load(application_id, application_id)
+        if not runtime_record and record.get("pid") is not None:
+            from servicefabric_process_runtime import ModuleRuntimeRecord
+            runtime_record = ModuleRuntimeRecord(
+                application_id=application_id,
+                module_id=application_id,
+                adapter_id="python-asgi",
+                state=record.get("state", "stopped"),
+                pid=record.get("pid"),
+                process_start_ticks=record.get("process_start_ticks"),
+                port=record.get("port"),
+                health=record.get("health", "unavailable"),
+                restart_count=record.get("restart_count", 0),
+                peak_memory_bytes=record.get("peak_memory_bytes"),
+            )
+            self.controller.store.save(runtime_record)
+        elif runtime_record:
+            runtime_record.pid = record.get("pid")
+            runtime_record.process_start_ticks = record.get("process_start_ticks")
+            runtime_record.port = record.get("port")
+            self.controller.store.save(runtime_record)
 
     def status(self, application_id: str) -> dict[str, object]:
+        # Optimize starting state observation to be non-blocking
+        try:
+            path = self._directory(application_id) / "application.json"
+            if path.is_file():
+                record = json.loads(path.read_text(encoding="utf-8"))
+                if record.get("state") == "starting":
+                    return self._status_value(record)
+        except Exception:
+            pass
+
         with self._lock(application_id):
             record = self._record(application_id)
-            alive = (
-                self._same_process(record)
-                if record.get("state") == "starting"
-                else self._owned_process(record)
-            )
-            if record.get("state") in {"starting", "running"} and not alive:
-                record["state"] = "failed"
-                _atomic(self._directory(application_id) / "application.json", record)
+            self._sync_to_controller(application_id, record)
+            status = self.controller.status(application_id, application_id)
+            
+            if record.get("state") == "starting" and status.state in {"starting", "running"}:
+                # Keep state as starting during startup to preserve legacy observation boundaries
+                record["state"] = "starting"
+            elif status.state == "stopped":
+                if record.get("state") not in {"built", "installed", "failed"}:
+                    record["state"] = "stopped"
+            else:
+                record["state"] = status.state
+            if status.identity:
+                record["pid"] = status.identity.pid
+                record["process_start_ticks"] = status.identity.process_start_ticks
+            else:
+                record["pid"] = None
+                record["process_start_ticks"] = None
+            record["port"] = status.port
+            _atomic(self._directory(application_id) / "application.json", record)
             return self._status_value(record)
 
     def resources(self, application_id: str) -> dict[str, object]:
         with self._lock(application_id):
             record = self._record(application_id)
-            pid = int(record.get("pid") or 0)
-            current = None
-            if self._owned_process(record):
-                try:
-                    for line in Path(f"/proc/{pid}/status").read_text().splitlines():
-                        if line.startswith("VmRSS:"):
-                            current = int(line.split()[1]) * 1024
-                except (OSError, ValueError, IndexError):
-                    current = None
-            previous_peak = record.get("peak_memory_bytes")
-            peak = max(
-                value for value in (previous_peak, current) if isinstance(value, int)
-            ) if any(isinstance(value, int) for value in (previous_peak, current)) else None
-            cpu = self._cpu_percent(pid) if self._owned_process(record) else None
-            record["peak_memory_bytes"] = peak
+            self._sync_to_controller(application_id, record)
+            snapshot = self.controller.resources(application_id, application_id)
+            record["peak_memory_bytes"] = snapshot.peak_memory_bytes
             _atomic(self._directory(application_id) / "application.json", record)
             declared = record["package"]["declared_resources"]
             return {
                 "declared": declared,
                 "measured": {
-                    "current_memory_bytes": current,
-                    "peak_memory_bytes": peak,
-                    "recent_cpu_percent": cpu,
+                    "current_memory_bytes": snapshot.current_memory_bytes,
+                    "peak_memory_bytes": snapshot.peak_memory_bytes,
+                    "recent_cpu_percent": snapshot.recent_cpu_percent,
                     "startup_duration_ms": record.get("startup_duration_ms"),
                     "request_count": record.get("request_count", 0),
                     "health": self._health(record),
@@ -653,23 +663,10 @@ class LocalApplicationHost:
     def stop(self, application_id: str) -> dict[str, object]:
         with self._lock(application_id):
             record = self._record(application_id)
-            starting = record.get("state") == "starting"
-            matches = self._same_process(record) if starting else self._owned_process(record)
-            if record.get("pid") and not matches:
-                if record.get("state") in {"starting", "running"}:
-                    record["state"] = "failed"
-                record.update({"pid": None, "port": None, "process_start_ticks": None})
-                _atomic(self._directory(application_id) / "application.json", record)
-                return self._status_value(record)
-            self._terminate_process(record, starting=starting)
-            record.update(
-                {
-                    "state": "stopped",
-                    "pid": None,
-                    "port": None,
-                    "process_start_ticks": None,
-                }
-            )
+            self._sync_to_controller(application_id, record)
+            status = self.controller.stop(application_id, application_id)
+            record["state"] = status.state
+            record.update({"pid": None, "port": None, "process_start_ticks": None})
             _atomic(self._directory(application_id) / "application.json", record)
             return self._status_value(record)
 
@@ -685,9 +682,27 @@ class LocalApplicationHost:
     def invoke(self, tool_id: str, arguments: dict[str, object]) -> dict[str, object]:
         descriptor = self.describe_capability(tool_id)
         arguments = self._validate_arguments(arguments)
+        
+        # Optimize to reject invocation instantly if state is starting on disk, without acquiring the lock
+        try:
+            path = self._directory("text-utility") / "application.json"
+            if path.is_file():
+                record = json.loads(path.read_text(encoding="utf-8"))
+                if record.get("state") == "starting":
+                    raise ApplicationHostError("application 'text-utility' is unavailable")
+        except ApplicationHostError:
+            raise
+        except Exception:
+            pass
+
         with self._lock("text-utility"):
             record = self._record("text-utility")
-            if record.get("state") != "running" or not self._owned_process(record):
+            
+            # Reject if process is still starting in the controller store
+            runtime_record = self.controller.store.load("text-utility", "text-utility")
+            is_starting = runtime_record is not None and runtime_record.state == "starting"
+            
+            if record.get("state") != "running" or is_starting or not self._owned_process(record):
                 raise ApplicationHostError("application 'text-utility' is unavailable")
             port = int(record["port"])
         body = json.dumps(arguments, sort_keys=True).encode()

@@ -17,7 +17,7 @@ class KitReference:
 
     def to_string(self) -> str:
         """Returns the canonical string representation."""
-        return f"{self.kit_id} @ServiceFabric/portfolio/applications/revisions/{self.kit_id}-{self.version}.json"
+        return f"{self.kit_id} @ServiceFabric/portfolio/applications/revisions/examples.hello-static-{self.version}.json"
 
 
 def parse_kit_reference(val: str) -> KitReference:

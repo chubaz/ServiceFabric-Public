@@ -9,6 +9,7 @@ from servicefabric_framework_kits.errors import (
     KitError,
     KitNotFound,
     PrimitiveMismatch,
+    KitValidationError,
 )
 from servicefabric_framework_kits.identifiers import KitReference, parse_kit_reference
 from servicefabric_framework_kits.catalog import FrameworkKitCatalog, get_default_catalog
@@ -19,8 +20,10 @@ from servicefabric_framework_kits.plans import (
     KitPlanningContext,
     KitValidationFinding,
     ProcessPlan,
+    ASGIProcessPlan,
 )
 from servicefabric_framework_kits.protocol import FrameworkKitAdapter
+from servicefabric_framework_kits.validation import require_valid_module
 
 __all__ = [
     "FrameworkKitDefinition",
@@ -29,6 +32,7 @@ __all__ = [
     "KitError",
     "KitNotFound",
     "PrimitiveMismatch",
+    "KitValidationError",
     "KitReference",
     "parse_kit_reference",
     "FrameworkKitCatalog",
@@ -39,5 +43,7 @@ __all__ = [
     "KitPlanningContext",
     "KitValidationFinding",
     "ProcessPlan",
+    "ASGIProcessPlan",
     "FrameworkKitAdapter",
+    "require_valid_module",
 ]

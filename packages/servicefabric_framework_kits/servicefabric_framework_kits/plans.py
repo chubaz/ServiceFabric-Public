@@ -38,16 +38,20 @@ class BuildPlan:
 
 
 @dataclass(frozen=True)
-class ProcessPlan:
-    """Service or process runtime execution plan."""
+class ASGIProcessPlan:
+    """Bounded launcher specification for Python ASGI processes."""
 
-    adapter_id: str
+    adapter_id: Literal["python-asgi"]
     module_id: str
     working_directory: str
-    entrypoint: str
-    arguments: tuple[str, ...]
-    environment_keys: tuple[str, ...]
-    needs_allocated_port: bool
+    application_import: str
+    reload: bool
+    host: Literal["127.0.0.1"] = "127.0.0.1"
+    port_binding: Literal["allocated"] = "allocated"
+    access_log: bool = True
+
+
+ProcessPlan = ASGIProcessPlan
 
 
 @dataclass(frozen=True)

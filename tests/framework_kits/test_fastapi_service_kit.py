@@ -63,15 +63,17 @@ class TestFastAPIServiceKit(unittest.TestCase):
 
         # 3. Development Plan (hot-reloading)
         dev_plan = adapter.development_plan(mod, self.context)
-        self.assertEqual(dev_plan.entrypoint, "uvicorn")
-        self.assertIn("--reload", dev_plan.arguments)
-        self.assertTrue(dev_plan.needs_allocated_port)
+        self.assertEqual(dev_plan.adapter_id, "python-asgi")
+        self.assertEqual(dev_plan.application_import, "app.main:app")
+        self.assertTrue(dev_plan.reload)
+        self.assertEqual(dev_plan.port_binding, "allocated")
 
         # 4. Runtime Plan (no reload)
         rt_plan = adapter.runtime_plan(mod, self.context)
-        self.assertEqual(rt_plan.entrypoint, "uvicorn")
-        self.assertNotIn("--reload", rt_plan.arguments)
-        self.assertTrue(rt_plan.needs_allocated_port)
+        self.assertEqual(rt_plan.adapter_id, "python-asgi")
+        self.assertEqual(rt_plan.application_import, "app.main:app")
+        self.assertFalse(rt_plan.reload)
+        self.assertEqual(rt_plan.port_binding, "allocated")
 
         # 5. Health Plan
         h_plan = adapter.health_plan(mod, self.context)

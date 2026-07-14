@@ -26,3 +26,8 @@ class KitNotFound(KitError):
 class PrimitiveMismatch(KitError):
     """Raised when a framework kit is assigned to a module using an incompatible primitive."""
     pass
+
+
+class KitValidationError(KitError):
+    """Raised when a module fails framework kit validation before planning."""
+    pass
