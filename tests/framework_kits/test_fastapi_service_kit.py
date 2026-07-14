@@ -64,14 +64,14 @@ class TestFastAPIServiceKit(unittest.TestCase):
         # 3. Development Plan (hot-reloading)
         dev_plan = adapter.development_plan(mod, self.context)
         self.assertEqual(dev_plan.adapter_id, "python-asgi")
-        self.assertEqual(dev_plan.application_import, "app.main:app")
+        self.assertEqual(dev_plan.application_import, "app:app")
         self.assertTrue(dev_plan.reload)
         self.assertEqual(dev_plan.port_binding, "allocated")
 
         # 4. Runtime Plan (no reload)
         rt_plan = adapter.runtime_plan(mod, self.context)
         self.assertEqual(rt_plan.adapter_id, "python-asgi")
-        self.assertEqual(rt_plan.application_import, "app.main:app")
+        self.assertEqual(rt_plan.application_import, "app:app")
         self.assertFalse(rt_plan.reload)
         self.assertEqual(rt_plan.port_binding, "allocated")
 
