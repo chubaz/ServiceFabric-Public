@@ -33,12 +33,22 @@ def main() -> int:
     parser.add_argument("--wave", default="wave-1")
     parser.add_argument("--task")
     parser.add_argument("--worktree", default=".")
+    parser.add_argument(
+        "--best-effort",
+        action="store_true",
+        help="do not fail when a completed external worktree is read-only",
+    )
     args = parser.parse_args()
 
     worktree = (ROOT / args.worktree).resolve()
     tasks = [args.task] if args.task else task_ids(args.wave)
     for task_id in tasks:
-        target = sync(task_id, worktree, args.wave)
+        try:
+            target = sync(task_id, worktree, args.wave)
+        except OSError:
+            if not args.best_effort:
+                raise
+            continue
         print(os.fspath(target.relative_to(worktree)))
     return 0
 

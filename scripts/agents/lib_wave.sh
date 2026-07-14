@@ -138,7 +138,7 @@ sf_mirror_handoff() {
     path="$(sf_lane_path "$lane")"
     canonical="$(sf_repo_root)/$(sf_canonical_handoff_path "$lane")"
     [[ -f "$canonical" ]] || return 1
-    python3 scripts/agent/sync_wave_handoffs.py --task "$lane" --worktree "$path" >/dev/null
+    python3 scripts/agent/sync_wave_handoffs.py --best-effort --task "$lane" --worktree "$path" >/dev/null
 }
 
 sf_contracts_path() {
