@@ -2,11 +2,11 @@
   "wave_id": "wave-05",
   "overall": "READY FOR SPECIALISTS",
   "lanes": {
-    "availability": "ready",
-    "invocation": "ready",
-    "http-adapter": "ready",
+    "availability": "accepted",
+    "invocation": "accepted",
+    "http-adapter": "accepted",
     "acceptance": "ready",
     "integration": "active"
   },
-  "next_action": "Launch specialists from the frozen bootstrap commit; review candidate commits without automatic merging."
+  "next_action": "Await the acceptance-lane candidate; do not perform final completion integration."
 }

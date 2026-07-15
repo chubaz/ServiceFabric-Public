@@ -29,11 +29,21 @@ The full `tests/agent` discovery also has one environment-dependent failure: its
 
 ## Decisions and Limitations
 
-No specialist-owned functionality was implemented or modified. All four specialist branches contain only bootstrap commit `b3bcacc`; no candidate is available for review or composition. `make verify-current` is deferred: the Wave-5 verification policy permits it once only at final closure.
+No specialist-owned functionality was implemented by the integration lane. `make verify-current` remains deferred: the Wave-5 verification policy permits it once only at final closure.
+
+## First implementation candidate review
+
+Accepted and merged, after complete candidate-diff review, ownership/frozen-contract checks, and focused verification:
+
+- Availability — candidate `371804cfada9873d3050c9948f382114c0b2e031`; integrated by `ee9a7dc47c3fa5e532a2a801e95b2734a62238f0`. Its three focused tests passed. The derived availability view remains separate from static registration and only reports availability for a running, healthy owning module.
+- HTTP adapter — candidate `419e1a752a4ddf60efd164c201d0961cad15d1bd`; integrated by `ef1762ed54e3768d5d323394b0c52a8bf403c614`. Its three focused tests passed. It is transport-only, enforces reviewed JSON bindings and literal loopback endpoints, and does not perform invocation or projection work.
+- Invocation — candidate `8c6cebe7074e9ec45bc2686778a3ea9c91aa973e`; integrated by `dc939078043c095996a6a36b23959c41f9e6ff94`. Its four focused tests passed. It resolves reviewed definitions, rejects unavailable capabilities before transport, and validates schemas before and after the transport call.
+
+Each candidate modified only its declared lane paths plus its canonical handoff. No frozen contract path changed. The acceptance lane was not reviewed or merged, and final completion integration was not performed.
 
 ## Blockers
 
-Await focused candidate commits and handoffs from availability, HTTP-adapter, invocation, and acceptance lanes. The final Wave-5 gate cannot run until their owned test directories and packages exist.
+Await the acceptance-lane candidate and review. Do not perform final completion integration or the final Wave-5 gate until that review and the later composition work are complete.
 
 ## Rollback
 
