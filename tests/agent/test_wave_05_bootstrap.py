@@ -50,11 +50,15 @@ class Wave05BootstrapTests(unittest.TestCase):
             self.assertIn(task(lane, "wave-05")["handoff_path"], prompt)
             self.assertLess(len(prompt.split()), 400)
 
-    def test_readiness_queue_and_json_records_are_bootstrapped(self) -> None:
+    def test_readiness_queue_and_json_records_reflect_completed_wave(self) -> None:
         readiness = json.loads(committed_readiness_path("wave-05").read_text(encoding="utf-8"))
         queue = json.loads(integration_queue_path("wave-05").read_text(encoding="utf-8"))
         self.assertEqual(readiness["contractsStatus"], "frozen")
-        self.assertEqual(queue["overall"], "READY FOR SPECIALISTS")
+        self.assertEqual(queue["overall"], "WAVE COMPLETE")
+        self.assertEqual(queue["lanes"]["integration"], "complete")
+        for lane in ("availability", "invocation", "http-adapter", "acceptance"):
+            self.assertEqual(queue["lanes"][lane], "accepted")
+            self.assertEqual(readiness["lanes"][lane]["final_state"], "integrated")
         for path in (ROOT / "config/agent/waves/wave-05").glob("**/*.json"):
             json.loads(path.read_text(encoding="utf-8"))
 

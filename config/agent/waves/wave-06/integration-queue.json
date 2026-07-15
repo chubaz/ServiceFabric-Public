@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-06",
+  "overall": "BOOTSTRAPPED",
+  "lanes": {
+    "mcp-projection": "pending",
+    "rest-projection": "pending",
+    "sdk-agent-projection": "pending",
+    "acceptance": "blocked_pending_composition",
+    "integration": "active"
+  },
+  "next_action": "Launch the three projection lanes from the frozen Wave-6 bootstrap commit; launch acceptance only after integration composition."
+}

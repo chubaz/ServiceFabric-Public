@@ -116,7 +116,12 @@ class WaveOperationalScriptTests(unittest.TestCase):
     def test_runtime_initializer_installs_locked_contracts_dependencies(self) -> None:
         content = (ROOT / "scripts/agents/init_worktree_runtime.sh").read_text(encoding="utf-8")
         self.assertIn('CONTRACTS="$WORKTREE/packages/servicefabric_contracts"', content)
+        self.assertIn(
+            'GENERATED_APPLICATION_RUNTIME="$WORKTREE/5_core_services/fastapi_base/requirements/runtime.lock"',
+            content,
+        )
         self.assertIn('"$CONTRACTS/requirements/test.lock"', content)
+        self.assertIn('"$GENERATED_APPLICATION_RUNTIME"', content)
         self.assertIn('pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"', content)
         for package in (
             "packages/servicefabric_capsules",

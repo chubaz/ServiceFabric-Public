@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-06",
+  "base_commit": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+  "contractsStatus": "frozen",
+  "lanes": {
+    "mcp-projection": {"branch": "agent/w6-mcp-projection", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "pending"},
+    "rest-projection": {"branch": "agent/w6-rest-projection", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "pending"},
+    "sdk-agent-projection": {"branch": "agent/w6-sdk-agent-projection", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "pending"},
+    "acceptance": {"branch": "agent/w6-acceptance", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "blocked_pending_composition"}
+  },
+  "integration": {"state": "bootstrapped", "branch": "integration/phase2-wave6", "contracts_status": "frozen", "wave_completion_status": "pending", "final_verification_status": "pending"}
+}
