@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.local/v1",
+  "kind": "OperationDefinition",
+  "metadata": {"id": "search-notes", "name": "Search notes"},
+  "spec": {"applicationId": "research-notes", "moduleId": "notes-api", "interfaceRef": "notes-api", "inputSchemaRef": "schemas/search-notes.input.schema.json", "outputSchemaRef": "schemas/search-notes.output.schema.json", "effects": [{"id": "notes.read", "kind": "data.read", "targetRef": "notes-db"}]}
+}

@@ -1,0 +1,6 @@
+{
+  "apiVersion": "servicefabric.local/v1",
+  "kind": "OperationDefinition",
+  "metadata": {"id": "create-note", "name": "Create note"},
+  "spec": {"applicationId": "research-notes", "moduleId": "notes-api", "interfaceRef": "notes-api", "inputSchemaRef": "schemas/create-note.input.schema.json", "outputSchemaRef": "schemas/note.output.schema.json", "effects": [{"id": "notes.write", "kind": "data.write", "targetRef": "notes-db"}]}
+}

@@ -1,0 +1,1 @@
+{"apiVersion":"servicefabric.local/v1","kind":"CapabilityDefinition","metadata":{"id":"notes.create","name":"Create note"},"spec":{"applicationId":"research-notes","operationRef":"create-note","effects":[{"id":"notes.write","kind":"data.write","targetRef":"notes-db"}]}}

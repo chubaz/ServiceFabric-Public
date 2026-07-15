@@ -37,6 +37,17 @@ class BlueprintModule:
 
 
 @dataclass(frozen=True)
+class BlueprintFile:
+    """A reviewed static JSON/YAML document materialized with a blueprint."""
+
+    path: str
+    document: Mapping[str, Any]
+
+    def to_document(self) -> dict[str, Any]:
+        return dict(deepcopy(dict(self.document)))
+
+
+@dataclass(frozen=True)
 class ApplicationBlueprint:
     """A deterministic, reviewed application module graph template."""
 
@@ -45,6 +56,7 @@ class ApplicationBlueprint:
     title: str
     description: str
     modules: tuple[BlueprintModule, ...]
+    static_files: tuple[BlueprintFile, ...] = ()
 
     def module_manifests(self) -> tuple[dict[str, Any], ...]:
         """Returns caller-owned ApplicationModule manifests in blueprint order."""

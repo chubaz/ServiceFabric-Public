@@ -1,0 +1,1 @@
+{"apiVersion":"servicefabric.local/v1","kind":"CapabilityDefinition","metadata":{"id":"notes.get","name":"Get note"},"spec":{"applicationId":"research-notes","operationRef":"get-note","effects":[{"id":"notes.read","kind":"data.read","targetRef":"notes-db"}]}}
