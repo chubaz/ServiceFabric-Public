@@ -773,17 +773,20 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             return 0, "apps-validate", {**wave3.validate(args.application_id), "json_mode": json_mode}
         if args.action == "dev":
             require_development_workspace(context)
+            if args.application_id != "research-notes":
+                raise CliUsageError("only the reviewed research-notes development application is available")
+            service = ResearchNotesDevelopmentService(context.layout)
             if args.dev_action == "prepare":
-                value = wave3.prepare(args.application_id)
+                value = service.prepare()
             elif args.dev_action == "start":
-                value = wave3.start(args.application_id)
+                value = service.start()
             elif args.dev_action == "status":
-                value = wave3.status(args.application_id)
+                value = service.status()
             elif args.dev_action == "restart":
-                value = wave3.restart(args.application_id, args.module)
+                value = service.restart(args.module)
             else:
-                value = wave3.stop(args.application_id)
-            return 0, f"apps-dev-{args.dev_action}", {**value, "json_mode": json_mode}
+                value = service.stop()
+            return 0, f"apps-dev-{args.dev_action}", {args.dev_action: value, "json_mode": json_mode}
         if args.action in {"create", "locate", "inspect"}:
             require_development_workspace(context)
 

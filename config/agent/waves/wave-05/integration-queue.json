@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-05",
-  "overall": "READY FOR SPECIALISTS",
+  "overall": "ACCEPTANCE RETURNED",
   "lanes": {
     "availability": "accepted",
     "invocation": "accepted",
     "http-adapter": "accepted",
-    "acceptance": "ready",
+    "acceptance": "returned",
     "integration": "active"
   },
-  "next_action": "Await the acceptance-lane candidate; do not perform final completion integration."
+  "next_action": "Remediate the integration-owned Research Notes development-runtime composition, then return the acceptance candidate for review."
 }

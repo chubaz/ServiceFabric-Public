@@ -137,29 +137,33 @@ class FreshWorkspaceIntegrationTests(unittest.TestCase):
             self.assertEqual(first_files, second_files)
 
             modules = dispatch(["--workspace", str(root), "apps", "modules", "research-notes"])[2]
-            self.assertEqual([module["id"] for module in modules["modules"]], ["notes-api"])
+            self.assertEqual(
+                [module["id"] for module in modules["modules"]],
+                ["notes-api", "notes-domain", "notes-web"],
+            )
             self.assertTrue(dispatch(["--workspace", str(root), "apps", "validate", "research-notes"])[2]["valid"])
             dispatch(["--workspace", str(root), "apps", "dev", "prepare", "research-notes"])
-            started = dispatch(["--workspace", str(root), "apps", "dev", "start", "research-notes"])[2]
+            started = dispatch(["--workspace", str(root), "apps", "dev", "start", "research-notes"])[2]["start"]
             self.assertEqual(started["state"], "running")
-            port = started["port"]
+            port = started["modules"]["notes-api"]["port"]
 
             with urlopen(Request(
-                f"http://127.0.0.1:{port}/notes?body=integration%20note",
-                data=b"",
+                f"http://127.0.0.1:{port}/notes",
+                data=b'{"title":"Integration","body":"integration note"}',
+                headers={"Content-Type": "application/json"},
                 method="POST",
             ), timeout=3) as response:
                 self.assertEqual(json.loads(response.read())['body'], "integration note")
-            with urlopen(f"http://127.0.0.1:{port}/notes/search?q=integration", timeout=3) as response:
-                self.assertEqual(len(json.loads(response.read())), 1)
+            with urlopen(f"http://127.0.0.1:{port}/notes?query=integration", timeout=3) as response:
+                self.assertEqual(len(json.loads(response.read())["notes"]), 1)
 
             restarted = dispatch([
                 "--workspace", str(root), "apps", "dev", "restart", "research-notes",
                 "--module", "notes-api",
-            ])[2]
+            ])[2]["restart"]
             self.assertEqual(restarted["state"], "running")
-            with urlopen(f"http://127.0.0.1:{restarted['port']}/notes/search?q=integration", timeout=3) as response:
-                self.assertEqual(len(json.loads(response.read())), 1)
+            with urlopen(f"http://127.0.0.1:{restarted['port']}/notes?query=integration", timeout=3) as response:
+                self.assertEqual(len(json.loads(response.read())["notes"]), 1)
 
             build = dispatch(["--workspace", str(root), "apps", "build", "research-notes"])[2]["build"]
             self.assertTrue(build["artifact_digest"].startswith("sha256:"))
@@ -167,8 +171,8 @@ class FreshWorkspaceIntegrationTests(unittest.TestCase):
                 build["artifact_digest"],
                 dispatch(["--workspace", str(root), "apps", "build", "research-notes"])[2]["build"]["artifact_digest"],
             )
-            stopped = dispatch(["--workspace", str(root), "apps", "dev", "stop", "research-notes"])[2]
+            stopped = dispatch(["--workspace", str(root), "apps", "dev", "stop", "research-notes"])[2]["stop"]
             self.assertEqual(stopped["state"], "stopped")
-            status = dispatch(["--workspace", str(root), "apps", "dev", "status", "research-notes"])[2]
+            status = dispatch(["--workspace", str(root), "apps", "dev", "status", "research-notes"])[2]["status"]
             self.assertEqual(status["state"], "stopped")
-            self.assertIsNone(status["port"])
+            self.assertIsNone(status["modules"]["notes-api"]["port"])
