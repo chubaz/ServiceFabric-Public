@@ -452,6 +452,17 @@ def parser() -> ServiceFabricArgumentParser:
         command = app_actions.add_parser(action, help=f"{action} a hosted local application")
         command.add_argument("application_id")
 
+    capabilities = commands.add_parser("capabilities", help="validate and register static application capabilities")
+    capability_actions = capabilities.add_subparsers(dest="action", required=True)
+    capability_validate = capability_actions.add_parser("validate", help="validate generated static declarations")
+    capability_validate.add_argument("application_id", metavar="APPLICATION")
+    capability_register = capability_actions.add_parser("register", help="register validated static declarations")
+    capability_register.add_argument("application_id", metavar="APPLICATION")
+    capability_list = capability_actions.add_parser("list", help="list registered static definitions")
+    capability_list.add_argument("--application", metavar="APPLICATION")
+    capability_describe = capability_actions.add_parser("describe", help="describe one registered static definition")
+    capability_describe.add_argument("capability_id", metavar="CAPABILITY_ID")
+
     call = commands.add_parser("call", help="call a governed hosted application capability")
     call.add_argument("tool_id")
     call.add_argument("--input", required=True, metavar="JSON")
@@ -920,6 +931,46 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "build": runtime.applications.build_application(request),
             "json_mode": json_mode,
         }
+    if args.command == "capabilities":
+        from .capabilities import (
+            register_generated_capabilities,
+            registry_for_workspace,
+            validate_generated_capabilities,
+        )
+
+        require_development_workspace(context)
+        if args.action == "validate":
+            value = validate_generated_capabilities(context.layout, args.application_id)
+            return 0, "capabilities-validate", {
+                "application_id": value.application_id,
+                "operations": [item.operation_id for item in value.operations],
+                "capabilities": [item.metadata.id for item in value.capabilities],
+                "valid": True,
+                "json_mode": json_mode,
+            }
+        registry = registry_for_workspace(context.layout)
+        if args.action == "register":
+            records = register_generated_capabilities(context.layout, args.application_id)
+            return 0, "capabilities-register", {
+                "application_id": args.application_id,
+                "capabilities": [record.definition.model_dump(mode="json", by_alias=True) for record in records],
+                "digests": [record.digest for record in records],
+                "json_mode": json_mode,
+            }
+        if args.action == "list":
+            records = registry.list(args.application)
+            return 0, "capabilities-list", {
+                "application_id": args.application,
+                "capabilities": [record.definition.model_dump(mode="json", by_alias=True) for record in records],
+                "json_mode": json_mode,
+            }
+        record = registry.describe(args.capability_id)
+        return 0, "capabilities-describe", {
+            "capability": record.definition.model_dump(mode="json", by_alias=True),
+            "digest": record.digest,
+            "applications": list(record.application_ids),
+            "json_mode": json_mode,
+        }
     if args.command == "artifacts":
         if args.action == "list":
             return 0, "artifacts-list", {
@@ -1218,6 +1269,45 @@ def human_output(command: str, value: object) -> str:
         if build["status"] == "success":
             return f"Built {build['application_id']} {build['revision']}\n  Artifact: {build['artifact_digest']}\n"
         return f"Build failed: {build['errors'][0]['message']}\n"
+    if command == "capabilities-validate":
+        return "\n".join(
+            [
+                f"Validated static capabilities for {data['application_id']}",
+                f"  Operations:   {', '.join(data['operations'])}",
+                f"  Capabilities: {', '.join(data['capabilities'])}",
+                "",
+            ]
+        )
+    if command == "capabilities-register":
+        identifiers = [item["metadata"]["id"] for item in data["capabilities"]]
+        return "\n".join(
+            [
+                f"Registered static capabilities for {data['application_id']}",
+                *[f"  {identifier}" for identifier in identifiers],
+                "",
+            ]
+        )
+    if command == "capabilities-list":
+        capabilities = data["capabilities"]
+        if not capabilities:
+            return "No static capabilities are registered.\n"
+        return "\n".join(
+            [
+                "Registered static capabilities",
+                *[f"  {item['metadata']['id']}" for item in capabilities],
+                "",
+            ]
+        )
+    if command == "capabilities-describe":
+        capability = data["capability"]
+        return "\n".join(
+            [
+                capability["metadata"]["id"],
+                f"  Operation: {capability['spec']['operationRef']}",
+                f"  Digest: {data['digest']}",
+                "",
+            ]
+        )
     if command == "artifacts-describe":
         artifact = data["artifact"]
         return f"Artifact {artifact['spec']['artifact_digest']}\n  Files: {len(artifact['spec']['files'])}\n"

@@ -50,3 +50,20 @@ This section records the initial review; the correction decisions below supersed
 - `capability-authoring` corrections `991507d97474abc05ac43ef578bbe1a1f49d8d70` and `32df8961939f606dc632ba2f161f73e1c42f2bce` with handoff `d762ca1168841289b79d6e72aab136d5639dc331` — accepted and integrated by `8022f87c6f9fa088b67fc6c80fd11e71af5c4930`. Four authoring, seven blueprint, three generator, all dependent model/registry, and the Wave-4 tests passed. Integration independently validated all three operations and all three capabilities with the accepted models.
 
 All specialist candidates are accepted. Final completion integration remains pending and was not performed during candidate review.
+
+## Completion Integration
+
+The integration lane now composes the accepted public operation-model, capability-model, capability-registry, and capability-authoring APIs into the exact static CLI surface:
+
+- `servicefabric capabilities validate APPLICATION`
+- `servicefabric capabilities register APPLICATION`
+- `servicefabric capabilities list [--application APPLICATION]`
+- `servicefabric capabilities describe CAPABILITY_ID`
+
+Validation loads generated declarations and resolves application, module, interface, operation, and schema references without opening or mutating the workspace registry. Registration validates first, rejects identity/digest conflicts before writing, and delegates deterministic idempotent storage to the accepted static registry. List and describe return the registry's canonical definitions. No invocation, availability, MCP, REST, Python, or `ToolDefinition` projection was added; application stop does not affect the static registry.
+
+`tests/wave_04/test_capability_cli.py` proves the Research Notes three-operation/three-capability set, exact references, database read/write effects, validation non-mutation, idempotency, conflict rejection, deterministic list/describe, persistence after stop, and absence of MCP/tool projections.
+
+`make verify-wave-04` now includes Wave 1–3 gates, all Wave-4 focused suites, dependency-lock checking, `pip check`, compilation, and `git diff --check`. The Wave-4 focused suites, dependency-lock check, compilation, and diff check pass in the capability registry virtual environment. The local checkout no longer has the provisioned `/tmp/servicefabric-ap-01a` prior-wave environment; substituting the capability registry environment caused AP-01A hosted-process health checks to time out because it does not provide the AP-01A runtime dependencies. Therefore full cross-wave verification remains pending in its required environments.
+
+Wave completion remains deliberately pending; no completion status was set.

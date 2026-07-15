@@ -43,10 +43,10 @@
     }
   },
   "integration": {
-    "state": "candidate-review-complete",
+    "state": "completion-integration-in-progress",
     "branch": "integration/phase2-wave4",
     "contracts_status": "frozen",
     "wave_completion_status": "pending",
-    "final_verification_status": "not-run"
+    "final_verification_status": "pending-required-environment"
   }
 }

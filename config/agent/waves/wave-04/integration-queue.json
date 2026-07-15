@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-04",
-  "overall": "CANDIDATES ACCEPTED - COMPLETION PENDING",
+  "overall": "COMPLETION INTEGRATION IN PROGRESS - WAVE PENDING",
   "lanes": {
     "operation-model": "accepted",
     "capability-model": "accepted",
@@ -8,5 +8,5 @@
     "capability-authoring": "accepted",
     "integration": "authority"
   },
-  "next_action": "Begin final completion integration when authorized."
+  "next_action": "Run the full Wave-4 gate in the provisioned prior-wave environments; do not mark the wave complete."
 }
