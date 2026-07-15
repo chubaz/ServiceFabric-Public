@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-capability-runtime"
+version = "0.1.0a1"
+description = "Deterministic runtime availability for ServiceFabric capabilities."
+requires-python = ">=3.11,<3.12"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
