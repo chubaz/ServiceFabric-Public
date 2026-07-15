@@ -462,6 +462,13 @@ def parser() -> ServiceFabricArgumentParser:
     capability_list.add_argument("--application", metavar="APPLICATION")
     capability_describe = capability_actions.add_parser("describe", help="describe one registered static definition")
     capability_describe.add_argument("capability_id", metavar="CAPABILITY_ID")
+    capability_availability = capability_actions.add_parser("availability", help="show runtime availability without changing static registration")
+    availability_target = capability_availability.add_mutually_exclusive_group(required=True)
+    availability_target.add_argument("capability_id", nargs="?", metavar="CAPABILITY_ID")
+    availability_target.add_argument("--application", metavar="APPLICATION")
+    capability_invoke = capability_actions.add_parser("invoke", help="invoke one available reviewed capability locally")
+    capability_invoke.add_argument("capability_id", metavar="CAPABILITY_ID")
+    capability_invoke.add_argument("--input", required=True, metavar="JSON")
 
     call = commands.add_parser("call", help="call a governed hosted application capability")
     call.add_argument("tool_id")
@@ -964,6 +971,31 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                 "capabilities": [record.definition.model_dump(mode="json", by_alias=True) for record in records],
                 "json_mode": json_mode,
             }
+        if args.action in {"availability", "invoke"}:
+            from .capability_runtime import CapabilityRuntimeService
+
+            service = CapabilityRuntimeService(context.layout)
+            if args.action == "availability":
+                if args.application is not None:
+                    records = [item.to_dict() for item in service.availability_for_application(args.application)]
+                    return 0, "capabilities-availability", {
+                        "application_id": args.application,
+                        "capabilities": records,
+                        "json_mode": json_mode,
+                    }
+                availability = service.availability(args.capability_id)
+                return 0, "capabilities-availability", {
+                    "availability": availability.to_dict(),
+                    "json_mode": json_mode,
+                }
+            try:
+                input_value = json.loads(args.input)
+            except json.JSONDecodeError as exc:
+                raise CliUsageError("--input must be valid JSON") from exc
+            return 0, "capabilities-invoke", {
+                "invocation": service.invoke(args.capability_id, input_value),
+                "json_mode": json_mode,
+            }
         record = registry.describe(args.capability_id)
         return 0, "capabilities-describe", {
             "capability": record.definition.model_dump(mode="json", by_alias=True),
@@ -1308,6 +1340,23 @@ def human_output(command: str, value: object) -> str:
                 "",
             ]
         )
+    if command == "capabilities-availability":
+        if "availability" in data:
+            availability = data["availability"]
+            return f"{availability['capabilityId']}: {availability['state']} ({availability['reason']})\n"
+        records = data["capabilities"]
+        if not records:
+            return "No registered capabilities for this application.\n"
+        return "\n".join(
+            [
+                f"{data['application_id']} capability availability",
+                *[f"  {item['capabilityId']}: {item['state']} ({item['reason']})" for item in records],
+                "",
+            ]
+        )
+    if command == "capabilities-invoke":
+        invocation = data["invocation"]
+        return f"{invocation['capability_id']}: invoked {invocation['operation_id']}\n"
     if command == "artifacts-describe":
         artifact = data["artifact"]
         return f"Artifact {artifact['spec']['artifact_digest']}\n  Files: {len(artifact['spec']['files'])}\n"

@@ -7,6 +7,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from servicefabric_client.capability_runtime import CapabilityRuntimeService
+from servicefabric_capability_invocation import SchemaValidationError
+from servicefabric_http_operation_adapter import HttpOperationAdapter
 from servicefabric_process_runtime import ProcessStatus
 from servicefabric_workspace import resolve_workspace
 
@@ -62,3 +64,27 @@ class Wave05IntegrationCompositionTests(unittest.TestCase):
         self.assertFalse(availability.available)
         self.assertEqual(availability.to_dict()["reason"], "module_stopped")
         self.assertEqual([item["metadata"]["id"] for item in listed["capabilities"]], ["notes.create", "notes.get", "notes.search"])
+
+    def test_cli_invokes_valid_input_through_reviewed_transport(self) -> None:
+        status = _ProcessStatuses(ProcessStatus("running", None, 8111, "healthy", 1.0))
+        output = {"id": 1, "title": "One", "body": "Body", "created_at": "2026-07-15T00:00:00Z"}
+        with patch("servicefabric_client.capability_runtime.ManagedProcessController", return_value=status), patch.object(
+            HttpOperationAdapter, "invoke", return_value=output
+        ) as transport:
+            code, command, value = self.call(
+                "capabilities", "invoke", "notes.create", "--input", '{"title":"One","body":"Body"}'
+            )
+
+        self.assertEqual((code, command), (0, "capabilities-invoke"))
+        self.assertEqual(value["invocation"]["output"], output)
+        transport.assert_called_once()
+
+    def test_cli_rejects_invalid_input_before_transport(self) -> None:
+        status = _ProcessStatuses(ProcessStatus("running", None, 8111, "healthy", 1.0))
+        with patch("servicefabric_client.capability_runtime.ManagedProcessController", return_value=status), patch.object(
+            HttpOperationAdapter, "invoke"
+        ) as transport:
+            with self.assertRaises(SchemaValidationError):
+                self.call("capabilities", "invoke", "notes.create", "--input", '{"title":"","body":"Body"}')
+
+        transport.assert_not_called()
