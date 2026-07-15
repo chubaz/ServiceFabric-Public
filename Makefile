@@ -107,7 +107,7 @@ verify-wave-01:
 	git diff --check
 
 WAVE3_PYTHON ?= python3
-WAVE3_PYTHONPATH := $(CURDIR)/clients/python:$(CURDIR)/packages/servicefabric_application_generator:$(CURDIR)/packages/servicefabric_application_builder:$(CURDIR)/packages/servicefabric_agent_guidance:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_workspace:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_contracts/src:$(CURDIR)/packages/servicefabric_builder
+WAVE3_PYTHONPATH := /usr/lib/python3/dist-packages:$(CURDIR)/clients/python:$(CURDIR)/packages/servicefabric_application_generator:$(CURDIR)/packages/servicefabric_application_builder:$(CURDIR)/packages/servicefabric_agent_guidance:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_workspace:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_contracts/src:$(CURDIR)/packages/servicefabric_builder
 WAVE3_ENV := env -u SERVICEFABRIC_WORKSPACE PYTHONPATH="$(WAVE3_PYTHONPATH)"
 
 verify-wave-03:
