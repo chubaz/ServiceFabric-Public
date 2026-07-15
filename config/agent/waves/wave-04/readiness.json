@@ -1,7 +1,57 @@
 {
   "wave_id": "wave-04",
   "base_commit": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
-  "contractsStatus": "bootstrap-pending-freeze",
-  "lanes": {},
-  "integration": {"state": "bootstrap", "branch": "integration/phase2-wave4"}
+  "contractsStatus": "frozen",
+  "lanes": {
+    "operation-model": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "3c0f867f444776efc21700722561482e90ecf1d0",
+      "accepted_commit": "3c0f867f444776efc21700722561482e90ecf1d0",
+      "integration_commit": "ba161c89ecb9f888e00071b89c30f213ef53f2f4",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "final_state": "integrated"
+    },
+    "capability-model": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "786d23fe197ec7c3fd407448334962ca11f44340",
+      "accepted_commit": "786d23fe197ec7c3fd407448334962ca11f44340",
+      "integration_commit": "99a3c721133485e2e1f9ba5b7da295ed50257de6",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "final_state": "integrated"
+    },
+    "capability-registry": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "48c41de8ca840233a63ebeb3b44dd13c5217e83a",
+      "integration_decision": "returned-for-correction",
+      "focused_verification": "failed",
+      "final_state": "correction-required",
+      "reasons": [
+        "candidate modifies capability-model and schema paths outside registry ownership",
+        "canonical capability-registry handoff remains the bootstrap placeholder",
+        "required tests/capability_registry suite is absent"
+      ]
+    },
+    "capability-authoring": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "2e3d9d06e1b0c3fd66bd72726cf05fe068df4406",
+      "integration_decision": "returned-for-correction",
+      "focused_verification": "failed",
+      "final_state": "correction-required",
+      "reasons": [
+        "candidate modifies capability-registry paths forbidden to the authoring lane",
+        "canonical capability-authoring handoff remains the bootstrap placeholder",
+        "required tests/capability_authoring suite is absent",
+        "registry commit 4eaab5a must be resubmitted from the capability-registry lane with passing preflight"
+      ]
+    }
+  },
+  "integration": {
+    "state": "candidate-review",
+    "branch": "integration/phase2-wave4",
+    "contracts_status": "frozen",
+    "wave_completion_status": "pending",
+    "final_verification_status": "not-run"
+  }
 }

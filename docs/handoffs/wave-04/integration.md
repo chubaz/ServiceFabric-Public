@@ -31,4 +31,15 @@ The broad `tests/agent` fresh-runtime test requires external package resolution 
 
 ## Blockers
 
-None for the contract freeze. Specialist candidate integration remains pending.
+The capability-registry and capability-authoring lanes require corrected candidates before final completion integration.
+
+## Candidate Review
+
+Review completed in dependency order:
+
+- `operation-model` candidate `3c0f867f444776efc21700722561482e90ecf1d0` — accepted and integrated by `ba161c89ecb9f888e00071b89c30f213ef53f2f4`. Ownership and frozen-contract checks passed; 4 focused tests and the dependent Wave-4 gate passed.
+- `capability-model` candidate `786d23fe197ec7c3fd407448334962ca11f44340` — accepted and integrated by `99a3c721133485e2e1f9ba5b7da295ed50257de6`. Ownership and frozen-contract checks passed; 4 focused tests, the operation-model tests, and the dependent Wave-4 gate passed.
+- `capability-registry` candidate `48c41de8ca840233a63ebeb3b44dd13c5217e83a` — returned for correction because it changes capability-model/schema/test paths, leaves the registry handoff as a placeholder, and has no registry test suite.
+- `capability-authoring` candidate `2e3d9d06e1b0c3fd66bd72726cf05fe068df4406` — returned for correction because it contains registry-owned changes and a registry handoff, leaves the authoring handoff as a placeholder, and has no authoring test suite. Registry commit `4eaab5a` may be resubmitted from the registry lane after its preflight passes.
+
+Readiness and integration-queue metadata record both accepted integrations and both correction requests. Final completion integration was not performed.

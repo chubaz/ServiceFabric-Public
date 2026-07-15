@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-04",
-  "overall": "BOOTSTRAP READY",
+  "overall": "CANDIDATE REVIEW COMPLETE - CORRECTIONS REQUIRED",
   "lanes": {
-    "operation-model": "pending",
-    "capability-model": "pending",
-    "capability-registry": "pending",
-    "capability-authoring": "pending",
+    "operation-model": "accepted",
+    "capability-model": "accepted",
+    "capability-registry": "correction-required",
+    "capability-authoring": "correction-required",
     "integration": "authority"
   },
-  "next_action": "Record the contract freeze, then launch specialist lanes in integration order."
+  "next_action": "Resubmit capability-registry and capability-authoring candidates from their owned branches; do not start final completion integration."
 }
