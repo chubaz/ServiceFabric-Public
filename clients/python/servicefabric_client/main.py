@@ -71,6 +71,7 @@ from servicefabric_workspace import (
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
+from .wave3 import Wave3ApplicationService
 
 
 VERSION = "0.1.0a1"
@@ -414,10 +415,25 @@ def parser() -> ServiceFabricArgumentParser:
     app_actions.add_parser("list", help="list reviewed applications")
 
     # New apps subcommands
-    create_app = app_actions.add_parser("create", help="create a new empty application source")
+    create_app = app_actions.add_parser("create", help="create a reviewed generated application")
     create_app.add_argument("application_id", help="the unique application ID")
-    create_app.add_argument("--name", required=True, help="descriptive name of the application")
-    create_app.add_argument("--empty", action="store_true", required=True, help="initialize an empty application project")
+    create_app.add_argument("--name", help="descriptive name of the application")
+    create_app.add_argument("--template", choices=("modular-web-app",), help="reviewed application template")
+    create_app.add_argument("--empty", action="store_true", help="initialize an empty application project")
+
+    modules = app_actions.add_parser("modules", help="list generated application modules")
+    modules.add_argument("application_id")
+    validate = app_actions.add_parser("validate", help="validate generated application manifests")
+    validate.add_argument("application_id")
+
+    dev = app_actions.add_parser("dev", help="manage a generated application development lifecycle")
+    dev_actions = dev.add_subparsers(dest="dev_action", required=True)
+    for dev_action in ("prepare", "start", "status", "stop"):
+        command = dev_actions.add_parser(dev_action)
+        command.add_argument("application_id")
+    restart = dev_actions.add_parser("restart")
+    restart.add_argument("application_id")
+    restart.add_argument("--module", required=True)
 
     locate_app = app_actions.add_parser("locate", help="get the directory path of an application")
     locate_app.add_argument("application_id")
@@ -727,6 +743,29 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
         request,result=runtime.invoke_application(args.tool_id,_parse_arguments(args.input))
         return 0,"call",{"request_id":request.spec.request_id,"revision":request.spec.target.revision_ref,"policy_outcome":"allow","result":result,"json_mode":json_mode}
     if args.command == "apps":
+        wave3 = Wave3ApplicationService(context)
+        if args.action == "create" and args.template:
+            require_development_workspace(context)
+            return 0, "apps-create", {**wave3.create(args.application_id, args.template), "json_mode": json_mode}
+        if args.action == "modules":
+            require_development_workspace(context)
+            return 0, "apps-modules", {"application_id": args.application_id, "modules": wave3.modules(args.application_id), "json_mode": json_mode}
+        if args.action == "validate":
+            require_development_workspace(context)
+            return 0, "apps-validate", {**wave3.validate(args.application_id), "json_mode": json_mode}
+        if args.action == "dev":
+            require_development_workspace(context)
+            if args.dev_action == "prepare":
+                value = wave3.prepare(args.application_id)
+            elif args.dev_action == "start":
+                value = wave3.start(args.application_id)
+            elif args.dev_action == "status":
+                value = wave3.status(args.application_id)
+            elif args.dev_action == "restart":
+                value = wave3.restart(args.application_id, args.module)
+            else:
+                value = wave3.stop(args.application_id)
+            return 0, f"apps-dev-{args.dev_action}", {**value, "json_mode": json_mode}
         if args.action in {"create", "locate", "inspect"}:
             require_development_workspace(context)
 
@@ -833,6 +872,9 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
                 "application": runtime.applications.describe_application(args.application_id),
                 "json_mode": json_mode,
             }
+        if args.application_id != "text-utility" and not args.revision:
+            require_development_workspace(context)
+            return 0, "apps-build", {"build": wave3.build(args.application_id), "json_mode": json_mode}
         if args.application_id == "text-utility":
             return 0,"apps-build",{"build":runtime.host.build(args.application_id),"json_mode":json_mode}
         if not args.revision:
