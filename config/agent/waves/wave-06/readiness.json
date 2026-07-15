@@ -3,10 +3,40 @@
   "base_commit": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
   "contractsStatus": "frozen",
   "lanes": {
-    "mcp-projection": {"branch": "agent/w6-mcp-projection", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "pending"},
-    "rest-projection": {"branch": "agent/w6-rest-projection", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "pending"},
-    "sdk-agent-projection": {"branch": "agent/w6-sdk-agent-projection", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "pending"},
+    "mcp-projection": {
+      "branch": "agent/w6-mcp-projection",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "cf08735ce1d07560d34130ce623d025756599215",
+      "focused_verification": "passed",
+      "integration_decision": "returned: candidate commits violate lane policy and projection consumes CapabilityRegistry directly",
+      "final_state": "returned"
+    },
+    "rest-projection": {
+      "branch": "agent/w6-rest-projection",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "1b847552921336c9b3d671d3bc91504dad01351a",
+      "focused_verification": "passed",
+      "integration_decision": "returned: frozen CapabilityRuntimeService has no public discovery or description operations",
+      "final_state": "returned"
+    },
+    "sdk-agent-projection": {
+      "branch": "agent/w6-sdk-agent-projection",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "c62aa2bbe103f12c641d60cf818f5b2acaf8f172",
+      "accepted_commit": "c62aa2bbe103f12c641d60cf818f5b2acaf8f172",
+      "integration_commit": "a530cf7d4fac4347e2dd520c14311c8ccbfad86c",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
     "acceptance": {"branch": "agent/w6-acceptance", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "blocked_pending_composition"}
   },
-  "integration": {"state": "bootstrapped", "branch": "integration/phase2-wave6", "contracts_status": "frozen", "wave_completion_status": "pending", "final_verification_status": "pending"}
+  "integration": {
+    "state": "awaiting_returned_candidates",
+    "branch": "integration/phase2-wave6",
+    "contracts_status": "frozen",
+    "candidate_review_status": "MCP and REST returned; SDK/agent accepted and merged",
+    "wave_completion_status": "pending",
+    "final_verification_status": "pending"
+  }
 }
