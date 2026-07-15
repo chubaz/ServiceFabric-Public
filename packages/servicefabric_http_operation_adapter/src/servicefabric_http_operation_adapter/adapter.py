@@ -123,7 +123,8 @@ class HttpOperationAdapter:
         path = getattr(binding, "path", None)
         request_content_type = getattr(binding, "request_content_type", _JSON_CONTENT_TYPE)
         response_content_type = getattr(binding, "response_content_type", _JSON_CONTENT_TYPE)
-        timeout = getattr(binding, "timeout_seconds", None) or self._default_timeout_seconds
+        configured_timeout = getattr(binding, "timeout_seconds", None)
+        timeout = self._default_timeout_seconds if configured_timeout is None else configured_timeout
         segments = path.split("/") if isinstance(path, str) else []
         if (
             method not in _ALLOWED_METHODS

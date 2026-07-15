@@ -57,7 +57,7 @@ class HttpOperationAdapterTests(unittest.TestCase):
 
     def test_rejects_non_loopback_or_unsafe_reviewed_routes(self) -> None:
         adapter = HttpOperationAdapter(opener=lambda *_: Response({}))
-        for endpoint, binding in (("http://localhost:8123", Binding()), ("https://127.0.0.1:8123", Binding()), ("http://127.0.0.1:8123", Binding(path="/notes?debug=1")), ("http://127.0.0.1:8123", Binding(method="TRACE"))):
+        for endpoint, binding in (("http://localhost:8123", Binding()), ("https://127.0.0.1:8123", Binding()), ("http://127.0.0.1:8123", Binding(path="/notes?debug=1")), ("http://127.0.0.1:8123", Binding(method="TRACE")), ("http://127.0.0.1:8123", Binding(timeout_seconds=0))):
             with self.assertRaises(HttpOperationAdapterError) as error:
                 adapter.invoke(endpoint, binding, {})
             self.assertIn(error.exception.code, {"invalid_endpoint", "invalid_binding"})
