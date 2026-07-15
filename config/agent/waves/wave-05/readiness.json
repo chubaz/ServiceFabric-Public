@@ -45,11 +45,13 @@
     }
   },
   "integration": {
-    "state": "active",
+    "state": "complete",
     "branch": "integration/phase2-wave5",
     "contracts_status": "frozen",
     "candidate_review_status": "availability, invocation, http-adapter, and corrected acceptance candidates accepted",
-    "wave_completion_status": "pending",
-    "final_verification_status": "passed"
+    "wave_completion_status": "complete",
+    "final_verification_status": "passed",
+    "verification_head": "ea72d6c8fc14980c317b48933a3056a760cd5e8b",
+    "final_head": "recorded_by_completion_commit"
   }
 }

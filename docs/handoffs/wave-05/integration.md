@@ -1,5 +1,11 @@
 # Wave-5 Integration Handoff
 
+## Completion decision
+
+Wave‑5 is closed by integration authority on `integration/phase2-wave5`. All four specialist lanes are integrated, the corrected acceptance candidate is accepted, contracts remain frozen, and `integration-queue.json` is `WAVE COMPLETE`. This closes Wave‑5 only; no merge into `main` was performed.
+
+Final verified integration HEAD before this closure record: `ea72d6c8fc14980c317b48933a3056a760cd5e8b` (`docs(integration): accept Wave-5 acceptance candidate`).
+
 Lane: `integration`
 Branch: `integration/phase2-wave5`
 Base commit: `53f53ca8a4a9a47887902b84a91bc27a812e9483`
@@ -18,6 +24,9 @@ Candidate commit: `e67f3d1e9aab33e76a2cb06352ac85b336a45b81`
 - `make verify-wave-05` — passed after all corrected candidates were integrated.
 - `git diff --check` — passed before this handoff update.
 - `python3 -m unittest discover -s tests/wave_05 -v` — passed (one corrected acceptance journey).
+- `make verify-current` — passed.
+- `make agent-handoff` — passed and refreshed `.agent/handoff.md`.
+- `python3 scripts/agent/wave_completion.py --wave wave-05` — initially reported only the two expected pending closure records; it passes with this completion state.
 
 The acceptance lane's disposable runtime required the reviewed FastAPI/Uvicorn dependencies before process startup; no repository dependency metadata was changed.
 
@@ -32,7 +41,7 @@ The acceptance lane's disposable runtime required the reviewed FastAPI/Uvicorn d
 
 ## Decisions and Limitations
 
-The integration lane repaired generated-application startup before re-review. `make verify-current` remains deferred: the Wave-5 verification policy permits it once only at final closure.
+The integration lane repaired generated-application startup before re-review. The one permitted final `make verify-current` run passed. The acceptance journey emits Python `ResourceWarning` messages when managed `Popen` objects are finalized, but AP‑00C stop ownership completes and the tests pass without stale runtime records.
 
 ## First implementation candidate review
 
@@ -44,12 +53,12 @@ Accepted and merged, after complete candidate-diff review, ownership/frozen-cont
 
 The corrected acceptance candidate `e67f3d1e9aab33e76a2cb06352ac85b336a45b81` was accepted and merged by `2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d`. Relative to the repaired integration head, its complete delta contains only `tests/wave_05/test_research_notes_acceptance.py` and `docs/handoffs/wave-05/acceptance.md`. Its journey proves static registration, health-derived availability, successful create/search invocation, schema rejection before transport, stop-derived unavailability, and retained definitions.
 
-Each candidate modified only its declared lane paths plus its canonical handoff. No frozen contract path changed. Final completion integration has not been performed.
+Each candidate modified only its declared lane paths plus its canonical handoff. No frozen contract path changed. Final completion integration is recorded by this commit.
 
 ## Blockers
 
-No candidate-review or focused-verification blocker remains. Wave‑5 remains incomplete pending the separate final completion review.
+No candidate-review, verification, or completion blocker remains.
 
 ## Rollback
 
-Revert merge `2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d` and the acceptance-record commit. No frozen contract changed.
+Revert this closure commit to restore the verified-but-pending state. If functional rollback is required, then revert acceptance record `ea72d6c8fc14980c317b48933a3056a760cd5e8b`, merge `2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d`, and runtime repair `c0b81f825f2326da258357e9cd5ae186ce187012` in dependency order. No frozen contract changed.

@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-05",
-  "overall": "VERIFIED - COMPLETION PENDING",
+  "overall": "WAVE COMPLETE",
   "lanes": {
     "availability": "accepted",
     "invocation": "accepted",
     "http-adapter": "accepted",
     "acceptance": "accepted",
-    "integration": "active"
+    "integration": "complete"
   },
-  "next_action": "Perform the final Wave-5 completion review; do not mark the wave complete yet."
+  "next_action": "Wave complete. No further Wave-5 integration action is required."
 }
