@@ -108,7 +108,7 @@ verify-wave-01:
 
 WAVE3_PYTHON ?= python3
 WAVE3_PYTHONPATH := /usr/lib/python3/dist-packages:$(CURDIR)/clients/python:$(CURDIR)/packages/servicefabric_application_generator:$(CURDIR)/packages/servicefabric_application_builder:$(CURDIR)/packages/servicefabric_agent_guidance:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_workspace:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_contracts/src:$(CURDIR)/packages/servicefabric_builder
-WAVE3_ENV := env -u SERVICEFABRIC_WORKSPACE PYTHONPATH="$(WAVE3_PYTHONPATH)"
+WAVE3_ENV := env -u SERVICEFABRIC_WORKSPACE PATH="$(dir $(WAVE3_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE3_PYTHONPATH)"
 
 verify-wave-03:
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/wave_03 -v
@@ -116,7 +116,17 @@ verify-wave-03:
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/application_builder -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/agent_guidance -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/blueprints -v
-	$(MAKE) verify-wave-01
+	$(WAVE3_ENV) $(WAVE3_PYTHON) scripts/agent/wave_completion.py --wave wave-1
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/application_assembly -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/resource_bindings -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/framework_kits -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/blueprints -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/integration -p 'test_wave_01_acceptance.py' -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/adversarial -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/architecture -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/modules -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s packages/servicefabric_workspace/tests -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/local_ux -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/ap_01a -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s packages/servicefabric_workspace/tests -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/workspace -v
