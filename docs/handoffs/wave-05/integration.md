@@ -43,7 +43,7 @@ Each candidate modified only its declared lane paths plus its canonical handoff.
 
 ## Blockers
 
-Await the acceptance-lane candidate and review. Do not perform final completion integration or the final Wave-5 gate until that review and the later composition work are complete.
+The acceptance candidate `a0f9c12d55a88e61d5c7aea18cb187d3f20b35ea` was returned. Its complete delta is confined to `tests/wave_05/test_research_notes_acceptance.py` and its canonical handoff, and it invokes no redundant full-wave suite. Its single focused test fails before acceptance assertions because `apps dev start research-notes` routes through the Wave-3 development service and its process health check times out. The candidate is not merged; Wave-5 final verification is deferred until this integration-owned runtime composition issue is remediated and the acceptance test passes.
 
 ## Rollback
 
