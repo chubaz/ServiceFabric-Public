@@ -78,12 +78,12 @@ class ResearchNotesDevelopmentService:
 
     def __init__(self, workspace: WorkspaceLayout, repository_root: Path | None = None) -> None:
         self.workspace = workspace
-        self.repository_root = (repository_root or Path(__file__).resolve().parents[3]).resolve()
-        self.source_root = self.repository_root / "examples" / APPLICATION_ID
+        self.application = self._application_layout()
+        self.repository_root = (repository_root or self.application.root).resolve()
+        self.source_root = self.application.root
         if not self.source_root.is_dir():
             raise ValueError(f"Research Notes source is unavailable at {self.source_root}")
         self.assembly = self._load_assembly()
-        self.application = self._application_layout()
         self.resources = _LocalResourceLifecycle(workspace)
         self.processes = ManagedProcessController(workspace)
         self._plans: dict[str, ResolvedProcessPlan | None] = {}
@@ -113,7 +113,7 @@ class ResearchNotesDevelopmentService:
         return self._status_value(self.supervisor.stop(APPLICATION_ID))
 
     def _load_assembly(self) -> ApplicationAssembly:
-        manifests = tuple(sorted(self.source_root.glob("*/module.yaml")))
+        manifests = tuple(sorted(self.application.modules.glob("*/module.yaml")))
         if len(manifests) != 3:
             raise ValueError("Research Notes must declare exactly three module manifests")
         assembly = load_application_assembly_from_files(manifests)
@@ -134,29 +134,14 @@ class ResearchNotesDevelopmentService:
         return assembly
 
     def _application_layout(self) -> ApplicationLayout:
-        metadata = self.workspace.state / "applications" / APPLICATION_ID
-        return ApplicationLayout(
-            application_id=APPLICATION_ID,
-            root=self.repository_root,
-            metadata=metadata,
-            modules=self.source_root,
-            tests=self.source_root / "tests",
-            documentation=self.source_root / "docs",
-            agents_file=self.source_root / "AGENTS.md",
-            readme_file=self.source_root / "README.md",
-            architecture_file=self.source_root / "ARCHITECTURE.md",
-            development_file=self.source_root / "DEVELOPMENT.md",
-            application_definition=self.source_root / "application.yaml",
-            blueprint=metadata / "blueprint.yaml",
-            bindings=metadata / "bindings.yaml",
-            development_config=metadata / "development.yaml",
-            generated=metadata / "generated",
-            composition_lock=metadata / "application.lock",
-        )
+        application = ApplicationLayout.from_application_id(APPLICATION_ID, self.workspace.applications)
+        if not application.root.is_dir():
+            raise ValueError(f"Research Notes application is unavailable at {application.root}")
+        return application
 
     def _context(self) -> KitPlanningContext:
         return KitPlanningContext(
-            workspace_root=self.repository_root,
+            workspace_root=self.application.root,
             state_root=self.workspace.state,
             artifacts_dir=self.workspace.artifacts / APPLICATION_ID,
             logs_dir=self.workspace.logs / "applications" / APPLICATION_ID,
@@ -195,8 +180,8 @@ class ResearchNotesDevelopmentService:
             )
             environment = dict(resolved.environment)
             environment.update(bindings)
-            domain_path = self.repository_root / "examples" / APPLICATION_ID / "domain"
-            environment["PYTHONPATH"] = os.pathsep.join((str(domain_path), environment["PYTHONPATH"]))
+            domain_path = self.application.modules / "notes-domain"
+            environment["PYTHONPATH"] = os.pathsep.join((str(domain_path), environment.get("PYTHONPATH", "")))
             self._plans[module.module_id] = dataclasses.replace(resolved, environment=environment)
             return self._plans[module.module_id]
         if isinstance(process_plan, (ViteDevelopmentPlan, StaticWebRuntimePlan)):
@@ -213,10 +198,10 @@ class ResearchNotesDevelopmentService:
                 adapter_id="reviewed-react-static-web",
                 executable=Path(sys.executable),
                 arguments=(
-                    str(Path(__file__).with_name("static_web_server.py")), "--root", str(self.repository_root / module.source),
+                    str(Path(__file__).with_name("static_web_server.py")), "--root", str(self.application.root / module.source),
                     "--host", "127.0.0.1", "--port", str(port),
                 ),
-                working_directory=self.repository_root / module.source,
+                working_directory=self.application.root / module.source,
                 environment=environment,
                 log_path=log_path,
                 port=port,

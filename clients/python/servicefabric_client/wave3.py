@@ -111,44 +111,18 @@ class Wave3ApplicationService:
 
     @staticmethod
     def _write_notes_source(layout: ApplicationLayout) -> None:
-        source = layout.modules / "notes-api"
-        source.mkdir(parents=True, exist_ok=True)
-        (source / "app.py").write_text(
-            """from __future__ import annotations
-
-import sqlite3
-from pathlib import Path
-from fastapi import FastAPI, Query
-
-app = FastAPI()
-DATABASE = Path(__file__).with_name("notes.sqlite3")
-
-def _connect() -> sqlite3.Connection:
-    connection = sqlite3.connect(DATABASE)
-    connection.execute("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, body TEXT NOT NULL)")
-    return connection
-
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
-
-@app.post("/notes")
-def create_note(body: str) -> dict[str, object]:
-    with _connect() as connection:
-        cursor = connection.execute("INSERT INTO notes(body) VALUES (?)", (body,))
-        return {"id": cursor.lastrowid, "body": body}
-
-@app.get("/notes/search")
-def search_notes(q: str = Query(default="")) -> list[dict[str, object]]:
-    with _connect() as connection:
-        rows = connection.execute(
-            "SELECT id, body FROM notes WHERE body LIKE ? ORDER BY id", (f"%{q}%",)
-        ).fetchall()
-    return [{"id": row[0], "body": row[1]} for row in rows]
-""",
-            encoding="utf-8",
-        )
-        (source / "notes.sqlite3").touch()
+        """Materialize reviewed source beside the generated module manifests."""
+        reviewed_root = Path(__file__).resolve().parents[3] / "examples" / "research-notes"
+        for module_id in ("notes-domain", "notes-api", "notes-web"):
+            source_name = module_id.removeprefix("notes-")
+            source = reviewed_root / source_name
+            destination = layout.modules / module_id
+            for path in source.rglob("*"):
+                if not path.is_file() or path.name == "module.yaml" or "__pycache__" in path.parts:
+                    continue
+                target = destination / path.relative_to(source)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(path, target)
 
     def modules(self, application_id: str) -> list[dict[str, Any]]:
         layout = self._layout(application_id)

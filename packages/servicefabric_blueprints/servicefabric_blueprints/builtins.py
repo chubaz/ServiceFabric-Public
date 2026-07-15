@@ -46,7 +46,7 @@ RESEARCH_NOTES_BLUEPRINT = ApplicationBlueprint(
     blueprint_id="research-notes",
     version="0.1.0",
     title="Research Notes",
-    description="Single service module with an explicit local database resource request.",
+    description="Reviewed domain library, FastAPI API, and React web modules with a local SQLite binding.",
     modules=(
         BlueprintModule.from_manifest(
             {
@@ -64,7 +64,7 @@ RESEARCH_NOTES_BLUEPRINT = ApplicationBlueprint(
                         "resources": [
                             {
                                 "id": "notes-db",
-                                "type": "postgres",
+                                "type": "sqlite",
                                 "scope": "application",
                             }
                         ]
@@ -75,6 +75,41 @@ RESEARCH_NOTES_BLUEPRINT = ApplicationBlueprint(
                         "shutdown": {"timeoutSeconds": 10},
                     },
                     "resourceExpectations": {"memoryMiB": 256, "cpuCores": 0.25},
+                },
+            }
+        ),
+        BlueprintModule.from_manifest(
+            {
+                "apiVersion": "servicefabric.local/v1",
+                "kind": "ApplicationModule",
+                "metadata": {"id": "notes-domain", "version": "0.2.0"},
+                "spec": {
+                    "primitive": "library",
+                    "kit": "python-library @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
+                    "source": "examples/research-notes/domain",
+                    "provides": [{"id": "notes-domain", "type": "python-library"}],
+                    "lifecycle": {"shutdown": {"timeoutSeconds": 5}},
+                    "resourceExpectations": {"memoryMiB": 64, "cpuCores": 0.1},
+                },
+            }
+        ),
+        BlueprintModule.from_manifest(
+            {
+                "apiVersion": "servicefabric.local/v1",
+                "kind": "ApplicationModule",
+                "metadata": {"id": "notes-web", "version": "0.2.0"},
+                "spec": {
+                    "primitive": "web",
+                    "kit": "react-web @ServiceFabric/portfolio/applications/revisions/examples.hello-static-1.0.0.json",
+                    "source": "examples/research-notes/web",
+                    "provides": [{"id": "notes-web", "type": "http", "protocol": "http"}],
+                    "requires": {"interfaces": [{"id": "notes-api"}]},
+                    "lifecycle": {
+                        "startAfter": ["notes-api"],
+                        "readiness": {"type": "http", "path": "/"},
+                        "shutdown": {"timeoutSeconds": 10},
+                    },
+                    "resourceExpectations": {"memoryMiB": 128, "cpuCores": 0.1},
                 },
             }
         ),
