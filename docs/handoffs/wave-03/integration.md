@@ -23,26 +23,43 @@ specialist-owned. No candidate was rejected or returned.
 
 Wave-3 contracts recorded as frozen. The base is an ancestor of the integration HEAD.
 
-## Tests and exact results
+## Final verification evidence
 
-- `make agent-preflight`: pass.
-- Wave-task preflight: pass.
-- Agent baseline: fails in 9 operational-script fixtures due to missing Wave-1 lane variables.
-- `make verify-wave-03`: unavailable; no Make target exists on the bootstrap base.
-- `make verify-current`: pass.
-- `git diff --check`: run after this handoff update.
+Verification was run from the integration worktree with:
 
-## Known limitations
+```bash
+WAVE3_PYTHON=/tmp/servicefabric-ap-01a/bin/python make verify-wave-03
+make verify-current
+make agent-handoff
+scripts/agents/wave_status.sh --wave wave-03
+git diff --check
+```
 
-Final Wave-3 completion integration remains pending by instruction. The baseline harness still
-has the previously recorded Wave-1 fixture mismatch, and the `make verify-wave-03` target is
-still absent.
+Results:
+
+- Wave-3 acceptance: 6 tests passed.
+- Generator: 3 tests passed.
+- Application builder: 4 tests passed.
+- Agent guidance: 4 tests passed.
+- Blueprint, Wave-1, workspace, module, local UX, and AP-01A regressions passed.
+- AP-01A: 28 tests passed.
+- Dependency lock checks passed.
+- `pip check`: `No broken requirements found.`
+- Compilation passed.
+- `git diff --check`: passed.
+- `make verify-current`: passed.
+- Final verification head before this readiness commit: `92674c957aea088e50509175b2fd66cc3e30d3f8`.
+
+The verification target isolates `pip check` from the repository PYTHONPATH so it checks the
+selected interpreter environment rather than the system Markdown installation.
 
 ## Integration notes
 
 Do not implement specialist functionality in this lane. Candidate review and ordered merges are
 complete; remaining work is the final composition/completion gate.
 
-## Recommendation
+## Completion decision
 
-Contracts remain frozen. Wave-3 is `INTEGRATION IN PROGRESS`, not complete.
+Contracts remain frozen. Every specialist lane is integrated, the ordered integration work is
+complete, and the queue is `WAVE COMPLETE`. The completion commit records the final repository
+HEAD returned by Git after commit creation. No merge into main was performed.

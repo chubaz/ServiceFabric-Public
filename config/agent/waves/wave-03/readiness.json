@@ -45,11 +45,13 @@
     }
   },
   "integration": {
-    "state": "active",
+    "state": "complete",
     "branch": "integration/phase1-wave3",
     "contracts_status": "frozen",
-    "wave_completion_status": "in_progress",
-    "final_verification_status": "pending",
-    "current_integration_head": "25d4b84b80ef21746c00003f1db936fd51967ca0"
+    "wave_completion_status": "complete",
+    "final_verification_status": "passed",
+    "verification_head": "92674c957aea088e50509175b2fd66cc3e30d3f8",
+    "current_integration_head": "92674c957aea088e50509175b2fd66cc3e30d3f8",
+    "final_head": "recorded_by_completion_commit"
   }
 }

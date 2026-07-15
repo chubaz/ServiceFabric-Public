@@ -132,7 +132,7 @@ verify-wave-03:
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/workspace -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/modules -v
 	$(WAVE3_ENV) $(WAVE3_PYTHON) scripts/dependencies/check_python_locks.py
-	$(WAVE3_ENV) $(WAVE3_PYTHON) -m pip check
+	env -u SERVICEFABRIC_WORKSPACE -u PYTHONPATH PATH="$(dir $(WAVE3_PYTHON)):$(PATH)" $(WAVE3_PYTHON) -m pip check
 	$(WAVE3_ENV) $(WAVE3_PYTHON) -m compileall packages/servicefabric_application_generator packages/servicefabric_application_builder packages/servicefabric_agent_guidance packages/servicefabric_application_model packages/servicefabric_application_assembly packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_artifacts packages/servicefabric_workspace packages/servicefabric_process_runtime clients/python services/application_host tests/wave_03 tests/application_generator tests/application_builder tests/agent_guidance tests/blueprints tests/ap_01a tests/workspace tests/modules
 	git diff --check
 verify-application-workspace:

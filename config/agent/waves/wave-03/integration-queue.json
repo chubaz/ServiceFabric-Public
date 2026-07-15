@@ -1,7 +1,7 @@
 {
   "wave_id": "wave-03",
-  "overall": "INTEGRATION IN PROGRESS",
+  "overall": "WAVE COMPLETE",
   "lanes": {"generator": "accepted", "application-builder": "accepted", "agent-guidance": "accepted", "acceptance": "accepted", "integration": "authority"},
   "contractsStatus": "frozen",
-  "next_action": "Run the remaining Wave-3 composition and final verification gates; do not mark the wave complete yet."
+  "next_action": "No further Wave-3 integration action; formal completion recorded."
 }
