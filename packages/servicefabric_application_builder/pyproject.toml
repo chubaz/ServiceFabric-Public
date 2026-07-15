@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-application-builder"
+version = "0.1.0a1"
+description = "Deterministic multi-module application build coordination for ServiceFabric."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-application-assembly==0.1.0a1",
+  "servicefabric-artifacts==0.1.0a1",
+  "servicefabric-framework-kits==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["servicefabric_application_builder*"]
