@@ -31,7 +31,7 @@ The broad `tests/agent` fresh-runtime test requires external package resolution 
 
 ## Blockers
 
-The capability-registry and capability-authoring lanes require corrected candidates before final completion integration.
+The capability-authoring lane requires a corrected candidate before final completion integration.
 
 ## Candidate Review
 
@@ -42,4 +42,11 @@ Review completed in dependency order:
 - `capability-registry` candidate `48c41de8ca840233a63ebeb3b44dd13c5217e83a` — returned for correction because it changes capability-model/schema/test paths, leaves the registry handoff as a placeholder, and has no registry test suite.
 - `capability-authoring` candidate `2e3d9d06e1b0c3fd66bd72726cf05fe068df4406` — returned for correction because it contains registry-owned changes and a registry handoff, leaves the authoring handoff as a placeholder, and has no authoring test suite. Registry commit `4eaab5a` may be resubmitted from the registry lane after its preflight passes.
 
-Readiness and integration-queue metadata record both accepted integrations and both correction requests. Final completion integration was not performed.
+This section records the initial review; the correction decisions below supersede its registry status. Final completion integration was not performed.
+
+## Correction Review
+
+- `capability-registry` correction `df27a6625bf09f3d76e8d0c91d0265d63ac0761d` with handoff `3866227a9b3f4363654e86790391e76af83e5686` — accepted and integrated by `1d5a705e40c544eafc643ee314317456edddb49f`. Eight focused registry tests and all dependent operation, capability-model, registry, and Wave-4 tests passed.
+- `capability-authoring` correction `991507d97474abc05ac43ef578bbe1a1f49d8d70` with handoff `3dd0121af6b7d0506a97ae4ba2bae58d0b1b3b09` — returned for correction. Its focused authoring, blueprint, and generator tests pass, but the generated/checked-in documents fail the accepted operation and capability model validators.
+
+The authoring correction must add model-backed conformance tests and emit the accepted `OperationDefinition` and `CapabilityDefinition` shapes. Final completion integration remains pending.

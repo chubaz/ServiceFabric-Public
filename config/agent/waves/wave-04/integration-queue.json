@@ -4,9 +4,9 @@
   "lanes": {
     "operation-model": "accepted",
     "capability-model": "accepted",
-    "capability-registry": "correction-required",
+    "capability-registry": "accepted",
     "capability-authoring": "correction-required",
     "integration": "authority"
   },
-  "next_action": "Resubmit capability-registry and capability-authoring candidates from their owned branches; do not start final completion integration."
+  "next_action": "Resubmit capability-authoring documents that validate against the accepted OperationDefinition and CapabilityDefinition models; do not start final completion integration."
 }

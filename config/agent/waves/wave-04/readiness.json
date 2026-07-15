@@ -23,27 +23,25 @@
     },
     "capability-registry": {
       "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
-      "candidate_head": "48c41de8ca840233a63ebeb3b44dd13c5217e83a",
-      "integration_decision": "returned-for-correction",
-      "focused_verification": "failed",
-      "final_state": "correction-required",
-      "reasons": [
-        "candidate modifies capability-model and schema paths outside registry ownership",
-        "canonical capability-registry handoff remains the bootstrap placeholder",
-        "required tests/capability_registry suite is absent"
-      ]
+      "candidate_head": "3866227a9b3f4363654e86790391e76af83e5686",
+      "accepted_commit": "df27a6625bf09f3d76e8d0c91d0265d63ac0761d",
+      "integration_commit": "1d5a705e40c544eafc643ee314317456edddb49f",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "dependent_verification": "passed",
+      "final_state": "integrated"
     },
     "capability-authoring": {
       "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
-      "candidate_head": "2e3d9d06e1b0c3fd66bd72726cf05fe068df4406",
+      "candidate_head": "3dd0121af6b7d0506a97ae4ba2bae58d0b1b3b09",
       "integration_decision": "returned-for-correction",
-      "focused_verification": "failed",
+      "focused_verification": "passed",
+      "dependent_verification": "failed",
       "final_state": "correction-required",
       "reasons": [
-        "candidate modifies capability-registry paths forbidden to the authoring lane",
-        "canonical capability-authoring handoff remains the bootstrap placeholder",
-        "required tests/capability_authoring suite is absent",
-        "registry commit 4eaab5a must be resubmitted from the capability-registry lane with passing preflight"
+        "operation declarations do not validate as accepted OperationDefinition documents: metadata.version and bounded bindings are absent and spec field names differ",
+        "capability declarations do not validate as accepted CapabilityDefinition documents: semantic metadata/spec fields are absent and effects use an incompatible shape",
+        "authoring tests assert internal declaration equality but do not validate documents with the accepted operation and capability models"
       ]
     }
   },
