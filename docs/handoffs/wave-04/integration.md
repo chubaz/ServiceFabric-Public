@@ -51,6 +51,15 @@ This section records the initial review; the correction decisions below supersed
 
 All specialist candidates are accepted. Final completion integration remains pending and was not performed during candidate review.
 
+## Corrected Candidate Review
+
+The supplied corrected heads were reviewed in the required order. `operation-model` and `capability-model` were not re-merged; their accepted integration commits remain `ba161c89ecb9f888e00071b89c30f213ef53f2f4` and `99a3c721133485e2e1f9ba5b7da295ed50257de6`.
+
+- `capability-registry` supplied head `2a67901d3e60204313d3f54401ef82903295c92b` — rejected. Its canonical registry handoff is the bootstrap template and its cumulative specialist diff from `8852fd491870e153a70f9528a3e58d2c09841a05` contains authoring-owned paths rather than registry paths. The registry focused discovery found zero tests. The lane completion checker was invoked but is currently blocked by the committed task manifest lacking `candidate_commit_policy`; no registry merge was performed. The previously accepted registry integration remains recorded at `1d5a705e40c544eafc643ee314317456edddb49f`.
+- `capability-authoring` supplied head `2a67901d3e60204313d3f54401ef82903295c92b` — accepted and integrated by `5fc13ada75b8eab12523482614b0b024f214f3c6`. Its updated canonical handoff, complete cumulative specialist diff, ownership boundary, and frozen-contract boundary were reviewed. The six focused authoring tests and diff check passed. The lane completion checker was invoked but is blocked by the same committed manifest defect. After merge, authoring (6) and operation-model (4) tests passed; model, registry, and CLI dependent suites could not collect in the available environments because `pydantic` and the installed model/client package paths are absent.
+
+No completion integration was performed by this review, and Wave completion remains pending.
+
 ## Completion Integration
 
 The integration lane now composes the accepted public operation-model, capability-model, capability-registry, and capability-authoring APIs into the exact static CLI surface:

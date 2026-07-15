@@ -8,5 +8,16 @@
     "capability-authoring": "accepted",
     "integration": "authority"
   },
+  "corrected_candidate_review": {
+    "capability-registry": {
+      "head": "2a67901d3e60204313d3f54401ef82903295c92b",
+      "decision": "rejected-wrong-lane"
+    },
+    "capability-authoring": {
+      "head": "2a67901d3e60204313d3f54401ef82903295c92b",
+      "decision": "accepted",
+      "integration_merge": "5fc13ada75b8eab12523482614b0b024f214f3c6"
+    }
+  },
   "next_action": "Run the full Wave-4 gate in the provisioned prior-wave environments; do not mark the wave complete."
 }
