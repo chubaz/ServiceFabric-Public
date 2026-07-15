@@ -25,16 +25,22 @@ class ResearchNotesCapabilityAuthoringTests(unittest.TestCase):
     def test_explicit_capabilities_reference_their_exact_operations(self) -> None:
         declarations = research_notes_declarations()
         expected = {
-            "notes.create": ("create-note", "data.write"),
-            "notes.get": ("get-note", "data.read"),
-            "notes.search": ("search-notes", "data.read"),
+            "notes.create": ("create-note", "database_write"),
+            "notes.get": ("get-note", "database_read"),
+            "notes.search": ("search-notes", "database_read"),
         }
         for capability_id, (operation_id, effect_kind) in expected.items():
             document = declarations[f".servicefabric/capabilities/{capability_id}.yaml"]
             self.assertEqual(document["spec"]["operationRef"], operation_id)
-            self.assertEqual(document["spec"]["effects"][0]["kind"], effect_kind)
+            self.assertEqual(document["spec"]["effects"]["effects"][0]["effect_type"], effect_kind)
+            self.assertEqual(set(document["metadata"]), {"id", "title", "domain"})
+            self.assertTrue(document["spec"]["objective"])
+            self.assertTrue(document["spec"]["concepts"])
             operation = declarations[f".servicefabric/operations/{operation_id}.yaml"]
-            self.assertEqual(operation["spec"]["effects"][0]["kind"], effect_kind)
+            self.assertEqual(operation["metadata"]["version"], "1.0.0")
+            self.assertEqual(set(operation["spec"]), {"application_ref", "module_ref", "interface_ref", "bindings"})
+            self.assertEqual(len(operation["spec"]["bindings"]), 1)
+            self.assertEqual(operation["spec"]["bindings"][0]["protocol"], "http")
 
     def test_example_files_are_explicit_and_match_reviewed_declarations(self) -> None:
         declarations = research_notes_declarations()
@@ -50,12 +56,16 @@ class ResearchNotesCapabilityAuthoringTests(unittest.TestCase):
             if not relative.endswith(".schema.json"):
                 continue
             self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+            self.assertRegex(schema["$id"], r"^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$")
             self.assertEqual(schema["type"], "object")
             self.assertIn("properties", schema)
         for operation_id in ("create-note", "get-note", "search-notes"):
             operation = declarations[f".servicefabric/operations/{operation_id}.yaml"]
-            for reference in (operation["spec"]["inputSchemaRef"], operation["spec"]["outputSchemaRef"]):
-                self.assertIn(f".servicefabric/{reference}", declarations)
+            for reference in (
+                operation["spec"]["bindings"][0].get("request_schema_ref"),
+                operation["spec"]["bindings"][0]["response_schema_ref"],
+            ):
+                self.assertIn(reference, {schema["$id"] for path, schema in declarations.items() if path.endswith(".schema.json")})
 
     def test_generator_materializes_only_reviewed_static_declarations(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

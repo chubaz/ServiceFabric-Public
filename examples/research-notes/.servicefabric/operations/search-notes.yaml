@@ -1,6 +1,1 @@
-{
-  "apiVersion": "servicefabric.local/v1",
-  "kind": "OperationDefinition",
-  "metadata": {"id": "search-notes", "name": "Search notes"},
-  "spec": {"applicationId": "research-notes", "moduleId": "notes-api", "interfaceRef": "notes-api", "inputSchemaRef": "schemas/search-notes.input.schema.json", "outputSchemaRef": "schemas/search-notes.output.schema.json", "effects": [{"id": "notes.read", "kind": "data.read", "targetRef": "notes-db"}]}
-}
+{"apiVersion":"servicefabric.local/v1","kind":"OperationDefinition","metadata":{"id":"search-notes","version":"1.0.0","name":"Search notes"},"spec":{"application_ref":"research-notes","module_ref":"notes-api","interface_ref":"notes-api","bindings":[{"id":"search-notes-http","protocol":"http","method":"GET","path":"/notes","request_schema_ref":"notes.search-notes-input","response_schema_ref":"notes.search-notes-output","timeout_seconds":10}]}}
