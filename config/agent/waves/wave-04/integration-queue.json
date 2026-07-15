@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-04",
-  "overall": "COMPLETION INTEGRATION IN PROGRESS - WAVE PENDING",
+  "overall": "WAVE COMPLETE",
   "lanes": {
     "operation-model": "accepted",
     "capability-model": "accepted",
     "capability-registry": "accepted",
     "capability-authoring": "accepted",
-    "integration": "authority"
+    "integration": "complete-with-waived-inherited-regression"
   },
   "corrected_candidate_review": {
     "capability-registry": {
@@ -20,5 +20,5 @@
       "integration_merge": "5fc13ada75b8eab12523482614b0b024f214f3c6"
     }
   },
-  "next_action": "Run the full Wave-4 gate in the provisioned prior-wave environments; do not mark the wave complete."
+  "next_action": "Wave complete. Follow up separately on the waived inherited Wave-2 Research Notes runtime regression before relying on the full cross-wave gate as green."
 }

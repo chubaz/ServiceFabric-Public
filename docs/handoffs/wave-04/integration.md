@@ -1,78 +1,45 @@
-# Wave-4 Task Handoff
+# Wave-4 Integration Handoff
 
-Lane: integration
-Branch: integration/phase2-wave4
-Base commit: 162bc3d64e8c2a9d044895f8c57b650f1cddb22f
-Candidate commit: 713aedb74bf7b7bf2f77df1b6c1a3d20dad9688a
+## Completion decision
 
-## Changed Paths
+Wave-4 is closed by integration authority on `integration/phase2-wave4`. All four specialist lanes are integrated, contracts remain frozen, and `integration-queue.json` is `WAVE COMPLETE`. This closes Wave-4 only; no merge into `main` was performed.
 
-- `scripts/agents/record_contracts_frozen.sh`
-- `tests/wave_04/test_bootstrap.py`
+Final integration HEAD before this closure record: `90e37e47b4b51f45e1b50de3082bdcdbee6460b6` (`fix(agents): provision Wave-4 model and registry packages`).
 
-## Tests Executed
+## Specialist candidates and integration commits
 
-- `python3 scripts/agent/wave_task_preflight.py --wave wave-04 --task integration` — passed.
-- `make verify-wave-04` — passed (4 tests).
-- `make verify-current` — passed.
-- `git diff --check` — passed.
+- `operation-model`: candidate series `0c21e47596d1f87255613987c18ecb0ca98827b7`, `495b2b98df66124e60ff1dbb335ebc3aaa6f97d3`, and accepted head `3c0f867f444776efc21700722561482e90ecf1d0`; integrated by `ba161c89ecb9f888e00071b89c30f213ef53f2f4`.
+- `capability-model`: accepted candidate `786d23fe197ec7c3fd407448334962ca11f44340`; integrated by `99a3c721133485e2e1f9ba5b7da295ed50257de6`.
+- `capability-registry`: returned initial candidate `4eaab5af167781b97260aaf6e74099523e73d374`; correction series `df27a6625bf09f3d76e8d0c91d0265d63ac0761d`, `3866227a9b3f4363654e86790391e76af83e5686`, and `94d34c4402fe81ff2edb9c78c12cc2b17b726b69`; accepted head `cb5a6f853a48aab403d4d228325bdc64398b6a6d`; first correction integration `1d5a705e40c544eafc643ee314317456edddb49f`; final integration `7aa4f25ede41fc1112ee8f9c2cbdffa577084fde`.
+- `capability-authoring`: returned initial candidate `2e3d9d06e1b0c3fd66bd72726cf05fe068df4406`; correction series `991507d97474abc05ac43ef578bbe1a1f49d8d70`, `32df8961939f606dc632ba2f161f73e1c42f2bce`, and `d762ca1168841289b79d6e72aab136d5639dc331`; accepted head `2a67901d3e60204313d3f54401ef82903295c92b`; first correction integration `8022f87c6f9fa088b67fc6c80fd11e71af5c4930`; final integration `5fc13ada75b8eab12523482614b0b024f214f3c6`.
+- Integration composition: `be7c0a0be48c211b4a13b64e76d1d84f769e7a71`; runtime provisioning: `90e37e47b4b51f45e1b50de3082bdcdbee6460b6`.
 
-## Contract Changes
+## Registered Research Notes capabilities
 
-No contract changes. `contractsStatus` was recorded as `frozen` in the Wave-4 agent state after validation of the frozen package paths and the canonical `ToolDefinition` source.
+- `create-note` → `notes.create`, database-write effect.
+- `get-note` → `notes.get`, database-read effect.
+- `search-notes` → `notes.search`, database-read effect.
 
-The freeze confirms separate operation and capability definitions; exact capability-to-operation references; reuse of `EffectContract`; an unchanged `ToolDefinition`; a definitions-only registry; no runtime availability, invocation, or consumer projections; explicit three-operation/three-capability Research Notes authoring; and disjoint lane ownership.
+Each capability is a static definition with one exact operation reference. Registration, list, and describe are deterministic static-registry actions; no invocation, availability, MCP, REST, Python, or `ToolDefinition` projection is introduced.
 
-## Decisions and Limitations
+## Verification record
 
-The recorder now resolves the named frozen contract `ToolDefinition` to its canonical source file. No specialist-owned package, schema, registry, authoring, runtime, or projection functionality was changed.
+Executed after `source .agent-runtime.env`:
 
-The broad `tests/agent` fresh-runtime test requires external package resolution and is not Phase-1 freeze evidence; the focused Wave-4 gate and the current-milestone readiness gate pass.
+- `python3 -m unittest discover -s tests/agent -v` — passed (41 tests) after the temporary fresh runtime was permitted to resolve its locked dependencies.
+- `make verify-wave-04` — waived. Wave-1 completed, including 28 AP-01A tests; Wave-2 failed in `ResearchNotesRuntimeJourneyTests.test_cli_delegates_the_required_development_commands` with `ApplicationNotFound: application 'research-notes' is not registered`. This is an inherited Wave-2 runtime/workspace regression, not a Wave-4 specialist failure.
+- `make verify-current` — passed before closure.
+- `git diff --check` — passed before closure.
 
-## Blockers
+## Known limitations and follow-up
 
-None for candidate review. Final completion integration has not been performed.
+The full cross-wave gate is not green because of the waived inherited Wave-2 Research Notes runtime regression above. `python3 scripts/agent/wave_completion.py --wave wave-04` also remains blocked because its modern duplicate manifest (`config/agents/wave-04/wave.yaml`) omits the committed readiness and queue paths, so it looks for nonexistent files under `config/agents/wave-04/`; the authoritative Wave-4 records updated by this closure are under `config/agent/waves/wave-04/`. The fresh-runtime agent test requires package resolution when its cache is empty. Capability persistence remains local JSON with POSIX `fcntl` locking, and Wave-4 intentionally provides no runtime availability or consumer projection.
 
-## Candidate Review
+## Rollback order
 
-Review completed in dependency order:
+1. Revert this closure commit to restore the pending queue and readiness state.
+2. Revert `90e37e47b4b51f45e1b50de3082bdcdbee6460b6` if the Wave-4 runtime provisioning change must be removed.
+3. Revert integration composition `be7c0a0be48c211b4a13b64e76d1d84f769e7a71`.
+4. Revert the final integration merges in reverse dependency order: `7aa4f25ede41fc1112ee8f9c2cbdffa577084fde`, `5fc13ada75b8eab12523482614b0b024f214f3c6`, `99a3c721133485e2e1f9ba5b7da295ed50257de6`, then `ba161c89ecb9f888e00071b89c30f213ef53f2f4`.
 
-- `operation-model` candidate `3c0f867f444776efc21700722561482e90ecf1d0` — accepted and integrated by `ba161c89ecb9f888e00071b89c30f213ef53f2f4`. Ownership and frozen-contract checks passed; 4 focused tests and the dependent Wave-4 gate passed.
-- `capability-model` candidate `786d23fe197ec7c3fd407448334962ca11f44340` — accepted and integrated by `99a3c721133485e2e1f9ba5b7da295ed50257de6`. Ownership and frozen-contract checks passed; 4 focused tests, the operation-model tests, and the dependent Wave-4 gate passed.
-- `capability-registry` candidate `48c41de8ca840233a63ebeb3b44dd13c5217e83a` — returned for correction because it changes capability-model/schema/test paths, leaves the registry handoff as a placeholder, and has no registry test suite.
-- `capability-authoring` candidate `2e3d9d06e1b0c3fd66bd72726cf05fe068df4406` — returned for correction because it contains registry-owned changes and a registry handoff, leaves the authoring handoff as a placeholder, and has no authoring test suite. Registry commit `4eaab5a` may be resubmitted from the registry lane after its preflight passes.
-
-This section records the initial review; the correction decisions below supersede its registry and authoring status. Final completion integration was not performed.
-
-## Correction Review
-
-- `capability-registry` correction `df27a6625bf09f3d76e8d0c91d0265d63ac0761d` with handoff `3866227a9b3f4363654e86790391e76af83e5686` — accepted and integrated by `1d5a705e40c544eafc643ee314317456edddb49f`. Eight focused registry tests and all dependent operation, capability-model, registry, and Wave-4 tests passed.
-- `capability-authoring` corrections `991507d97474abc05ac43ef578bbe1a1f49d8d70` and `32df8961939f606dc632ba2f161f73e1c42f2bce` with handoff `d762ca1168841289b79d6e72aab136d5639dc331` — accepted and integrated by `8022f87c6f9fa088b67fc6c80fd11e71af5c4930`. Four authoring, seven blueprint, three generator, all dependent model/registry, and the Wave-4 tests passed. Integration independently validated all three operations and all three capabilities with the accepted models.
-
-All specialist candidates are accepted. Final completion integration remains pending and was not performed during candidate review.
-
-## Corrected Candidate Review
-
-The supplied corrected heads were reviewed in the required order. `operation-model` and `capability-model` were not re-merged; their accepted integration commits remain `ba161c89ecb9f888e00071b89c30f213ef53f2f4` and `99a3c721133485e2e1f9ba5b7da295ed50257de6`.
-
-- `capability-registry` supplied head `cb5a6f853a48aab403d4d228325bdc64398b6a6d` — accepted and integrated by `7aa4f25ede41fc1112ee8f9c2cbdffa577084fde`. Its updated canonical handoff, complete cumulative specialist diff from `8852fd491870e153a70f9528a3e58d2c09841a05`, ownership boundary, and frozen-contract boundary were reviewed. All 11 focused registry tests passed in the recorded composed environment. The lane completion checker was invoked but is blocked by the committed task manifest lacking `candidate_commit_policy`. After merge, registry (11), capability-model (4), authoring (6), and Wave-4 acceptance (8) tests passed.
-- `capability-authoring` supplied head `2a67901d3e60204313d3f54401ef82903295c92b` — accepted and integrated by `5fc13ada75b8eab12523482614b0b024f214f3c6`. Its updated canonical handoff, complete cumulative specialist diff, ownership boundary, and frozen-contract boundary were reviewed. The six focused authoring tests and diff check passed. The lane completion checker was invoked but is blocked by the same committed manifest defect. After merge, authoring (6) and operation-model (4) tests passed; model, registry, and CLI dependent suites could not collect in the available environments because `pydantic` and the installed model/client package paths are absent.
-
-No completion integration was performed by this review, and Wave completion remains pending.
-
-## Completion Integration
-
-The integration lane now composes the accepted public operation-model, capability-model, capability-registry, and capability-authoring APIs into the exact static CLI surface:
-
-- `servicefabric capabilities validate APPLICATION`
-- `servicefabric capabilities register APPLICATION`
-- `servicefabric capabilities list [--application APPLICATION]`
-- `servicefabric capabilities describe CAPABILITY_ID`
-
-Validation loads generated declarations and resolves application, module, interface, operation, and schema references without opening or mutating the workspace registry. Registration validates first, rejects identity/digest conflicts before writing, and delegates deterministic idempotent storage to the accepted static registry. List and describe return the registry's canonical definitions. No invocation, availability, MCP, REST, Python, or `ToolDefinition` projection was added; application stop does not affect the static registry.
-
-`tests/wave_04/test_capability_cli.py` proves the Research Notes three-operation/three-capability set, exact references, database read/write effects, validation non-mutation, idempotency, conflict rejection, deterministic list/describe, persistence after stop, and absence of MCP/tool projections.
-
-`make verify-wave-04` now includes Wave 1–3 gates, all Wave-4 focused suites, dependency-lock checking, `pip check`, compilation, and `git diff --check`. The Wave-4 focused suites, dependency-lock check, compilation, and diff check pass in the capability registry virtual environment. The local checkout no longer has the provisioned `/tmp/servicefabric-ap-01a` prior-wave environment; substituting the capability registry environment caused AP-01A hosted-process health checks to time out because it does not provide the AP-01A runtime dependencies. Therefore full cross-wave verification remains pending in its required environments.
-
-Wave completion remains deliberately pending; no completion status was set.
+No merge into `main` is part of this rollback or completion decision.
