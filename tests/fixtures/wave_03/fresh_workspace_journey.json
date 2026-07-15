@@ -1,0 +1,41 @@
+{
+  "application": {
+    "id": "reading-room",
+    "name": "Reading Room",
+    "modules": [
+      {
+        "id": "api",
+        "kit": "fastapi-service",
+        "ordinary_source": "from fastapi import FastAPI\n\napp = FastAPI()\n"
+      },
+      {
+        "id": "web",
+        "kit": "react-web",
+        "ordinary_source": "export default function App() { return <main>Reading Room</main>; }\n"
+      },
+      {
+        "id": "domain",
+        "kit": "python-library",
+        "ordinary_source": "def title(value: str) -> str:\n    return value.strip().title()\n"
+      }
+    ]
+  },
+  "journey": [
+    {"command": "workspace init", "assertions": ["fresh_external_workspace", "idempotent_layout"]},
+    {"command": "apps create", "assertions": ["deterministic_generated_files", "ordinary_source"]},
+    {"command": "apps modules", "assertions": ["fastapi_service", "react_web", "python_library"]},
+    {"command": "apps validate", "assertions": ["valid_application"]},
+    {"command": "dev prepare", "assertions": ["prepared_lifecycle_state"]},
+    {"command": "dev start", "assertions": ["running_lifecycle_state"]},
+    {"command": "dev status", "assertions": ["preserved_module_state"]},
+    {"command": "dev restart", "assertions": ["preserved_module_state", "restarted_lifecycle_state"]},
+    {"command": "apps build", "assertions": ["immutable_build_manifest", "source_digest", "output_digest"]},
+    {"command": "dev stop", "assertions": ["stopped_lifecycle_state", "temporary_runtime_cleanup"]}
+  ],
+  "safety": {
+    "collision": ["reject_existing_application", "leave_existing_files_unchanged"],
+    "rollback": ["remove_partial_generated_files", "leave_no_application_registry_record"],
+    "cleanup": ["remove_temporary_runtime_files", "preserve_generated_source", "preserve_build_manifest"]
+  },
+  "build_manifest": ["application_id", "source_digest", "output_digest", "modules", "immutable"]
+}
