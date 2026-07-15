@@ -65,7 +65,7 @@ class ResearchNotesCapabilityJourneyTests(unittest.TestCase):
 
             call("apps", "dev", "prepare", "research-notes")
             _, started = call("apps", "dev", "start", "research-notes")
-            self.assertEqual(started["state"], "running")
+            self.assertEqual(started["start"]["state"], "running")
             _, available = call("capabilities", "availability", "--application", "research-notes")
             self.assertEqual(
                 [(item["capabilityId"], item["state"]) for item in available["capabilities"]],
@@ -97,7 +97,7 @@ class ResearchNotesCapabilityJourneyTests(unittest.TestCase):
                 self.assertEqual(transport.call_count, calls_before_invalid_input)
 
             _, stopped = call("apps", "dev", "stop", "research-notes")
-            self.assertEqual(stopped["state"], "stopped")
+            self.assertEqual(stopped["stop"]["state"], "stopped")
             _, unavailable = call("capabilities", "availability", "--application", "research-notes")
             self.assertEqual(
                 [(item["capabilityId"], item["state"]) for item in unavailable["capabilities"]],

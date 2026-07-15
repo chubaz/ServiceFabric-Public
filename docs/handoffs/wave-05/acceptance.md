@@ -22,15 +22,12 @@ One end-to-end CLI journey creates and registers Research Notes, starts its deve
 ## Tests Executed
 
 - `make agent-preflight` — passed.
-- `python3 -m unittest discover -s tests/wave_05 -v` — blocked before collection because the system Python lacks the locked `pydantic` dependency; the Wave-5 test environment is required.
-- Focused Wave-5 environment command (`python -m unittest discover -s tests/wave_05 -v`) — reaches the real loopback HTTP journey but fails at `notes.create`; see blocker below.
+- `source .agent-runtime.env && python3 -m unittest discover -s tests/wave_05 -v` — passed (one test).
 - `git diff --check` — passed.
 
-## Blocker
+## Runtime Bootstrap Limitation
 
-The composed CLI starts the Wave-3 generated `notes-api` (`servicefabric_client.wave3.Wave3ApplicationService`). Its `POST /notes` endpoint accepts a single `body` value and returns only `id` and `body`; the frozen Wave-5 operation declaration sends the valid canonical input `{ "title", "body" }` and requires a note output containing `id`, `title`, `body`, and `created_at`. FastAPI therefore returns HTTP 422 before a note can be created.
-
-This is an implementation-composition mismatch outside the acceptance lane's allowed paths. The test intentionally remains a failing acceptance specification until the integration owner aligns the started Research Notes API with the registered Wave-5 operation and schemas. No implementation, CLI, Makefile, or shared metadata was changed here.
+The acceptance runtime initializer installs the contracts lock and local editable packages, but not the Research Notes API runtime dependencies. Before the passing run, the disposable acceptance virtualenv was provisioned from `5_core_services/fastapi_base/requirements/runtime.lock`, supplying the reviewed FastAPI and Uvicorn dependencies. This altered only disposable agent state; no repository dependency metadata changed.
 
 ## Contracts Consumed
 
@@ -41,4 +38,4 @@ This is an implementation-composition mismatch outside the acceptance lane's all
 
 ## Rollback
 
-Revert the acceptance-test commit and this handoff commit. No runtime state, implementation package, or shared contract was modified.
+Revert the acceptance-test commit and this handoff commit. No implementation package or shared contract was modified.
