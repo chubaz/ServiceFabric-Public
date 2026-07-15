@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from servicefabric_blueprints.catalog import BlueprintCatalog
-from servicefabric_blueprints.definitions import ApplicationBlueprint, BlueprintModule
+from servicefabric_blueprints.definitions import ApplicationBlueprint, BlueprintFile, BlueprintModule
+from servicefabric_capability_authoring import research_notes_declarations
 
 FASTAPI_SERVICE_KIT = (
     "fastapi-service @ServiceFabric/portfolio/applications/"
@@ -77,6 +78,10 @@ RESEARCH_NOTES_BLUEPRINT = ApplicationBlueprint(
                 },
             }
         ),
+    ),
+    static_files=tuple(
+        BlueprintFile(path=path, document=document)
+        for path, document in sorted(research_notes_declarations().items())
     ),
 )
 
