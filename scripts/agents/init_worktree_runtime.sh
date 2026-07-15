@@ -47,6 +47,7 @@ if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
         "packages/servicefabric_blueprints"
         "packages/servicefabric_capability_model"
         "packages/servicefabric_capability_registry"
+        "packages/servicefabric_operation_model"
         "packages/servicefabric_builder"
         "packages/servicefabric_capsules"
         "packages/servicefabric_framework_kits"

@@ -120,6 +120,7 @@ class WaveOperationalScriptTests(unittest.TestCase):
         self.assertIn('pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"', content)
         for package in (
             "packages/servicefabric_capsules",
+            "packages/servicefabric_operation_model",
             "packages/servicefabric_governance",
             "packages/servicefabric_mcp_projection",
             "packages/servicefabric_runtime",
