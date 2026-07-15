@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceFabric CapabilityDefinition Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "servicefabric.local/v1"},
+    "kind": {"const": "CapabilityDefinition"},
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "domain"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 120},
+        "domain": {"$ref": "#/$defs/identifier"}
+      }
+    },
+    "spec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["operationRef", "objective", "capabilityClass", "concepts", "expectedInputs", "expectedOutputs", "effects"],
+      "properties": {
+        "operationRef": {"$ref": "#/$defs/operationReference"},
+        "objective": {"type": "string", "minLength": 1, "maxLength": 4000},
+        "capabilityClass": {"$ref": "#/$defs/identifier"},
+        "concepts": {"$ref": "#/$defs/terms"},
+        "expectedInputs": {"$ref": "#/$defs/terms"},
+        "expectedOutputs": {"$ref": "#/$defs/terms"},
+        "effects": {"$ref": "#/$defs/effectContract"},
+        "suitableFor": {"$ref": "#/$defs/terms"},
+        "unsuitableFor": {"$ref": "#/$defs/terms"},
+        "qualityDimensions": {"$ref": "#/$defs/terms"}
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$", "minLength": 1, "maxLength": 128},
+    "operationReference": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$", "minLength": 3, "maxLength": 160},
+    "terms": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "string", "minLength": 1}},
+    "effectContract": {
+      "type": "object", "additionalProperties": false, "required": ["effects"],
+      "properties": {
+        "effects": {
+          "type": "array", "minItems": 1, "maxItems": 32,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["effect_type", "target_category", "scope", "reversibility", "verification_required", "approval_required", "idempotency_required"],
+            "properties": {
+              "effect_type": {"type": "string", "enum": ["none", "external_read", "database_read", "database_write", "file_write", "message_send", "task_create", "payment_initiate", "infrastructure_change", "human_workflow_create"]},
+              "target_category": {"$ref": "#/$defs/identifier"},
+              "scope": {"type": "string", "minLength": 1, "maxLength": 256},
+              "reversibility": {"type": "string", "enum": ["not_applicable", "reversible", "compensatable", "irreversible"]},
+              "verification_required": {"type": "boolean"},
+              "approval_required": {"type": "boolean"},
+              "idempotency_required": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    }
+  }
+}
