@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
+import sys
 import unittest
+
+PACKAGE_ROOT = Path(__file__).resolve().parents[2] / "packages" / "servicefabric_capability_runtime" / "src"
+sys.path.insert(0, str(PACKAGE_ROOT))
 
 from servicefabric_capability_runtime import (
     CapabilityAvailabilityReason,
