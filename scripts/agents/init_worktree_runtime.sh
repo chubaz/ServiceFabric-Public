@@ -32,6 +32,12 @@ elif [[ ! -f "$VENV/bin/activate" ]]; then
     python3 -m venv "$VENV"
 fi
 
+if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
+    CONTRACTS="$WORKTREE/packages/servicefabric_contracts"
+    "$VENV/bin/python" -m pip install --disable-pip-version-check --requirement "$CONTRACTS/requirements/test.lock"
+    "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps "$CONTRACTS"
+fi
+
 cat > "$WORKTREE/.agent-runtime.env" <<EOF
 export SF_AGENT_LANE="$(printf '%s' "$LANE")"
 export SF_AGENT_WAVE_ID="$(printf '%s' "$WAVE_ID")"

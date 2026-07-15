@@ -427,15 +427,6 @@ def parser() -> ServiceFabricArgumentParser:
     validate = app_actions.add_parser("validate", help="validate generated application manifests")
     validate.add_argument("application_id")
 
-    dev = app_actions.add_parser("dev", help="manage a generated application development lifecycle")
-    dev_actions = dev.add_subparsers(dest="dev_action", required=True)
-    for dev_action in ("prepare", "start", "status", "stop"):
-        command = dev_actions.add_parser(dev_action)
-        command.add_argument("application_id")
-    restart = dev_actions.add_parser("restart")
-    restart.add_argument("application_id")
-    restart.add_argument("--module", required=True)
-
     locate_app = app_actions.add_parser("locate", help="get the directory path of an application")
     locate_app.add_argument("application_id")
 
