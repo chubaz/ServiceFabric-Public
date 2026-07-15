@@ -39,7 +39,7 @@ sf_load_config() {
     if [[ -n "$requested_wave" ]]; then
         SF_WAVE_ID="$requested_wave"
     fi
-    if [[ -n "$requested_state_base" ]]; then
+    if [[ -n "${requested_state_base:-}" ]]; then
         SF_STATE_BASE="$requested_state_base"
     fi
     : "${SF_WAVE_ID:?SF_WAVE_ID is required}"

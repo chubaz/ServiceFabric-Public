@@ -1,0 +1,12 @@
+{
+  "lane": "capability-model",
+  "branch": "agent/w4-capability-model",
+  "worktree": "../servicefabric-wave4-capability-model",
+  "handoff_path": "docs/handoffs/wave-04/capability-model.md",
+  "handoff_required": true,
+  "objective": "Implement the strict, deterministic CapabilityDefinition model and schema, referencing operations and reusing EffectContract without projections or invocation.",
+  "allowed_paths": ["packages/servicefabric_capability_model", "schemas/servicefabric/local/v1/capability.schema.json", "tests/capability_model", "docs/handoffs/wave-04/capability-model.md"],
+  "forbidden_paths": ["packages/servicefabric_operation_model", "packages/servicefabric_capability_registry", "packages/servicefabric_capability_authoring", "packages/servicefabric_blueprints", "packages/servicefabric_application_generator", "examples/research-notes", "tests/operation_model", "tests/capability_registry", "tests/capability_authoring", "tests/fixtures/wave_04", "Makefile", "scripts"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-04/objective.md", "docs/workplans/parallel/wave-04/ownership.md", "docs/workplans/parallel/wave-04/frozen-contracts.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/capability_model -v", "git diff --check"]
+}

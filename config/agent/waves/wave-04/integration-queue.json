@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-04",
+  "overall": "BOOTSTRAP READY",
+  "lanes": {
+    "operation-model": "pending",
+    "capability-model": "pending",
+    "capability-registry": "pending",
+    "capability-authoring": "pending",
+    "integration": "authority"
+  },
+  "next_action": "Record the contract freeze, then launch specialist lanes in integration order."
+}

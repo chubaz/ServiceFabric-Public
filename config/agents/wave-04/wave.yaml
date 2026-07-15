@@ -1,0 +1,24 @@
+{
+  "wave_id": "wave-04",
+  "runtime_wave_id": "wave-04",
+  "base_commit": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+  "integration_branch": "integration/phase2-wave4",
+  "task_manifest_dir": "config/agent/waves/wave-04/tasks",
+  "canonical_handoff_dir": "docs/handoffs/wave-04",
+  "handoff_template": "docs/handoffs/wave-04/task-handoff-template.md",
+  "local_run_dir": ".agent-runs/wave-04",
+  "shared_docs": "docs/workplans/parallel/wave-04/objective.md",
+  "lanes": ["integration", "operation-model", "capability-model", "capability-registry", "capability-authoring"],
+  "specialist_lanes": ["operation-model", "capability-model", "capability-registry", "capability-authoring"],
+  "integration_order": ["operation-model", "capability-model", "capability-registry", "capability-authoring", "integration"],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "operation-model": "SF_WT_OPERATION_MODEL",
+    "capability-model": "SF_WT_CAPABILITY_MODEL",
+    "capability-registry": "SF_WT_CAPABILITY_REGISTRY",
+    "capability-authoring": "SF_WT_CAPABILITY_AUTHORING"
+  },
+  "frozen_contracts": ["packages/servicefabric_contracts", "packages/servicefabric_application_model", "packages/servicefabric_workspace", "clients/python/servicefabric_client", "ToolDefinition"],
+  "operational_policies": {"contracts_freeze_required_before_specialists": true, "candidate_commits_allowed": true, "automatic_merger": false, "specialists_may_merge_or_pull_feature_branches": false},
+  "verification_gates": ["python3 -m unittest discover -s tests/agent -v", "make verify-wave-04", "make verify-current", "git diff --check"]
+}

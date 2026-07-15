@@ -151,6 +151,11 @@ verify-wave-02:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" python3 -m pip check
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE02_PYTHONPATH)" $(WAVE02_PYTHON) -m compileall clients/python/servicefabric_client/development.py clients/python/servicefabric_client/static_web_server.py clients/python/servicefabric_client/main.py services/application_dev_supervisor tests/wave_02
 	git diff --check
+
+verify-wave-04:
+	python3 -m unittest discover -s tests/wave_04 -v
+	git diff --check
+
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
 	python3 -m unittest discover -s tests/workspace -v

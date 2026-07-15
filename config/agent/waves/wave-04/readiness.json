@@ -1,0 +1,7 @@
+{
+  "wave_id": "wave-04",
+  "base_commit": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+  "contractsStatus": "bootstrap-pending-freeze",
+  "lanes": {},
+  "integration": {"state": "bootstrap", "branch": "integration/phase2-wave4"}
+}
