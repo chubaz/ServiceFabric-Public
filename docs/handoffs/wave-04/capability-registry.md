@@ -2,12 +2,15 @@
 
 Lane: capability-registry
 Branch: `agent/w4-capability-registry`
-Base commit: `8852fd491870e153a70f9528a3e58d2c09841a05`
-Registry candidate head: `df27a6625bf09f3d76e8d0c91d0265d63ac0761d`
+Wave-4 base SHA: `162bc3d64e8c2a9d044895f8c57b650f1cddb22f`
+Specialist bootstrap/base SHA: `8852fd491870e153a70f9528a3e58d2c09841a05`
+Implementation candidate head: `94d34c4402fe81ff2edb9c78c12cc2b17b726b69`
 
 ## Candidate Commits
 
-- `df27a6625bf09f3d76e8d0c91d0265d63ac0761d` — `fix(capability-registry): complete static capability registry`
+- `df27a6625bf09f3d76e8d0c91d0265d63ac0761d` — static registry implementation.
+- `3866227a9b3f4363654e86790391e76af83e5686` — prior handoff report.
+- `94d34c4402fe81ff2edb9c78c12cc2b17b726b69` — scope audit, dangling-symlink hardening, and focused safety coverage.
 
 ## Changed Paths
 
@@ -18,35 +21,38 @@ Registry candidate head: `df27a6625bf09f3d76e8d0c91d0265d63ac0761d`
 - `tests/capability_registry/test_registry.py`
 - `docs/handoffs/wave-04/capability-registry.md`
 
-## Tests Executed
-
-- `PYTHONPATH=packages/servicefabric_capability_registry/src:/home/lorenzoccasoni/unibz/Thesis/Tool Builder/servicefabric-wave1-resources/packages/servicefabric_capability_model/src:packages/servicefabric_contracts/src /home/lorenzoccasoni/servicefabric-agent-state/wave-04/capability-registry/.venv/bin/python -m unittest discover -s tests/capability_registry -v` — passed, 8 tests.
-- `python3 -m unittest discover -s tests/capability_model -v` — completed with 0 tests because this registry worktree intentionally contains no capability-model test files.
-- `python3 -m unittest discover -s tests/operation_model -v` — could not run: the isolated registry worktree has no `tests/operation_model` directory.
-- `git diff --check` — passed after the handoff edit.
-
-The model and operation test directories are intentionally absent from this isolated registry lane after restoration to the Wave-4 bootstrap base. They must be run by integration after the model candidates are composed; no model or operation files were copied into this lane.
+The complete candidate diff from the specialist bootstrap was audited. Every changed path is lane-owned; no out-of-scope path required restoration.
 
 ## Contracts Consumed
 
-- `servicefabric_capability_model.CapabilityDefinition` is the only definition API consumed.
-- Canonical serialization uses `CapabilityDefinition.model_dump(mode="json", by_alias=True)` and rehydrates with `CapabilityDefinition.model_validate`.
-- The registry does not alter `EffectContract`, operation definitions, or any consumer projection.
+- `servicefabric_capability_model.CapabilityDefinition` only.
+- `model_dump(mode="json", by_alias=True)` for canonical persisted content and `model_validate` for rehydration.
+- The frozen `EffectContract` is consumed only as part of the definition; no frozen contract is modified.
 
-## Decisions and Limitations
+## Tests and Results
 
-- One atomically replaced local JSON state file stores static definitions, SHA-256 content digests, and sorted application-to-capability indexes. This makes definition registration and index mutation one atomic replacement.
-- Registration is process-serialized with a local advisory lock. Root, lock, and state-file symlinks are rejected; application IDs use the canonical bounded identifier form.
-- This is static metadata storage only. It provides no availability, invocation, runtime, MCP, REST, CLI, or Python projection behavior.
-- Cross-process locking uses POSIX `fcntl`; Windows support is intentionally outside the local Wave-4 scope.
+- `PYTHONPATH=packages/servicefabric_capability_registry/src:/home/lorenzoccasoni/unibz/Thesis/Tool Builder/servicefabric-wave1-resources/packages/servicefabric_capability_model/src:packages/servicefabric_contracts/src /home/lorenzoccasoni/servicefabric-agent-state/wave-04/capability-registry/.venv/bin/python -m unittest discover -s tests/capability_registry -v` — passed, 11 tests.
+- `python3 -m unittest discover -s tests/capability_registry -v` — blocked: this isolated branch does not contain or install the separately owned `servicefabric_capability_model` package (`ModuleNotFoundError`).
+- `python3 -m unittest discover -s tests/capability_model -v` — passed with 0 discovered tests because that separately owned directory is absent from this branch.
+- `git diff --check` — passed.
+- `python3 scripts/agent/wave_task_preflight.py --wave wave-04 --task capability-registry --format json` — passed.
+- `python3 scripts/agent/wave_task_completion.py --wave wave-04 --task capability-registry --test-log .agent-runs/wave-04/capability-registry/tests.json --format json` — checker could not complete because the committed Wave-4 task manifest has no `candidate_commit_policy`, which the checker unconditionally reads. This is an integration-owned manifest/checker defect; no lane-owned file can correct it.
+
+Registry coverage includes first registration, identical idempotency, conflicting identity reuse, deterministic ordering, describe, application indexing/filtering, malformed records, atomic write-failure recovery, traversal rejection, and root/state/lock symlink rejection.
+
+## Limitations
+
+- Static declarations only: no runtime availability, invocation, MCP, REST, CLI, Python projection, blueprint generation, or capability authoring.
+- Persistence is one local JSON state file with SHA-256 content digests and sorted reciprocal application indexes.
+- Registration uses a POSIX `fcntl` advisory lock; Windows locking is out of scope.
 
 ## Integration Instructions
 
-1. Integrate the accepted capability-model candidate before installing this package, so `servicefabric_capability_model` is available.
-2. Install both package projects in the Wave-4 environment; no lockfile or CLI change is needed for this lane.
-3. Compose authoring and CLI behavior in the integration lane by calling `register(definition, application_id)`, `list(application_id=None)`, and `describe(capability_id)`.
-4. Run registry, capability-model, operation-model, and cross-lane acceptance tests from the integrated worktree.
+1. Compose the accepted capability-model package before installing the registry package.
+2. Install both packages in the Wave-4 test environment; no lockfile, CLI, or consumer change belongs to this lane.
+3. Use only `register(definition, application_id)`, `list(application_id=None)`, and `describe(capability_id)` from integration-owned adapters.
+4. Run the recorded focused commands and Wave-4 integration acceptance tests after composition.
 
 ## Blockers
 
-None for the registry lane. Cross-lane model and operation tests require their candidate packages to be composed by integration.
+The isolated registry branch does not contain the separately owned capability-model package or tests. The plain registry command therefore requires the composed Wave-4 environment (or the configured registry test environment); no cross-lane files were copied here. The lane completion checker additionally has a manifest/schema mismatch (`candidate_commit_policy` is missing) that integration must repair before accepting a passing completion result.

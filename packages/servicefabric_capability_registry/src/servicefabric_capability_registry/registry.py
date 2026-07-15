@@ -155,9 +155,12 @@ class CapabilityRegistry:
 
     def _prepare_root(self) -> Path:
         root = self._root
-        if root.exists() and root.is_symlink():
+        if root.is_symlink():
             raise CapabilityStorageError("registry root must not be a symlink")
-        root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        try:
+            root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        except OSError as exc:
+            raise CapabilityStorageError("registry root is not accessible") from exc
         try:
             status = root.lstat()
         except OSError as exc:
@@ -169,7 +172,7 @@ class CapabilityRegistry:
     def _read_state(self) -> dict[str, Any]:
         root = self._prepare_root()
         path = root / _STATE_FILE
-        if path.exists() and path.is_symlink():
+        if path.is_symlink():
             raise CapabilityStorageError("registry state file must not be a symlink")
         if not path.exists():
             return self._empty_state()
@@ -184,7 +187,7 @@ class CapabilityRegistry:
         root = self._prepare_root()
         self._validate_state(state)
         path = root / _STATE_FILE
-        if path.exists() and path.is_symlink():
+        if path.is_symlink():
             raise CapabilityStorageError("registry state file must not be a symlink")
         descriptor, temporary = tempfile.mkstemp(prefix=".capability-registry-", suffix=".tmp", dir=root)
         try:
@@ -261,7 +264,7 @@ class _RegistryLock:
     def __enter__(self) -> dict[str, Any]:
         root = self._registry._prepare_root()
         lock_path = root / ".capability-registry.lock"
-        if lock_path.exists() and lock_path.is_symlink():
+        if lock_path.is_symlink():
             raise CapabilityStorageError("registry lock file must not be a symlink")
         try:
             self._handle = lock_path.open("a+", encoding="utf-8")
