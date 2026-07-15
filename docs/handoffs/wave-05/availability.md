@@ -3,7 +3,7 @@
 Lane: availability
 Branch: agent/w5-availability
 Base commit: 53f53ca8a4a9a47887902b84a91bc27a812e9483
-Candidate commit: be6b6bf8de2bed5d3d429394611bc974fb83391f
+Candidate commits: be6b6bf8de2bed5d3d429394611bc974fb83391f, 8b4a7da74ddec339f6410b769ab6d9d463ff35b4
 
 ## Changed Paths
 
@@ -13,7 +13,7 @@ Candidate commit: be6b6bf8de2bed5d3d429394611bc974fb83391f
 
 ## Tests Executed
 
-- `PYTHONPATH=packages/servicefabric_capability_runtime/src python3 -m unittest discover -s tests/capability_runtime -v` — passed (3 tests).
+- `python3 -m unittest discover -s tests/capability_runtime -v` — passed (3 tests).
 - `git diff --check` — passed.
 
 Machine-readable evidence: `.agent-runs/wave-05/availability/tests.json`.
@@ -39,4 +39,5 @@ None.
 
 ## Rollback
 
-Revert candidate commit `be6b6bf8de2bed5d3d429394611bc974fb83391f`.
+Revert candidate commits `8b4a7da74ddec339f6410b769ab6d9d463ff35b4` and
+`be6b6bf8de2bed5d3d429394611bc974fb83391f`, in that order.
