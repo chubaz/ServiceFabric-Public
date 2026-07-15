@@ -2,6 +2,6 @@
   "wave_id": "wave-03",
   "overall": "READY FOR INTEGRATION AGENT",
   "lanes": {"generator": "pending", "application-builder": "pending", "agent-guidance": "pending", "acceptance": "pending", "integration": "authority"},
-  "contractsStatus": "bootstrap-pending-freeze",
-  "next_action": "Launch the integration lane, freeze contracts, then launch specialists in the recorded order."
+  "contractsStatus": "frozen",
+  "next_action": "Launch specialists in the recorded order after integration review."
 }

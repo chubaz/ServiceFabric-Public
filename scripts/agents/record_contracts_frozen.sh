@@ -20,47 +20,50 @@ git cat-file -e "${WAVE_BASE}^{commit}" >/dev/null 2>&1 || {
     exit 2
 }
 
+WAVE_MANIFEST="$(sf_manifest_wave_id)"
 for required in \
     AGENTS.md \
-    docs/workplans/waves/wave-1.md \
-    config/agent/waves/wave-1.json \
-    config/agent/waves/wave-1/tasks/assembly.json \
-    config/agent/waves/wave-1/tasks/resources.json \
-    config/agent/waves/wave-1/tasks/kits-blueprints.json \
-    config/agent/waves/wave-1/tasks/testing.json \
-    config/agent/waves/wave-1/tasks/integration.json
+    "docs/workplans/parallel/$SF_WAVE_ID/objective.md" \
+    "docs/workplans/parallel/$SF_WAVE_ID/frozen-contracts.md" \
+    "docs/workplans/parallel/$SF_WAVE_ID/integration-order.md" \
+    "config/agent/waves/$WAVE_MANIFEST.json" \
+    "config/agent/waves/$WAVE_MANIFEST/tasks/integration.json"
 do
-    [[ -f "$ROOT/$required" ]] || { echo "Missing required Wave-1 contract file: $required" >&2; exit 2; }
+    [[ -f "$ROOT/$required" ]] || { echo "Missing required $SF_WAVE_ID contract file: $required" >&2; exit 2; }
 done
 
 python3 - <<'PY'
 import json
 from pathlib import Path
-wave = json.loads(Path("config/agent/waves/wave-1.json").read_text())
-required_order = ["testing", "kits-blueprints", "resources", "assembly", "integration"]
-if wave["integration_order"] != required_order:
-    raise SystemExit("Unexpected integration order")
-for lane in ["assembly", "resources", "kits-blueprints", "testing", "integration"]:
-    task = json.loads(Path(f"config/agent/waves/wave-1/tasks/{lane}.json").read_text())
+import os
+
+wave_id = os.environ["SF_WAVE_ID"]
+manifest = "wave-1" if wave_id == "wave-01" else wave_id
+wave = json.loads(Path(f"config/agent/waves/{manifest}.json").read_text())
+for lane in wave["integration_order"]:
+    task_path = Path(f"config/agent/waves/{manifest}/tasks/{lane}.json")
+    if not task_path.exists():
+        raise SystemExit(f"Missing task manifest: {lane}")
+    task = json.loads(task_path.read_text())
     if not task["allowed_paths"] or not task["required_tests"]:
         raise SystemExit(f"Incomplete task manifest: {lane}")
 policies = wave.get("operational_policies", {})
-required = {
-    "ap00c_complete_not_specialist_lane": True,
-    "automatic_merger": False,
-    "background_branch_watcher": False,
-    "candidate_commits_allowed": True,
-    "contracts_freeze_required_before_specialists": True,
-    "integration_agent_launches_first": True,
-    "integration_authority_accepts_or_rejects": True,
-    "runtime_state_isolated_per_worktree": True,
-    "specialists_may_merge_or_pull_feature_branches": False,
-}
+required = {"automatic_merger": False, "candidate_commits_allowed": True,
+            "contracts_freeze_required_before_specialists": True,
+            "integration_agent_launches_first": True,
+            "runtime_state_isolated_per_worktree": True,
+            "specialists_may_merge_or_pull_feature_branches": False}
 for key, expected in required.items():
     if policies.get(key) is not expected:
         raise SystemExit(f"Operational policy mismatch: {key}")
-if policies.get("integration_gates") != ["midday", "end-of-day"]:
-    raise SystemExit("Integration gates are not encoded")
+if wave_id == "wave-01":
+    for key, expected in {"ap00c_complete_not_specialist_lane": True,
+                          "background_branch_watcher": False,
+                          "integration_authority_accepts_or_rejects": True}.items():
+        if policies.get(key) is not expected:
+            raise SystemExit(f"Operational policy mismatch: {key}")
+    if policies.get("integration_gates") != ["midday", "end-of-day"]:
+        raise SystemExit("Integration gates are not encoded")
 PY
 
 mkdir -p "$(sf_state_dir)"
@@ -71,7 +74,7 @@ cat > "$(sf_contracts_path)" <<EOF
   "integrationAgent": "active",
   "verified": [
     "AP-00C base",
-    "Wave-1 contracts",
+    "$SF_WAVE_ID contracts",
     "task ownership",
     "specialist manifests",
     "verification commands",

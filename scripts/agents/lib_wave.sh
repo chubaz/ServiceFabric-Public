@@ -6,8 +6,9 @@ sf_config_file() {
 }
 
 sf_load_config() {
-    local config_file requested_wave
+    local config_file requested_wave requested_state_base
     requested_wave="${SF_WAVE_ID:-}"
+    requested_state_base="${SF_STATE_BASE:-}"
     config_file="$(sf_config_file)"
     if [[ ! -f "$config_file" ]]; then
         echo "Missing worktree configuration: $config_file" >&2
@@ -18,6 +19,9 @@ sf_load_config() {
     source "$config_file"
     if [[ -n "$requested_wave" ]]; then
         SF_WAVE_ID="$requested_wave"
+    fi
+    if [[ -n "$requested_state_base" ]]; then
+        SF_STATE_BASE="$requested_state_base"
     fi
     : "${SF_WAVE_ID:?SF_WAVE_ID is required}"
     : "${SF_STATE_BASE:?SF_STATE_BASE is required}"
