@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 from servicefabric_capability_model import CapabilityDefinition
 from servicefabric_capability_registry import (
@@ -110,11 +111,49 @@ class CapabilityRegistryTests(unittest.TestCase):
         with self.assertRaises(CapabilityStorageError):
             self.registry.list()
 
+    def test_rejects_symlink_lock_file(self) -> None:
+        self.root.mkdir()
+        target = self.root / "lock-target"
+        target.write_text("", encoding="utf-8")
+        (self.root / ".capability-registry.lock").symlink_to(target)
+        with self.assertRaises(CapabilityStorageError):
+            self.registry.register(declaration(), "research-notes")
+
+    def test_rejects_malformed_persisted_records(self) -> None:
+        self.root.mkdir()
+        (self.root / "capability-registry.json").write_text(
+            json.dumps({
+                "version": 1,
+                "capabilities": {
+                    "research.scholarship_search": {
+                        "definition": {},
+                        "digest": "sha256:" + "0" * 64,
+                        "applications": [],
+                    }
+                },
+                "applications": {},
+            }),
+            encoding="utf-8",
+        )
+        with self.assertRaises(CapabilityStorageError):
+            self.registry.list()
+
     def test_state_is_atomically_replaced_static_json(self) -> None:
         self.registry.register(declaration(), "research-notes")
         state = json.loads((self.root / "capability-registry.json").read_text(encoding="utf-8"))
         self.assertEqual(set(state), {"version", "capabilities", "applications"})
         self.assertEqual(state["applications"], {"research-notes": ["research.scholarship_search"]})
+
+    def test_atomic_write_failure_preserves_previous_state(self) -> None:
+        first = declaration()
+        self.registry.register(first, "research-notes")
+        before = (self.root / "capability-registry.json").read_bytes()
+        with mock.patch("servicefabric_capability_registry.registry.os.replace", side_effect=OSError("disk failure")):
+            with self.assertRaises(CapabilityStorageError):
+                self.registry.register(declaration("research.second"), "research-notes")
+        self.assertEqual((self.root / "capability-registry.json").read_bytes(), before)
+        self.assertEqual([record.definition.metadata.id for record in self.registry.list()], [first.metadata.id])
+        self.assertFalse(list(self.root.glob(".capability-registry-*.tmp")))
 
 
 if __name__ == "__main__":
