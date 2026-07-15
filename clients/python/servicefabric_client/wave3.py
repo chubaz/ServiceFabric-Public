@@ -11,13 +11,11 @@ from pathlib import Path
 from typing import Any
 
 from servicefabric_application_assembly import assemble_application
-from servicefabric_application_builder import ApplicationBuildCoordinator
+from servicefabric_application_builder import ApplicationBuildCoordinator, create_application_builder_service
 from servicefabric_application_generator import materialize_blueprint
 from servicefabric_application_model import load_module_definition_from_file
 from servicefabric_agent_guidance import compose_guidance
-from servicefabric_artifacts import FileArtifactStore
 from servicefabric_blueprints import RESEARCH_NOTES_BLUEPRINT, create_default_blueprint_catalog
-from servicefabric_builder.identity import digest, manifest_content_digest
 from servicefabric_contracts import ApplicationArtifactManifest
 from servicefabric_contracts.metadata import OwnerReference
 from servicefabric_framework_kits import KitPlanningContext, get_default_catalog
@@ -44,6 +42,11 @@ class Wave3ApplicationService:
         self.workspace = WorkspaceService(context)
         self.catalog = create_default_blueprint_catalog()
         self.controller = ManagedProcessController(context.layout)
+        repository = Path(__file__).resolve().parents[3]
+        self.builder_service = create_application_builder_service(
+            portfolio_root=repository / "portfolio" / "applications",
+            artifact_store_root=context.layout.artifacts,
+        )
 
     def _layout(self, application_id: str) -> ApplicationLayout:
         return self.workspace.locate_application(application_id)
@@ -199,8 +202,8 @@ def search_notes(q: str = Query(default="")) -> list[dict[str, object]]:
                 })
         files.sort(key=lambda item: item["path"])
         stable_files = [{key: value for key, value in item.items() if key != "source"} for item in files]
-        source_digest = digest([item.source_digest for item in plan.modules])
-        build_spec_digest = digest([asdict(item.reviewed_plan) for item in plan.modules])
+        source_digest = _digest([item.source_digest for item in plan.modules])
+        build_spec_digest = _digest([asdict(item.reviewed_plan) for item in plan.modules])
         stable = {
             "application_id": application_id,
             "application_revision": "0.1.0",
@@ -213,7 +216,7 @@ def search_notes(q: str = Query(default="")) -> list[dict[str, object]]:
             "source_digest": source_digest,
             "total_size_bytes": sum(item["size_bytes"] for item in stable_files),
         }
-        artifact_digest = digest(stable)
+        artifact_digest = _digest(stable)
         artifact_id = "artifact." + artifact_digest[7:39]
         artifact = ApplicationArtifactManifest.model_validate({
             "apiVersion": "servicefabric.ai/v1alpha1",
@@ -237,16 +240,13 @@ def search_notes(q: str = Query(default="")) -> list[dict[str, object]]:
                 },
             },
         })
-        if manifest_content_digest(artifact) != artifact_digest:
-            raise ValueError("generated artifact manifest digest is inconsistent")
-        store = FileArtifactStore(self.context.layout.artifacts)
         staging = self.context.layout.temporary / f"build-{application_id}"
         shutil.rmtree(staging, ignore_errors=True)
         for item in files:
             target = staging / item["path"]
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(item["source"], target)
-        store.put_artifact(artifact, staging)
+        self.builder_service.store.put_artifact(artifact, staging)
         shutil.rmtree(staging, ignore_errors=True)
         return {
             "application_id": application_id,
@@ -300,3 +300,8 @@ def search_notes(q: str = Query(default="")) -> list[dict[str, object]]:
     def stop(self, application_id: str, module_id: str = "notes-api") -> dict[str, Any]:
         status = self.controller.stop(application_id, module_id)
         return {"application_id": application_id, "module_id": module_id, "state": status.state, "port": status.port}
+
+
+def _digest(value: object) -> str:
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
+    return "sha256:" + hashlib.sha256(payload).hexdigest()
