@@ -10,8 +10,9 @@
   },
   "corrected_candidate_review": {
     "capability-registry": {
-      "head": "2a67901d3e60204313d3f54401ef82903295c92b",
-      "decision": "rejected-wrong-lane"
+      "head": "cb5a6f853a48aab403d4d228325bdc64398b6a6d",
+      "decision": "accepted",
+      "integration_merge": "7aa4f25ede41fc1112ee8f9c2cbdffa577084fde"
     },
     "capability-authoring": {
       "head": "2a67901d3e60204313d3f54401ef82903295c92b",

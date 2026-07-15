@@ -23,15 +23,13 @@
     },
     "capability-registry": {
       "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
-      "candidate_head": "3866227a9b3f4363654e86790391e76af83e5686",
-      "accepted_commit": "df27a6625bf09f3d76e8d0c91d0265d63ac0761d",
-      "integration_commit": "1d5a705e40c544eafc643ee314317456edddb49f",
+      "candidate_head": "cb5a6f853a48aab403d4d228325bdc64398b6a6d",
+      "accepted_commit": "cb5a6f853a48aab403d4d228325bdc64398b6a6d",
+      "integration_commit": "7aa4f25ede41fc1112ee8f9c2cbdffa577084fde",
       "integration_decision": "accepted",
       "focused_verification": "passed",
       "dependent_verification": "passed",
-      "final_state": "integrated",
-      "latest_reviewed_head": "2a67901d3e60204313d3f54401ef82903295c92b",
-      "latest_review_decision": "rejected-wrong-lane"
+      "final_state": "integrated"
     },
     "capability-authoring": {
       "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
