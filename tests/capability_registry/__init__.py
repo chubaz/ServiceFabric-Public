@@ -1,1 +1,0 @@
-"""Capability registry tests."""
