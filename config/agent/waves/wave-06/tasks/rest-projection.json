@@ -1,0 +1,14 @@
+{
+  "lane": "rest-projection",
+  "branch": "agent/w6-rest-projection",
+  "worktree": "../servicefabric-wave6-rest-projection",
+  "handoff_path": "docs/handoffs/wave-06/rest-projection.md",
+  "handoff_required": true,
+  "objective": "Provide loopback-only REST capability discovery, description, availability, and invocation endpoints that delegate exclusively to Wave-5 public runtime APIs.",
+  "allowed_paths": ["services/capability_rest_gateway", "tests/capability_rest_gateway", "docs/handoffs/wave-06/rest-projection.md"],
+  "forbidden_paths": ["packages/servicefabric_capability_model", "packages/servicefabric_capability_registry", "packages/servicefabric_capability_runtime", "packages/servicefabric_capability_invocation", "clients/python", "packages/servicefabric_capability_mcp_projection", "packages/servicefabric_capability_consumers", "tests/capability_mcp_projection", "tests/capability_consumers", "tests/wave_06", "Makefile", ".github", "scripts", "config"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-06/objective.md", "docs/workplans/parallel/wave-06/ownership.md", "docs/workplans/parallel/wave-06/frozen-contracts.md", "docs/workplans/parallel/wave-06/verification.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/capability_rest_gateway -v", "git diff --check"],
+  "focused_test_limit": 3,
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(rest-projection):", "test(rest-projection):", "docs(rest-projection):", "fix(rest-projection):"]}
+}

@@ -1,0 +1,13 @@
+{
+  "lane": "integration",
+  "branch": "integration/phase2-wave6",
+  "worktree": "../servicefabric-wave6-integration",
+  "handoff_path": "docs/handoffs/wave-06/integration.md",
+  "handoff_required": true,
+  "objective": "Coordinate Wave-6 projection composition, existing MCP gateway and CLI wiring, loopback REST launch, Python-client export, dependency and CI wiring, candidate review, and closure without implementing specialist projection functionality.",
+  "allowed_paths": [".github", "Makefile", "clients/python", "config/agent/waves/wave-06", "docs/handoffs/wave-06/integration.md", "docs/workplans/parallel/wave-06", "scripts/agent", "tests/agent", "requirements"],
+  "forbidden_paths": ["packages/servicefabric_capability_model", "packages/servicefabric_capability_registry", "packages/servicefabric_capability_runtime", "packages/servicefabric_capability_invocation", "packages/servicefabric_capability_mcp_projection", "services/capability_rest_gateway", "packages/servicefabric_capability_consumers", "tests/capability_mcp_projection", "tests/capability_rest_gateway", "tests/capability_consumers", "tests/wave_06"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-06/objective.md", "docs/workplans/parallel/wave-06/ownership.md", "docs/workplans/parallel/wave-06/frozen-contracts.md", "docs/workplans/parallel/wave-06/integration-order.md", "docs/workplans/parallel/wave-06/verification.md", "config/agent/waves/wave-06.json"],
+  "required_tests": ["python3 -m unittest tests.agent.test_wave_06_harness -v", "make verify-wave-06", "make verify-current", "git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": true, "allowed_prefixes": ["chore(agents):", "feat(integration):", "test(integration):", "docs(integration):", "fix(integration):", "merge(wave-06):"]}
+}

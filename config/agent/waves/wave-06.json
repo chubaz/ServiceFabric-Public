@@ -1,0 +1,47 @@
+{
+  "wave_id": "wave-06",
+  "runtime_wave_id": "wave-06",
+  "base_commit": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+  "integration_branch": "integration/phase2-wave6",
+  "task_manifest_dir": "config/agent/waves/wave-06/tasks",
+  "canonical_handoff_dir": "docs/handoffs/wave-06",
+  "handoff_template": "docs/handoffs/wave-06/task-handoff-template.md",
+  "local_run_dir": ".agent-runs/wave-06",
+  "shared_docs": "docs/workplans/parallel/wave-06/objective.md",
+  "readiness_metadata": "config/agent/waves/wave-06/readiness.json",
+  "integration_queue": "config/agent/waves/wave-06/integration-queue.json",
+  "lanes": ["integration", "mcp-projection", "rest-projection", "sdk-agent-projection", "acceptance"],
+  "specialist_lanes": ["mcp-projection", "rest-projection", "sdk-agent-projection", "acceptance"],
+  "integration_order": ["mcp-projection", "rest-projection", "sdk-agent-projection", "integration", "acceptance"],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "mcp-projection": "SF_WT_MCP_PROJECTION",
+    "rest-projection": "SF_WT_REST_PROJECTION",
+    "sdk-agent-projection": "SF_WT_SDK_AGENT",
+    "acceptance": "SF_WT_ACCEPTANCE"
+  },
+  "frozen_contracts": [
+    "packages/servicefabric_capability_model",
+    "packages/servicefabric_capability_registry",
+    "packages/servicefabric_capability_runtime",
+    "packages/servicefabric_capability_invocation",
+    "packages/servicefabric_contracts",
+    "packages/servicefabric_operation_model",
+    "packages/servicefabric_process_runtime",
+    "ToolDefinition"
+  ],
+  "operational_policies": {
+    "contracts_freeze_required_before_specialists": true,
+    "candidate_commits_allowed": true,
+    "automatic_merger": false,
+    "specialists_may_merge_or_pull_feature_branches": false,
+    "integration_agent_launches_first": true,
+    "runtime_state_isolated_per_worktree": true
+  },
+  "verification_gates": [
+    "python3 scripts/agent/wave_task_preflight.py --wave wave-06 --task <task>",
+    "make verify-wave-06",
+    "make verify-current",
+    "git diff --check"
+  ]
+}

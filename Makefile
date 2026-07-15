@@ -189,6 +189,23 @@ verify-wave-05:
 	$(WAVE05_ENV) $(WAVE05_PYTHON) -m compileall packages/servicefabric_capability_runtime packages/servicefabric_capability_invocation packages/servicefabric_http_operation_adapter
 	git diff --check
 
+WAVE06_PYTHON ?= $(WAVE05_PYTHON)
+WAVE06_PYTHONPATH := $(WAVE05_PYTHONPATH):$(CURDIR)/packages/servicefabric_capability_mcp_projection/src:$(CURDIR)/packages/servicefabric_capability_consumers/src:$(CURDIR)/services/capability_rest_gateway/src:$(CURDIR)/services/mcp_gateway/src:$(CURDIR)/clients/python
+WAVE06_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE06_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE06_PYTHONPATH)"
+
+verify-wave-06:
+	# Wave-6 is intentionally focused; projection lanes own their package suites.
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest discover -s tests/capability_mcp_projection -v
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest discover -s tests/capability_rest_gateway -v
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest discover -s tests/capability_consumers -v
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest discover -s tests/wave_06 -v
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest tests.wave_05.test_research_notes_acceptance.ResearchNotesCapabilityJourneyTests.test_registered_capabilities_follow_the_running_application_lifecycle -v
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest tests.mcp_projection.test_discovery.DiscoveryTests.test_disabled_unavailable_and_unauthorized_tools_remain_hidden -v
+	$(WAVE06_ENV) $(WAVE06_PYTHON) scripts/dependencies/check_python_locks.py
+	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE06_PYTHON)):$(PATH)" $(WAVE06_PYTHON) -m pip check
+	$(WAVE06_ENV) $(WAVE06_PYTHON) -m compileall packages/servicefabric_capability_mcp_projection packages/servicefabric_capability_consumers services/capability_rest_gateway services/mcp_gateway clients/python tests/capability_mcp_projection tests/capability_rest_gateway tests/capability_consumers tests/wave_06
+	git diff --check
+
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
 	python3 -m unittest discover -s tests/workspace -v
