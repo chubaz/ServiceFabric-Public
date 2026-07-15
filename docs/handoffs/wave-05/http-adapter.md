@@ -3,7 +3,7 @@
 Lane: `http-adapter`
 Branch: `agent/w5-http-adapter`
 Base commit: `53f53ca8a4a9a47887902b84a91bc27a812e9483`
-Candidate commit: `7c34b38`
+Candidate commit: `81dc05f` (with `7c34b38`)
 
 ## Changed Paths
 
@@ -32,4 +32,4 @@ None.
 
 ## Rollback
 
-Revert `7c34b38`. Do not merge this branch from the specialist lane.
+Revert `81dc05f` and `7c34b38` in that order. Do not merge this branch from the specialist lane.
