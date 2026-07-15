@@ -1,0 +1,14 @@
+{
+  "lane": "acceptance",
+  "branch": "agent/w5-acceptance",
+  "worktree": "../servicefabric-wave5-acceptance",
+  "handoff_path": "docs/handoffs/wave-05/acceptance.md",
+  "handoff_required": true,
+  "objective": "Deliver one end-to-end Wave-5 acceptance journey proving static definitions persist, three healthy Research Notes capabilities are available, create and search invoke, malformed input fails before transport, and stop makes capabilities unavailable without unregistering them.",
+  "allowed_paths": ["tests/wave_05", "tests/fixtures/wave_05", "docs/handoffs/wave-05/acceptance.md"],
+  "forbidden_paths": ["packages/servicefabric_capability_runtime", "packages/servicefabric_capability_invocation", "packages/servicefabric_http_operation_adapter", "packages/servicefabric_capability_registry", "packages/servicefabric_contracts", "packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "clients/python", "tests/capability_runtime", "tests/capability_invocation", "tests/http_operation_adapter", "Makefile", ".github", "scripts", "config"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-05/objective.md", "docs/workplans/parallel/wave-05/ownership.md", "docs/workplans/parallel/wave-05/frozen-contracts.md", "docs/workplans/parallel/wave-05/verification.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/wave_05 -v", "git diff --check"],
+  "focused_test_limit": 2,
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["test(acceptance):", "docs(acceptance):", "fix(acceptance):"]}
+}

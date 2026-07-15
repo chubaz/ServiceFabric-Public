@@ -1,0 +1,14 @@
+{
+  "lane": "availability",
+  "branch": "agent/w5-availability",
+  "worktree": "../servicefabric-wave5-availability",
+  "handoff_path": "docs/handoffs/wave-05/availability.md",
+  "handoff_required": true,
+  "objective": "Implement deterministic runtime capability availability derived from owning-module health, with state and reason records, a module-health source protocol, and optional runtime snapshot serialization; do not implement invocation.",
+  "allowed_paths": ["packages/servicefabric_capability_runtime", "tests/capability_runtime", "docs/handoffs/wave-05/availability.md"],
+  "forbidden_paths": ["packages/servicefabric_capability_invocation", "packages/servicefabric_http_operation_adapter", "packages/servicefabric_capability_registry", "packages/servicefabric_contracts", "packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "clients/python", "tests/capability_invocation", "tests/http_operation_adapter", "tests/wave_05", "Makefile", ".github", "scripts", "config"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-05/objective.md", "docs/workplans/parallel/wave-05/ownership.md", "docs/workplans/parallel/wave-05/frozen-contracts.md", "docs/workplans/parallel/wave-05/verification.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/capability_runtime -v", "git diff --check"],
+  "focused_test_limit": 4,
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(availability):", "test(availability):", "docs(availability):", "fix(availability):"]}
+}

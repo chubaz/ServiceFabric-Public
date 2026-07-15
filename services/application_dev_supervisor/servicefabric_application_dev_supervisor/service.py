@@ -102,8 +102,10 @@ class ApplicationDevelopmentSupervisor:
         if not self._prepared:
             self.prepare(application_id)
         started: list[str] = []
+        failing_module: str | None = None
         try:
             for module_id in self._assembly.startup_order:
+                failing_module = module_id
                 node = self._assembly.modules_by_id[module_id]
                 plan = self._create_plan(node, self._bindings)
                 if plan is None:
@@ -118,6 +120,20 @@ class ApplicationDevelopmentSupervisor:
             self._resources.release(application_id, tuple(self._assembly.resources_by_id))
             self._bindings = {}
             self._prepared = False
+            detail = ""
+            if failing_module is not None:
+                try:
+                    trailing_log = self._processes.logs(application_id, failing_module, 4096)
+                except Exception:
+                    trailing_log = ""
+                if trailing_log:
+                    for value in self._bindings.values():
+                        if value:
+                            trailing_log = trailing_log.replace(value, "[redacted]")
+                    detail = f" Trailing process log:\n{trailing_log}"
+                raise SupervisorError(
+                    f"Application startup failed for module '{failing_module}'; started modules were rolled back.{detail}"
+                ) from exc
             raise SupervisorError("Application startup failed; started modules were rolled back.") from exc
         return self.status(application_id)
 

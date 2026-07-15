@@ -1,0 +1,57 @@
+{
+  "wave_id": "wave-05",
+  "base_commit": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+  "contractsStatus": "frozen",
+  "lanes": {
+    "availability": {
+      "branch": "agent/w5-availability",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "candidate_head": "371804cfada9873d3050c9948f382114c0b2e031",
+      "accepted_commit": "371804cfada9873d3050c9948f382114c0b2e031",
+      "integration_commit": "ee9a7dc47c3fa5e532a2a801e95b2734a62238f0",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "invocation": {
+      "branch": "agent/w5-invocation",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "candidate_head": "8c6cebe7074e9ec45bc2686778a3ea9c91aa973e",
+      "accepted_commit": "8c6cebe7074e9ec45bc2686778a3ea9c91aa973e",
+      "integration_commit": "dc939078043c095996a6a36b23959c41f9e6ff94",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "http-adapter": {
+      "branch": "agent/w5-http-adapter",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "candidate_head": "419e1a752a4ddf60efd164c201d0961cad15d1bd",
+      "accepted_commit": "419e1a752a4ddf60efd164c201d0961cad15d1bd",
+      "integration_commit": "ef1762ed54e3768d5d323394b0c52a8bf403c614",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "acceptance": {
+      "branch": "agent/w5-acceptance",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "candidate_head": "e67f3d1e9aab33e76a2cb06352ac85b336a45b81",
+      "accepted_commit": "e67f3d1e9aab33e76a2cb06352ac85b336a45b81",
+      "integration_commit": "2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    }
+  },
+  "integration": {
+    "state": "complete",
+    "branch": "integration/phase2-wave5",
+    "contracts_status": "frozen",
+    "candidate_review_status": "availability, invocation, http-adapter, and corrected acceptance candidates accepted",
+    "wave_completion_status": "complete",
+    "final_verification_status": "passed",
+    "verification_head": "ea72d6c8fc14980c317b48933a3056a760cd5e8b",
+    "final_head": "recorded_by_completion_commit"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "lane": "integration",
+  "branch": "integration/phase2-wave5",
+  "worktree": "../servicefabric-wave5-integration",
+  "handoff_path": "docs/handoffs/wave-05/integration.md",
+  "handoff_required": true,
+  "objective": "Coordinate Wave-5 contract freeze, application-status availability bridging, CLI and cross-package composition, candidate review, focused verification, and completion without implementing specialist feature packages.",
+  "allowed_paths": [".github", "Makefile", "clients/python/servicefabric_client", "config/agent/waves/wave-05", "config/agents/wave-05", "docs/handoffs/wave-05/integration.md", "docs/workplans/parallel/wave-05", "scripts/agent", "scripts/agents", "tests/agent", "requirements", "pyproject.toml"],
+  "forbidden_paths": ["packages/servicefabric_capability_runtime", "packages/servicefabric_capability_invocation", "packages/servicefabric_http_operation_adapter", "tests/capability_runtime", "tests/capability_invocation", "tests/http_operation_adapter", "tests/wave_05", "tests/fixtures/wave_05", "packages/servicefabric_capability_registry", "packages/servicefabric_contracts", "packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "packages/servicefabric_process_runtime"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-05/objective.md", "docs/workplans/parallel/wave-05/ownership.md", "docs/workplans/parallel/wave-05/frozen-contracts.md", "docs/workplans/parallel/wave-05/integration-order.md", "docs/workplans/parallel/wave-05/verification.md", "config/agent/waves/wave-05.json"],
+  "required_tests": ["python3 -m unittest discover -s tests/agent -v", "make verify-wave-05", "make verify-current", "git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": true, "allowed_prefixes": ["chore(agents):", "feat(integration):", "test(integration):", "docs(integration):", "fix(integration):", "merge(wave-05):"]}
+}

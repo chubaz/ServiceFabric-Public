@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-05",
+  "overall": "WAVE COMPLETE",
+  "lanes": {
+    "availability": "accepted",
+    "invocation": "accepted",
+    "http-adapter": "accepted",
+    "acceptance": "accepted",
+    "integration": "complete"
+  },
+  "next_action": "Wave complete. No further Wave-5 integration action is required."
+}

@@ -1,0 +1,14 @@
+{
+  "lane": "http-adapter",
+  "branch": "agent/w5-http-adapter",
+  "worktree": "../servicefabric-wave5-http-adapter",
+  "handoff_path": "docs/handoffs/wave-05/http-adapter.md",
+  "handoff_required": true,
+  "objective": "Implement the reviewed HTTP operation transport adapter with strict relative-path and method enforcement, loopback-only endpoints, JSON request/response handling, bounded timeouts, and structured safe errors.",
+  "allowed_paths": ["packages/servicefabric_http_operation_adapter", "tests/http_operation_adapter", "docs/handoffs/wave-05/http-adapter.md"],
+  "forbidden_paths": ["packages/servicefabric_capability_runtime", "packages/servicefabric_capability_invocation", "packages/servicefabric_capability_registry", "packages/servicefabric_contracts", "packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "clients/python", "tests/capability_runtime", "tests/capability_invocation", "tests/wave_05", "Makefile", ".github", "scripts", "config"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-05/objective.md", "docs/workplans/parallel/wave-05/ownership.md", "docs/workplans/parallel/wave-05/frozen-contracts.md", "docs/workplans/parallel/wave-05/verification.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/http_operation_adapter -v", "git diff --check"],
+  "focused_test_limit": 3,
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(http-adapter):", "test(http-adapter):", "docs(http-adapter):", "fix(http-adapter):"]}
+}
