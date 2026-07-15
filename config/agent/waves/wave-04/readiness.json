@@ -1,0 +1,54 @@
+{
+  "wave_id": "wave-04",
+  "base_commit": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+  "contractsStatus": "frozen",
+  "lanes": {
+    "operation-model": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "3c0f867f444776efc21700722561482e90ecf1d0",
+      "accepted_commit": "3c0f867f444776efc21700722561482e90ecf1d0",
+      "integration_commit": "ba161c89ecb9f888e00071b89c30f213ef53f2f4",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "final_state": "integrated"
+    },
+    "capability-model": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "786d23fe197ec7c3fd407448334962ca11f44340",
+      "accepted_commit": "786d23fe197ec7c3fd407448334962ca11f44340",
+      "integration_commit": "99a3c721133485e2e1f9ba5b7da295ed50257de6",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "final_state": "integrated"
+    },
+    "capability-registry": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "cb5a6f853a48aab403d4d228325bdc64398b6a6d",
+      "accepted_commit": "cb5a6f853a48aab403d4d228325bdc64398b6a6d",
+      "integration_commit": "7aa4f25ede41fc1112ee8f9c2cbdffa577084fde",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "dependent_verification": "passed",
+      "final_state": "integrated"
+    },
+    "capability-authoring": {
+      "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
+      "candidate_head": "2a67901d3e60204313d3f54401ef82903295c92b",
+      "accepted_commit": "2a67901d3e60204313d3f54401ef82903295c92b",
+      "integration_commit": "5fc13ada75b8eab12523482614b0b024f214f3c6",
+      "integration_decision": "accepted",
+      "focused_verification": "passed",
+      "dependent_verification": "passed",
+      "final_state": "integrated"
+    }
+  },
+  "integration": {
+    "state": "complete-with-waived-inherited-regression",
+    "branch": "integration/phase2-wave4",
+    "contracts_status": "frozen",
+    "wave_completion_status": "complete",
+    "final_verification_status": "passed",
+    "final_integration_head": "90e37e47b4b51f45e1b50de3082bdcdbee6460b6",
+    "verification_exception": "make verify-wave-04 is waived after its inherited Wave-2 Research Notes runtime test failed with ApplicationNotFound: application 'research-notes' is not registered; the Wave-1, Wave-3, and Wave-4 portions completed before that inherited failure."
+  }
+}

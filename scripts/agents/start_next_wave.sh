@@ -13,10 +13,10 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -n "$NEXT_WAVE" && -n "$BASE_REF" ]] || { echo "--wave and --base are required" >&2; exit 2; }
 [[ "$NEXT_WAVE" =~ ^wave-[0-9]+$ ]] || { echo "wave must use the form wave-03" >&2; exit 2; }
+BASE_SHA="$(git rev-parse --verify "${BASE_REF}^{commit}")" || { echo "base ref does not exist: $BASE_REF" >&2; exit 2; }
 sf_load_config
 ROOT="$(sf_repo_root)"
 [[ "$(pwd -P)" == "$(cd "$SF_WT_INTEGRATION" && pwd -P)" ]] || { echo "Run this command from the integration worktree: $SF_WT_INTEGRATION" >&2; exit 2; }
-BASE_SHA="$(git rev-parse --verify "${BASE_REF}^{commit}")" || { echo "base ref does not exist: $BASE_REF" >&2; exit 2; }
 for lane in $(sf_lanes); do
     path="$(sf_lane_path "$lane")"; sf_is_valid_worktree "$path" || { echo "$lane: invalid Git worktree: $path" >&2; exit 2; }; sf_is_clean "$path" || { echo "$lane: worktree is dirty: $path" >&2; exit 2; }
 done

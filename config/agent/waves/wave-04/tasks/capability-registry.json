@@ -1,0 +1,12 @@
+{
+  "lane": "capability-registry",
+  "branch": "agent/w4-capability-registry",
+  "worktree": "../servicefabric-wave4-capability-registry",
+  "handoff_path": "docs/handoffs/wave-04/capability-registry.md",
+  "handoff_required": true,
+  "objective": "Implement the atomic, path-safe, static file-backed capability registry with deterministic register, list, describe, idempotency, conflict, digest, and application indexing behavior.",
+  "allowed_paths": ["packages/servicefabric_capability_registry", "tests/capability_registry", "docs/handoffs/wave-04/capability-registry.md"],
+  "forbidden_paths": ["packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "packages/servicefabric_capability_authoring", "packages/servicefabric_blueprints", "packages/servicefabric_application_generator", "examples/research-notes", "schemas", "tests/operation_model", "tests/capability_model", "tests/capability_authoring", "tests/fixtures/wave_04", "Makefile", "scripts"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-04/objective.md", "docs/workplans/parallel/wave-04/ownership.md", "docs/workplans/parallel/wave-04/frozen-contracts.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/capability_registry -v", "git diff --check"]
+}

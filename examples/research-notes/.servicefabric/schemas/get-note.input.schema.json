@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"notes.get-note-input","type":"object","additionalProperties":false,"required":["note_id"],"properties":{"note_id":{"type":"integer","minimum":1}}}

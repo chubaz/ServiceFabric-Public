@@ -1,0 +1,12 @@
+{
+  "lane": "capability-authoring",
+  "branch": "agent/w4-capability-authoring",
+  "worktree": "../servicefabric-wave4-capability-authoring",
+  "handoff_path": "docs/handoffs/wave-04/capability-authoring.md",
+  "handoff_required": true,
+  "objective": "Author explicit Research Notes operation and capability manifests and add generator support for local manifests without route inference, registry, invocation, or projection behavior.",
+  "allowed_paths": ["packages/servicefabric_capability_authoring", "packages/servicefabric_blueprints", "packages/servicefabric_application_generator", "examples/research-notes", "tests/capability_authoring", "tests/fixtures/wave_04", "docs/handoffs/wave-04/capability-authoring.md"],
+  "forbidden_paths": ["packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "packages/servicefabric_capability_registry", "schemas/servicefabric/local/v1", "tests/operation_model", "tests/capability_model", "tests/capability_registry", "Makefile", "scripts"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-04/objective.md", "docs/workplans/parallel/wave-04/ownership.md", "docs/workplans/parallel/wave-04/frozen-contracts.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/capability_authoring -v", "git diff --check"]
+}

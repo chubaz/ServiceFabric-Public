@@ -1,0 +1,12 @@
+{
+  "lane": "integration",
+  "branch": "integration/phase2-wave4",
+  "worktree": "../servicefabric-wave4-integration",
+  "handoff_path": "docs/handoffs/wave-04/integration.md",
+  "handoff_required": true,
+  "objective": "Coordinate Wave-4 contract freeze, candidate review, CLI composition, cross-package registration, and verification without implementing capability functionality.",
+  "allowed_paths": [".github", "Makefile", "config/agent/waves/wave-04", "config/agents/wave-04", "docs/handoffs/wave-04/integration.md", "docs/workplans/parallel/wave-04", "scripts/agents", "scripts/agent", "tests/wave_04"],
+  "forbidden_paths": ["packages/servicefabric_operation_model", "packages/servicefabric_capability_model", "packages/servicefabric_capability_registry", "packages/servicefabric_capability_authoring", "packages/servicefabric_blueprints", "packages/servicefabric_application_generator", "examples/research-notes", "schemas/servicefabric/local/v1", "tests/operation_model", "tests/capability_model", "tests/capability_registry", "tests/capability_authoring", "tests/fixtures/wave_04"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-04/objective.md", "docs/workplans/parallel/wave-04/ownership.md", "docs/workplans/parallel/wave-04/frozen-contracts.md", "docs/workplans/parallel/wave-04/integration-order.md", "docs/workplans/parallel/wave-04/verification.md", "config/agent/waves/wave-04.json"],
+  "required_tests": ["python3 -m unittest discover -s tests/agent -v", "make verify-wave-04", "make verify-current", "git diff --check"]
+}

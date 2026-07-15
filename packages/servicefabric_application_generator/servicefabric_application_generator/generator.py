@@ -163,6 +163,13 @@ def _write_application(root: Path, request: GenerationRequest, manifests: tuple[
     _write_json_yaml(root / ".servicefabric" / "blueprint.yaml", {"apiVersion":"servicefabric.local/v1", "kind":"ApplicationBlueprint", "metadata":{"applicationId":request.application_id}, "spec":{"source":request.blueprint.blueprint_id,"version":request.blueprint.version,"modules":[m["metadata"]["id"] for m in manifests]}})
     _write_json_yaml(root / ".servicefabric" / "bindings.yaml", {"apiVersion":"servicefabric.local/v1","kind":"ApplicationBindings","metadata":{"applicationId":request.application_id},"spec":{"bindings":{}}})
     _write_json_yaml(root / ".servicefabric" / "development.yaml", {"apiVersion":"servicefabric.local/v1","kind":"DevelopmentConfiguration","metadata":{"applicationId":request.application_id},"spec":{"commands":{},"requiredChecks":[]}})
+    for static_file in request.blueprint.static_files:
+        relative = Path(static_file.path)
+        if relative.is_absolute() or ".." in relative.parts or not relative.parts or relative.parts[0] != ".servicefabric":
+            raise GenerationRollback(f"Unsafe reviewed static file path: '{static_file.path}'.")
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        _write_json_yaml(path, _replace(static_file.to_document(), request.parameters))
     for manifest in manifests:
         module_id = manifest["metadata"]["id"]
         module_root = root / "modules" / module_id

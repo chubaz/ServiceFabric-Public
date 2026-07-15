@@ -20,8 +20,29 @@ def manifest_path(wave_id: str) -> str:
     return f"{WAVE_DIR}/{legacy_id}.json"
 
 
+class WaveManifestError(ValueError):
+    """Raised when a committed wave manifest cannot be used safely."""
+
+
+def load_manifest(path: str) -> dict[str, object]:
+    manifest = safe_path(path)
+    try:
+        content = manifest.read_text(encoding="utf-8")
+    except OSError as error:
+        raise WaveManifestError(f"wave manifest unavailable: {path}") from error
+    if not content.strip():
+        raise WaveManifestError(f"wave manifest is empty: {path}")
+    try:
+        value = json.loads(content)
+    except json.JSONDecodeError as error:
+        raise WaveManifestError(f"wave manifest is malformed: {path}") from error
+    if not isinstance(value, dict):
+        raise WaveManifestError(f"wave manifest must be an object: {path}")
+    return value
+
+
 def wave(wave_id: str) -> dict[str, object]:
-    return read_json(manifest_path(wave_id))
+    return load_manifest(manifest_path(wave_id))
 
 
 def task(task_id: str, wave_id: str = "wave-1") -> dict[str, object]:

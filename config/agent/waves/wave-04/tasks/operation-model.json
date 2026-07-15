@@ -1,0 +1,12 @@
+{
+  "lane": "operation-model",
+  "branch": "agent/w4-operation-model",
+  "worktree": "../servicefabric-wave4-operation-model",
+  "handoff_path": "docs/handoffs/wave-04/operation-model.md",
+  "handoff_required": true,
+  "objective": "Implement the strict, deterministic OperationDefinition model and schema with bounded HTTP interface bindings.",
+  "allowed_paths": ["packages/servicefabric_operation_model", "schemas/servicefabric/local/v1/operation.schema.json", "tests/operation_model", "docs/handoffs/wave-04/operation-model.md"],
+  "forbidden_paths": ["packages/servicefabric_capability_model", "packages/servicefabric_capability_registry", "packages/servicefabric_capability_authoring", "packages/servicefabric_blueprints", "packages/servicefabric_application_generator", "examples/research-notes", "tests/capability_model", "tests/capability_registry", "tests/capability_authoring", "tests/fixtures/wave_04", "Makefile", "scripts"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-04/objective.md", "docs/workplans/parallel/wave-04/ownership.md", "docs/workplans/parallel/wave-04/frozen-contracts.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/operation_model -v", "git diff --check"]
+}

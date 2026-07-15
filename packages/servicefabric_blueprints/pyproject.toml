@@ -9,6 +9,7 @@ description = "Reviewed application blueprint catalog for ServiceFabric module g
 requires-python = ">=3.11,<3.12"
 dependencies = [
   "servicefabric-application-model==0.1.0a1",
+  "servicefabric-capability-authoring==0.1.0a1",
   "servicefabric-framework-kits==0.1.0a1",
 ]
 

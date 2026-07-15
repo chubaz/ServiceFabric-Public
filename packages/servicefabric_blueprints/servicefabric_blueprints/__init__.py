@@ -8,7 +8,7 @@ from servicefabric_blueprints.builtins import (
     create_default_blueprint_catalog,
 )
 from servicefabric_blueprints.catalog import BlueprintCatalog
-from servicefabric_blueprints.definitions import ApplicationBlueprint, BlueprintModule
+from servicefabric_blueprints.definitions import ApplicationBlueprint, BlueprintFile, BlueprintModule
 from servicefabric_blueprints.errors import (
     BlueprintError,
     BlueprintNotFound,
@@ -19,6 +19,7 @@ __all__ = [
     "ApplicationBlueprint",
     "BlueprintModule",
     "BlueprintCatalog",
+    "BlueprintFile",
     "BlueprintError",
     "BlueprintNotFound",
     "DuplicateBlueprintRegistration",

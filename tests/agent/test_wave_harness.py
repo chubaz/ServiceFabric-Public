@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from scripts.agent.render_wave_prompt import render
-from scripts.agent.wave_common import ROOT, task, task_ids, wave
+from scripts.agent.wave_common import ROOT, WaveManifestError, task, task_ids, wave
 
 
 class WaveHarnessTests(unittest.TestCase):
@@ -73,6 +76,33 @@ class WaveHarnessTests(unittest.TestCase):
         self.assertIn("agent/w2-supervisor", prompt)
         self.assertIn("--wave wave-02 --task supervisor", prompt)
         self.assertIn("docs/handoffs/wave-02/supervisor.md", prompt)
+
+    def test_wave_03_canonical_manifest_is_json_and_complete(self) -> None:
+        manifest = ROOT / "config/agents/wave-03/wave.yaml"
+        self.assertEqual(manifest.read_text(encoding="utf-8").lstrip()[0], "{")
+        self.assertEqual(wave("wave-03")["task_manifest_dir"], "config/agent/waves/wave-03/tasks")
+
+    def test_empty_and_malformed_manifests_raise_domain_errors(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as temporary:
+            directory = Path(temporary)
+            empty = directory / "empty.json"
+            malformed = directory / "malformed.json"
+            empty.write_text("\n", encoding="utf-8")
+            malformed.write_text("not json\n", encoding="utf-8")
+            with patch("scripts.agent.wave_common.manifest_path", return_value=str(empty.relative_to(ROOT))):
+                with self.assertRaisesRegex(WaveManifestError, "wave manifest is empty"):
+                    wave("wave-test")
+            with patch("scripts.agent.wave_common.manifest_path", return_value=str(malformed.relative_to(ROOT))):
+                with self.assertRaisesRegex(WaveManifestError, "wave manifest is malformed"):
+                    wave("wave-test")
+
+    def test_contracts_metadata_and_lock_declare_pydantic(self) -> None:
+        metadata = (ROOT / "packages/servicefabric_contracts/pyproject.toml").read_text(encoding="utf-8")
+        requirements = (ROOT / "packages/servicefabric_contracts/requirements/test.in").read_text(encoding="utf-8")
+        lock = (ROOT / "packages/servicefabric_contracts/requirements/test.lock").read_text(encoding="utf-8")
+        self.assertIn("pydantic>=2.13,<3", metadata)
+        self.assertIn("pydantic==2.13.4", requirements)
+        self.assertIn("pydantic==2.13.4", lock)
 
 
 if __name__ == "__main__":
