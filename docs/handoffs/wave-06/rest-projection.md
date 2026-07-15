@@ -3,7 +3,10 @@
 Lane: `rest-projection`
 Branch: `agent/w6-rest-projection`
 Base commit: `9b40277fc648e1673a98d32f49ed2d444d632dd3`
-Candidate commit: `3d966a0cfedc717a348a9c70ee7268a9486f9292`
+Candidate commits (apply in order):
+
+1. `3d966a0cfedc717a348a9c70ee7268a9486f9292` — initial gateway implementation
+2. `b493699` — source-layout correction required by the Wave-6 composition `PYTHONPATH`
 
 ## Changed Paths
 
@@ -24,6 +27,7 @@ Candidate commit: `3d966a0cfedc717a348a9c70ee7268a9486f9292`
 ## Decisions and Limitations
 
 - The server binds only to IPv4 `127.0.0.1`; other bind addresses are rejected before socket creation.
+- The package lives under `services/capability_rest_gateway/src/`, matching the declared Wave-6 source path used by integration and verification.
 - Routes are limited to discovery, description, availability, and invocation under `/v1/capabilities`.
 - Invocation accepts only a bounded JSON object containing exactly `input`; the projection delegates the value unchanged and contains no invocation or application-endpoint logic.
 - Authentication, remote binding, TLS, automatic route publication, and a production process launcher remain outside this specialist lane.
@@ -34,4 +38,4 @@ Candidate commit: `3d966a0cfedc717a348a9c70ee7268a9486f9292`
 
 ## Rollback
 
-- Revert candidate `3d966a0cfedc717a348a9c70ee7268a9486f9292` and the subsequent handoff-only commit.
+- Revert candidates `b493699` and `3d966a0cfedc717a348a9c70ee7268a9486f9292`, then the handoff-only commits.
