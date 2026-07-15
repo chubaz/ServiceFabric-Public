@@ -8,8 +8,16 @@ executes against this specification.
 from __future__ import annotations
 
 import json
+import tempfile
 import unittest
 from pathlib import Path
+from urllib.request import Request, urlopen
+
+from servicefabric_client.main import dispatch
+from servicefabric_application_builder import ApplicationBuildCoordinator
+from servicefabric_application_generator import materialize_blueprint
+from servicefabric_blueprints import RESEARCH_NOTES_BLUEPRINT
+from servicefabric_workspace import ApplicationAlreadyExists, resolve_workspace, WorkspaceService
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -91,3 +99,76 @@ class FreshWorkspaceAcceptanceSpecificationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FreshWorkspaceIntegrationTests(unittest.TestCase):
+    """Execute the Wave-3 journey against the composed integration surface."""
+
+    def test_research_notes_cli_journey(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="servicefabric-wave3-") as temporary:
+            root = Path(temporary)
+            dispatch(["--workspace", str(root), "workspace", "init"])
+            created = dispatch([
+                "--workspace", str(root), "apps", "create", "research-notes",
+                "--template", "modular-web-app",
+            ])[2]
+            self.assertEqual(created["application_id"], "research-notes")
+
+            layout = resolve_workspace(explicit_workspace=root).layout
+            first_files = sorted(
+                path.relative_to(layout.applications / "research-notes").as_posix()
+                for path in (layout.applications / "research-notes").rglob("*")
+                if path.is_file()
+            )
+            self.assertTrue((layout.applications / "research-notes/AGENTS.md").is_file())
+            self.assertTrue((layout.applications / "research-notes/ARCHITECTURE.md").is_file())
+            self.assertTrue((layout.applications / "research-notes/DEVELOPMENT.md").is_file())
+
+            with self.assertRaises(ApplicationAlreadyExists):
+                dispatch([
+                    "--workspace", str(root), "apps", "create", "research-notes",
+                    "--template", "modular-web-app",
+                ])
+            second_files = sorted(
+                path.relative_to(layout.applications / "research-notes").as_posix()
+                for path in (layout.applications / "research-notes").rglob("*")
+                if path.is_file()
+            )
+            self.assertEqual(first_files, second_files)
+
+            modules = dispatch(["--workspace", str(root), "apps", "modules", "research-notes"])[2]
+            self.assertEqual([module["id"] for module in modules["modules"]], ["notes-api"])
+            self.assertTrue(dispatch(["--workspace", str(root), "apps", "validate", "research-notes"])[2]["valid"])
+            dispatch(["--workspace", str(root), "apps", "dev", "prepare", "research-notes"])
+            started = dispatch(["--workspace", str(root), "apps", "dev", "start", "research-notes"])[2]
+            self.assertEqual(started["state"], "running")
+            port = started["port"]
+
+            with urlopen(Request(
+                f"http://127.0.0.1:{port}/notes?body=integration%20note",
+                data=b"",
+                method="POST",
+            ), timeout=3) as response:
+                self.assertEqual(json.loads(response.read())['body'], "integration note")
+            with urlopen(f"http://127.0.0.1:{port}/notes/search?q=integration", timeout=3) as response:
+                self.assertEqual(len(json.loads(response.read())), 1)
+
+            restarted = dispatch([
+                "--workspace", str(root), "apps", "dev", "restart", "research-notes",
+                "--module", "notes-api",
+            ])[2]
+            self.assertEqual(restarted["state"], "running")
+            with urlopen(f"http://127.0.0.1:{restarted['port']}/notes/search?q=integration", timeout=3) as response:
+                self.assertEqual(len(json.loads(response.read())), 1)
+
+            build = dispatch(["--workspace", str(root), "apps", "build", "research-notes"])[2]["build"]
+            self.assertTrue(build["artifact_digest"].startswith("sha256:"))
+            self.assertEqual(
+                build["artifact_digest"],
+                dispatch(["--workspace", str(root), "apps", "build", "research-notes"])[2]["build"]["artifact_digest"],
+            )
+            stopped = dispatch(["--workspace", str(root), "apps", "dev", "stop", "research-notes"])[2]
+            self.assertEqual(stopped["state"], "stopped")
+            status = dispatch(["--workspace", str(root), "apps", "dev", "status", "research-notes"])[2]
+            self.assertEqual(status["state"], "stopped")
+            self.assertIsNone(status["port"])
