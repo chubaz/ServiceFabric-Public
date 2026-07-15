@@ -1,0 +1,43 @@
+{
+  "wave_id": "wave-05",
+  "base_commit": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+  "contractsStatus": "frozen",
+  "lanes": {
+    "availability": {
+      "branch": "agent/w5-availability",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "focused_verification": "pending",
+      "integration_decision": "pending",
+      "final_state": "ready"
+    },
+    "invocation": {
+      "branch": "agent/w5-invocation",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "focused_verification": "pending",
+      "integration_decision": "pending",
+      "final_state": "ready"
+    },
+    "http-adapter": {
+      "branch": "agent/w5-http-adapter",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "focused_verification": "pending",
+      "integration_decision": "pending",
+      "final_state": "ready"
+    },
+    "acceptance": {
+      "branch": "agent/w5-acceptance",
+      "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
+      "focused_verification": "pending",
+      "integration_decision": "pending",
+      "final_state": "ready"
+    }
+  },
+  "integration": {
+    "state": "active",
+    "branch": "integration/phase2-wave5",
+    "contracts_status": "frozen",
+    "candidate_review_status": "pending",
+    "wave_completion_status": "pending",
+    "final_verification_status": "pending"
+  }
+}

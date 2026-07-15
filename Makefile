@@ -172,6 +172,23 @@ verify-wave-04:
 	$(WAVE04_ENV) $(WAVE04_PYTHON) -m compileall clients/python/servicefabric_client packages/servicefabric_operation_model packages/servicefabric_capability_model packages/servicefabric_capability_registry packages/servicefabric_capability_authoring tests/wave_04
 	git diff --check
 
+WAVE05_PYTHON ?= $(WAVE04_PYTHON)
+WAVE05_PYTHONPATH := $(WAVE04_PYTHONPATH):$(CURDIR)/packages/servicefabric_capability_runtime:$(CURDIR)/packages/servicefabric_capability_runtime/src:$(CURDIR)/packages/servicefabric_capability_invocation:$(CURDIR)/packages/servicefabric_capability_invocation/src:$(CURDIR)/packages/servicefabric_http_operation_adapter:$(CURDIR)/packages/servicefabric_http_operation_adapter/src
+WAVE05_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE05_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE05_PYTHONPATH)"
+
+verify-wave-05:
+	# Wave-5 is intentionally focused; do not recursively invoke earlier wave gates.
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m unittest discover -s tests/capability_runtime -v
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m unittest discover -s tests/capability_invocation -v
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m unittest discover -s tests/http_operation_adapter -v
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m unittest discover -s tests/wave_05 -v
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m unittest tests.wave_04.test_capability_cli.CapabilityCliAcceptanceTests.test_registration_is_idempotent_and_listing_and_describe_are_deterministic -v
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m unittest tests.adversarial.test_process_runtime_adversarial.ProcessRuntimeAdversarialTests.test_loopback_port_allocator_never_binds_wildcard_interface -v
+	$(WAVE05_ENV) $(WAVE05_PYTHON) scripts/dependencies/check_python_locks.py
+	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE05_PYTHON)):$(PATH)" $(WAVE05_PYTHON) -m pip check
+	$(WAVE05_ENV) $(WAVE05_PYTHON) -m compileall packages/servicefabric_capability_runtime packages/servicefabric_capability_invocation packages/servicefabric_http_operation_adapter
+	git diff --check
+
 verify-application-workspace:
 	python3 -m unittest discover -s packages/servicefabric_workspace/tests -v
 	python3 -m unittest discover -s tests/workspace -v

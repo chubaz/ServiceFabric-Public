@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-05",
+  "overall": "READY FOR SPECIALISTS",
+  "lanes": {
+    "availability": "ready",
+    "invocation": "ready",
+    "http-adapter": "ready",
+    "acceptance": "ready",
+    "integration": "active"
+  },
+  "next_action": "Launch specialists from the frozen bootstrap commit; review candidate commits without automatic merging."
+}
