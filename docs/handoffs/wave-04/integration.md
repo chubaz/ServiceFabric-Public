@@ -31,7 +31,7 @@ The broad `tests/agent` fresh-runtime test requires external package resolution 
 
 ## Blockers
 
-The capability-authoring lane requires a corrected candidate before final completion integration.
+None for candidate review. Final completion integration has not been performed.
 
 ## Candidate Review
 
@@ -42,11 +42,11 @@ Review completed in dependency order:
 - `capability-registry` candidate `48c41de8ca840233a63ebeb3b44dd13c5217e83a` — returned for correction because it changes capability-model/schema/test paths, leaves the registry handoff as a placeholder, and has no registry test suite.
 - `capability-authoring` candidate `2e3d9d06e1b0c3fd66bd72726cf05fe068df4406` — returned for correction because it contains registry-owned changes and a registry handoff, leaves the authoring handoff as a placeholder, and has no authoring test suite. Registry commit `4eaab5a` may be resubmitted from the registry lane after its preflight passes.
 
-This section records the initial review; the correction decisions below supersede its registry status. Final completion integration was not performed.
+This section records the initial review; the correction decisions below supersede its registry and authoring status. Final completion integration was not performed.
 
 ## Correction Review
 
 - `capability-registry` correction `df27a6625bf09f3d76e8d0c91d0265d63ac0761d` with handoff `3866227a9b3f4363654e86790391e76af83e5686` — accepted and integrated by `1d5a705e40c544eafc643ee314317456edddb49f`. Eight focused registry tests and all dependent operation, capability-model, registry, and Wave-4 tests passed.
-- `capability-authoring` correction `991507d97474abc05ac43ef578bbe1a1f49d8d70` with handoff `3dd0121af6b7d0506a97ae4ba2bae58d0b1b3b09` — returned for correction. Its focused authoring, blueprint, and generator tests pass, but the generated/checked-in documents fail the accepted operation and capability model validators.
+- `capability-authoring` corrections `991507d97474abc05ac43ef578bbe1a1f49d8d70` and `32df8961939f606dc632ba2f161f73e1c42f2bce` with handoff `d762ca1168841289b79d6e72aab136d5639dc331` — accepted and integrated by `8022f87c6f9fa088b67fc6c80fd11e71af5c4930`. Four authoring, seven blueprint, three generator, all dependent model/registry, and the Wave-4 tests passed. Integration independently validated all three operations and all three capabilities with the accepted models.
 
-The authoring correction must add model-backed conformance tests and emit the accepted `OperationDefinition` and `CapabilityDefinition` shapes. Final completion integration remains pending.
+All specialist candidates are accepted. Final completion integration remains pending and was not performed during candidate review.

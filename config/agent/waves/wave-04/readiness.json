@@ -33,20 +33,17 @@
     },
     "capability-authoring": {
       "original_base_sha": "162bc3d64e8c2a9d044895f8c57b650f1cddb22f",
-      "candidate_head": "3dd0121af6b7d0506a97ae4ba2bae58d0b1b3b09",
-      "integration_decision": "returned-for-correction",
+      "candidate_head": "d762ca1168841289b79d6e72aab136d5639dc331",
+      "accepted_commit": "32df8961939f606dc632ba2f161f73e1c42f2bce",
+      "integration_commit": "8022f87c6f9fa088b67fc6c80fd11e71af5c4930",
+      "integration_decision": "accepted",
       "focused_verification": "passed",
-      "dependent_verification": "failed",
-      "final_state": "correction-required",
-      "reasons": [
-        "operation declarations do not validate as accepted OperationDefinition documents: metadata.version and bounded bindings are absent and spec field names differ",
-        "capability declarations do not validate as accepted CapabilityDefinition documents: semantic metadata/spec fields are absent and effects use an incompatible shape",
-        "authoring tests assert internal declaration equality but do not validate documents with the accepted operation and capability models"
-      ]
+      "dependent_verification": "passed",
+      "final_state": "integrated"
     }
   },
   "integration": {
-    "state": "candidate-review",
+    "state": "candidate-review-complete",
     "branch": "integration/phase2-wave4",
     "contracts_status": "frozen",
     "wave_completion_status": "pending",

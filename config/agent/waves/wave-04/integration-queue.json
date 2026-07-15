@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-04",
-  "overall": "CANDIDATE REVIEW COMPLETE - CORRECTIONS REQUIRED",
+  "overall": "CANDIDATES ACCEPTED - COMPLETION PENDING",
   "lanes": {
     "operation-model": "accepted",
     "capability-model": "accepted",
     "capability-registry": "accepted",
-    "capability-authoring": "correction-required",
+    "capability-authoring": "accepted",
     "integration": "authority"
   },
-  "next_action": "Resubmit capability-authoring documents that validate against the accepted OperationDefinition and CapabilityDefinition models; do not start final completion integration."
+  "next_action": "Begin final completion integration when authorized."
 }
