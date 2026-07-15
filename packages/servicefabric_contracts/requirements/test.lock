@@ -22,6 +22,8 @@ pydantic==2.13.4
     # via -r packages/servicefabric_contracts/requirements/test.in
 pydantic-core==2.46.4
     # via pydantic
+pyyaml==6.0.3
+    # via -r packages/servicefabric_contracts/requirements/test.in
 pyproject-hooks==1.2.0
     # via build
 referencing==0.37.0

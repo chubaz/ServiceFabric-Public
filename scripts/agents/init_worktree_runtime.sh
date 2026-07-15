@@ -35,7 +35,37 @@ fi
 if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
     CONTRACTS="$WORKTREE/packages/servicefabric_contracts"
     "$VENV/bin/python" -m pip install --disable-pip-version-check --requirement "$CONTRACTS/requirements/test.lock"
-    "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps "$CONTRACTS"
+    "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"
+
+    LOCAL_COMPOSITION_PACKAGES=(
+        "packages/servicefabric_application_assembly"
+        "packages/servicefabric_application_builder"
+        "packages/servicefabric_application_generator"
+        "packages/servicefabric_application_model"
+        "packages/servicefabric_agent_guidance"
+        "packages/servicefabric_artifacts"
+        "packages/servicefabric_blueprints"
+        "packages/servicefabric_builder"
+        "packages/servicefabric_capsules"
+        "packages/servicefabric_framework_kits"
+        "packages/servicefabric_governance"
+        "packages/servicefabric_mcp_projection"
+        "packages/servicefabric_operations"
+        "packages/servicefabric_process_runtime"
+        "packages/servicefabric_resource_bindings"
+        "packages/servicefabric_runtime"
+        "packages/servicefabric_workspace"
+        "services/application_dev_supervisor"
+        "services/application_host"
+        "services/capsule_host"
+        "services/governance_operations"
+        "services/mcp_gateway"
+        "services/tool_runtime"
+        "clients/python"
+    )
+    for package in "${LOCAL_COMPOSITION_PACKAGES[@]}"; do
+        "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$WORKTREE/$package"
+    done
 fi
 
 cat > "$WORKTREE/.agent-runtime.env" <<EOF

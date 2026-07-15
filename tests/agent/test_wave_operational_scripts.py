@@ -117,7 +117,47 @@ class WaveOperationalScriptTests(unittest.TestCase):
         content = (ROOT / "scripts/agents/init_worktree_runtime.sh").read_text(encoding="utf-8")
         self.assertIn('CONTRACTS="$WORKTREE/packages/servicefabric_contracts"', content)
         self.assertIn('"$CONTRACTS/requirements/test.lock"', content)
-        self.assertIn('pip install --disable-pip-version-check --no-build-isolation --no-deps "$CONTRACTS"', content)
+        self.assertIn('pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"', content)
+        for package in (
+            "packages/servicefabric_capsules",
+            "packages/servicefabric_governance",
+            "packages/servicefabric_mcp_projection",
+            "packages/servicefabric_runtime",
+            "services/application_host",
+            "services/capsule_host",
+            "services/governance_operations",
+            "services/mcp_gateway",
+            "services/tool_runtime",
+            "clients/python",
+        ):
+            self.assertIn(f'"{package}"', content)
+
+    def test_fresh_runtime_imports_client_composition_and_capsule_host(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            worktree = Path(tmp) / "worktree"
+            state = Path(tmp) / "state"
+            shutil.copytree(
+                ROOT,
+                worktree,
+                ignore=shutil.ignore_patterns(".git", ".agent", ".agent-runs", ".venv", "__pycache__"),
+            )
+            initialized = run(
+                [
+                    "scripts/agents/init_worktree_runtime.sh",
+                    "integration",
+                    str(worktree),
+                    str(state),
+                    "wave-runtime-imports",
+                ],
+                worktree,
+            )
+            self.assertEqual(initialized.returncode, 0, initialized.stdout + initialized.stderr)
+            runtime_python = state / "wave-runtime-imports" / "integration" / ".venv" / "bin" / "python"
+            imported = run(
+                [str(runtime_python), "-c", "import servicefabric_client.main; import servicefabric_capsule_host"],
+                worktree,
+            )
+            self.assertEqual(imported.returncode, 0, imported.stdout + imported.stderr)
 
     def test_runtime_initializer_accepts_four_positional_arguments_for_both_waves(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
