@@ -35,7 +35,8 @@ The complete candidate diff from the specialist bootstrap was audited. Every cha
 - `python3 -m unittest discover -s tests/capability_registry -v` — blocked: this isolated branch does not contain or install the separately owned `servicefabric_capability_model` package (`ModuleNotFoundError`).
 - `python3 -m unittest discover -s tests/capability_model -v` — passed with 0 discovered tests because that separately owned directory is absent from this branch.
 - `git diff --check` — passed.
-- `python3 scripts/agent/wave_task_completion.py --wave wave-04 --task capability-registry` — to be run after this handoff commit with the lane test log; it will remain blocked until the prescribed plain-Python registry command is run in the composed environment.
+- `python3 scripts/agent/wave_task_preflight.py --wave wave-04 --task capability-registry --format json` — passed.
+- `python3 scripts/agent/wave_task_completion.py --wave wave-04 --task capability-registry --test-log .agent-runs/wave-04/capability-registry/tests.json --format json` — checker could not complete because the committed Wave-4 task manifest has no `candidate_commit_policy`, which the checker unconditionally reads. This is an integration-owned manifest/checker defect; no lane-owned file can correct it.
 
 Registry coverage includes first registration, identical idempotency, conflicting identity reuse, deterministic ordering, describe, application indexing/filtering, malformed records, atomic write-failure recovery, traversal rejection, and root/state/lock symlink rejection.
 
@@ -54,4 +55,4 @@ Registry coverage includes first registration, identical idempotency, conflictin
 
 ## Blockers
 
-The isolated registry branch does not contain the separately owned capability-model package or tests. The two prescribed Python commands therefore require the composed Wave-4 environment (or the configured registry test environment); no cross-lane files were copied here.
+The isolated registry branch does not contain the separately owned capability-model package or tests. The plain registry command therefore requires the composed Wave-4 environment (or the configured registry test environment); no cross-lane files were copied here. The lane completion checker additionally has a manifest/schema mismatch (`candidate_commit_policy` is missing) that integration must repair before accepting a passing completion result.
