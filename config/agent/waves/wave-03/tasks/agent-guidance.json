@@ -1,0 +1,12 @@
+{
+  "allowed_paths": ["packages/servicefabric_agent_guidance", "tests/agent_guidance", "docs/handoffs/wave-03/agent-guidance.md"],
+  "branch": "agent/w3-agent-guidance",
+  "forbidden_paths": [".github", "Makefile", "clients/python", "config/agent", "config/agents", "docs/workplans", "packages/servicefabric_application_generator", "packages/servicefabric_application_builder", "packages/servicefabric_process_runtime", "schemas", "scripts/agent", "services/application_host"],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-03/agent-guidance.md",
+  "lane": "agent-guidance",
+  "objective": "Implement deterministic generated root and module guidance, architecture/development documentation, and reviewed kit guidance fragments without Codex-specific runtime dependencies.",
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-03/objective.md", "docs/workplans/parallel/wave-03/frozen-contracts.md", "docs/architecture/specification-map.md"],
+  "required_tests": ["python3 -m unittest discover -s tests/agent_guidance -v", "git diff --check"],
+  "worktree": "../servicefabric-wave3-agent-guidance"
+}

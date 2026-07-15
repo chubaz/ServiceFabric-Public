@@ -1,0 +1,12 @@
+{
+  "allowed_paths": ["tests/wave_03", "tests/fixtures/wave_03", "docs/handoffs/wave-03/acceptance.md"],
+  "branch": "agent/w3-acceptance",
+  "forbidden_paths": [".github", "Makefile", "clients/python", "config/agent", "config/agents", "docs/workplans", "packages", "schemas", "scripts/agent", "services"],
+  "handoff_required": true,
+  "handoff_path": "docs/handoffs/wave-03/acceptance.md",
+  "lane": "acceptance",
+  "objective": "Specify the concise fresh-workspace Wave-3 acceptance journey, deterministic generation checks, validation, lifecycle, build, and cleanup assertions.",
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-03/objective.md", "docs/workplans/parallel/wave-03/verification.md", "clients/python/servicefabric_client"],
+  "required_tests": ["python3 -m unittest discover -s tests/wave_03 -v", "git diff --check"],
+  "worktree": "../servicefabric-wave3-acceptance"
+}

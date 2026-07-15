@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-application-generator"
+version = "0.1.0a1"
+description = "Deterministic local application materialization for ServiceFabric blueprints."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-application-model==0.1.0a1",
+  "servicefabric-blueprints==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["servicefabric_application_generator*"]

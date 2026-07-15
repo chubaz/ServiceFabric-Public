@@ -1,0 +1,19 @@
+wave_id: wave-03
+base_commit: 715de644eff2ee003469f14d574c4b70706bc70a
+integration_branch: integration/phase1-wave3
+lanes:
+  - integration
+  - generator
+  - application-builder
+  - agent-guidance
+  - acceptance
+integration_order:
+  - generator
+  - application-builder
+  - agent-guidance
+  - acceptance
+  - integration
+contracts_status: bootstrap-pending-freeze
+canonical_handoffs: docs/handoffs/wave-03
+readiness: config/agent/waves/wave-03/readiness.json
+integration_queue: config/agent/waves/wave-03/integration-queue.json

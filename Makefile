@@ -107,6 +107,35 @@ verify-wave-01:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" python3 -m pip check
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE01_PYTHONPATH)" $(WAVE01_PYTHON) -m compileall packages/servicefabric_application_assembly packages/servicefabric_application_model packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_process_runtime packages/servicefabric_resource_bindings packages/servicefabric_workspace services/application_host clients/python tests/application_assembly tests/resource_bindings tests/framework_kits tests/blueprints tests/integration tests/adversarial tests/architecture tests/modules tests/workspace tests/ap_01a tests/local_ux
 	git diff --check
+
+WAVE3_PYTHON ?= python3
+WAVE3_PYTHONPATH := /usr/lib/python3/dist-packages:$(CURDIR):$(CURDIR)/services/application_host:$(CURDIR)/clients/python:$(CURDIR)/packages/servicefabric_application_generator:$(CURDIR)/packages/servicefabric_application_builder:$(CURDIR)/packages/servicefabric_agent_guidance:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_workspace:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_contracts/src:$(CURDIR)/packages/servicefabric_builder
+WAVE3_ENV := env -u SERVICEFABRIC_WORKSPACE PATH="$(dir $(WAVE3_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE3_PYTHONPATH)"
+
+verify-wave-03:
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/wave_03 -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/application_generator -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/application_builder -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/agent_guidance -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/blueprints -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) scripts/agent/wave_completion.py --wave wave-01
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/application_assembly -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/resource_bindings -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/framework_kits -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/blueprints -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/integration -p 'test_wave_01_acceptance.py' -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/adversarial -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/architecture -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/modules -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s packages/servicefabric_workspace/tests -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/local_ux -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/ap_01a -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s packages/servicefabric_workspace/tests -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/workspace -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m unittest discover -s tests/modules -v
+	$(WAVE3_ENV) $(WAVE3_PYTHON) scripts/dependencies/check_python_locks.py
+	env -u SERVICEFABRIC_WORKSPACE -u PYTHONPATH PATH="$(dir $(WAVE3_PYTHON)):$(PATH)" $(WAVE3_PYTHON) -m pip check
+	$(WAVE3_ENV) $(WAVE3_PYTHON) -m compileall packages/servicefabric_application_generator packages/servicefabric_application_builder packages/servicefabric_agent_guidance packages/servicefabric_application_model packages/servicefabric_application_assembly packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_artifacts packages/servicefabric_workspace packages/servicefabric_process_runtime clients/python services/application_host tests/wave_03 tests/application_generator tests/application_builder tests/agent_guidance tests/blueprints tests/ap_01a tests/workspace tests/modules
 verify-wave-02:
 	# Keep the wave gate focused; milestone-wide regressions are owned by verify-current.
 	python3 -m unittest tests.agent.test_wave_harness tests.agent.test_wave_operational_scripts tests.agent.test_wave_rollover_scripts -v

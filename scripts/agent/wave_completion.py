@@ -52,6 +52,7 @@ def inspect(wave_id: str) -> dict[str, object]:
         lanes = {}
 
     base = str(w["base_commit"])
+    specialist_lanes = tuple(lane for lane in task_ids(wave_id) if lane != "integration")
     for lane in specialist_lanes:
         record = lanes.get(lane)
         if not isinstance(record, dict):

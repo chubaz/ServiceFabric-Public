@@ -60,7 +60,7 @@ verify_lane() {
         exit 2
     }
     git -C "$path" merge-base --is-ancestor "$WAVE_BASE" HEAD || {
-    echo "$lane: branch does not descend from $SF_WAVE_ID base $WAVE_BASE" >&2
+        echo "$lane: branch does not descend from $SF_WAVE_ID base $WAVE_BASE" >&2
         exit 2
     }
     if [[ "$lane" == "integration" ]]; then

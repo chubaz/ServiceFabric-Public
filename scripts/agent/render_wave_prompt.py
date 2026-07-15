@@ -14,6 +14,7 @@ from scripts.agent.wave_common import canonical_handoff_path, runtime_wave_id, t
 def render(task_id: str, wave_id: str = "wave-1") -> str:
     w = wave(wave_id)
     t = task(task_id, wave_id)
+    preflight_args = f"--task {task_id}" if wave_id in {"wave-1", "wave-01"} else f"--wave {wave_id} --task {task_id}"
     required = "\n".join(f"- {item}" for item in t["required_context_files"])
     allowed = "\n".join(f"- {item}" for item in t["allowed_paths"])
     forbidden = "\n".join(f"- {item}" for item in t["forbidden_paths"])

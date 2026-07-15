@@ -1,0 +1,19 @@
+{
+  "base_commit": "715de644eff2ee003469f14d574c4b70706bc70a",
+  "frozen_contracts": ["docs/contracts/application-module-v0.1.md", "packages/servicefabric_application_model", "packages/servicefabric_application_assembly", "packages/servicefabric_resource_bindings", "packages/servicefabric_framework_kits", "packages/servicefabric_blueprints", "packages/servicefabric_process_runtime", "packages/servicefabric_workspace", "services/application_dev_supervisor", "clients/python/servicefabric_client"],
+  "handoff_template": "docs/workplans/parallel/wave-03/handoff-template.md",
+  "canonical_handoff_dir": "docs/handoffs/wave-03",
+  "canonical_handoffs": {"generator": "docs/handoffs/wave-03/generator.md", "application-builder": "docs/handoffs/wave-03/application-builder.md", "agent-guidance": "docs/handoffs/wave-03/agent-guidance.md", "acceptance": "docs/handoffs/wave-03/acceptance.md", "integration": "docs/handoffs/wave-03/integration.md"},
+  "readiness_metadata": "config/agent/waves/wave-03/readiness.json",
+  "integration_queue": "config/agent/waves/wave-03/integration-queue.json",
+  "integration_branch": "integration/phase1-wave3",
+  "integration_order": ["generator", "application-builder", "agent-guidance", "acceptance", "integration"],
+  "local_run_dir": "codex/runs/wave-03",
+  "operational_policies": {"automatic_merger": false, "candidate_commits_allowed": true, "contracts_freeze_required_before_specialists": true, "integration_agent_launches_first": true, "runtime_state_isolated_per_worktree": true, "specialists_may_merge_or_pull_feature_branches": false},
+  "shared_docs": "docs/workplans/parallel/wave-03/objective.md",
+  "specialist_branches": {"generator": "agent/w3-generator", "application-builder": "agent/w3-application-builder", "agent-guidance": "agent/w3-agent-guidance", "acceptance": "agent/w3-acceptance", "integration": "integration/phase1-wave3"},
+  "task_manifest_dir": "config/agent/waves/wave-03/tasks",
+  "verification_gates": ["python3 -m unittest discover -s tests/agent -v", "python3 scripts/agent/wave_task_preflight.py --wave wave-03 --task <task>", "python3 scripts/agent/wave_completion.py --wave wave-03", "make verify-wave-03", "make verify-current", "git diff --check"],
+  "wave_id": "wave-03",
+  "worktree_names": {"generator": "../servicefabric-wave3-generator", "application-builder": "../servicefabric-wave3-application-builder", "agent-guidance": "../servicefabric-wave3-agent-guidance", "acceptance": "../servicefabric-wave3-acceptance", "integration": "../servicefabric-wave3-integration"}
+}
