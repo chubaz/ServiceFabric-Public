@@ -8,7 +8,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 
-SERVICE_ROOT = Path(__file__).resolve().parents[2] / "services" / "capability_rest_gateway"
+SERVICE_ROOT = Path(__file__).resolve().parents[2] / "services" / "capability_rest_gateway" / "src"
 sys.path.insert(0, str(SERVICE_ROOT))
 
 from servicefabric_capability_rest_gateway import (  # noqa: E402

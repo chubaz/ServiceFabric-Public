@@ -27,8 +27,7 @@ class CapabilityRestGateway:
         self._runtime = runtime
 
     def list_capabilities(self, application_id: str | None = None) -> dict[str, object]:
-        records = self._runtime.list_capabilities(application_id)
-        return {"capabilities": [_json_value(record) for record in records]}
+        return {"capabilities": [_json_value(record) for record in self._runtime.list_capabilities(application_id)]}
 
     def describe_capability(self, capability_id: str) -> object:
         return _json_value(self._runtime.describe_capability(capability_id))

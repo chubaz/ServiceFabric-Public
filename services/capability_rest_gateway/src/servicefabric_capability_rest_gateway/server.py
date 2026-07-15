@@ -18,13 +18,7 @@ _MAX_BODY_BYTES = 65_536
 class LoopbackCapabilityRestServer:
     """Serve the gateway on IPv4 loopback only."""
 
-    def __init__(
-        self,
-        gateway: CapabilityRestGateway,
-        *,
-        host: str = _LOOPBACK_HOST,
-        port: int = 0,
-    ) -> None:
+    def __init__(self, gateway: CapabilityRestGateway, *, host: str = _LOOPBACK_HOST, port: int = 0) -> None:
         if host != _LOOPBACK_HOST:
             raise ValueError("capability REST gateway must bind to 127.0.0.1")
         if isinstance(port, bool) or not isinstance(port, int) or not 0 <= port <= 65_535:
@@ -68,8 +62,7 @@ class LoopbackCapabilityRestServer:
                         query = parse_qs(parsed.query, keep_blank_values=True)
                         if set(query) - {"application"} or len(query.get("application", [])) > 1:
                             return self._send(400, {"error": "invalid query"})
-                        application = query.get("application", [None])[0]
-                        return self._send(200, gateway.list_capabilities(application))
+                        return self._send(200, gateway.list_capabilities(query.get("application", [None])[0]))
                     capability_id, action = self._capability_route(parsed.path)
                     if parsed.query:
                         return self._send(400, {"error": "invalid query"})
@@ -113,14 +106,11 @@ class LoopbackCapabilityRestServer:
                 prefix = f"{_CAPABILITIES_PATH}/"
                 if not path.startswith(prefix):
                     raise LookupError(path)
-                remainder = path[len(prefix) :]
-                action = None
+                remainder, action = path[len(prefix) :], None
                 if remainder.endswith("/availability"):
-                    remainder = remainder[: -len("/availability")]
-                    action = "availability"
+                    remainder, action = remainder[: -len("/availability")], "availability"
                 elif remainder.endswith(":invoke"):
-                    remainder = remainder[: -len(":invoke")]
-                    action = "invoke"
+                    remainder, action = remainder[: -len(":invoke")], "invoke"
                 capability_id = unquote(remainder)
                 if not capability_id or "/" in capability_id:
                     raise LookupError(path)
