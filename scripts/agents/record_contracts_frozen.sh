@@ -37,9 +37,13 @@ value = wave(wave_id)
 for required in ("base_commit", "frozen_contracts", "integration_order", "worktree_env"):
     if not value.get(required):
         raise SystemExit(f"Incomplete wave manifest: {required}")
-for path in value["frozen_contracts"]:
-    if not Path(path).exists():
-        raise SystemExit(f"Missing frozen contract path: {path}")
+named_contract_paths = {
+    "ToolDefinition": Path("packages/servicefabric_contracts/src/servicefabric_contracts/tool_definition.py"),
+}
+for contract in value["frozen_contracts"]:
+    path = named_contract_paths.get(contract, Path(contract))
+    if not path.exists():
+        raise SystemExit(f"Missing frozen contract path: {contract}")
 for lane in task_ids(wave_id):
     entry = task(lane, wave_id)
     if not entry["allowed_paths"] or not entry["required_tests"] or not entry["handoff_path"]:

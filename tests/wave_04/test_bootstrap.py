@@ -38,6 +38,13 @@ class Wave04BootstrapTests(unittest.TestCase):
         for path in (ROOT / "config/agent/waves/wave-04").glob("**/*.json"):
             json.loads(path.read_text(encoding="utf-8"))
 
+    def test_named_frozen_contract_has_a_canonical_source(self) -> None:
+        manifest = wave("wave-04")
+        self.assertIn("ToolDefinition", manifest["frozen_contracts"])
+        self.assertTrue(
+            (ROOT / "packages/servicefabric_contracts/src/servicefabric_contracts/tool_definition.py").is_file()
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
