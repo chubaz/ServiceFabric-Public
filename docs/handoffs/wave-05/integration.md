@@ -3,20 +3,23 @@
 Lane: `integration`
 Branch: `integration/phase2-wave5`
 Base commit: `53f53ca8a4a9a47887902b84a91bc27a812e9483`
-Candidate commit: none
+Candidate commit: `e67f3d1e9aab33e76a2cb06352ac85b336a45b81`
 
 ## Changed Paths
 
+- `config/agent/waves/wave-05/readiness.json`
+- `config/agent/waves/wave-05/integration-queue.json`
 - `docs/handoffs/wave-05/integration.md`
 
 ## Tests Executed
 
 - `python3 scripts/agent/wave_task_preflight.py --wave wave-05 --task integration` — passed.
 - Wave-5 bootstrap coverage from `tests/agent` — passed (five tests).
-- `make verify-wave-05` — blocked before specialist candidates exist: `tests/capability_runtime` is not yet present.
+- `make verify-wave-05` — passed after all corrected candidates were integrated.
 - `git diff --check` — passed before this handoff update.
+- `python3 -m unittest discover -s tests/wave_05 -v` — passed (one corrected acceptance journey).
 
-The full `tests/agent` discovery also has one environment-dependent failure: its fresh-runtime test cannot download locked `annotated-types==0.7.0` because network resolution is unavailable. This is unrelated to Wave-5 contracts.
+The acceptance lane's disposable runtime required the reviewed FastAPI/Uvicorn dependencies before process startup; no repository dependency metadata was changed.
 
 ## Contracts Consumed
 
@@ -29,7 +32,7 @@ The full `tests/agent` discovery also has one environment-dependent failure: its
 
 ## Decisions and Limitations
 
-No specialist-owned functionality was implemented by the integration lane. `make verify-current` remains deferred: the Wave-5 verification policy permits it once only at final closure.
+The integration lane repaired generated-application startup before re-review. `make verify-current` remains deferred: the Wave-5 verification policy permits it once only at final closure.
 
 ## First implementation candidate review
 
@@ -39,12 +42,14 @@ Accepted and merged, after complete candidate-diff review, ownership/frozen-cont
 - HTTP adapter — candidate `419e1a752a4ddf60efd164c201d0961cad15d1bd`; integrated by `ef1762ed54e3768d5d323394b0c52a8bf403c614`. Its three focused tests passed. It is transport-only, enforces reviewed JSON bindings and literal loopback endpoints, and does not perform invocation or projection work.
 - Invocation — candidate `8c6cebe7074e9ec45bc2686778a3ea9c91aa973e`; integrated by `dc939078043c095996a6a36b23959c41f9e6ff94`. Its four focused tests passed. It resolves reviewed definitions, rejects unavailable capabilities before transport, and validates schemas before and after the transport call.
 
-Each candidate modified only its declared lane paths plus its canonical handoff. No frozen contract path changed. The acceptance lane was not reviewed or merged, and final completion integration was not performed.
+The corrected acceptance candidate `e67f3d1e9aab33e76a2cb06352ac85b336a45b81` was accepted and merged by `2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d`. Relative to the repaired integration head, its complete delta contains only `tests/wave_05/test_research_notes_acceptance.py` and `docs/handoffs/wave-05/acceptance.md`. Its journey proves static registration, health-derived availability, successful create/search invocation, schema rejection before transport, stop-derived unavailability, and retained definitions.
+
+Each candidate modified only its declared lane paths plus its canonical handoff. No frozen contract path changed. Final completion integration has not been performed.
 
 ## Blockers
 
-The acceptance candidate `a0f9c12d55a88e61d5c7aea18cb187d3f20b35ea` was returned. Its complete delta is confined to `tests/wave_05/test_research_notes_acceptance.py` and its canonical handoff, and it invokes no redundant full-wave suite. Its single focused test fails before acceptance assertions because `apps dev start research-notes` routes through the Wave-3 development service and its process health check times out. The candidate is not merged; Wave-5 final verification is deferred until this integration-owned runtime composition issue is remediated and the acceptance test passes.
+No candidate-review or focused-verification blocker remains. Wave‑5 remains incomplete pending the separate final completion review.
 
 ## Rollback
 
-Revert this handoff-only integration record; no runtime, registry, contract, or projection behavior changed.
+Revert merge `2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d` and the acceptance-record commit. No frozen contract changed.

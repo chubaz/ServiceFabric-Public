@@ -36,18 +36,20 @@
     "acceptance": {
       "branch": "agent/w5-acceptance",
       "original_base_sha": "53f53ca8a4a9a47887902b84a91bc27a812e9483",
-      "candidate_head": "a0f9c12d55a88e61d5c7aea18cb187d3f20b35ea",
-      "focused_verification": "failed: apps dev start research-notes health check timed out",
-      "integration_decision": "returned",
-      "final_state": "returned"
+      "candidate_head": "e67f3d1e9aab33e76a2cb06352ac85b336a45b81",
+      "accepted_commit": "e67f3d1e9aab33e76a2cb06352ac85b336a45b81",
+      "integration_commit": "2342a3d1f37fd04bee91e7f2f10f8fc39bcee91d",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
     }
   },
   "integration": {
     "state": "active",
     "branch": "integration/phase2-wave5",
     "contracts_status": "frozen",
-    "candidate_review_status": "availability, invocation, and http-adapter accepted; acceptance returned for integration remediation",
+    "candidate_review_status": "availability, invocation, http-adapter, and corrected acceptance candidates accepted",
     "wave_completion_status": "pending",
-    "final_verification_status": "pending"
+    "final_verification_status": "passed"
   }
 }

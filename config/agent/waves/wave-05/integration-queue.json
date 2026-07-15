@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-05",
-  "overall": "ACCEPTANCE RETURNED",
+  "overall": "VERIFIED - COMPLETION PENDING",
   "lanes": {
     "availability": "accepted",
     "invocation": "accepted",
     "http-adapter": "accepted",
-    "acceptance": "returned",
+    "acceptance": "accepted",
     "integration": "active"
   },
-  "next_action": "Remediate the integration-owned Research Notes development-runtime composition, then return the acceptance candidate for review."
+  "next_action": "Perform the final Wave-5 completion review; do not mark the wave complete yet."
 }
