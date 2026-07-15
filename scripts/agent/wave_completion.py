@@ -18,9 +18,6 @@ from scripts.agent.wave_common import (
 )
 
 
-SPECIALIST_LANES = ("testing", "kits-blueprints", "resources", "assembly")
-
-
 def is_ancestor(commit: str) -> bool:
     return git("merge-base", "--is-ancestor", commit, "HEAD").returncode == 0
 
@@ -54,7 +51,8 @@ def inspect(wave_id: str) -> dict[str, object]:
         lanes = {}
 
     base = str(w["base_commit"])
-    for lane in SPECIALIST_LANES:
+    specialist_lanes = tuple(lane for lane in task_ids(wave_id) if lane != "integration")
+    for lane in specialist_lanes:
         record = lanes.get(lane)
         if not isinstance(record, dict):
             diagnostics.append({"severity": "error", "code": "missing_lane_readiness", "message": lane})
@@ -88,7 +86,7 @@ def inspect(wave_id: str) -> dict[str, object]:
 
     frozen_paths = [str(item) for item in w["frozen_contracts"]]
     for lane, record in (lanes.items() if isinstance(lanes, dict) else ()):
-        if not isinstance(record, dict) or lane not in SPECIALIST_LANES:
+        if not isinstance(record, dict) or lane not in specialist_lanes:
             continue
         commit = str(record.get("integration_commit", ""))
         if not commit:

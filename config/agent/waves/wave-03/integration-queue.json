@@ -1,7 +1,7 @@
 {
   "wave_id": "wave-03",
-  "overall": "READY FOR INTEGRATION AGENT",
-  "lanes": {"generator": "pending", "application-builder": "pending", "agent-guidance": "pending", "acceptance": "pending", "integration": "authority"},
+  "overall": "INTEGRATION IN PROGRESS",
+  "lanes": {"generator": "accepted", "application-builder": "accepted", "agent-guidance": "accepted", "acceptance": "accepted", "integration": "authority"},
   "contractsStatus": "frozen",
-  "next_action": "Launch specialists in the recorded order after integration review."
+  "next_action": "Run the remaining Wave-3 composition and final verification gates; do not mark the wave complete yet."
 }

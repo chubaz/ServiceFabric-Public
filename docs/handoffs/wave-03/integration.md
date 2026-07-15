@@ -6,11 +6,18 @@ Integration authority; no specialist-owned functionality implemented.
 
 ## Candidate commits
 
-Bootstrap base verified: `715de644eff2ee003469f14d574c4b70706bc70a`.
+All candidates were reviewed against bootstrap `b7e4759` and recorded base
+`715de644`. Accepted candidates and integration merges:
+
+- generator: `7c98d125` → `23a841d3`
+- application-builder: `185e1055` → `8ead550b`
+- agent-guidance: `9452cbe1` → `74ba7583`
+- acceptance: `f55c0408` → `25d4b84b`
 
 ## Scope and ownership check
 
-Reviewed `ownership.md` and all Wave-3 task manifests. Specialist paths remain specialist-owned.
+Reviewed `ownership.md` and all Wave-3 task manifests. Specialist paths remained
+specialist-owned. No candidate was rejected or returned.
 
 ## Frozen-contract compliance
 
@@ -27,13 +34,15 @@ Wave-3 contracts recorded as frozen. The base is an ancestor of the integration 
 
 ## Known limitations
 
-Specialist candidates and Wave-3 feature tests are not present yet. Baseline harness failures and
-the missing Wave-3 Make target require integration follow-up.
+Final Wave-3 completion integration remains pending by instruction. The baseline harness still
+has the previously recorded Wave-1 fixture mismatch, and the `make verify-wave-03` target is
+still absent.
 
 ## Integration notes
 
-Do not implement specialist functionality in this lane.
+Do not implement specialist functionality in this lane. Candidate review and ordered merges are
+complete; remaining work is the final composition/completion gate.
 
 ## Recommendation
 
-Contracts frozen; proceed with specialist lanes in the recorded order, subject to the limitations above.
+Contracts remain frozen. Wave-3 is `INTEGRATION IN PROGRESS`, not complete.
