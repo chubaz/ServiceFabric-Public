@@ -25,6 +25,7 @@ def is_ancestor(commit: str) -> bool:
 def inspect(wave_id: str) -> dict[str, object]:
     diagnostics: list[dict[str, str]] = []
     w = wave(wave_id)
+    specialist_lanes = tuple(str(item) for item in w.get("specialist_lanes", ()))
 
     for task_id in task_ids(wave_id):
         handoff = canonical_handoff_path(task_id, wave_id)

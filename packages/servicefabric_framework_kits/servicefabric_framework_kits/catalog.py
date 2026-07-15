@@ -70,14 +70,20 @@ class FrameworkKitCatalog:
             )
 
 
-# Default pre-registeredReviewed Catalog instance
+# Default pre-registered reviewed catalog instance.
 _default_catalog = FrameworkKitCatalog()
 
-# Pre-register fastapi-service
+# Pre-register reviewed framework kits.
 from servicefabric_framework_kits.fastapi_service.adapter import FastAPIServiceAdapter
 from servicefabric_framework_kits.fastapi_service.definition import FASTAPI_SERVICE_DEFINITION
+from servicefabric_framework_kits.python_library.adapter import PythonLibraryAdapter
+from servicefabric_framework_kits.python_library.definition import PYTHON_LIBRARY_DEFINITION
+from servicefabric_framework_kits.react_web.adapter import ReactWebAdapter
+from servicefabric_framework_kits.react_web.definition import REACT_WEB_DEFINITION
 
 _default_catalog.register(FASTAPI_SERVICE_DEFINITION, FastAPIServiceAdapter())
+_default_catalog.register(REACT_WEB_DEFINITION, ReactWebAdapter())
+_default_catalog.register(PYTHON_LIBRARY_DEFINITION, PythonLibraryAdapter())
 
 
 def get_default_catalog() -> FrameworkKitCatalog:

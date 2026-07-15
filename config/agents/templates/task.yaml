@@ -1,0 +1,7 @@
+{
+  "lane": "__LANE__", "branch": "__BRANCH__", "worktree": "__WORKTREE_ENV__", "handoff_path": "docs/handoffs/__WAVE_ID__/__LANE__.md", "handoff_required": true,
+  "objective": "Integration authority must replace this generated objective before specialist launch.",
+  "allowed_paths": ["docs/handoffs/__WAVE_ID__/__LANE__.md"], "forbidden_paths": [".github", "Makefile", "clients/python", "config", "schemas", "scripts"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/__WAVE_ID__/objective.md"], "required_tests": ["git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(__LANE__):", "test(__LANE__):", "docs(__LANE__):", "fix(__LANE__):"]}
+}

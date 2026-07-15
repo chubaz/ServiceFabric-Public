@@ -1,0 +1,10 @@
+{
+  "lane": "reference-app", "branch": "agent/w2-reference-app", "worktree": "SF_WT_REFERENCE_APP",
+  "handoff_path": "docs/handoffs/wave-02/reference-app.md", "handoff_required": true,
+  "objective": "Build the ordinary modular Research Notes application, domain library, FastAPI API, web frontend, persistence tests, and acceptance/adversarial specifications without implementing framework or supervisor internals.",
+  "allowed_paths": ["examples/research-notes", "tests/wave_02", "docs/handoffs/wave-02/reference-app.md"],
+  "forbidden_paths": [".github", "Makefile", "clients/python", "config", "docs/workplans", "packages/servicefabric_application_model", "packages/servicefabric_application_assembly", "packages/servicefabric_process_runtime", "packages/servicefabric_resource_bindings", "packages/servicefabric_framework_kits", "packages/servicefabric_blueprints", "schemas", "scripts", "services/application_dev_supervisor"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-02/objective.md", "docs/workplans/parallel/wave-02/frozen-contracts.md", "examples/research-notes"],
+  "required_tests": ["python3 -m unittest discover -s tests/wave_02 -v", "git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(research-notes):", "test(research-notes):", "docs(research-notes):", "fix(research-notes):"]}
+}

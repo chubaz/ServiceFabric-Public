@@ -18,15 +18,22 @@ sf_config_file() {
 }
 
 sf_load_config() {
-    local config_file requested_wave requested_state_base
-    requested_wave="${SF_WAVE_ID:-}"
-    requested_state_base="${SF_STATE_BASE:-}"
-    config_file="$(sf_config_file)"
+    local requested_wave="${1:-}"
+    local config_file
+    if [[ -z "${SF_AGENT_WORKTREES_ENV:-}" && -n "$requested_wave" && -f ".agent-worktrees-$requested_wave.env" ]]; then
+        config_file=".agent-worktrees-$requested_wave.env"
+    elif [[ -z "${SF_AGENT_WORKTREES_ENV:-}" && -n "$requested_wave" && -f ".agent-worktrees.$requested_wave.env" ]]; then
+        config_file=".agent-worktrees.$requested_wave.env"
+    else
+        config_file="$(sf_config_file)"
+    fi
     if [[ ! -f "$config_file" ]]; then
         echo "Missing worktree configuration: $config_file" >&2
-        echo "Create it from the matching config/agents/<wave>/worktrees.local.example.env." >&2
+        echo "Create it from the selected wave's worktrees.local.example.env." >&2
         return 2
     fi
+    config_file="$(cd "$(dirname "$config_file")" && pwd -P)/$(basename "$config_file")"
+    export SF_AGENT_WORKTREES_ENV="$config_file"
     # shellcheck disable=SC1090
     source "$config_file"
     if [[ -n "$requested_wave" ]]; then
@@ -37,20 +44,30 @@ sf_load_config() {
     fi
     : "${SF_WAVE_ID:?SF_WAVE_ID is required}"
     : "${SF_STATE_BASE:?SF_STATE_BASE is required}"
+    if [[ -n "$requested_wave" && "$SF_WAVE_ID" != "$requested_wave" ]]; then
+        echo "Worktree configuration declares $SF_WAVE_ID, not $requested_wave" >&2
+        return 2
+    fi
     : "${SF_WT_INTEGRATION:?SF_WT_INTEGRATION is required}"
-    for lane in $(sf_lanes); do
-        case "$lane" in
-            integration) : "${SF_WT_INTEGRATION:?SF_WT_INTEGRATION is required}" ;;
-            assembly) : "${SF_WT_ASSEMBLY:?SF_WT_ASSEMBLY is required}" ;;
-            resources) : "${SF_WT_RESOURCES:?SF_WT_RESOURCES is required}" ;;
-            kits-blueprints) : "${SF_WT_KITS_BLUEPRINTS:?SF_WT_KITS_BLUEPRINTS is required}" ;;
-            testing) : "${SF_WT_TESTING:?SF_WT_TESTING is required}" ;;
-            generator) : "${SF_WT_GENERATOR:?SF_WT_GENERATOR is required}" ;;
-            application-builder) : "${SF_WT_APPLICATION_BUILDER:?SF_WT_APPLICATION_BUILDER is required}" ;;
-            agent-guidance) : "${SF_WT_AGENT_GUIDANCE:?SF_WT_AGENT_GUIDANCE is required}" ;;
-            acceptance) : "${SF_WT_ACCEPTANCE:?SF_WT_ACCEPTANCE is required}" ;;
-        esac
+    for variable in $(sf_wave_value specialist_worktree_env_values); do
+        : "${!variable:?$variable is required}"
     done
+}
+
+sf_wave_value() {
+    local key="$1"
+    python3 - "$SF_WAVE_ID" "$key" <<'PY'
+import sys
+from scripts.agent.wave_common import wave
+value = wave(sys.argv[1]).get(sys.argv[2])
+if sys.argv[2] == "specialist_worktree_env_values":
+    data = wave(sys.argv[1])["worktree_env"]
+    print(" ".join(value for lane, value in data.items() if lane != "integration"))
+elif isinstance(value, list):
+    print(" ".join(str(item) for item in value))
+elif value is not None:
+    print(value)
+PY
 }
 
 sf_repo_root() {
@@ -58,43 +75,34 @@ sf_repo_root() {
 }
 
 sf_manifest_wave_id() {
-    [[ "${SF_WAVE_ID}" == "wave-01" ]] && printf 'wave-1\n' || printf '%s\n' "$SF_WAVE_ID"
+    printf '%s\n' "$SF_WAVE_ID"
 }
 
 sf_task_name() {
-    case "$1" in
-        kits_blueprints) printf 'kits-blueprints\n' ;;
-        *) printf '%s\n' "$1" ;;
-    esac
+    printf '%s\n' "$1"
 }
 
 sf_lane_path() {
-    case "$1" in
-        integration) printf '%s\n' "$SF_WT_INTEGRATION" ;;
-        assembly) printf '%s\n' "$SF_WT_ASSEMBLY" ;;
-        resources) printf '%s\n' "$SF_WT_RESOURCES" ;;
-        kits-blueprints) printf '%s\n' "$SF_WT_KITS_BLUEPRINTS" ;;
-        testing) printf '%s\n' "$SF_WT_TESTING" ;;
-        generator) printf '%s\n' "$SF_WT_GENERATOR" ;;
-        application-builder) printf '%s\n' "$SF_WT_APPLICATION_BUILDER" ;;
-        agent-guidance) printf '%s\n' "$SF_WT_AGENT_GUIDANCE" ;;
-        acceptance) printf '%s\n' "$SF_WT_ACCEPTANCE" ;;
-        *) echo "Unknown lane: $1" >&2; return 2 ;;
-    esac
+    local variable
+    variable="$(sf_lane_value "$1" worktree)" || return
+    printf '%s\n' "${!variable}"
+}
+
+sf_lane_value() {
+    local lane="$1" key="$2"
+    python3 - "$SF_WAVE_ID" "$lane" "$key" <<'PY'
+import sys
+from scripts.agent.wave_common import task, wave
+wave_id, lane, key = sys.argv[1:]
+if key == "worktree":
+    print(wave(wave_id)["worktree_env"][lane])
+else:
+    print(task(lane, wave_id)[key])
+PY
 }
 
 sf_lane_branch() {
-    local lane="$1"
-    python3 - "$lane" <<'PY'
-import json, os, sys
-lane = sys.argv[1]
-wave = os.environ.get("SF_WAVE_ID", "wave-01")
-manifest = "wave-1" if wave == "wave-01" else wave
-path = f"config/agent/waves/{manifest}.json" if lane == "integration" else f"config/agent/waves/{manifest}/tasks/{lane}.json"
-with open(path, encoding="utf-8") as handle:
-    data = json.load(handle)
-print(data["integration_branch"] if lane == "integration" else data["branch"])
-PY
+    sf_lane_value "$1" branch
 }
 
 sf_wave_base() {
@@ -102,28 +110,22 @@ sf_wave_base() {
         printf '%s\n' "$SF_AGENT_WAVE_BASE_OVERRIDE"
         return 0
     fi
-    python3 - <<'PY'
-import json, os
-wave = os.environ.get("SF_WAVE_ID", "wave-01")
-manifest = "wave-1" if wave == "wave-01" else wave
-with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
-    print(json.load(handle)["base_commit"])
-PY
+    sf_wave_value base_commit
 }
 
 sf_lanes() {
-    case "${SF_WAVE_ID:-wave-01}" in
-        wave-01|wave-1) printf '%s\n' integration assembly resources kits-blueprints testing ;;
-        wave-03|wave-3) printf '%s\n' integration generator application-builder agent-guidance acceptance ;;
-        *) echo "Unknown wave: ${SF_WAVE_ID:-}" >&2; return 2 ;;
-    esac
+    sf_wave_value lanes | tr ' ' '\n'
 }
 
 sf_specialist_lanes() {
-    sf_lanes | sed '/^integration$/d'
+    sf_wave_value specialist_lanes | tr ' ' '\n'
 }
 
 sf_state_dir() {
+    if [[ "$(basename "$SF_STATE_BASE")" == "$SF_WAVE_ID" ]]; then
+        printf '%s\n' "$SF_STATE_BASE"
+        return 0
+    fi
     printf '%s/%s\n' "$SF_STATE_BASE" "$SF_WAVE_ID"
 }
 
@@ -144,48 +146,23 @@ sf_readiness_path() {
 }
 
 sf_canonical_handoff_path() {
-    local lane="$1"
-    python3 - "$lane" <<'PY'
-import json, os, sys
-lane = sys.argv[1]
-wave = os.environ.get("SF_WAVE_ID", "wave-01")
-manifest = "wave-1" if wave == "wave-01" else wave
-with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
-    data = json.load(handle)
-print(data["canonical_handoffs"][lane])
-PY
+    sf_lane_value "$1" handoff_path
 }
 
 sf_committed_readiness_path() {
-    python3 - <<'PY'
-import json, os
-wave = os.environ.get("SF_WAVE_ID", "wave-01")
-manifest = "wave-1" if wave == "wave-01" else wave
-with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
-    data = json.load(handle)
-print(data["readiness_metadata"])
-PY
+    sf_wave_value readiness_metadata
 }
 
 sf_integration_queue_path() {
-    python3 - <<'PY'
-import json, os
-wave = os.environ.get("SF_WAVE_ID", "wave-01")
-manifest = "wave-1" if wave == "wave-01" else wave
-with open(f"config/agent/waves/{manifest}.json", encoding="utf-8") as handle:
-    data = json.load(handle)
-print(data["integration_queue"])
-PY
+    sf_wave_value integration_queue
 }
 
 sf_mirror_handoff() {
-    local lane="$1"
-    local path
-    local canonical
+    local lane="$1" path canonical
     path="$(sf_lane_path "$lane")"
     canonical="$(sf_repo_root)/$(sf_canonical_handoff_path "$lane")"
     [[ -f "$canonical" ]] || return 1
-    python3 scripts/agent/sync_wave_handoffs.py --best-effort --wave "$SF_WAVE_ID" --task "$lane" --worktree "$path" >/dev/null
+    python3 scripts/agent/sync_wave_handoffs.py --wave "$SF_WAVE_ID" --best-effort --task "$lane" --worktree "$path" >/dev/null
 }
 
 sf_contracts_path() {
@@ -209,8 +186,7 @@ sf_head() {
 }
 
 sf_is_valid_worktree() {
-    local path="$1"
-    local top
+    local path="$1" top
     [[ -d "$path" ]] || return 1
     git -C "$path" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 1
     top="$(git -C "$path" rev-parse --show-toplevel)" || return 1

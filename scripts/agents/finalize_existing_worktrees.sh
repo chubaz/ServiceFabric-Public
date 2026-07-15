@@ -19,13 +19,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$BOOTSTRAP_SHA" ]] || { echo "--bootstrap-sha is required" >&2; exit 2; }
-[[ -z "$WAVE_ID" || "$WAVE_ID" =~ ^wave-[0-9]+$ ]] || { echo "Invalid --wave value: $WAVE_ID" >&2; exit 2; }
-[[ -n "$WAVE_ID" ]] && export SF_WAVE_ID="$WAVE_ID"
-sf_load_config
-WAVE_ID="${WAVE_ID:-$SF_WAVE_ID}"
-export SF_WAVE_ID="$WAVE_ID"
-BASE_LABEL="$WAVE_ID"
-[[ "$WAVE_ID" == "wave-01" || "$WAVE_ID" == "wave-1" ]] && BASE_LABEL="Wave-1"
+sf_load_config "$WAVE_ID"
 
 ROOT="$(sf_repo_root)"
 CURRENT_ROOT="$(pwd -P)"
@@ -42,7 +36,7 @@ git cat-file -e "${BOOTSTRAP_SHA}^{commit}" >/dev/null 2>&1 || {
 
 WAVE_BASE="$(sf_wave_base)"
 git merge-base --is-ancestor "$WAVE_BASE" "$BOOTSTRAP_SHA" || {
-    echo "Bootstrap SHA does not descend from $BASE_LABEL base $WAVE_BASE" >&2
+    echo "Bootstrap SHA does not descend from $SF_WAVE_ID base $WAVE_BASE" >&2
     exit 2
 }
 
@@ -66,7 +60,7 @@ verify_lane() {
         exit 2
     }
     git -C "$path" merge-base --is-ancestor "$WAVE_BASE" HEAD || {
-        echo "$lane: branch does not descend from $BASE_LABEL base $WAVE_BASE" >&2
+        echo "$lane: branch does not descend from $SF_WAVE_ID base $WAVE_BASE" >&2
         exit 2
     }
     if [[ "$lane" == "integration" ]]; then
@@ -143,5 +137,5 @@ for lane in $(sf_lanes); do
   "waveId": "$SF_WAVE_ID"
 }
 EOF
-    echo "$lane launch: $path/scripts/agents/launch_lane.sh $lane --interactive"
+    echo "$lane launch: $path/scripts/agents/launch_lane.sh --wave $SF_WAVE_ID $lane --interactive"
 done

@@ -10,11 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.agent.common import ROOT
-from scripts.agent.wave_common import canonical_handoff_path, task_ids
-
-
-def runtime_wave_id(wave_id: str) -> str:
-    return "wave-01" if wave_id == "wave-1" else wave_id
+from scripts.agent.wave_common import canonical_handoff_path, runtime_wave_id, task_ids
 
 
 def sync(task_id: str, worktree: Path, wave_id: str) -> Path:

@@ -1,0 +1,10 @@
+{
+  "lane": "integration", "branch": "integration/phase1-wave2", "worktree": "SF_WT_INTEGRATION",
+  "handoff_path": "docs/handoffs/wave-02/integration.md", "handoff_required": true,
+  "objective": "Own frozen shared contracts, cross-package composition, CLI, Makefile, CI, locks, candidate decisions, acceptance journey, and closure without building a competing specialist subsystem.",
+  "allowed_paths": [".github", "Makefile", "clients/python", "config/agents", "docs/handoffs/wave-02", "docs/workplans/parallel/wave-02", "scripts/agent", "scripts/agents", "services/application_dev_supervisor", "tests/wave_02", "tests/agent"],
+  "forbidden_paths": ["1_proxy", "2_backend_api/service_fabric/api/migrations", "3_service_templates", "4_generated_services", "5_core_services", "6_service_catalog"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-02/objective.md", "docs/workplans/parallel/wave-02/frozen-contracts.md", "config/agents/wave-02/wave.yaml"],
+  "required_tests": ["make verify-wave-02", "make verify-current", "git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": true, "allowed_prefixes": ["chore(agents):", "feat(cli):", "feat(integration):", "test(integration):", "docs(integration):", "fix(integration):", "Merge "]}
+}

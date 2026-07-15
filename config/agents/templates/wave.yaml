@@ -1,0 +1,12 @@
+{
+  "wave_id": "__WAVE_ID__", "runtime_wave_id": "__WAVE_ID__", "base_commit": "__BASE_REF__", "integration_branch": "__INTEGRATION_BRANCH__",
+  "task_manifest_dir": "config/agents/__WAVE_ID__/tasks", "canonical_handoff_dir": "docs/handoffs/__WAVE_ID__", "handoff_template": "docs/handoffs/__WAVE_ID__/task-handoff-template.md", "local_run_dir": ".agent-runs/__WAVE_ID__",
+  "shared_docs": "docs/workplans/parallel/__WAVE_ID__/objective.md",
+  "lanes": ["integration", "supervisor", "runtime-bindings", "kit-execution", "reference-app"],
+  "specialist_lanes": ["supervisor", "runtime-bindings", "kit-execution", "reference-app"],
+  "integration_order": ["runtime-bindings", "kit-execution", "reference-app", "supervisor", "integration"],
+  "worktree_env": {"integration": "SF_WT_INTEGRATION", "supervisor": "SF_WT_SUPERVISOR", "runtime-bindings": "SF_WT_RUNTIME_BINDINGS", "kit-execution": "SF_WT_KIT_EXECUTION", "reference-app": "SF_WT_REFERENCE_APP"},
+  "frozen_contracts": [],
+  "operational_policies": {"contracts_freeze_required_before_specialists": true, "candidate_commits_allowed": true, "automatic_merger": false, "specialists_may_merge_or_pull_feature_branches": false},
+  "verification_gates": ["make verify-__WAVE_ID__", "make verify-current", "git diff --check"]
+}

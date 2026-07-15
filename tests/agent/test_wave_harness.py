@@ -42,7 +42,7 @@ class WaveHarnessTests(unittest.TestCase):
     def test_prompt_renderer_is_concise_and_lane_specific(self) -> None:
         prompt = render("assembly", "wave-1")
         self.assertIn("feature/wave1-assembly", prompt)
-        self.assertIn("wave_task_preflight.py --task assembly", prompt)
+        self.assertIn("wave_task_preflight.py --wave wave-1 --task assembly", prompt)
         self.assertIn("packages/servicefabric_application_assembly", prompt)
         self.assertIn("docs/handoffs/wave-01/assembly.md", prompt)
         self.assertLess(len(prompt.split()), 300)
@@ -56,6 +56,23 @@ class WaveHarnessTests(unittest.TestCase):
         for name in ("assembly", "resources", "kits-blueprints", "testing", "integration"):
             path = ROOT / "docs" / "handoffs" / "wave-01" / f"{name}.md"
             self.assertTrue(path.is_file(), name)
+
+    def test_wave_02_manifests_and_prompts_are_lane_specific(self) -> None:
+        value = wave("wave-02")
+        self.assertEqual(value["base_commit"], "715de644eff2ee003469f14d574c4b70706bc70a")
+        self.assertEqual(value["integration_branch"], "integration/phase1-wave2")
+        self.assertEqual(
+            task_ids("wave-02"),
+            ["integration", "kit-execution", "reference-app", "runtime-bindings", "supervisor"],
+        )
+        for task_id in task_ids("wave-02"):
+            value = task(task_id, "wave-02")
+            self.assertTrue(value["handoff_path"].startswith("docs/handoffs/wave-02/"), task_id)
+            self.assertTrue((ROOT / value["handoff_path"]).is_file(), task_id)
+        prompt = render("supervisor", "wave-02")
+        self.assertIn("agent/w2-supervisor", prompt)
+        self.assertIn("--wave wave-02 --task supervisor", prompt)
+        self.assertIn("docs/handoffs/wave-02/supervisor.md", prompt)
 
 
 if __name__ == "__main__":

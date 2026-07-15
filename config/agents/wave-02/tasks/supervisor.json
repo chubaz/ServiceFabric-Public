@@ -1,0 +1,10 @@
+{
+  "lane": "supervisor", "branch": "agent/w2-supervisor", "worktree": "SF_WT_SUPERVISOR",
+  "handoff_path": "docs/handoffs/wave-02/supervisor.md", "handoff_required": true,
+  "objective": "Implement bounded application development supervision: lifecycle orchestration, dependency ordering, aggregate state, rollback, and module records without CLI, provider, or framework-kit implementation.",
+  "allowed_paths": ["services/application_dev_supervisor", "tests/application_dev_supervisor", "docs/handoffs/wave-02/supervisor.md"],
+  "forbidden_paths": [".github", "Makefile", "clients/python", "config", "docs/workplans", "packages/servicefabric_application_model", "packages/servicefabric_application_assembly", "packages/servicefabric_process_runtime", "packages/servicefabric_resource_bindings", "packages/servicefabric_framework_kits", "packages/servicefabric_blueprints", "schemas", "scripts"],
+  "required_context_files": ["AGENTS.md", "docs/workplans/parallel/wave-02/objective.md", "docs/workplans/parallel/wave-02/frozen-contracts.md", "packages/servicefabric_application_assembly", "packages/servicefabric_process_runtime"],
+  "required_tests": ["python3 -m unittest discover -s tests/application_dev_supervisor -v", "git diff --check"],
+  "candidate_commit_policy": {"allow_merge_commits": false, "allowed_prefixes": ["feat(supervisor):", "test(supervisor):", "docs(supervisor):", "fix(supervisor):"]}
+}

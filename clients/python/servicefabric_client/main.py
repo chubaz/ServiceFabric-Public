@@ -72,6 +72,7 @@ from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
 from .wave3 import Wave3ApplicationService
+from .development import ResearchNotesDevelopmentService
 
 
 VERSION = "0.1.0a1"
@@ -448,6 +449,14 @@ def parser() -> ServiceFabricArgumentParser:
     build = app_actions.add_parser("build", help="build an immutable local artifact")
     build.add_argument("application_id")
     build.add_argument("--revision")
+    dev = app_actions.add_parser("dev", help="run a reviewed modular application locally")
+    dev_actions = dev.add_subparsers(dest="dev_action", required=True)
+    for action in ("prepare", "start", "status", "stop"):
+        command = dev_actions.add_parser(action, help=f"{action} a modular development application")
+        command.add_argument("application_id")
+    restart = dev_actions.add_parser("restart", help="restart one executable modular application module")
+    restart.add_argument("application_id")
+    restart.add_argument("--module", required=True)
     for action in ("start", "status", "resources", "stop"):
         command = app_actions.add_parser(action, help=f"{action} a hosted local application")
         command.add_argument("application_id")
@@ -847,6 +856,22 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
 
         if args.action == "install":
             return 0,"apps-install",{**runtime.host.install(Path(args.source)),"json_mode":json_mode}
+        if args.action == "dev":
+            require_development_workspace(context)
+            if args.application_id != "research-notes":
+                raise CliUsageError("only the reviewed research-notes development application is available")
+            service = ResearchNotesDevelopmentService(context.layout)
+            if args.dev_action == "prepare":
+                value = service.prepare()
+            elif args.dev_action == "start":
+                value = service.start()
+            elif args.dev_action == "status":
+                value = service.status()
+            elif args.dev_action == "restart":
+                value = service.restart(args.module)
+            else:
+                value = service.stop()
+            return 0, f"apps-dev-{args.dev_action}", {args.dev_action: value, "json_mode": json_mode}
         if args.action in {"start","status","resources","stop"}:
             method=getattr(runtime.host,args.action)
             return 0,f"apps-{args.action}",{args.action:method(args.application_id),"json_mode":json_mode}
