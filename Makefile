@@ -64,11 +64,11 @@ teardown:
 	find 6_service_catalog/ -mindepth 1 -not -name "_shared" -not -path "6_service_catalog/_shared*" -delete
 
 MILESTONE ?= $(shell python3 -c 'import json;print(json.load(open("docs/workplans/status.json"))["current_milestone"])')
-WAVE01_PYTHONPATH := /usr/lib/python3/dist-packages:$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_capability_authoring:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_resource_bindings:$(CURDIR)/packages/servicefabric_workspace:$(CURDIR)/services/application_host:$(CURDIR)/clients/python
+WAVE01_PYTHONPATH := /usr/lib/python3/dist-packages:$(CURDIR):$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_capability_authoring:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_resource_bindings:$(CURDIR)/packages/servicefabric_workspace:$(CURDIR)/services/application_host:$(CURDIR)/clients/python
 WAVE01_BIN ?= /tmp/servicefabric-ap-01a/bin
 WAVE01_PATH := $(WAVE01_BIN):$(PATH)
 WAVE01_PYTHON ?= /usr/bin/python3
-WAVE01_ENV := env -u SERVICEFABRIC_WORKSPACE
+WAVE01_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME
 WAVE02_PYTHON ?= $(WAVE01_BIN)/python
 WAVE02_PYTHONPATH := /usr/lib/python3/dist-packages:$(WAVE01_PYTHONPATH):$(CURDIR)/services/application_dev_supervisor
 agent-preflight:
@@ -108,7 +108,7 @@ verify-wave-01:
 	$(WAVE01_ENV) PATH="$(WAVE01_PATH)" PYTHONPATH="$(WAVE01_PYTHONPATH)" $(WAVE01_PYTHON) -m compileall packages/servicefabric_application_assembly packages/servicefabric_application_model packages/servicefabric_blueprints packages/servicefabric_framework_kits packages/servicefabric_process_runtime packages/servicefabric_resource_bindings packages/servicefabric_workspace services/application_host clients/python tests/application_assembly tests/resource_bindings tests/framework_kits tests/blueprints tests/integration tests/adversarial tests/architecture tests/modules tests/workspace tests/ap_01a tests/local_ux
 	git diff --check
 
-WAVE3_PYTHON ?= python3
+WAVE3_PYTHON ?= $(WAVE01_BIN)/python
 WAVE3_PYTHONPATH := /usr/lib/python3/dist-packages:$(CURDIR):$(CURDIR)/services/application_dev_supervisor:$(CURDIR)/services/application_host:$(CURDIR)/services/capsule_host:$(CURDIR)/services/governance_operations:$(CURDIR)/services/mcp_gateway:$(CURDIR)/services/tool_runtime:$(CURDIR)/clients/python:$(CURDIR)/packages/servicefabric_application_generator:$(CURDIR)/packages/servicefabric_application_builder:$(CURDIR)/packages/servicefabric_agent_guidance:$(CURDIR)/packages/servicefabric_application_model:$(CURDIR)/packages/servicefabric_application_assembly:$(CURDIR)/packages/servicefabric_artifacts:$(CURDIR)/packages/servicefabric_blueprints:$(CURDIR)/packages/servicefabric_capability_authoring:$(CURDIR)/packages/servicefabric_builder:$(CURDIR)/packages/servicefabric_capsules/src:$(CURDIR)/packages/servicefabric_contracts/src:$(CURDIR)/packages/servicefabric_framework_kits:$(CURDIR)/packages/servicefabric_governance/src:$(CURDIR)/packages/servicefabric_mcp_projection/src:$(CURDIR)/packages/servicefabric_operations/src:$(CURDIR)/packages/servicefabric_process_runtime:$(CURDIR)/packages/servicefabric_resource_bindings:$(CURDIR)/packages/servicefabric_runtime:$(CURDIR)/packages/servicefabric_workspace
 WAVE3_ENV := env -u SERVICEFABRIC_WORKSPACE PATH="$(dir $(WAVE3_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE3_PYTHONPATH)"
 
