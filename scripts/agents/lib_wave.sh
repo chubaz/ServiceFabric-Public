@@ -2,7 +2,19 @@
 set -euo pipefail
 
 sf_config_file() {
-    printf '%s\n' "${SF_AGENT_WORKTREES_ENV:-.agent-worktrees.env}"
+    if [[ -n "${SF_AGENT_WORKTREES_ENV:-}" ]]; then
+        printf '%s\n' "$SF_AGENT_WORKTREES_ENV"
+        return
+    fi
+
+    local repo_root wave_config
+    repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd -P)"
+    wave_config="$repo_root/.agent-worktrees.${SF_WAVE_ID:-wave-01}.env"
+    if [[ -f "$wave_config" ]]; then
+        printf '%s\n' "$wave_config"
+    else
+        printf '%s\n' "$repo_root/.agent-worktrees.env"
+    fi
 }
 
 sf_load_config() {
