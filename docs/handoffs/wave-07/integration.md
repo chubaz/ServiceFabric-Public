@@ -18,18 +18,20 @@
 - Planner candidate `1767aa4d8e10e2f81437cb0af4236d7b03971afa`; integrated through `8b29009e03c0ab532fafbea1c5c0c19ec7d68c87`. Its eight focused tests passed. The complete diff is lane-owned and validates immutable task graphs without persistence or execution.
 - Harness candidate `5d1249828705f5235989db3220be783887f815fd`; integrated through `c239e2e630a72a420996eece8ebd89678d4b4286`. Its six focused tests passed. The complete diff is lane-owned and renders and tracks task contracts without planning or invoking a provider.
 - Orchestrator candidate `4774d319b5f3c209ddda59ae928e38ed33802277`; integrated through `d98775e7ee656259edd881d9021efcd82b9092be`. Its six focused tests passed. The complete diff is lane-owned and computes dependency readiness without model invocation, file editing, or persistence.
+- Corrected evaluation candidate `3a410176207515d55bb93b5ddd8ff4c567a2675f`; integrated through `49894b3a63c2ac1752ba234014b7807367865949`. Its three journey tests passed in the Wave-7 runtime. The effective diff is limited to evaluation-owned paths, asserts exactly `task_id`, `repository`, and `prompt`, pins an 11-line deterministic prompt fixture with a 12-line ceiling, imports all required Wave-7 packages, and changes no implementation or frozen contract.
 
 No accepted candidate changed `packages/servicefabric_agentic_contracts` or another specialist's path set.
 
-### Returned
+### Returned and superseded
 
-- Evaluation candidate `c4abcd8ed0de4b3c39e1a9b623f915196fedbfec` is path-owned and freeze-clean, and its three focused tests pass on its original branch. It was returned unmerged because its journey enforces the obsolete `task`, `instructions`, and `prompt` shape. The accepted and integrated `CodexPromptHarness.prepare_task` result has exactly `task_id`, `repository`, and `prompt`: `task_id` identifies the task, `repository` identifies execution scope, and `prompt` contains the rendered instructions. The corrected evaluation must assert this authoritative shape and pass against the integrated candidates; the harness implementation must not change.
+- Evaluation candidate `c4abcd8ed0de4b3c39e1a9b623f915196fedbfec` was returned because its journey enforced the obsolete task-pack shape. Corrected candidate `3a410176207515d55bb93b5ddd8ff4c567a2675f` supersedes it and accepts the integrated harness without implementation changes.
 
 ### Direct dependency checks
 
 - The existing Wave-7 evaluation journey passed after planner integration.
 - The existing Wave-7 evaluation journey passed again after orchestrator integration.
+- The corrected Wave-7 evaluation journey passed after all framework candidates were integrated.
 
 ### Next action
 
-Review a corrected evaluation candidate whose prompt requires exactly `task_id`, `repository`, and `prompt`. Do not request `task` or `instructions`, do not change the accepted harness, and do not perform completion integration yet.
+Run the Wave-7 completion integration gates and record final readiness. All specialist candidates are accepted and integrated.

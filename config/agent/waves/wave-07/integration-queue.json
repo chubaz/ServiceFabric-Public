@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-07",
-  "overall": "CANDIDATE REVIEW IN PROGRESS",
+  "overall": "CANDIDATE REVIEW COMPLETE",
   "dependency_order": [
     "context",
     "run-store",
@@ -17,8 +17,8 @@
     "planner": "integrated",
     "harness": "integrated",
     "orchestrator": "integrated",
-    "evaluation": "returned",
+    "evaluation": "integrated",
     "integration": "active"
   },
-  "next_action": "Await and review a corrected evaluation candidate whose prompt requires exactly task_id, repository, prompt; do not request task or instructions, change the accepted harness, or perform completion integration."
+  "next_action": "Run the Wave-7 completion integration gates and record final readiness; all specialist candidates are accepted and integrated."
 }
