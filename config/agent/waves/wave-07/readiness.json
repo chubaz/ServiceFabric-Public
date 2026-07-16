@@ -1,1 +1,80 @@
-{"wave_id":"wave-07","contractsStatus":"frozen","overall":"bootstrap-ready","lanes":{"context":"ready","planner":"ready","run-store":"ready","agent-tools":"ready","orchestrator":"ready","harness":"ready","evaluation":"ready","integration":"active"}}
+{
+  "wave_id": "wave-07",
+  "base_commit": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+  "contractsStatus": "frozen",
+  "overall": "candidate-review-in-progress",
+  "lanes": {
+    "context": {
+      "branch": "agent/w7-context",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "d9bc15656fb6013ad9f54485913016c8f98f3ac3",
+      "accepted_commit": "d9bc15656fb6013ad9f54485913016c8f98f3ac3",
+      "integration_commit": "87c0af2cfdb41b0bb952bb9c9022197e58f0b486",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "planner": {
+      "branch": "agent/w7-planner",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "1767aa4d8e10e2f81437cb0af4236d7b03971afa",
+      "accepted_commit": "1767aa4d8e10e2f81437cb0af4236d7b03971afa",
+      "integration_commit": "8b29009e03c0ab532fafbea1c5c0c19ec7d68c87",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "run-store": {
+      "branch": "agent/w7-run-store",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "4ce57096a242bb6e47ee37d01e78487e8be0f10b",
+      "accepted_commit": "4ce57096a242bb6e47ee37d01e78487e8be0f10b",
+      "integration_commit": "79128e184752bd586263994642b639e53725f81e",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "agent-tools": {
+      "branch": "agent/w7-agent-tools",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "cf5e98a7544a555720661c09280f44b7b91e4b31",
+      "accepted_commit": "cf5e98a7544a555720661c09280f44b7b91e4b31",
+      "integration_commit": "d67470d87f75dff00cc287f93de1d84e06e26d33",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "orchestrator": {
+      "branch": "agent/w7-orchestrator",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "4774d319b5f3c209ddda59ae928e38ed33802277",
+      "accepted_commit": "4774d319b5f3c209ddda59ae928e38ed33802277",
+      "integration_commit": "d98775e7ee656259edd881d9021efcd82b9092be",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "harness": {
+      "branch": "agent/w7-harness",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "5d1249828705f5235989db3220be783887f815fd",
+      "accepted_commit": "5d1249828705f5235989db3220be783887f815fd",
+      "integration_commit": "c239e2e630a72a420996eece8ebd89678d4b4286",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "evaluation": {
+      "branch": "agent/w7-evaluation",
+      "original_base_sha": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
+      "candidate_head": "c4abcd8ed0de4b3c39e1a9b623f915196fedbfec",
+      "accepted_commit": null,
+      "integration_commit": null,
+      "focused_verification": "passed",
+      "integration_decision": "returned",
+      "final_state": "returned",
+      "reason": "Evaluation expects the pre-candidate harness prepare_task result and must accept the rendered prompt field from the integrated harness."
+    },
+    "integration": "active"
+  }
+}
