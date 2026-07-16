@@ -95,3 +95,33 @@ The candidate emitted two subprocess-handle `ResourceWarning`s during teardown, 
 `make verify-wave-06` passed after acceptance integration. The agreed minimal gate covered the three projection suites, the one Wave-6 acceptance journey, the direct Wave-5 invocation smoke, the existing MCP discovery smoke, dependency-lock verification, `pip check`, compilation of Wave-6 paths, and `git diff --check`.
 
 The acceptance and Wave-5 journeys emitted teardown-time `ResourceWarning`s for already-exited subprocess handles; no referenced process remained running. Wave-6 is verified pending a separate closure decision and is not marked complete.
+
+## Wave-6 Completion
+
+Wave-6 is complete on `integration/phase2-wave6` only. The final verified integration head before this completion record is `5566437051e05df68446b48fcee6391e3646a8bd`; this closure does not merge the branch into `main`.
+
+### Candidate and Integration Commits
+
+- MCP candidate `d41d327066adaa7bf0be5c137247c842b6b3f6bd`; integrated by `1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c`.
+- REST candidate `a5d2b5d014e26db3a7967615ece7b5bed0953ac2`; integrated by `10bc05d503a9a772c3a828a9b5833fe77fbd5ae2`.
+- Python and agent candidate `c62aa2bbe103f12c641d60cf818f5b2acaf8f172`; integrated by `a530cf7d4fac4347e2dd520c14311c8ccbfad86c`.
+- Acceptance candidate `1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc`; integrated by `f5b99900894489bf823850c7d808b14270ca1e9b`.
+- Integration-owned facade `206fd52ad1da61527bf72b4cb0a34e080d6a73df`, projection composition `a8f74d94b0d661baf10bddf87dd7c802322f5e7d`, and loopback REST CLI `10fe12b62e90c801c391f08b69d61eace628c640`.
+
+### Completion Evidence
+
+- `make verify-wave-06` passed at the final verified head, including the accepted Wave-6 journey and required focused smoke checks.
+- `make verify-current` passed for the configured readiness milestone.
+- `make agent-handoff` passed and produced `.agent/handoff.md`.
+- `scripts/agents/wave_status.sh --wave wave-06` reported clean worktrees, ready prompts and handoffs, and `contractsStatus: frozen`.
+- `git diff --check` and `git status --porcelain` were clean at verification time.
+
+### Known Limitations
+
+- REST remains literal IPv4 loopback only (`127.0.0.1`); no remote hosting, authentication, TLS, or automatic route publication is supplied.
+- The acceptance and Wave-5 lifecycle tests emit teardown-time `ResourceWarning`s for already-exited subprocess handles; no process leak was observed.
+- MCP remains an optional projection and the pre-existing AP-01A MCP tool behavior is preserved.
+
+### Rollback Order
+
+To remove Wave-6 safely, revert in reverse integration order: this completion record; acceptance merge `f5b99900894489bf823850c7d808b14270ca1e9b`; CLI `10fe12b62e90c801c391f08b69d61eace628c640`; composition `a8f74d94b0d661baf10bddf87dd7c802322f5e7d`; REST merge `10bc05d503a9a772c3a828a9b5833fe77fbd5ae2`; MCP merge `1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c`; Python/agent merge `a530cf7d4fac4347e2dd520c14311c8ccbfad86c`; then facade `206fd52ad1da61527bf72b4cb0a34e080d6a73df`.

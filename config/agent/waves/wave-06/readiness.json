@@ -45,11 +45,18 @@
     }
   },
   "integration": {
-    "state": "verified_pending_completion",
+    "state": "complete",
     "branch": "integration/phase2-wave6",
     "contracts_status": "frozen",
     "candidate_review_status": "all projection and acceptance candidates integrated",
-    "wave_completion_status": "pending",
-    "final_verification_status": "passed"
+    "wave_completion_status": "complete",
+    "final_verification_status": "passed",
+    "final_verified_head": "5566437051e05df68446b48fcee6391e3646a8bd",
+    "integration_commits": [
+      "206fd52ad1da61527bf72b4cb0a34e080d6a73df",
+      "a8f74d94b0d661baf10bddf87dd7c802322f5e7d",
+      "10fe12b62e90c801c391f08b69d61eace628c640",
+      "f5b99900894489bf823850c7d808b14270ca1e9b"
+    ]
   }
 }
