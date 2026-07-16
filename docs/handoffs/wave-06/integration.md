@@ -100,6 +100,8 @@ The acceptance and Wave-5 journeys emitted teardown-time `ResourceWarning`s for 
 
 Wave-6 is complete on `integration/phase2-wave6` only. The final verified integration head before this completion record is `5566437051e05df68446b48fcee6391e3646a8bd`; this closure does not merge the branch into `main`.
 
+The readiness decisions use the required machine-readable `accepted` value for every lane, and the integration queue uses `WAVE COMPLETE`. The detailed review rationale remains recorded in the candidate and verification evidence below.
+
 ### Candidate and Integration Commits
 
 - MCP candidate `d41d327066adaa7bf0be5c137247c842b6b3f6bd`; integrated by `1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c`.

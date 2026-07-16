@@ -10,7 +10,7 @@
       "accepted_commit": "d41d327066adaa7bf0be5c137247c842b6b3f6bd",
       "integration_commit": "1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c",
       "focused_verification": "passed",
-      "integration_decision": "accepted on corrected-candidate review: delegates only through CapabilityConsumerFacade",
+      "integration_decision": "accepted",
       "final_state": "integrated"
     },
     "rest-projection": {
@@ -20,7 +20,7 @@
       "accepted_commit": "a5d2b5d014e26db3a7967615ece7b5bed0953ac2",
       "integration_commit": "10bc05d503a9a772c3a828a9b5833fe77fbd5ae2",
       "focused_verification": "passed",
-      "integration_decision": "accepted on corrected-candidate review: delegates only through CapabilityConsumerFacade",
+      "integration_decision": "accepted",
       "final_state": "integrated"
     },
     "sdk-agent-projection": {
@@ -40,7 +40,7 @@
       "accepted_commit": "1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc",
       "integration_commit": "f5b99900894489bf823850c7d808b14270ca1e9b",
       "focused_verification": "passed",
-      "integration_decision": "accepted: one Research Notes journey verifies MCP, REST, Python, and agent projections",
+      "integration_decision": "accepted",
       "final_state": "integrated"
     }
   },
