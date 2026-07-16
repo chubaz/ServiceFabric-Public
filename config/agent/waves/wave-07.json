@@ -16,6 +16,25 @@
     "evaluation": "SF_WT_EVALUATION"
   },
   "frozen_contracts": ["packages/servicefabric_agentic_contracts"],
-  "operational_policies": {"contracts_freeze_required_before_specialists": true, "automatic_merger": false, "runtime_state_isolated_per_worktree": true},
+  "operational_policies": {
+    "candidate_commits_allowed": true,
+    "contracts_freeze_required_before_specialists": true,
+    "automatic_merger": false,
+    "specialists_may_merge_or_pull_feature_branches": false,
+    "runtime_state_isolated_per_worktree": true
+  },
+  "boundary_freeze": {
+    "agentic_contracts": "data-and-protocols-only",
+    "context": "builds-context-without-planning",
+    "planner": "plans-without-persistence-or-execution",
+    "run_store": "persists-without-scheduling",
+    "orchestrator": "coordinates-without-model-invocation-or-file-editing",
+    "harness": "executes-task-contracts-without-planning",
+    "agent_tools": "public-servicefabric-boundaries-only",
+    "capability_access": "delegates-through-CapabilityConsumerFacade",
+    "arbitrary_shell_tool": false,
+    "provider_adapters_owner": "wave-08"
+  },
+  "specialist_test_command_ceiling": 1,
   "verification_gates": ["make verify-wave-07", "make verify-current", "git diff --check"]
 }
