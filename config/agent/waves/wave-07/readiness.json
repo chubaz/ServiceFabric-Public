@@ -2,7 +2,82 @@
   "wave_id": "wave-07",
   "base_commit": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
   "contractsStatus": "frozen",
-  "overall": "integration-verification-pending",
+  "overall": "complete",
+  "accepted_candidate_commits": {
+    "context": "d9bc15656fb6013ad9f54485913016c8f98f3ac3",
+    "planner": "1767aa4d8e10e2f81437cb0af4236d7b03971afa",
+    "run-store": "4ce57096a242bb6e47ee37d01e78487e8be0f10b",
+    "agent-tools": "cf5e98a7544a555720661c09280f44b7b91e4b31",
+    "orchestrator": "4774d319b5f3c209ddda59ae928e38ed33802277",
+    "harness": "5d1249828705f5235989db3220be783887f815fd",
+    "evaluation": "9eb3a71cc365300c7279f3a2210a8cdec01cd724"
+  },
+  "integration_commits": [
+    "26dd497b5422b89c02a4524585f3ebb4356a4cba",
+    "78df676fbea484eff762e55118488012802f02e4",
+    "9f36513f6516015cf314674eedff70b0573a182d",
+    "f0cc2edbc0ba30882cd74f988f898cf0e589e1bb",
+    "eb868b84da97fcebe50e54f73fa3f4e30814c343",
+    "73b9d698c2abe93fcf7d83722d6cf823e2db32a0",
+    "87c0af2cfdb41b0bb952bb9c9022197e58f0b486",
+    "ba2a4b748197935cfc9acc24b2becf5ff8e4b2cb",
+    "79128e184752bd586263994642b639e53725f81e",
+    "57871a3a8c87611148e71ebaf5116d9c315fac7f",
+    "d67470d87f75dff00cc287f93de1d84e06e26d33",
+    "7a50038b740569ce2cfdde4235c1aaf5625b9662",
+    "8b29009e03c0ab532fafbea1c5c0c19ec7d68c87",
+    "a780ca4f9b21ee717cfe004686d08526d068ee1b",
+    "c239e2e630a72a420996eece8ebd89678d4b4286",
+    "a32cc8634981f03610e222f31a9d1abd1f424a85",
+    "d98775e7ee656259edd881d9021efcd82b9092be",
+    "c769cf4d677e85a1c4c6fcc6bc73e1a8f30f217b",
+    "f564ce18bd9eb68e01cb511b80bedf4a307ea364",
+    "cb0395d293d96b1b66400afe53dbcb5273f0a9e7",
+    "49894b3a63c2ac1752ba234014b7807367865949",
+    "baa54ed3c40b0324e9b714b5fffd577a42b03ddf",
+    "72c3a2f60cb8c7162ae31eab01b3a27979c30c84",
+    "8debb14640bf4fde5a24cb18912ed466afe2f010",
+    "9eb3a71cc365300c7279f3a2210a8cdec01cd724",
+    "4995782ac27bb8b85128abefc286da3a2152a3f7"
+  ],
+  "final_head": "4995782ac27bb8b85128abefc286da3a2152a3f7",
+  "verification_evidence": [
+    {
+      "command": "make verify-wave-07",
+      "result": "passed",
+      "details": "Frozen boundaries passed (7 disjoint specialist path sets; focused-test ceiling 1). Nine suites passed 50 tests: contracts 2, context 4, planner 8, run-store 7, agent-tools 12, orchestrator 6, harness 6, evaluation 1, integration 4. The target's git diff --check passed."
+    },
+    {
+      "command": "make verify-current",
+      "result": "passed",
+      "details": "Current milestone readiness verification passed."
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "details": "No whitespace errors were reported at the verified HEAD."
+    }
+  ],
+  "accepted_contract_decisions": [
+    "Agentic contracts contain data and protocols only; planning, persistence, orchestration, harness, and tools retain separate owners.",
+    "CodexPromptHarness task packs contain exactly task_id, repository, prompt; task and instructions are obsolete fields.",
+    "Context does not plan; planning does not persist or execute; run storage does not schedule; orchestration does not invoke models or edit files; harnesses do not plan.",
+    "Agent tools use public workspace and application services, and capability operations delegate through CapabilityConsumerFacade; no direct registry/runtime or arbitrary shell access exists.",
+    "Codex rendering produces a prompt and launch command but never invokes Codex automatically; Pi, LangGraph, and external provider SDKs remain deferred."
+  ],
+  "known_limitations": [
+    "Wave 7 exports provider-neutral task packs and launch commands but includes no model-provider execution adapter.",
+    "Task preparation requires a local Git worktree and never force-resets, deletes, or automatically cleans existing task worktrees.",
+    "Verification runs only task-declared commands through the bounded argv boundary; shell interpreters and undeclared commands are rejected.",
+    "Durable run state is file-backed and local; distributed scheduling and remote state coordination are outside Wave 7."
+  ],
+  "rollback_order": [
+    "Revert the Wave-7 completion metadata commit.",
+    "Revert 4995782ac27bb8b85128abefc286da3a2152a3f7 and 9eb3a71cc365300c7279f3a2210a8cdec01cd724 to remove final evaluation acceptance.",
+    "Revert 8debb14640bf4fde5a24cb18912ed466afe2f010, then 72c3a2f60cb8c7162ae31eab01b3a27979c30c84 to remove CLI and composition.",
+    "Revert accepted specialist integrations in reverse dependency order: evaluation, orchestrator, harness, planner, agent-tools, run-store, context.",
+    "Revert boundary/runtime bootstrap commits last; never delete task worktrees automatically."
+  ],
   "lanes": {
     "context": {
       "branch": "agent/w7-context",
@@ -76,12 +151,14 @@
       "reason": "The black-box evaluation changes only evaluation-owned tests, fixtures, and handoff; exercises the accepted task_id, repository, prompt shape; and passes tests/wave_07."
     },
     "integration": {
-      "state": "active",
+      "state": "complete",
       "branch": "integration/phase25-wave7",
       "contracts_status": "frozen",
       "candidate_review_status": "all specialist candidates integrated",
-      "wave_completion_status": "pending",
-      "final_verification_status": "pending"
+      "wave_completion_status": "complete",
+      "final_verification_status": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
     }
   }
 }

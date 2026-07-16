@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-07",
-  "overall": "INTEGRATION VERIFICATION PENDING",
+  "overall": "WAVE COMPLETE",
   "dependency_order": [
     "context",
     "run-store",
@@ -18,7 +18,13 @@
     "harness": "integrated",
     "orchestrator": "integrated",
     "evaluation": "integrated",
-    "integration": "active"
+    "integration": "integrated"
   },
-  "next_action": "Run the finalized minimal make verify-wave-07 gate. Do not mark Wave 7 complete until that integration verification is reviewed."
+  "final_head": "4995782ac27bb8b85128abefc286da3a2152a3f7",
+  "verification": [
+    "make verify-wave-07: passed (50 tests plus frozen-boundary and whitespace checks)",
+    "make verify-current: passed",
+    "git diff --check: passed"
+  ],
+  "next_action": "Wave 7 is complete on integration/phase25-wave7. Do not merge into main without a separate explicit integration action."
 }
