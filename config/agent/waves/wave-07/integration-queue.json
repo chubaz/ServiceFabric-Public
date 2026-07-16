@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-07",
-  "overall": "WAVE COMPLETE",
+  "overall": "INTEGRATION VERIFICATION PENDING",
   "dependency_order": [
     "context",
     "run-store",
@@ -18,7 +18,7 @@
     "harness": "integrated",
     "orchestrator": "integrated",
     "evaluation": "integrated",
-    "integration": "integrated"
+    "integration": "active"
   },
-  "next_action": "Wave 7 is complete. Provider adapters, including any Pi, LangGraph, or external model-provider integration, remain deferred to Wave 8."
+  "next_action": "Run the finalized minimal make verify-wave-07 gate. Do not mark Wave 7 complete until that integration verification is reviewed."
 }

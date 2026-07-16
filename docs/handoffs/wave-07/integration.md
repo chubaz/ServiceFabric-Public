@@ -1,14 +1,14 @@
 # Wave-7 integration handoff
 
 - Task: Compose the accepted Wave-7 framework through public APIs and expose the provider-neutral CLI workflow.
-- Commits: `72c3a2f` (`feat(integration): compose agentic application framework`) and this commit (`feat(cli): expose agentic application workflow`).
-- Validation: `make verify-wave-07`, `make verify-current`, and `git diff --check` passed. Four focused integration tests cover durable planning, safe resumable worktree preparation, bounded scheduling and verification, public-service agent tools, exact task-pack rendering, and all eight CLI commands.
-- Blockers: none. `contractsStatus: frozen`; accepted specialist implementations and contracts remain unchanged. Pi, LangGraph, external provider SDKs, and automatic Codex invocation remain deferred.
+- Commits: `72c3a2f` (`feat(integration): compose agentic application framework`) and `8debb14` (`feat(cli): expose agentic application workflow`).
+- Validation: the latest evaluation candidate passed `python3 -m unittest discover -s tests/wave_07 -v` with one black-box journey. The minimal `make verify-wave-07` gate is finalized but has not been run for completion.
+- Blockers: final integration verification remains pending. `contractsStatus: frozen`; accepted specialist implementations and contracts remain unchanged. Pi, LangGraph, external provider SDKs, and automatic Codex invocation remain deferred.
 - Rollback: revert the two composition commits. Existing task worktrees are never deleted automatically; no persistent-data migration is involved.
 
 ## Candidate review
 
-`contractsStatus: frozen` remains in force. Candidate review and Wave-7 completion integration are complete.
+`contractsStatus: frozen` remains in force. Candidate review is complete; Wave-7 completion integration remains pending.
 
 ### Accepted and integrated
 
@@ -18,7 +18,7 @@
 - Planner candidate `1767aa4d8e10e2f81437cb0af4236d7b03971afa`; integrated through `8b29009e03c0ab532fafbea1c5c0c19ec7d68c87`. Its eight focused tests passed. The complete diff is lane-owned and validates immutable task graphs without persistence or execution.
 - Harness candidate `5d1249828705f5235989db3220be783887f815fd`; integrated through `c239e2e630a72a420996eece8ebd89678d4b4286`. Its six focused tests passed. The complete diff is lane-owned and renders and tracks task contracts without planning or invoking a provider.
 - Orchestrator candidate `4774d319b5f3c209ddda59ae928e38ed33802277`; integrated through `d98775e7ee656259edd881d9021efcd82b9092be`. Its six focused tests passed. The complete diff is lane-owned and computes dependency readiness without model invocation, file editing, or persistence.
-- Corrected evaluation candidate `3a410176207515d55bb93b5ddd8ff4c567a2675f`; integrated through `49894b3a63c2ac1752ba234014b7807367865949`. Its three journey tests passed in the Wave-7 runtime. The effective diff is limited to evaluation-owned paths, asserts exactly `task_id`, `repository`, and `prompt`, pins an 11-line deterministic prompt fixture with a 12-line ceiling, imports all required Wave-7 packages, and changes no implementation or frozen contract.
+- Evaluation candidate `9eb3a71cc365300c7279f3a2210a8cdec01cd724`; fast-forwarded through the same commit. Its single black-box journey passed in the candidate worktree. The effective delta is limited to `tests/wave_07/**`, `tests/fixtures/wave_07/**`, and `docs/handoffs/wave-07/evaluation.md`; it changes no implementation, frozen contract, or integration control.
 
 No accepted candidate changed `packages/servicefabric_agentic_contracts` or another specialist's path set.
 
@@ -34,4 +34,4 @@ No accepted candidate changed `packages/servicefabric_agentic_contracts` or anot
 
 ### Next action
 
-Wave 7 is complete. Provider adapters remain owned by Wave 8.
+Run the finalized minimal `make verify-wave-07` gate and review its result. Do not mark Wave 7 complete yet.
