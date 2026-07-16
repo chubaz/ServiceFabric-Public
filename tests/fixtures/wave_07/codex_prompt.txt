@@ -1,0 +1,11 @@
+Execute the bounded coding task below.
+Work only within the allowed paths and do not modify forbidden paths.
+Task: journey
+Role: implementation
+Objective: Create an application
+Dependencies: (none)
+Allowed paths: .
+Forbidden paths: (none)
+Required context: AGENTS.md
+Expected outputs: implementation
+Verification: (none)
