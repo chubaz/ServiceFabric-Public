@@ -1,0 +1,40 @@
+{
+  "wave_id": "wave-07", "runtime_wave_id": "wave-07", "base_commit": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b", "integration_branch": "integration/phase25-wave7",
+  "task_manifest_dir": "config/agent/waves/wave-07/tasks", "canonical_handoff_dir": "docs/handoffs/wave-07", "handoff_template": "docs/handoffs/wave-07/task-handoff-template.md", "local_run_dir": ".agent-runs/wave-07",
+  "readiness_metadata": "config/agent/waves/wave-07/readiness.json", "integration_queue": "config/agent/waves/wave-07/integration-queue.json",
+  "lanes": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation", "integration"],
+  "specialist_lanes": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation"],
+  "integration_order": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation", "integration"],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "context": "SF_WT_CONTEXT",
+    "planner": "SF_WT_PLANNER",
+    "run-store": "SF_WT_RUN_STORE",
+    "agent-tools": "SF_WT_AGENT_TOOLS",
+    "orchestrator": "SF_WT_ORCHESTRATOR",
+    "harness": "SF_WT_HARNESS",
+    "evaluation": "SF_WT_EVALUATION"
+  },
+  "frozen_contracts": ["packages/servicefabric_agentic_contracts"],
+  "operational_policies": {
+    "candidate_commits_allowed": true,
+    "contracts_freeze_required_before_specialists": true,
+    "automatic_merger": false,
+    "specialists_may_merge_or_pull_feature_branches": false,
+    "runtime_state_isolated_per_worktree": true
+  },
+  "boundary_freeze": {
+    "agentic_contracts": "data-and-protocols-only",
+    "context": "builds-context-without-planning",
+    "planner": "plans-without-persistence-or-execution",
+    "run_store": "persists-without-scheduling",
+    "orchestrator": "coordinates-without-model-invocation-or-file-editing",
+    "harness": "executes-task-contracts-without-planning",
+    "agent_tools": "public-servicefabric-boundaries-only",
+    "capability_access": "delegates-through-CapabilityConsumerFacade",
+    "arbitrary_shell_tool": false,
+    "provider_adapters_owner": "wave-08"
+  },
+  "specialist_test_command_ceiling": 1,
+  "verification_gates": ["make verify-wave-07", "make verify-current", "git diff --check"]
+}

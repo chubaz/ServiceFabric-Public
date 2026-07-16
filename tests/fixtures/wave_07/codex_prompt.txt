@@ -1,0 +1,11 @@
+Execute the bounded coding task below.
+Work only within the allowed paths and do not modify forbidden paths.
+Task: foundation
+Role: planner
+Objective: Prepare the deterministic implementation plan
+Dependencies: (none)
+Allowed paths: docs
+Forbidden paths: (none)
+Required context: AGENTS.md, workspace.yaml, README.md, docs/architecture/specification-map.md
+Expected outputs: docs/plan.md
+Verification: python3 verify_task.py

@@ -1,0 +1,1 @@
+{"task_id":"orchestrator","branch":"agent/w7-orchestrator","handoff_path":"docs/handoffs/wave-07/orchestrator.md","allowed_paths":["packages/servicefabric_agentic_orchestrator","tests/agentic_orchestrator","docs/handoffs/wave-07/orchestrator.md"],"required_tests":["python3 -m unittest discover -s tests/agentic_orchestrator -v"]}

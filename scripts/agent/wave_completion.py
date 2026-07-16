@@ -22,6 +22,10 @@ def is_ancestor(commit: str) -> bool:
     return git("merge-base", "--is-ancestor", commit, "HEAD").returncode == 0
 
 
+def commit_exists(commit: str) -> bool:
+    return git("cat-file", "-e", f"{commit}^{{commit}}").returncode == 0
+
+
 def inspect(wave_id: str) -> dict[str, object]:
     diagnostics: list[dict[str, str]] = []
     w = wave(wave_id)
@@ -66,12 +70,15 @@ def inspect(wave_id: str) -> dict[str, object]:
             diagnostics.append({"severity": "error", "code": "lane_not_accepted", "message": lane})
         if record.get("focused_verification") != "passed":
             diagnostics.append({"severity": "error", "code": "focused_verification", "message": lane})
-        for key in ("candidate_head", "accepted_commit", "integration_commit"):
+        for key in ("candidate_head", "accepted_commit"):
             commit = str(record.get(key, ""))
-            if not commit or not is_ancestor(commit):
-                diagnostics.append({"severity": "error", "code": f"{key}_not_integrated", "message": f"{lane}:{commit}"})
+            if not commit or not commit_exists(commit):
+                diagnostics.append({"severity": "error", "code": f"{key}_unknown", "message": f"{lane}:{commit}"})
+        integration_commit = str(record.get("integration_commit", ""))
+        if not integration_commit or not is_ancestor(integration_commit):
+            diagnostics.append({"severity": "error", "code": "integration_commit_not_integrated", "message": f"{lane}:{integration_commit}"})
 
-    integration = readiness.get("integration", {}) if isinstance(readiness, dict) else {}
+    integration = lanes.get("integration", {})
     if not isinstance(integration, dict):
         integration = {}
         diagnostics.append({"severity": "error", "code": "missing_integration_readiness", "message": "integration"})

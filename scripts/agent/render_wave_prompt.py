@@ -15,9 +15,9 @@ def render(task_id: str, wave_id: str = "wave-1") -> str:
     w = wave(wave_id)
     t = task(task_id, wave_id)
     preflight_args = f"--task {task_id}" if wave_id in {"wave-1", "wave-01"} else f"--wave {wave_id} --task {task_id}"
-    required = "\n".join(f"- {item}" for item in t["required_context_files"])
+    required = "\n".join(f"- {item}" for item in t.get("required_context_files", ["AGENTS.md"]))
     allowed = "\n".join(f"- {item}" for item in t["allowed_paths"])
-    forbidden = "\n".join(f"- {item}" for item in t["forbidden_paths"])
+    forbidden = "\n".join(f"- {item}" for item in t.get("forbidden_paths", [])) or "- Frozen contract paths and all unowned paths"
     tests = "\n".join(f"- `{item}`" for item in t["required_tests"])
     handoff_path = canonical_handoff_path(task_id, wave_id).relative_to(ROOT)
     authority = "You are the integration authority. Accept, reject, or return candidate commits with recorded reasons." if task_id == "integration" else "Create focused candidate commits only after tests pass. Do not merge your branch."
@@ -28,9 +28,9 @@ Repository: ServiceFabric
 Wave: `{w["wave_id"]}`
 Base commit: `{w["base_commit"]}`
 Branch: `{t["branch"]}`
-Worktree: `{t["worktree"]}`
+Worktree: `{t.get("worktree", "configured worktree")}`
 
-Objective: {t["objective"]}
+Objective: {t.get("objective", task_id)}
 
 Start by reading AGENTS.md, the shared wave docs, and required context. Run:
 

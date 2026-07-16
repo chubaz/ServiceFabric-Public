@@ -193,6 +193,23 @@ WAVE06_PYTHON ?= $(WAVE05_PYTHON)
 WAVE06_PYTHONPATH := $(WAVE05_PYTHONPATH):$(CURDIR)/packages/servicefabric_capability_mcp_projection/src:$(CURDIR)/packages/servicefabric_capability_consumers/src:$(CURDIR)/services/capability_rest_gateway/src:$(CURDIR)/services/mcp_gateway/src:$(CURDIR)/clients/python
 WAVE06_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE06_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE06_PYTHONPATH)"
 
+WAVE07_PYTHON ?= $(WAVE06_PYTHON)
+WAVE07_PYTHONPATH := $(WAVE06_PYTHONPATH):$(CURDIR)/packages/servicefabric_agentic_contracts/src:$(CURDIR)/packages/servicefabric_agentic_context/src:$(CURDIR)/packages/servicefabric_agentic_planner/src:$(CURDIR)/packages/servicefabric_agentic_run_store/src:$(CURDIR)/packages/servicefabric_agent_tools/src:$(CURDIR)/packages/servicefabric_agentic_orchestrator/src:$(CURDIR)/packages/servicefabric_agent_harness/src
+WAVE07_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE07_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE07_PYTHONPATH)"
+
+verify-wave-07:
+	$(WAVE07_ENV) $(WAVE07_PYTHON) integration/phase25-wave7/verify_boundaries.py
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_contracts -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_context -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_planner -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_run_store -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agent_tools -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_orchestrator -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agent_harness -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/wave_07 -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s integration/phase25-wave7 -p 'test_*.py' -v
+	git diff --check
+
 verify-wave-06:
 	# Wave-6 is intentionally focused; projection lanes own their package suites.
 	$(WAVE06_ENV) $(WAVE06_PYTHON) -m unittest discover -s tests/capability_mcp_projection -v

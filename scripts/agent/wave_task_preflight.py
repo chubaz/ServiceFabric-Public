@@ -26,10 +26,10 @@ def inspect(task_id: str, wave_id: str = "wave-1") -> dict[str, object]:
     if not clean_tree():
         diagnostics.append({"severity": "error", "code": "dirty_tree", "message": "working tree must be clean before task work"})
 
-    for path in t["required_context_files"]:
+    for path in t.get("required_context_files", ["AGENTS.md"]):
         if not safe_path(path).exists():
             diagnostics.append({"severity": "error", "code": "missing_context", "message": path})
-    for path in t["allowed_paths"] + t["forbidden_paths"]:
+    for path in t["allowed_paths"] + t.get("forbidden_paths", []):
         safe_path(path)
 
     return {

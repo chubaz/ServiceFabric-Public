@@ -1,0 +1,1 @@
+{"task_id":"context","branch":"agent/w7-context","handoff_path":"docs/handoffs/wave-07/context.md","allowed_paths":["packages/servicefabric_agentic_context","tests/agentic_context","docs/handoffs/wave-07/context.md"],"required_tests":["python3 -m unittest discover -s tests/agentic_context -v"]}

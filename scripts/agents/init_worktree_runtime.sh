@@ -48,6 +48,7 @@ if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
         "packages/servicefabric_artifacts"
         "packages/servicefabric_blueprints"
         "packages/servicefabric_capability_authoring"
+        "packages/servicefabric_capability_consumers"
         "packages/servicefabric_capability_runtime"
         "packages/servicefabric_capability_invocation"
         "packages/servicefabric_capability_model"
@@ -75,6 +76,23 @@ if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
     for package in "${LOCAL_COMPOSITION_PACKAGES[@]}"; do
         "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$WORKTREE/$package"
     done
+
+    if [[ "$WAVE_ID" == "wave-07" ]]; then
+        WAVE07_LOCAL_PACKAGES=(
+            "packages/servicefabric_agentic_contracts"
+            "packages/servicefabric_agentic_context"
+            "packages/servicefabric_agentic_planner"
+            "packages/servicefabric_agentic_run_store"
+            "packages/servicefabric_agent_tools"
+            "packages/servicefabric_agentic_orchestrator"
+            "packages/servicefabric_agent_harness"
+        )
+        for package in "${WAVE07_LOCAL_PACKAGES[@]}"; do
+            if [[ -f "$WORKTREE/$package/pyproject.toml" ]]; then
+                "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$WORKTREE/$package"
+            fi
+        done
+    fi
 fi
 
 cat > "$WORKTREE/.agent-runtime.env" <<EOF

@@ -1,0 +1,1 @@
+{"task_id":"agent-tools","branch":"agent/w7-agent-tools","handoff_path":"docs/handoffs/wave-07/agent-tools.md","allowed_paths":["packages/servicefabric_agent_tools","tests/agent_tools","docs/handoffs/wave-07/agent-tools.md"],"required_tests":["python3 -m unittest discover -s tests/agent_tools -v"]}

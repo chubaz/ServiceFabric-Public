@@ -526,6 +526,25 @@ def parser() -> ServiceFabricArgumentParser:
     operation.add_argument("operation_id")
     operation.add_argument("--expected-version", type=int, required=True)
     operation.add_argument("--reason", required=True)
+
+    agents = commands.add_parser("agents", help="plan and record provider-neutral coding-agent runs")
+    agent_actions = agents.add_subparsers(dest="agents_action", required=True)
+    agent_plan = agent_actions.add_parser("plan", help="compile an intent JSON file")
+    agent_plan.add_argument("--intent", required=True, metavar="FILE")
+    agent_plan.add_argument("--maximum-parallel-tasks", type=int, default=1)
+    agent_prepare = agent_actions.add_parser("prepare", help="allocate safe task worktrees and runtime metadata")
+    agent_prepare.add_argument("run_id")
+    agent_prepare.add_argument("--repository", required=True, metavar="PATH")
+    for name in ("ready", "status", "verify", "handoff"):
+        item = agent_actions.add_parser(name)
+        item.add_argument("run_id")
+    agent_render = agent_actions.add_parser("render", help="export task packs without launching a provider")
+    agent_render.add_argument("run_id")
+    agent_render.add_argument("--harness", required=True, choices=("codex",))
+    agent_result = agent_actions.add_parser("record-result", help="validate and persist one task result")
+    agent_result.add_argument("run_id")
+    agent_result.add_argument("task_id")
+    agent_result.add_argument("--result", required=True, metavar="FILE")
     return root
 
 
@@ -600,6 +619,10 @@ def _serve_capability_rest_gateway(
 def dispatch(argv: list[str]) -> tuple[int, str, object]:
     selected, json_mode, _debug, verbose, workspace_path_val = _extract_global_options(argv)
     args = parser().parse_args(selected)
+
+    if args.command == "agents":
+        from .agentic import dispatch_agents
+        return dispatch_agents(args)
 
     context = resolve_workspace_for_cli(workspace_path_val)
     workspace_service = WorkspaceService(context)
