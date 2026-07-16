@@ -6,20 +6,11 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from servicefabric_capability_registry import CapabilityRecord
-
-
-class CapabilityRegistryView(Protocol):
-    """The static registry operation consumed by the projection."""
-
-    def list_capabilities(self, application_id: str | None = None) -> tuple[CapabilityRecord, ...]:
-        """Return explicitly registered capabilities for an application."""
-
-
 class RuntimeAvailability(Protocol):
     """The bounded availability fields exposed by the capability runtime."""
 
     capability_id: str
+    application_id: str
     available: bool
     reason: object
 
@@ -27,8 +18,8 @@ class RuntimeAvailability(Protocol):
 class CapabilityRuntime(Protocol):
     """The Wave-5 runtime surface consumed by the MCP projection."""
 
-    def availability(self, capability_id: str) -> RuntimeAvailability:
-        """Return current availability for a registered capability."""
+    def availability_for_application(self, application_id: str) -> tuple[RuntimeAvailability, ...]:
+        """Discover registered capabilities with their current availability."""
 
     def invoke(self, capability_id: str, input_value: Any) -> dict[str, Any]:
         """Invoke through the canonical capability runtime."""
@@ -48,10 +39,6 @@ class CapabilityMcpCandidate:
     unavailable_reason: str | None
 
 
-class CapabilityMcpToolNotFoundError(LookupError):
-    """Raised when an MCP name is not registered for the projected application."""
-
-
 class CapabilityMcpProjection:
     """Expose one application's registered capabilities as MCP candidates.
 
@@ -62,11 +49,9 @@ class CapabilityMcpProjection:
 
     def __init__(
         self,
-        registry: CapabilityRegistryView,
         runtime: CapabilityRuntime,
         application_id: str,
     ) -> None:
-        self._registry = registry
         self._runtime = runtime
         self._application_id = application_id
 
@@ -74,18 +59,16 @@ class CapabilityMcpProjection:
         """Return stable, availability-aware candidates in capability-ID order."""
 
         candidates = []
-        for record in self._registry.list_capabilities(self._application_id):
-            definition = record.definition
-            capability_id = definition.metadata.id
-            availability = self._runtime.availability(capability_id)
+        for availability in self._runtime.availability_for_application(self._application_id):
+            capability_id = availability.capability_id
             reason = None if availability.available else _reason_value(availability.reason)
             candidates.append(
                 CapabilityMcpCandidate(
                     name=capability_id,
                     capability_id=capability_id,
                     application_id=self._application_id,
-                    title=definition.metadata.title,
-                    description=definition.spec.objective,
+                    title=capability_id,
+                    description=f"Registered ServiceFabric capability {capability_id}.",
                     input_schema={"type": "object", "additionalProperties": True},
                     available=availability.available,
                     unavailable_reason=reason,
@@ -94,17 +77,9 @@ class CapabilityMcpProjection:
         return tuple(sorted(candidates, key=lambda candidate: candidate.capability_id))
 
     def invoke(self, name: str, arguments: Mapping[str, Any]) -> dict[str, Any]:
-        """Delegate an explicitly projected MCP call to the canonical runtime."""
+        """Delegate an MCP call unchanged to the canonical runtime."""
 
-        capability_ids = {
-            record.definition.metadata.id
-            for record in self._registry.list_capabilities(self._application_id)
-        }
-        if name not in capability_ids:
-            raise CapabilityMcpToolNotFoundError(
-                f"MCP capability '{name}' is not registered for application '{self._application_id}'"
-            )
-        return self._runtime.invoke(name, dict(arguments))
+        return self._runtime.invoke(name, arguments)
 
 
 def _reason_value(reason: object) -> str:

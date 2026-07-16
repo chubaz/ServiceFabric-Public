@@ -3,11 +3,9 @@
 from .projection import (
     CapabilityMcpCandidate,
     CapabilityMcpProjection,
-    CapabilityMcpToolNotFoundError,
 )
 
 __all__ = [
     "CapabilityMcpCandidate",
     "CapabilityMcpProjection",
-    "CapabilityMcpToolNotFoundError",
 ]
