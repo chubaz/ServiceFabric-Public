@@ -23,6 +23,7 @@ from servicefabric_client.capability_consumer import (
     CapabilityInvocation,
 )
 from servicefabric_client.capability_projections import CapabilityProjectionComposition
+from servicefabric_client.main import CliUsageError, _serve_capability_rest_gateway, parser
 
 
 class Wave06IntegrationCompositionTests(unittest.TestCase):
@@ -69,6 +70,19 @@ class Wave06IntegrationCompositionTests(unittest.TestCase):
         self.assertIs(self.composition.rest_gateway._consumer, self.composition.facade)
         self.assertEqual(result["capabilityId"], "notes.create")
         self.facade.invoke_capability.assert_called_once_with("notes.create", {"title": "One"})
+        parsed = parser().parse_args(
+            ["capabilities", "serve", "--host", "127.0.0.1", "--port", "8765"]
+        )
+        self.assertEqual((parsed.host, parsed.port), ("127.0.0.1", 8765))
+        waiter = Mock()
+        with self.assertRaisesRegex(CliUsageError, "127.0.0.1"):
+            _serve_capability_rest_gateway(
+                self.composition.rest_gateway,
+                "0.0.0.0",
+                8765,
+                wait=waiter,
+            )
+        waiter.assert_not_called()
 
     def test_python_and_agent_exports_delegate_through_same_facade(self) -> None:
         availability = CapabilityAvailability(
