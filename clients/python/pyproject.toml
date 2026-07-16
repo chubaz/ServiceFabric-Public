@@ -16,6 +16,7 @@ dependencies = [
   "servicefabric-artifacts==0.1.0a1",
   "servicefabric-builder==0.1.0a1",
   "servicefabric-capsule-host==0.1.0a1",
+  "servicefabric-capability-consumers==0.1.0a1",
   "servicefabric-capability-model==0.1.0a1",
   "servicefabric-capability-registry==0.1.0a1",
   "servicefabric-contracts==0.4.0a1",
