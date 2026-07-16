@@ -1,7 +1,7 @@
 # Wave-7 task handoff
 
-- Task: `evaluation`
-- Commit: `test(wave-07): align evaluation with accepted harness task pack`
-- Validation: after `source .agent-runtime.env`, `python3 -m unittest discover -s tests/wave_07 -v` — 3 tests passed
-- Blockers: None. The corrected evaluation accepts the three-field `prepare_task` payload and pins the rendered prompt fixture without touching shared contracts or harness code.
+- Task: `evaluation` — one black-box journey covering intent loading, complete context inventory, deterministic concurrent planning, safe worktrees and task packs, prompt-only Codex rendering, dependency success and failure behavior, durable evidence and resume, deterministic handoff, and Wave-6 facade capability discovery.
+- Commit: `test(wave-07): prove complete black-box journey`.
+- Validation: `make verify-wave-07` and `make verify-current` passed.
+- Blockers: None. The acceptance journey changes only evaluation-owned tests, fixtures, and this handoff; model execution remains outside the harness.
 - Rollback: `git revert HEAD`

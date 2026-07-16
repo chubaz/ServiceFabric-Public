@@ -1,0 +1,46 @@
+{
+  "run_id": "run-wave7-journey",
+  "status": "failed",
+  "task_results": [
+    {
+      "task_id": "foundation",
+      "status": "success",
+      "changed_paths": [
+        "docs/plan.md"
+      ],
+      "commit_sha": null,
+      "evidence": [
+        {
+          "command": "python3 verify_task.py",
+          "exit_code": 0,
+          "summary": "verification passed",
+          "artifact_ref": null
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "task_id": "risk-review",
+      "status": "failed",
+      "changed_paths": [],
+      "commit_sha": null,
+      "evidence": [],
+      "blockers": [
+        "capability review failed"
+      ]
+    },
+    {
+      "task_id": "implement",
+      "status": "success",
+      "changed_paths": [
+        "src/application.py"
+      ],
+      "commit_sha": null,
+      "evidence": [],
+      "blockers": []
+    }
+  ],
+  "unresolved_blockers": [
+    "capability review failed"
+  ]
+}

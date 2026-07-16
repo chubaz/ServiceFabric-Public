@@ -1,0 +1,14 @@
+{
+  "application_id": "research-notes",
+  "constraints": [
+    "Do not execute a model provider"
+  ],
+  "intent_id": "wave7-journey",
+  "mode": "modify",
+  "objective": "Plan, prepare, verify and hand off a bounded application change",
+  "requested_capabilities": [
+    "notes.create",
+    "notes.get",
+    "notes.search"
+  ]
+}
