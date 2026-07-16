@@ -165,6 +165,55 @@ class WaveOperationalScriptTests(unittest.TestCase):
             )
             self.assertEqual(imported.returncode, 0, imported.stdout + imported.stderr)
 
+    def test_fresh_wave_07_runtime_imports_all_local_packages(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            worktree = Path(tmp) / "worktree"
+            state = Path(tmp) / "state"
+            shutil.copytree(
+                ROOT,
+                worktree,
+                ignore=shutil.ignore_patterns(
+                    ".git",
+                    ".agent",
+                    ".agent-runs",
+                    ".venv",
+                    "__pycache__",
+                ),
+            )
+            initialized = run(
+                [
+                    "scripts/agents/init_worktree_runtime.sh",
+                    "integration",
+                    str(worktree),
+                    str(state),
+                    "wave-07",
+                ],
+                worktree,
+            )
+            self.assertEqual(
+                initialized.returncode,
+                0,
+                initialized.stdout + initialized.stderr,
+            )
+            runtime_python = state / "wave-07" / "integration" / ".venv" / "bin" / "python"
+            imported = run(
+                [
+                    str(runtime_python),
+                    "-c",
+                    (
+                        "import servicefabric_agentic_contracts; "
+                        "import servicefabric_agentic_context; "
+                        "import servicefabric_agentic_planner; "
+                        "import servicefabric_agentic_run_store; "
+                        "import servicefabric_agent_tools; "
+                        "import servicefabric_agentic_orchestrator; "
+                        "import servicefabric_agent_harness"
+                    ),
+                ],
+                worktree,
+            )
+            self.assertEqual(imported.returncode, 0, imported.stdout + imported.stderr)
+
     def test_runtime_initializer_accepts_four_positional_arguments_for_both_waves(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
