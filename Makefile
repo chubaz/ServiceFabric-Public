@@ -207,11 +207,12 @@ verify-wave-07:
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_orchestrator -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agent_harness -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/wave_07 -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s integration/phase25-wave7 -p 'test_*.py' -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest tests.capability_consumers.test_consumers -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest tests.agent.test_wave_harness -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) scripts/dependencies/check_python_locks.py
 	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE07_PYTHON)):$(PATH)" $(WAVE07_PYTHON) -m pip check
-	$(WAVE07_ENV) $(WAVE07_PYTHON) -m compileall packages/servicefabric_agentic_contracts packages/servicefabric_agentic_context packages/servicefabric_agentic_planner packages/servicefabric_agentic_run_store packages/servicefabric_agent_tools packages/servicefabric_agentic_orchestrator packages/servicefabric_agent_harness clients/python/servicefabric_client/agentic.py tests/agentic_contracts tests/agentic_context tests/agentic_planner tests/agentic_run_store tests/agent_tools tests/agentic_orchestrator tests/agent_harness tests/wave_07
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m compileall packages/servicefabric_agentic_contracts packages/servicefabric_agentic_context packages/servicefabric_agentic_planner packages/servicefabric_agentic_run_store packages/servicefabric_agent_tools packages/servicefabric_agentic_orchestrator packages/servicefabric_agent_harness clients/python/servicefabric_client/agentic.py integration/phase25-wave7 tests/agentic_contracts tests/agentic_context tests/agentic_planner tests/agentic_run_store tests/agent_tools tests/agentic_orchestrator tests/agent_harness tests/wave_07
 	git diff --check
 
 verify-wave-06:
