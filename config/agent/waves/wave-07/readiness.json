@@ -73,7 +73,7 @@
       "focused_verification": "passed",
       "integration_decision": "returned",
       "final_state": "returned",
-      "reason": "Evaluation expects the pre-candidate harness prepare_task result and must accept the rendered prompt field from the integrated harness."
+      "reason": "Evaluation enforces the obsolete task, instructions, prompt shape. Future evaluation prompts must require exactly task_id, repository, prompt: task_id identifies the task, repository identifies execution scope, and prompt contains the rendered instructions. The accepted harness must not change."
     },
     "integration": "active"
   }

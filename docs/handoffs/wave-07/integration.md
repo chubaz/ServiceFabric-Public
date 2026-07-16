@@ -23,7 +23,7 @@ No accepted candidate changed `packages/servicefabric_agentic_contracts` or anot
 
 ### Returned
 
-- Evaluation candidate `c4abcd8ed0de4b3c39e1a9b623f915196fedbfec` is path-owned and freeze-clean, and its three focused tests pass on its original branch. It was returned unmerged because its journey asserts the obsolete two-field `CodexPromptHarness.prepare_task` result. The accepted harness now includes the rendered `prompt` in that task pack. The corrected evaluation must assert or otherwise accept that prompt field and pass against the integrated candidates.
+- Evaluation candidate `c4abcd8ed0de4b3c39e1a9b623f915196fedbfec` is path-owned and freeze-clean, and its three focused tests pass on its original branch. It was returned unmerged because its journey enforces the obsolete `task`, `instructions`, and `prompt` shape. The accepted and integrated `CodexPromptHarness.prepare_task` result has exactly `task_id`, `repository`, and `prompt`: `task_id` identifies the task, `repository` identifies execution scope, and `prompt` contains the rendered instructions. The corrected evaluation must assert this authoritative shape and pass against the integrated candidates; the harness implementation must not change.
 
 ### Direct dependency checks
 
@@ -32,4 +32,4 @@ No accepted candidate changed `packages/servicefabric_agentic_contracts` or anot
 
 ### Next action
 
-Review a corrected evaluation candidate when ready. Do not perform completion integration yet.
+Review a corrected evaluation candidate whose prompt requires exactly `task_id`, `repository`, and `prompt`. Do not request `task` or `instructions`, do not change the accepted harness, and do not perform completion integration yet.

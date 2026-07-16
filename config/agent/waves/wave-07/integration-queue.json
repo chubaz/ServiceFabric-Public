@@ -20,5 +20,5 @@
     "evaluation": "returned",
     "integration": "active"
   },
-  "next_action": "Await and review a corrected evaluation candidate based on the accepted harness task-pack shape; do not perform completion integration."
+  "next_action": "Await and review a corrected evaluation candidate whose prompt requires exactly task_id, repository, prompt; do not request task or instructions, change the accepted harness, or perform completion integration."
 }
