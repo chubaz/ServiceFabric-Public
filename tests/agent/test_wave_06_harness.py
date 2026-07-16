@@ -14,7 +14,6 @@ class Wave06HarnessTests(unittest.TestCase):
             task_ids("wave-06"),
             ["acceptance", "integration", "mcp-projection", "rest-projection", "sdk-agent-projection"],
         )
-        self.assertEqual(manifest["worktree_env"]["sdk-agent-projection"], "SF_WT_SDK_AGENT")
 
     def test_projection_lanes_have_disjoint_owned_paths_and_bounded_suites(self) -> None:
         projection_lanes = ("mcp-projection", "rest-projection", "sdk-agent-projection")

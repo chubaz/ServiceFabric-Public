@@ -17,7 +17,7 @@
     "integration": "SF_WT_INTEGRATION",
     "mcp-projection": "SF_WT_MCP_PROJECTION",
     "rest-projection": "SF_WT_REST_PROJECTION",
-    "sdk-agent-projection": "SF_WT_SDK_AGENT",
+    "sdk-agent-projection": "SF_WT_SDK_AGENT_PROJECTION",
     "acceptance": "SF_WT_ACCEPTANCE"
   },
   "frozen_contracts": [
