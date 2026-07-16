@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+FIXTURES_ROOT = REPOSITORY_ROOT / "tests" / "fixtures" / "wave_07"
 SOURCE_ROOTS = (
     "packages/servicefabric_contracts/src",
     "packages/servicefabric_agentic_contracts/src",
@@ -37,6 +38,9 @@ from servicefabric_agentic_run_store import FileRunStore
 
 
 class FrameworkJourneyTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.expected_prompt = (FIXTURES_ROOT / "codex_prompt.txt").read_text(encoding="utf-8")
+
     def test_intent_to_durable_evidenced_handoff(self) -> None:
         with tempfile.TemporaryDirectory() as repository, tempfile.TemporaryDirectory() as state:
             root = Path(repository)
@@ -64,13 +68,26 @@ class FrameworkJourneyTests(unittest.TestCase):
 
             task = plan.tasks[0]
             harness = CodexPromptHarness()
-            self.assertEqual(
-                harness.prepare_task(task, root),
-                {"task_id": task.task_id, "repository": str(root.resolve())},
-            )
+            prepared = harness.prepare_task(task, root)
+            self.assertEqual(set(prepared), {"task_id", "repository", "prompt"})
+            self.assertEqual(prepared["task_id"], task.task_id)
+            self.assertEqual(prepared["repository"], str(root.resolve()))
+            self.assertEqual(prepared["prompt"], harness.render_task(task))
+            self.assertEqual(prepared["prompt"], self.expected_prompt)
+            self.assertLessEqual(len(prepared["prompt"].splitlines()), 12)
             prompt = harness.render_task(task)
             self.assertEqual(prompt, harness.render_task(task))
+            self.assertEqual(prompt, self.expected_prompt)
             self.assertIn("Objective: Create an application", prompt)
+            self.assertIn("Task: journey", prompt)
+            self.assertIn("Role: implementation", prompt)
+            self.assertIn("Dependencies: (none)", prompt)
+            self.assertIn("Allowed paths: .", prompt)
+            self.assertIn("Forbidden paths: (none)", prompt)
+            self.assertIn("Required context: AGENTS.md", prompt)
+            self.assertIn("Expected outputs: implementation", prompt)
+            self.assertIn("Verification: (none)", prompt)
+            self.assertTrue(prompt.endswith("\n"))
             self.assertEqual(harness.launch_task(task), "prepared:journey")
 
             tools = BoundedAgentTools(root)
