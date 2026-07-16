@@ -4,25 +4,12 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Protocol
 
-class RuntimeAvailability(Protocol):
-    """The bounded availability fields exposed by the capability runtime."""
-
-    capability_id: str
-    application_id: str
-    available: bool
-    reason: object
-
-
-class CapabilityRuntime(Protocol):
-    """The Wave-5 runtime surface consumed by the MCP projection."""
-
-    def availability_for_application(self, application_id: str) -> tuple[RuntimeAvailability, ...]:
-        """Discover registered capabilities with their current availability."""
-
-    def invoke(self, capability_id: str, input_value: Any) -> dict[str, Any]:
-        """Invoke through the canonical capability runtime."""
+from servicefabric_client.capability_consumer import (
+    CapabilityAvailability,
+    CapabilityConsumerFacade,
+    CapabilityInvocation,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,45 +30,60 @@ class CapabilityMcpProjection:
     """Expose one application's registered capabilities as MCP candidates.
 
     The projection derives discovery data only. Calls are delegated to the
-    supplied ``CapabilityRuntimeService`` and never resolve an application
-    endpoint or duplicate canonical validation here.
+    integration-owned capability consumer facade and never resolve an
+    application endpoint or duplicate canonical validation here.
     """
 
     def __init__(
         self,
-        runtime: CapabilityRuntime,
+        consumer: CapabilityConsumerFacade,
         application_id: str,
     ) -> None:
-        self._runtime = runtime
+        self._consumer = consumer
         self._application_id = application_id
 
     def list_candidates(self) -> tuple[CapabilityMcpCandidate, ...]:
         """Return stable, availability-aware candidates in capability-ID order."""
 
-        candidates = []
-        for availability in self._runtime.availability_for_application(self._application_id):
-            capability_id = availability.capability_id
-            reason = None if availability.available else _reason_value(availability.reason)
-            candidates.append(
+        availability_by_id = {
+            availability.capability_id: availability
+            for availability in self._consumer.availability_for_application(self._application_id)
+        }
+        candidates_by_id = {}
+        for description in self._consumer.list_capabilities(self._application_id):
+            capability_id = description.capability_id
+            if capability_id in candidates_by_id:
+                raise ValueError(
+                    "capability consumer facade returned duplicate capability ID "
+                    f"'{capability_id}' for application '{self._application_id}'"
+                )
+            availability = availability_by_id.get(capability_id)
+            available = availability is not None and availability.available
+            reason = None if available else _unavailable_reason(availability)
+            candidates_by_id[capability_id] = (
                 CapabilityMcpCandidate(
                     name=capability_id,
                     capability_id=capability_id,
                     application_id=self._application_id,
-                    title=capability_id,
-                    description=f"Registered ServiceFabric capability {capability_id}.",
+                    title=description.title,
+                    description=description.objective,
                     input_schema={"type": "object", "additionalProperties": True},
-                    available=availability.available,
+                    available=available,
                     unavailable_reason=reason,
                 )
             )
-        return tuple(sorted(candidates, key=lambda candidate: candidate.capability_id))
+        return tuple(
+            candidate
+            for _, candidate in sorted(candidates_by_id.items())
+        )
 
-    def invoke(self, name: str, arguments: Mapping[str, Any]) -> dict[str, Any]:
-        """Delegate an MCP call unchanged to the canonical runtime."""
+    def invoke(self, name: str, arguments: Mapping[str, object]) -> CapabilityInvocation:
+        """Delegate an MCP call unchanged through the consumer facade."""
 
-        return self._runtime.invoke(name, arguments)
+        return self._consumer.invoke_capability(name, arguments)
 
 
-def _reason_value(reason: object) -> str:
-    value = getattr(reason, "value", reason)
-    return str(value)
+def _unavailable_reason(availability: CapabilityAvailability | None) -> str:
+    if availability is None:
+        return "availability_unknown"
+    return availability.reason
