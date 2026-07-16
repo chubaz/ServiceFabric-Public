@@ -198,6 +198,7 @@ WAVE07_PYTHONPATH := $(WAVE06_PYTHONPATH):$(CURDIR)/packages/servicefabric_agent
 WAVE07_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE07_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE07_PYTHONPATH)"
 
 verify-wave-07:
+	$(WAVE07_ENV) $(WAVE07_PYTHON) integration/phase25-wave7/verify_boundaries.py
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_contracts -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_context -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agentic_planner -v
