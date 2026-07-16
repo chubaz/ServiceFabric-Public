@@ -1,0 +1,12 @@
+{
+  "wave_id": "wave-06",
+  "overall": "WAVE COMPLETE",
+  "lanes": {
+    "mcp-projection": "integrated",
+    "rest-projection": "integrated",
+    "sdk-agent-projection": "integrated",
+    "acceptance": "integrated",
+    "integration": "complete"
+  },
+  "next_action": "Wave-6 is complete on integration/phase2-wave6; do not merge this branch into main as part of this closure."
+}

@@ -1,8 +1,20 @@
 from servicefabric_contracts import ApplicationBuildRequest
+from servicefabric_capability_consumers import (
+    CapabilityClient,
+    InternalAgentCapabilityAdapter,
+    InternalAgentCapabilityReference,
+)
 
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
+
+__all__ = [
+    "CapabilityClient",
+    "InternalAgentCapabilityAdapter",
+    "InternalAgentCapabilityReference",
+    "ServiceFabricClient",
+]
 
 
 class ServiceFabricClient:

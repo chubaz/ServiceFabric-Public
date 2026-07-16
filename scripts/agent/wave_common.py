@@ -14,6 +14,9 @@ def manifest_path(wave_id: str) -> str:
     modern = ROOT / "config" / "agents" / wave_id / "wave.yaml"
     if modern.is_file():
         return str(modern.relative_to(ROOT))
+    canonical = ROOT / WAVE_DIR / f"{wave_id}.json"
+    if canonical.is_file():
+        return str(canonical.relative_to(ROOT))
     legacy_id = wave_id
     if wave_id.startswith("wave-0") and wave_id[6:].isdigit():
         legacy_id = f"wave-{int(wave_id[5:])}"

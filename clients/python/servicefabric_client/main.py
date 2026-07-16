@@ -8,8 +8,10 @@ import json
 import os
 import shlex
 import sys
+from collections.abc import Callable
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from threading import Event
 from typing import Any
 from uuid import uuid4
 
@@ -47,6 +49,7 @@ from servicefabric_runtime import FilePortfolio, InvocationKernel
 from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
 from servicefabric_application_host import LocalApplicationHost
+from servicefabric_capability_rest_gateway import LoopbackCapabilityRestServer
 
 from servicefabric_workspace import (
     WorkspaceLayout,
@@ -71,6 +74,7 @@ from servicefabric_workspace import (
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
+from .capability_projections import CapabilityProjectionComposition
 from .wave3 import Wave3ApplicationService
 from .development import ResearchNotesDevelopmentService
 
@@ -232,6 +236,11 @@ class LocalRuntime:
                 artifact_store_root=context.layout.artifacts,
             )
         )
+        self.capability_projections = CapabilityProjectionComposition.for_workspace(context.layout)
+        self.capability_facade = self.capability_projections.facade
+        self.capability_client = self.capability_projections.capability_client
+        self.agent_capability_adapter = self.capability_projections.agent_adapter
+        self.capability_rest_gateway = self.capability_projections.rest_gateway
         candidate = ProjectionCandidate(
             canonical_tool_id="math.calculate",
             revision_ref="1.0.0",
@@ -469,6 +478,9 @@ def parser() -> ServiceFabricArgumentParser:
     capability_invoke = capability_actions.add_parser("invoke", help="invoke one available reviewed capability locally")
     capability_invoke.add_argument("capability_id", metavar="CAPABILITY_ID")
     capability_invoke.add_argument("--input", required=True, metavar="JSON")
+    capability_serve = capability_actions.add_parser("serve", help="serve registered capabilities on loopback")
+    capability_serve.add_argument("--host", required=True)
+    capability_serve.add_argument("--port", required=True, type=int, metavar="PORT")
 
     call = commands.add_parser("call", help="call a governed hosted application capability")
     call.add_argument("tool_id")
@@ -563,6 +575,26 @@ def require_development_workspace(context: WorkspaceContext) -> None:
             "A development workspace is required.\n"
             "Run: servicefabric workspace init PATH"
         )
+
+
+def _serve_capability_rest_gateway(
+    gateway: object,
+    host: str,
+    port: int,
+    *,
+    wait: Callable[[], object] | None = None,
+) -> str:
+    """Run the composed REST gateway until interrupted."""
+
+    if host != "127.0.0.1":
+        raise CliUsageError("capability REST gateway only supports --host 127.0.0.1")
+    with LoopbackCapabilityRestServer(gateway, host=host, port=port) as server:  # type: ignore[arg-type]
+        print(f"Capability REST gateway listening at {server.endpoint}", flush=True)
+        try:
+            (wait or Event().wait)()
+        except KeyboardInterrupt:
+            pass
+        return server.endpoint
 
 
 def dispatch(argv: list[str]) -> tuple[int, str, object]:
@@ -949,6 +981,18 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
         )
 
         require_development_workspace(context)
+        if args.action == "serve":
+            endpoint = _serve_capability_rest_gateway(
+                runtime.capability_rest_gateway,
+                args.host,
+                args.port,
+            )
+            return 0, "capabilities-serve", {
+                "endpoint": endpoint,
+                "host": args.host,
+                "port": args.port,
+                "json_mode": json_mode,
+            }
         if args.action == "validate":
             value = validate_generated_capabilities(context.layout, args.application_id)
             return 0, "capabilities-validate", {
@@ -1360,6 +1404,8 @@ def human_output(command: str, value: object) -> str:
     if command == "capabilities-invoke":
         invocation = data["invocation"]
         return f"{invocation['capability_id']}: invoked {invocation['operation_id']}\n"
+    if command == "capabilities-serve":
+        return f"Capability REST gateway stopped: {data['endpoint']}\n"
     if command == "artifacts-describe":
         artifact = data["artifact"]
         return f"Artifact {artifact['spec']['artifact_digest']}\n  Files: {len(artifact['spec']['files'])}\n"

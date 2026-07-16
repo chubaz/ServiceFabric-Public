@@ -1,0 +1,62 @@
+{
+  "wave_id": "wave-06",
+  "base_commit": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+  "contractsStatus": "frozen",
+  "lanes": {
+    "mcp-projection": {
+      "branch": "agent/w6-mcp-projection",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "d41d327066adaa7bf0be5c137247c842b6b3f6bd",
+      "accepted_commit": "d41d327066adaa7bf0be5c137247c842b6b3f6bd",
+      "integration_commit": "1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "rest-projection": {
+      "branch": "agent/w6-rest-projection",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "a5d2b5d014e26db3a7967615ece7b5bed0953ac2",
+      "accepted_commit": "a5d2b5d014e26db3a7967615ece7b5bed0953ac2",
+      "integration_commit": "10bc05d503a9a772c3a828a9b5833fe77fbd5ae2",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "sdk-agent-projection": {
+      "branch": "agent/w6-sdk-agent-projection",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "c62aa2bbe103f12c641d60cf818f5b2acaf8f172",
+      "accepted_commit": "c62aa2bbe103f12c641d60cf818f5b2acaf8f172",
+      "integration_commit": "a530cf7d4fac4347e2dd520c14311c8ccbfad86c",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "acceptance": {
+      "branch": "agent/w6-acceptance",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc",
+      "accepted_commit": "1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc",
+      "integration_commit": "f5b99900894489bf823850c7d808b14270ca1e9b",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    }
+  },
+  "integration": {
+    "state": "complete",
+    "branch": "integration/phase2-wave6",
+    "contracts_status": "frozen",
+    "candidate_review_status": "all projection and acceptance candidates integrated",
+    "wave_completion_status": "complete",
+    "final_verification_status": "passed",
+    "final_verified_head": "5566437051e05df68446b48fcee6391e3646a8bd",
+    "integration_commits": [
+      "206fd52ad1da61527bf72b4cb0a34e080d6a73df",
+      "a8f74d94b0d661baf10bddf87dd7c802322f5e7d",
+      "10fe12b62e90c801c391f08b69d61eace628c640",
+      "f5b99900894489bf823850c7d808b14270ca1e9b"
+    ]
+  }
+}

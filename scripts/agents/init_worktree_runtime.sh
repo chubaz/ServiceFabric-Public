@@ -34,7 +34,9 @@ fi
 
 if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
     CONTRACTS="$WORKTREE/packages/servicefabric_contracts"
+    GENERATED_APPLICATION_RUNTIME="$WORKTREE/5_core_services/fastapi_base/requirements/runtime.lock"
     "$VENV/bin/python" -m pip install --disable-pip-version-check --requirement "$CONTRACTS/requirements/test.lock"
+    "$VENV/bin/python" -m pip install --disable-pip-version-check --requirement "$GENERATED_APPLICATION_RUNTIME"
     "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"
 
     LOCAL_COMPOSITION_PACKAGES=(

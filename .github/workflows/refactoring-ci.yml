@@ -180,6 +180,9 @@ jobs:
       - name: Run AP-01A installed CLI acceptance
         run: python3 -m unittest discover -s tests/ap_01a -v
 
+      - name: Run Wave-6 projection gate
+        run: make WAVE06_PYTHON=python3 verify-wave-06
+
   python-production-builds:
     runs-on: ubuntu-latest
     steps:
