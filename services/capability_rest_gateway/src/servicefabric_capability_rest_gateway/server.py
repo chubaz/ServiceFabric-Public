@@ -11,12 +11,12 @@ from .gateway import CapabilityRestGateway
 
 
 _LOOPBACK_HOST = "127.0.0.1"
-_CAPABILITIES_PATH = "/v1/capabilities"
+_CAPABILITIES_PATH = "/capabilities"
 _MAX_BODY_BYTES = 65_536
 
 
 class LoopbackCapabilityRestServer:
-    """Serve the gateway on IPv4 loopback only."""
+    """Serve a consumer-facade projection on IPv4 loopback only."""
 
     def __init__(self, gateway: CapabilityRestGateway, *, host: str = _LOOPBACK_HOST, port: int = 0) -> None:
         if host != _LOOPBACK_HOST:
@@ -71,12 +71,9 @@ class LoopbackCapabilityRestServer:
                     if action is None:
                         return self._send(200, gateway.describe_capability(capability_id))
                     return self._send(404, {"error": "not found"})
-                except (LookupError, KeyError):
-                    return self._send(404, {"error": "capability not found"})
-                except (TypeError, ValueError):
-                    return self._send(400, {"error": "request could not be processed"})
-                except Exception:
-                    return self._send(500, {"error": "runtime request failed"})
+                except Exception as exc:
+                    status, payload = _facade_error(exc)
+                    return self._send(status, payload)
 
             def do_POST(self) -> None:
                 parsed = urlsplit(self.path)
@@ -94,12 +91,11 @@ class LoopbackCapabilityRestServer:
                     if not isinstance(payload, dict) or set(payload) != {"input"}:
                         return self._send(400, {"error": "request body must contain only input"})
                     return self._send(200, gateway.invoke(capability_id, payload["input"]))
-                except (json.JSONDecodeError, UnicodeDecodeError, TypeError, ValueError):
+                except (json.JSONDecodeError, UnicodeDecodeError):
                     return self._send(400, {"error": "request could not be processed"})
-                except (LookupError, KeyError):
-                    return self._send(404, {"error": "capability not found"})
-                except Exception:
-                    return self._send(500, {"error": "runtime request failed"})
+                except Exception as exc:
+                    status, response = _facade_error(exc)
+                    return self._send(status, response)
 
             @staticmethod
             def _capability_route(path: str) -> tuple[str, str | None]:
@@ -109,8 +105,8 @@ class LoopbackCapabilityRestServer:
                 remainder, action = path[len(prefix) :], None
                 if remainder.endswith("/availability"):
                     remainder, action = remainder[: -len("/availability")], "availability"
-                elif remainder.endswith(":invoke"):
-                    remainder, action = remainder[: -len(":invoke")], "invoke"
+                elif remainder.endswith("/invoke"):
+                    remainder, action = remainder[: -len("/invoke")], "invoke"
                 capability_id = unquote(remainder)
                 if not capability_id or "/" in capability_id:
                     raise LookupError(path)
@@ -128,3 +124,15 @@ class LoopbackCapabilityRestServer:
                 pass
 
         return Handler
+
+
+def _facade_error(error: Exception) -> tuple[int, dict[str, str]]:
+    """Project only documented facade failure categories to bounded responses."""
+
+    if isinstance(error, (LookupError, KeyError)) or type(error).__name__ == "CapabilityNotFoundError":
+        return 404, {"error": "capability not found"}
+    if isinstance(error, ValueError) or type(error).__name__ == "SchemaValidationError":
+        return 400, {"error": "request could not be processed"}
+    if type(error).__name__ == "CapabilityUnavailableError":
+        return 409, {"error": "capability unavailable"}
+    return 500, {"error": "capability request failed"}

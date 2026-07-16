@@ -1,10 +1,10 @@
-"""Loopback REST projection for the canonical capability runtime boundary."""
+"""Loopback REST projection for the integration capability consumer facade."""
 
-from .gateway import CapabilityRestGateway, CapabilityRuntimeBoundary
+from .gateway import CapabilityConsumerBoundary, CapabilityRestGateway
 from .server import LoopbackCapabilityRestServer
 
 __all__ = [
     "CapabilityRestGateway",
-    "CapabilityRuntimeBoundary",
+    "CapabilityConsumerBoundary",
     "LoopbackCapabilityRestServer",
 ]

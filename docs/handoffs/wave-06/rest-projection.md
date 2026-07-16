@@ -2,35 +2,36 @@
 
 Lane: `rest-projection`
 Branch: `agent/w6-rest-projection`
-Base commit: `9b40277fc648e1673a98d32f49ed2d444d632dd3`
+Base commit: `3c6cdca08f4989d6932c3abe19df6539df4b3e50`
 Candidate commits (apply in order):
 
 1. `3d966a0cfedc717a348a9c70ee7268a9486f9292` — initial gateway implementation
-2. `b493699` — source-layout correction required by the Wave-6 composition `PYTHONPATH`
+2. `b49369976bc0cfa89366581c72cdc91e770462da` — source-layout correction
+3. `fix(rest): delegate capability gateway through consumer facade` — returned-candidate correction
 
 ## Changed Paths
 
-- `services/capability_rest_gateway/servicefabric_capability_rest_gateway/`
+- `services/capability_rest_gateway/src/servicefabric_capability_rest_gateway/`
 - `tests/capability_rest_gateway/test_gateway.py`
 - `docs/handoffs/wave-06/rest-projection.md`
 
 ## Tests Executed
 
-- `python3 -m unittest discover -s tests/capability_rest_gateway -v` — passed, 3 tests. The managed sandbox denied loopback socket creation; the identical suite passed with Python 3.11.2 outside that socket restriction.
+- `python3 -m unittest discover -s tests/capability_rest_gateway -v` — passed, 3 focused tests, executed with loopback-socket permission because the managed sandbox blocks all socket creation.
 - `git diff --check` — passed.
 
 ## Contracts Consumed
 
-- The composed Wave-5 capability boundary's public `list_capabilities`, `describe_capability`, `availability`, and `invoke` operations.
-- Registered capability definitions and derived availability and invocation results are projected as JSON values without changing their owners or contracts.
+- Integration-owned `servicefabric_client.capability_consumer.CapabilityConsumerFacade`, injected through the local `CapabilityConsumerBoundary` protocol.
+- Only facade operations are consumed: `list_capabilities`, `describe_capability`, `capability_availability`, and `invoke_capability`.
 
 ## Decisions and Limitations
 
-- The server binds only to IPv4 `127.0.0.1`; other bind addresses are rejected before socket creation.
-- The package lives under `services/capability_rest_gateway/src/`, matching the declared Wave-6 source path used by integration and verification.
-- Routes are limited to discovery, description, availability, and invocation under `/v1/capabilities`.
-- Invocation accepts only a bounded JSON object containing exactly `input`; the projection delegates the value unchanged and contains no invocation or application-endpoint logic.
-- Authentication, remote binding, TLS, automatic route publication, and a production process launcher remain outside this specialist lane.
+- The REST service neither imports nor accesses `CapabilityRegistry`, and it neither imports nor constructs `CapabilityRuntimeService`.
+- The HTTP routes are exactly `GET /capabilities`, `GET /capabilities/{capability_id}`, `GET /capabilities/{capability_id}/availability`, and `POST /capabilities/{capability_id}/invoke`.
+- Result records are projected into deterministic JSON field names and sorted JSON encoding. Known facade failures are bounded to 400, 404, or 409; unexpected failures return 500.
+- The server binds only to literal IPv4 `127.0.0.1`. HTTP parsing and serving remain separate from canonical invocation, which is delegated unchanged through the facade.
+- Authentication, TLS, remote binding, automatic route publication, and a production process launcher remain outside this lane.
 
 ## Blockers
 
@@ -38,4 +39,4 @@ Candidate commits (apply in order):
 
 ## Rollback
 
-- Revert candidates `b493699` and `3d966a0cfedc717a348a9c70ee7268a9486f9292`, then the handoff-only commits.
+- Revert the correction commit above to restore the returned candidate.
