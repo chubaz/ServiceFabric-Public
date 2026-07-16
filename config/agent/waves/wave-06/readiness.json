@@ -33,14 +33,23 @@
       "integration_decision": "accepted",
       "final_state": "integrated"
     },
-    "acceptance": {"branch": "agent/w6-acceptance", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "blocked_pending_composition"}
+    "acceptance": {
+      "branch": "agent/w6-acceptance",
+      "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
+      "candidate_head": "1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc",
+      "accepted_commit": "1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc",
+      "integration_commit": "f5b99900894489bf823850c7d808b14270ca1e9b",
+      "focused_verification": "passed",
+      "integration_decision": "accepted: one Research Notes journey verifies MCP, REST, Python, and agent projections",
+      "final_state": "integrated"
+    }
   },
   "integration": {
-    "state": "awaiting_integration_composition",
+    "state": "verified_pending_completion",
     "branch": "integration/phase2-wave6",
     "contracts_status": "frozen",
-    "candidate_review_status": "corrected MCP and REST accepted; all three projection candidates integrated",
+    "candidate_review_status": "all projection and acceptance candidates integrated",
     "wave_completion_status": "pending",
-    "final_verification_status": "pending"
+    "final_verification_status": "passed"
   }
 }

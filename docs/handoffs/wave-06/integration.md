@@ -83,3 +83,15 @@ The already accepted Python and agent candidate remains integrated by `a530cf7d4
 ## Next Action #3
 
 All three projection candidates are integrated. Compose their integration-owned wiring before launching acceptance; acceptance remains blocked and was not launched.
+
+## Acceptance Candidate Review
+
+Acceptance candidate `1dc64cc9fb75edd32a7b8daf9fc89a1b195cecbc` changes only the Wave-6 acceptance journey and its canonical handoff. Its one focused test passed with the required loopback-socket permission: it verifies one Research Notes result through MCP, REST, the Python client, and the agent adapter; confirms availability becomes unavailable after stop without losing static definitions; and retains the AP-01A `math.calculate` MCP tool. It was merged by `f5b99900894489bf823850c7d808b14270ca1e9b`.
+
+The candidate emitted two subprocess-handle `ResourceWarning`s during teardown, but the referenced processes were no longer running after the test. Wave-6 is awaiting the agreed final verification gate and is not marked complete.
+
+## Final Verification
+
+`make verify-wave-06` passed after acceptance integration. The agreed minimal gate covered the three projection suites, the one Wave-6 acceptance journey, the direct Wave-5 invocation smoke, the existing MCP discovery smoke, dependency-lock verification, `pip check`, compilation of Wave-6 paths, and `git diff --check`.
+
+The acceptance and Wave-5 journeys emitted teardown-time `ResourceWarning`s for already-exited subprocess handles; no referenced process remained running. Wave-6 is verified pending a separate closure decision and is not marked complete.

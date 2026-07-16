@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-06",
-  "overall": "AWAITING INTEGRATION COMPOSITION",
+  "overall": "WAVE-6 VERIFIED; AWAITING CLOSURE",
   "lanes": {
     "mcp-projection": "accepted",
     "rest-projection": "accepted",
     "sdk-agent-projection": "accepted",
-    "acceptance": "blocked_pending_composition",
-    "integration": "awaiting_integration_composition"
+    "acceptance": "accepted",
+    "integration": "verified_pending_completion"
   },
-  "next_action": "Compose the accepted MCP, REST, and Python/agent projections through integration-owned wiring; do not launch acceptance until composition is available."
+  "next_action": "Prepare the separate Wave-6 closure decision; do not mark Wave-6 complete."
 }
