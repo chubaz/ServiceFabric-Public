@@ -36,3 +36,30 @@ Return corrected MCP and REST candidates, then review composition. Acceptance re
 ## Rollback
 
 Revert merge `a530cf7d4fac4347e2dd520c14311c8ccbfad86c` to remove the accepted Python and agent projection. No frozen contract changed.
+
+## Projection Candidate Review #2
+
+`contractsStatus: frozen` remains in force. Acceptance was neither launched nor reviewed.
+
+### MCP projection — returned
+
+Candidate head remains `cf08735ce1d07560d34130ce623d025756599215`; no corrected MCP candidate was supplied after the prior return. Its three focused tests pass, but the candidate still injects and calls `CapabilityRegistry` directly. That violates the projection boundary: consumers must delegate through the frozen `CapabilityRuntimeService` and do not own registry behavior. It was not merged.
+
+### REST projection — returned
+
+Candidate head: `c3690831e18eb9f3f27c9d5881cf68dfd9a43dfd`, including source-layout correction `b49369976bc0cfa89366581c72cdc91e770462da`. Its three focused loopback tests pass when run outside the managed sandbox's socket restriction, and the server continues to enforce literal `127.0.0.1` binding. The correction does not resolve the contract issue: the gateway requires `list_capabilities` and `describe_capability` on `CapabilityRuntimeService`, but those operations are absent from the frozen Wave-5 service. Adding them would change a frozen contract; using the registry directly would violate the same projection boundary. It was not merged.
+
+### Python and agent projection — accepted and integrated
+
+Candidate head `c62aa2bbe103f12c641d60cf818f5b2acaf8f172` remains integrated by `a530cf7d4fac4347e2dd520c14311c8ccbfad86c`. Its three focused tests pass on the integration branch. The facade and immutable internal-agent adapter use only the frozen runtime availability, application-scoped discovery, and invocation APIs; no registry, endpoint, or consumer-owned invocation logic is present.
+
+## Directly Dependent Verification #2
+
+- MCP focused suite: passed, 3 tests.
+- REST focused loopback suite: passed, 3 tests outside the managed sandbox socket restriction.
+- Python and agent focused suite: passed, 3 tests.
+- `git diff --check`: passed for the integration worktree and both unmerged candidate diffs.
+
+## Next Action #2
+
+Return a corrected MCP candidate that delegates all discovery through the frozen runtime boundary, and a REST candidate whose routes can be served solely by the frozen runtime API. Review composition only after all three projections are integrated. Acceptance remains blocked and was not launched.

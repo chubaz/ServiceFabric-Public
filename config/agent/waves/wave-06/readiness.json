@@ -8,15 +8,15 @@
       "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
       "candidate_head": "cf08735ce1d07560d34130ce623d025756599215",
       "focused_verification": "passed",
-      "integration_decision": "returned: candidate commits violate lane policy and projection consumes CapabilityRegistry directly",
+      "integration_decision": "returned on review #2: unchanged candidate consumes CapabilityRegistry directly instead of delegating through frozen CapabilityRuntimeService",
       "final_state": "returned"
     },
     "rest-projection": {
       "branch": "agent/w6-rest-projection",
       "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
-      "candidate_head": "1b847552921336c9b3d671d3bc91504dad01351a",
+      "candidate_head": "c3690831e18eb9f3f27c9d5881cf68dfd9a43dfd",
       "focused_verification": "passed",
-      "integration_decision": "returned: frozen CapabilityRuntimeService has no public discovery or description operations",
+      "integration_decision": "returned on review #2: source-layout correction does not resolve missing frozen runtime discovery and description operations",
       "final_state": "returned"
     },
     "sdk-agent-projection": {
@@ -35,7 +35,7 @@
     "state": "awaiting_returned_candidates",
     "branch": "integration/phase2-wave6",
     "contracts_status": "frozen",
-    "candidate_review_status": "MCP and REST returned; SDK/agent accepted and merged",
+    "candidate_review_status": "review #2: MCP and REST returned; SDK/agent remains accepted and merged",
     "wave_completion_status": "pending",
     "final_verification_status": "pending"
   }

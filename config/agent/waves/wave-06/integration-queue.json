@@ -8,5 +8,5 @@
     "acceptance": "blocked_pending_composition",
     "integration": "awaiting_returned_candidates"
   },
-  "next_action": "Return corrected MCP and REST candidates for review; do not launch acceptance until all three projections and integration composition are available."
+  "next_action": "Return a corrected MCP candidate that delegates discovery through the frozen runtime boundary and a REST candidate supported solely by frozen runtime APIs; do not launch acceptance until all three projections and integration composition are available."
 }
