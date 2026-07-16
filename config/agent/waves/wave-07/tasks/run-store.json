@@ -1,0 +1,1 @@
+{"task_id":"run-store","branch":"agent/w7-run-store","handoff_path":"docs/handoffs/wave-07/run-store.md","allowed_paths":["packages/servicefabric_agentic_run_store","tests/agentic_run_store","docs/handoffs/wave-07/run-store.md"],"required_tests":["python3 -m unittest discover -s tests/agentic_run_store -v"]}

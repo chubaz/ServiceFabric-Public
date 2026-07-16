@@ -1,0 +1,1 @@
+{"task_id":"planner","branch":"agent/w7-planner","handoff_path":"docs/handoffs/wave-07/planner.md","allowed_paths":["packages/servicefabric_agentic_planner","tests/agentic_planner","docs/handoffs/wave-07/planner.md"],"required_tests":["python3 -m unittest discover -s tests/agentic_planner -v"]}

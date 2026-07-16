@@ -46,7 +46,7 @@ def inspect(task_id: str, wave_id: str, test_log: Path, handoff: Path) -> dict[s
     for path in files:
         if not path_matches(path, t["allowed_paths"]):
             diagnostics.append({"severity": "error", "code": "path_not_allowed", "message": path})
-        if path_matches(path, t["forbidden_paths"]) or path_matches(path, w["frozen_contracts"]):
+        if path_matches(path, t.get("forbidden_paths", [])) or path_matches(path, w.get("frozen_contracts", [])):
             diagnostics.append({"severity": "error", "code": "frozen_or_forbidden_path", "message": path})
 
     if not handoff.exists():
@@ -63,7 +63,7 @@ def inspect(task_id: str, wave_id: str, test_log: Path, handoff: Path) -> dict[s
         except Exception as exc:
             diagnostics.append({"severity": "error", "code": "invalid_test_log", "message": str(exc)})
 
-    policy = t["candidate_commit_policy"]
+    policy = t.get("candidate_commit_policy", {"allow_merge_commits": False, "allowed_prefixes": ["feat(", "fix(", "test(", "docs(", "chore("]})
     prefixes = tuple(policy["allowed_prefixes"])
     for commit, subject in commits_since(diff_base):
         if subject.startswith("Merge ") and not policy["allow_merge_commits"]:

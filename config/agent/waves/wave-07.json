@@ -1,0 +1,11 @@
+{
+  "wave_id": "wave-07", "runtime_wave_id": "wave-07", "base_commit": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b", "integration_branch": "integration/phase25-wave7",
+  "task_manifest_dir": "config/agent/waves/wave-07/tasks", "canonical_handoff_dir": "docs/handoffs/wave-07", "handoff_template": "docs/handoffs/wave-07/task-handoff-template.md", "local_run_dir": ".agent-runs/wave-07",
+  "readiness_metadata": "config/agent/waves/wave-07/readiness.json", "integration_queue": "config/agent/waves/wave-07/integration-queue.json",
+  "lanes": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation", "integration"],
+  "specialist_lanes": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation"],
+  "integration_order": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation", "integration"],
+  "frozen_contracts": ["packages/servicefabric_agentic_contracts"],
+  "operational_policies": {"contracts_freeze_required_before_specialists": true, "automatic_merger": false, "runtime_state_isolated_per_worktree": true},
+  "verification_gates": ["make verify-wave-07", "make verify-current", "git diff --check"]
+}

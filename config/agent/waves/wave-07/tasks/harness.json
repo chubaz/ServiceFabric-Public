@@ -1,0 +1,1 @@
+{"task_id":"harness","branch":"agent/w7-harness","handoff_path":"docs/handoffs/wave-07/harness.md","allowed_paths":["packages/servicefabric_agent_harness","tests/agent_harness","docs/handoffs/wave-07/harness.md"],"required_tests":["python3 -m unittest discover -s tests/agent_harness -v"]}
