@@ -71,6 +71,7 @@ from servicefabric_workspace import (
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
+from .capability_projections import CapabilityProjectionComposition
 from .wave3 import Wave3ApplicationService
 from .development import ResearchNotesDevelopmentService
 
@@ -232,6 +233,11 @@ class LocalRuntime:
                 artifact_store_root=context.layout.artifacts,
             )
         )
+        self.capability_projections = CapabilityProjectionComposition.for_workspace(context.layout)
+        self.capability_facade = self.capability_projections.facade
+        self.capability_client = self.capability_projections.capability_client
+        self.agent_capability_adapter = self.capability_projections.agent_adapter
+        self.capability_rest_gateway = self.capability_projections.rest_gateway
         candidate = ProjectionCandidate(
             canonical_tool_id="math.calculate",
             revision_ref="1.0.0",
