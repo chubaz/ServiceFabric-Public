@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from servicefabric_agentic_contracts import AgentTask, AgentTaskResult, ApplicationIntent
 from servicefabric_client.agentic import AgenticApplicationService, PublicServiceAgentTools
+from servicefabric_client.main import dispatch
 
 
 class AgenticCompositionTests(unittest.TestCase):
@@ -137,6 +140,48 @@ class AgenticCompositionTests(unittest.TestCase):
             self.assertEqual(tools.invoke("applications.list", {}).status, "success")
             self.assertEqual(tools.invoke("capabilities.discover", {"application_id": "app"}).status, "success")
             self.assertEqual(tools.invoke("shell.execute", {"command": "true"}).status, "blocked")
+
+    def test_cli_exposes_the_resumable_agentic_workflow(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            repository = self._repository(root)
+            intent_path = repository / "intent.json"
+            intent_path.write_text(
+                json.dumps(
+                    {
+                        "intent_id": "cli",
+                        "mode": "create",
+                        "objective": "Compose through the CLI",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            result_path = repository / "result.json"
+            result_path.write_text(
+                json.dumps({"task_id": "cli", "status": "success"}),
+                encoding="utf-8",
+            )
+
+            previous = Path.cwd()
+            try:
+                os.chdir(repository)
+                with patch.dict(os.environ, {"SERVICEFABRIC_HOME": str(root / "state")}):
+                    code, _, plan = dispatch(("agents", "plan", "--intent", str(intent_path)))
+                    self.assertEqual(code, 0)
+                    run_id = plan["run_id"]
+                    self.assertEqual(run_id, "run-cli")
+                    self.assertEqual(dispatch(("agents", "ready", run_id))[2]["tasks"][0]["task_id"], "cli")
+                    prepared = dispatch(("agents", "prepare", run_id, "--repository", str(repository)))[2]
+                    self.assertEqual(prepared["tasks"][0]["task_id"], "cli")
+                    rendered = dispatch(("agents", "render", run_id, "--harness", "codex"))[2]
+                    self.assertEqual(set(rendered["tasks"][0]["task_pack"]), {"task_id", "repository", "prompt"})
+                    self.assertTrue(rendered["tasks"][0]["launch"]["command"].startswith("codex exec --cd "))
+                    self.assertEqual(dispatch(("agents", "status", run_id))[2]["handoff"]["status"], "pending")
+                    dispatch(("agents", "record-result", run_id, "cli", "--result", str(result_path)))
+                    self.assertTrue(dispatch(("agents", "verify", run_id))[2]["valid"])
+                    self.assertEqual(dispatch(("agents", "handoff", run_id))[2]["status"], "success")
+            finally:
+                os.chdir(previous)
 
 
 if __name__ == "__main__":

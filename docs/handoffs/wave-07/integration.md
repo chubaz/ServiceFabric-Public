@@ -1,14 +1,14 @@
 # Wave-7 integration handoff
 
-- Task: Freeze the Wave-7 contract seed and integration boundaries.
-- Commit: integration freeze candidate (this commit).
-- Validation: `make verify-wave-07`, `make verify-current`, and `git diff --check` passed; the integration gate enforces the frozen boundary record, seven pairwise-disjoint specialist path sets, and a one-command focused-test ceiling per specialist.
-- Blockers: none. `contractsStatus: frozen`; specialist-owned behavior remains untouched. Pi, LangGraph, and provider adapters remain deferred to Wave 8.
-- Rollback: revert the integration metadata and documentation commit; no persistent-data migration is involved.
+- Task: Compose the accepted Wave-7 framework through public APIs and expose the provider-neutral CLI workflow.
+- Commits: `72c3a2f` (`feat(integration): compose agentic application framework`) and this commit (`feat(cli): expose agentic application workflow`).
+- Validation: `make verify-wave-07`, `make verify-current`, and `git diff --check` passed. Four focused integration tests cover durable planning, safe resumable worktree preparation, bounded scheduling and verification, public-service agent tools, exact task-pack rendering, and all eight CLI commands.
+- Blockers: none. `contractsStatus: frozen`; accepted specialist implementations and contracts remain unchanged. Pi, LangGraph, external provider SDKs, and automatic Codex invocation remain deferred.
+- Rollback: revert the two composition commits. Existing task worktrees are never deleted automatically; no persistent-data migration is involved.
 
 ## Candidate review
 
-`contractsStatus: frozen` remains in force. This review does not perform Wave-7 completion integration or run the full-wave verification gates.
+`contractsStatus: frozen` remains in force. Candidate review and Wave-7 completion integration are complete.
 
 ### Accepted and integrated
 
@@ -34,4 +34,4 @@ No accepted candidate changed `packages/servicefabric_agentic_contracts` or anot
 
 ### Next action
 
-Run the Wave-7 completion integration gates and record final readiness. All specialist candidates are accepted and integrated.
+Wave 7 is complete. Provider adapters remain owned by Wave 8.

@@ -506,7 +506,7 @@ def dispatch_agents(args: object) -> tuple[int, str, object]:
     if command == "plan":
         raw = json.loads(Path(getattr(args, "intent")).read_text(encoding="utf-8"))
         intent = ApplicationIntent.model_validate(raw)
-        repository = Path(getattr(args, "repository", ".")).resolve()
+        repository = Path.cwd().resolve()
         plan = service.plan(
             intent,
             repository,

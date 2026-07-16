@@ -2,7 +2,7 @@
   "wave_id": "wave-07",
   "base_commit": "82e464c7e4a22aab5aa47d71f38e9f1796ea253b",
   "contractsStatus": "frozen",
-  "overall": "candidate-review-complete",
+  "overall": "complete",
   "lanes": {
     "context": {
       "branch": "agent/w7-context",
@@ -75,6 +75,13 @@
       "final_state": "integrated",
       "reason": "Corrected evaluation asserts exactly task_id, repository, prompt; pins the deterministic bounded rendered prompt; imports every required Wave-7 package; and changes evaluation-owned paths only."
     },
-    "integration": "active"
+    "integration": {
+      "state": "complete",
+      "branch": "integration/phase25-wave7",
+      "contracts_status": "frozen",
+      "candidate_review_status": "all specialist candidates integrated",
+      "wave_completion_status": "complete",
+      "final_verification_status": "passed"
+    }
   }
 }

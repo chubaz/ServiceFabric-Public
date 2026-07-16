@@ -531,14 +531,20 @@ def parser() -> ServiceFabricArgumentParser:
     agent_actions = agents.add_subparsers(dest="agents_action", required=True)
     agent_plan = agent_actions.add_parser("plan", help="compile an intent JSON file")
     agent_plan.add_argument("--intent", required=True, metavar="FILE")
-    agent_plan.add_argument("--repository", default=".", metavar="PATH")
     agent_plan.add_argument("--maximum-parallel-tasks", type=int, default=1)
-    agent_prepare = agent_actions.add_parser("prepare", help="prepare bounded task packs")
-    agent_prepare.add_argument("run_id"); agent_prepare.add_argument("--repository", required=True, metavar="PATH")
+    agent_prepare = agent_actions.add_parser("prepare", help="allocate safe task worktrees and runtime metadata")
+    agent_prepare.add_argument("run_id")
+    agent_prepare.add_argument("--repository", required=True, metavar="PATH")
     for name in ("ready", "status", "verify", "handoff"):
-        item = agent_actions.add_parser(name); item.add_argument("run_id"); item.add_argument("--repository", default=".", metavar="PATH")
-    agent_render = agent_actions.add_parser("render"); agent_render.add_argument("run_id"); agent_render.add_argument("--harness", required=True); agent_render.add_argument("--repository", default=".", metavar="PATH")
-    agent_result = agent_actions.add_parser("record-result"); agent_result.add_argument("run_id"); agent_result.add_argument("task_id"); agent_result.add_argument("--result", required=True, metavar="FILE"); agent_result.add_argument("--repository", default=".", metavar="PATH")
+        item = agent_actions.add_parser(name)
+        item.add_argument("run_id")
+    agent_render = agent_actions.add_parser("render", help="export task packs without launching a provider")
+    agent_render.add_argument("run_id")
+    agent_render.add_argument("--harness", required=True, choices=("codex",))
+    agent_result = agent_actions.add_parser("record-result", help="validate and persist one task result")
+    agent_result.add_argument("run_id")
+    agent_result.add_argument("task_id")
+    agent_result.add_argument("--result", required=True, metavar="FILE")
     return root
 
 
