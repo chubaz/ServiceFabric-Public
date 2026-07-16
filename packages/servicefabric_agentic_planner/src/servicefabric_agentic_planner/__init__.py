@@ -1,2 +1,5 @@
-from .planner import compile_plan
-__all__ = ["compile_plan"]
+"""Provider-neutral planning for agentic ServiceFabric runs."""
+
+from .planner import PlanValidationError, compile_plan
+
+__all__ = ["PlanValidationError", "compile_plan"]
