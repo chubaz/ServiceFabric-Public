@@ -63,3 +63,23 @@ Candidate head `c62aa2bbe103f12c641d60cf818f5b2acaf8f172` remains integrated by 
 ## Next Action #2
 
 Return a corrected MCP candidate that delegates all discovery through the frozen runtime boundary, and a REST candidate whose routes can be served solely by the frozen runtime API. Review composition only after all three projections are integrated. Acceptance remains blocked and was not launched.
+
+## Corrected Projection Candidate Review
+
+`contractsStatus: frozen` remains in force. Acceptance was not launched or reviewed.
+
+### MCP projection — accepted and integrated
+
+Candidate `d41d327066adaa7bf0be5c137247c842b6b3f6bd` changes only its owned package, focused tests, and canonical handoff relative to the current integration base. It consumes `CapabilityConsumerFacade` for static discovery, availability, and invocation; it neither accesses `CapabilityRegistry` nor constructs `CapabilityRuntimeService`. Its focused suite passed, 3 tests, and it was merged by `1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c`.
+
+### REST projection — accepted and integrated
+
+Candidate `a5d2b5d014e26db3a7967615ece7b5bed0953ac2` changes only its owned service, focused tests, and canonical handoff relative to the current integration base. All discovery, availability, and invocation actions delegate through the injected consumer-facade boundary; it contains no `CapabilityRegistry` access and does not construct `CapabilityRuntimeService`. Its focused loopback suite passed, 3 tests, outside the managed sandbox's socket restriction, and it was merged by `10bc05d503a9a772c3a828a9b5833fe77fbd5ae2`.
+
+### Python and agent projection — remains integrated
+
+The already accepted Python and agent candidate remains integrated by `a530cf7d4fac4347e2dd520c14311c8ccbfad86c`.
+
+## Next Action #3
+
+All three projection candidates are integrated. Compose their integration-owned wiring before launching acceptance; acceptance remains blocked and was not launched.

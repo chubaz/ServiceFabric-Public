@@ -1,12 +1,12 @@
 {
   "wave_id": "wave-06",
-  "overall": "AWAITING RETURNED PROJECTION CANDIDATES",
+  "overall": "AWAITING INTEGRATION COMPOSITION",
   "lanes": {
-    "mcp-projection": "returned",
-    "rest-projection": "returned",
+    "mcp-projection": "accepted",
+    "rest-projection": "accepted",
     "sdk-agent-projection": "accepted",
     "acceptance": "blocked_pending_composition",
-    "integration": "awaiting_returned_candidates"
+    "integration": "awaiting_integration_composition"
   },
-  "next_action": "Return a corrected MCP candidate that delegates discovery through the frozen runtime boundary and a REST candidate supported solely by frozen runtime APIs; do not launch acceptance until all three projections and integration composition are available."
+  "next_action": "Compose the accepted MCP, REST, and Python/agent projections through integration-owned wiring; do not launch acceptance until composition is available."
 }

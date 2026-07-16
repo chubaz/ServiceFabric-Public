@@ -6,18 +6,22 @@
     "mcp-projection": {
       "branch": "agent/w6-mcp-projection",
       "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
-      "candidate_head": "cf08735ce1d07560d34130ce623d025756599215",
+      "candidate_head": "d41d327066adaa7bf0be5c137247c842b6b3f6bd",
+      "accepted_commit": "d41d327066adaa7bf0be5c137247c842b6b3f6bd",
+      "integration_commit": "1d480c5cc0e636e6e78daffd1d2457dfa27f0d6c",
       "focused_verification": "passed",
-      "integration_decision": "returned on review #2: unchanged candidate consumes CapabilityRegistry directly instead of delegating through frozen CapabilityRuntimeService",
-      "final_state": "returned"
+      "integration_decision": "accepted on corrected-candidate review: delegates only through CapabilityConsumerFacade",
+      "final_state": "integrated"
     },
     "rest-projection": {
       "branch": "agent/w6-rest-projection",
       "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3",
-      "candidate_head": "c3690831e18eb9f3f27c9d5881cf68dfd9a43dfd",
+      "candidate_head": "a5d2b5d014e26db3a7967615ece7b5bed0953ac2",
+      "accepted_commit": "a5d2b5d014e26db3a7967615ece7b5bed0953ac2",
+      "integration_commit": "10bc05d503a9a772c3a828a9b5833fe77fbd5ae2",
       "focused_verification": "passed",
-      "integration_decision": "returned on review #2: source-layout correction does not resolve missing frozen runtime discovery and description operations",
-      "final_state": "returned"
+      "integration_decision": "accepted on corrected-candidate review: delegates only through CapabilityConsumerFacade",
+      "final_state": "integrated"
     },
     "sdk-agent-projection": {
       "branch": "agent/w6-sdk-agent-projection",
@@ -32,10 +36,10 @@
     "acceptance": {"branch": "agent/w6-acceptance", "original_base_sha": "9b40277fc648e1673a98d32f49ed2d444d632dd3", "final_state": "blocked_pending_composition"}
   },
   "integration": {
-    "state": "awaiting_returned_candidates",
+    "state": "awaiting_integration_composition",
     "branch": "integration/phase2-wave6",
     "contracts_status": "frozen",
-    "candidate_review_status": "review #2: MCP and REST returned; SDK/agent remains accepted and merged",
+    "candidate_review_status": "corrected MCP and REST accepted; all three projection candidates integrated",
     "wave_completion_status": "pending",
     "final_verification_status": "pending"
   }
