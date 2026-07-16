@@ -5,6 +5,16 @@
   "lanes": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation", "integration"],
   "specialist_lanes": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation"],
   "integration_order": ["context", "planner", "run-store", "agent-tools", "orchestrator", "harness", "evaluation", "integration"],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "context": "SF_WT_CONTEXT",
+    "planner": "SF_WT_PLANNER",
+    "run-store": "SF_WT_RUN_STORE",
+    "agent-tools": "SF_WT_AGENT_TOOLS",
+    "orchestrator": "SF_WT_ORCHESTRATOR",
+    "harness": "SF_WT_HARNESS",
+    "evaluation": "SF_WT_EVALUATION"
+  },
   "frozen_contracts": ["packages/servicefabric_agentic_contracts"],
   "operational_policies": {"contracts_freeze_required_before_specialists": true, "automatic_merger": false, "runtime_state_isolated_per_worktree": true},
   "verification_gates": ["make verify-wave-07", "make verify-current", "git diff --check"]
