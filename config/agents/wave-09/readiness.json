@@ -32,19 +32,19 @@
     },
     "blueprint-compiler": {
       "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
-      "candidate_head": "57bfdf43c5a178ac08a21f575b86b80684c67366",
-      "focused_verification": "not_run",
-      "integration_decision": "return",
-      "final_state": "returned",
-      "reason": "Allowed-path validation rejects exact duplicates only and must also reject parent/child path overlap before lanes can be accepted."
-    },
-    "repository-bootstrap": {
-      "original_base_sha": "f45f8cd9aa7bcbef982dd271d4a9df015702e24c",
-      "candidate_head": "511ea4319c62486e6c18d2a3ecaf8b2682ae1810",
+      "candidate_head": "ed33fbf88f15f30ace1bbd097c1cf73bb5220cb6",
       "focused_verification": "passed",
       "integration_decision": "return",
       "final_state": "returned",
-      "reason": "The focused suite passes only by injecting the package root into sys.path; the candidate lacks pyproject.toml and the src layout required by WAVE09_PYTHONPATH, so canonical composition cannot import it."
+      "reason": "The hierarchical ownership correction and focused suite pass, but ed33fbf is a delta on the superseded candidate and cannot be integrated alone; its handoff records the replacement only as HEAD rather than an immutable SHA."
+    },
+    "repository-bootstrap": {
+      "original_base_sha": "f45f8cd9aa7bcbef982dd271d4a9df015702e24c",
+      "candidate_head": "5f368ac96fd1c4cf933ef9ce66213f0dae888016",
+      "focused_verification": "passed",
+      "integration_decision": "return",
+      "final_state": "returned",
+      "reason": "Canonical packaging, imports, focused tests, and compileall pass, but 5f368ac is a rename/edit delta on superseded 2f705f5 and cannot be integrated alone; its handoff records the replacement only as HEAD rather than an immutable SHA."
     },
     "candidate-review": {"final_state": "pending"},
     "application-integration": {"final_state": "pending"},

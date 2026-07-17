@@ -21,5 +21,5 @@
     "evaluation": "pending",
     "integration": "active"
   },
-  "next_action": "Await corrected blueprint-compiler hierarchical path validation and a repository-bootstrap package using the canonical pyproject.toml plus src layout."
+  "next_action": "Request standalone replacement commits for blueprint-compiler and repository-bootstrap, based on an approved integration base, plus handoffs that name each immutable replacement SHA; do not integrate their superseded ancestors."
 }

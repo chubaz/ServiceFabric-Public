@@ -26,6 +26,12 @@
 - Returned `blueprint-compiler` candidate `a7235a2`: its lane validation detects only identical allowed paths, not parent/child overlaps. It must enforce hierarchical disjointness before focused verification and acceptance.
 - Returned `repository-bootstrap` candidate `2f705f561fe2796f2c98866de41bdd571aa95c93`: its three-test focused suite and diff check pass, and the implementation remains local-Git-only, but the candidate has no `pyproject.toml` or `src/` package layout. The test inserts the package root into `sys.path`, masking that canonical Wave-9 composition cannot import the package through its declared `.../src` path.
 
+### Corrected-candidate re-review
+
+- Returned blueprint correction `ed33fbf88f15f30ace1bbd097c1cf73bb5220cb6` despite its passing three-test focused suite. Normalized path-component comparison now rejects exact duplicates and ancestor/descendant overlap in either direction, preserves similar textual prefixes as disjoint, and prevents integration-owned paths from subsuming specialist paths. Only owned paths changed. However, the commit modifies files introduced by the superseded candidate and cannot be applied alone; its handoff names the replacement only as `HEAD`.
+- Returned repository-bootstrap correction `5f368ac96fd1c4cf933ef9ce66213f0dae888016` despite its passing three-test focused suite, canonical import, and package-source compileall. Its `pyproject.toml`, `src/` package, imports, minimal dependencies, local-Git-only behavior, and owned-path diff are correct. However, the commit renames and edits files introduced by superseded `2f705f5`, so applying only this exact SHA is impossible; its handoff also names the replacement only as `HEAD`.
+- Neither superseded candidate was accepted or integrated. Each lane must provide a standalone replacement commit from an approved base and a subsequent handoff that records that immutable replacement SHA.
+
 ## Rollback
 
 Revert this integration-only freeze record and boundary verifier; no provider, repository, or application state was changed.
