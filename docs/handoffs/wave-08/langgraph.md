@@ -3,39 +3,43 @@
 - Task: `langgraph`
 - Branch: `agent/w8-langgraph`
 - Base: `507027eced0bce38114d3db64a77e061017736cc`
-- Candidate: `7185397af48b32a780258ed27f1990b97adf2b52` (`feat(langgraph): add provider request plan compiler`)
+- Replacement candidate: `f007c34815719c38f10d88bdfc4b414d8e5ac839` (`fix(langgraph): delegate task readiness to Wave-7`)
+- Supersedes: `7185397af48b32a780258ed27f1990b97adf2b52`, returned for boundary review
 
 ## Scope
 
-Added `servicefabric_langgraph_orchestration`, a data-only compiler from shared
-`AgentRunPlan` and `ProviderPolicy` contracts to dependency-safe batches of
-shared `ProviderExecutionRequest` values. It validates missing dependencies and
-cycles, honours total and per-provider concurrency limits, and renders task
-constraints into canonical request prompts. It does not import provider-runtime
-internals, start processes, or call a provider.
+The LangGraph lane now reads authoritative task results from `FileRunStore`,
+validates them as `AgentTaskResult` values, and delegates readiness entirely to
+the public Wave-7 `ready_tasks` API. For each ready task only, it obtains the
+authoritative `{task_id, repository, prompt}` task pack from
+`CodexPromptHarness.prepare_task`, selects a provider through `ProviderPolicy`,
+and constructs a bounded `ProviderExecutionRequest`.
+
+No task prompt rendering, dependency traversal, task-state persistence,
+provider runtime import, subprocess handling, provider invocation, or provider
+SDK logic is present. Batching applies only the policy's per-provider limit to
+the already-ready request set.
 
 ## Validation
 
-- `/home/lorenzoccasoni/servicefabric-agent-state/wave-08/langgraph/.venv/bin/python -m unittest discover -s tests/langgraph_orchestration -v` — passed (3 tests)
+- `PATH=/home/lorenzoccasoni/servicefabric-agent-state/wave-08/langgraph/.venv/bin:$PATH python3 -m unittest discover -s tests/langgraph_orchestration -v` — passed (2 tests)
 - `git diff --check` — passed
+
+The focused tests prove canonical task-pack prompt propagation through the
+frozen `ProviderExecutionRequest` whitespace normalization, persisted
+completed/pending/running state handling via `ready_tasks`, no `FileRunStore`
+mutation, and provider-policy batching of ready tasks only.
 
 ## Contract changes
 
-None. The implementation consumes only the frozen shared agent and provider
-contract packages.
-
-## Deviations and blockers
-
-The manifest's bare `python3` resolves to a system interpreter without
-`pydantic`; the same focused command passed using this lane's provisioned
-virtual environment. No provider calls were made.
+None. Wave-7 and shared provider contracts remain unchanged.
 
 ## Rollback
 
-Revert `7185397af48b32a780258ed27f1990b97adf2b52` and the handoff commit. No
-external or persistent runtime state was created.
+Revert `f007c34815719c38f10d88bdfc4b414d8e5ac839` and the handoff update. No
+provider or persistent runtime state is created by this lane.
 
 ## Next action
 
-Integration can compose these request batches with the provider-runtime lane;
-execution remains owned by that runtime.
+Integration may compose the ready request batches with the provider-runtime
+lane; execution remains exclusively runtime-owned.
