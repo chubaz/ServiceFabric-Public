@@ -15,3 +15,17 @@
   control state.
 - Rollback: remove the Wave-8 integration bootstrap only; do not alter the
   frozen Wave-7 contracts or any specialist-owned path.
+
+## Candidate review
+
+| Lane | Candidate | Decision | Integration |
+| --- | --- | --- | --- |
+| provider-runtime | `bef2e16` | accepted; owns the sole subprocess and cancellation implementation | `3facb3f` |
+| pi | `b7162d6` | accepted; argv/event/result translation only | `65fac53` |
+| codex | `b7b40e6` | accepted; argv/event/result translation only | `0e26c86` |
+| claude | `e9aaeab` | accepted; argv/event/result translation only | `18321b7` |
+| gemini | `3dadd52`, `a5d2528` | accepted after its provider ID was corrected to `gemini` | `a26b7e5`, `a1a4b32` |
+| langgraph | `7185397` | returned; it renders provider-specific prompts and computes readiness locally instead of consuming the Wave-7 task pack and delegating to `ready_tasks` | not integrated |
+
+Focused tests passed for every reviewed candidate, including the returned
+LangGraph candidate. No provider call occurred. Evaluation remains deferred.

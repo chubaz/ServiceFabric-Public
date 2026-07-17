@@ -1,0 +1,25 @@
+{
+  "wave_id": "wave-08",
+  "overall": "INTEGRATION REQUIRED",
+  "contractsStatus": "frozen",
+  "dependency_order": [
+    "provider-runtime",
+    "pi",
+    "codex",
+    "claude",
+    "gemini",
+    "langgraph",
+    "evaluation"
+  ],
+  "lanes": {
+    "provider-runtime": "integrated",
+    "pi": "integrated",
+    "codex": "integrated",
+    "claude": "integrated",
+    "gemini": "integrated",
+    "langgraph": "returned",
+    "evaluation": "deferred",
+    "integration": "authority"
+  },
+  "next_action": "Return LangGraph to consume the Wave-7 task pack and delegate readiness to ready_tasks. Do not launch evaluation."
+}
