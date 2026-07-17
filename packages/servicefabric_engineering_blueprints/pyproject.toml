@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-engineering-blueprints"
+version = "0.9.0a1"
+description = "Deterministic compilation of reviewed application inputs into engineering lanes."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-agentic-contracts==0.1.0a1",
+  "servicefabric-agentic-planner==0.7.0a1",
+  "servicefabric-application-factory-contracts==0.9.0a1",
+  "servicefabric-blueprints==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
