@@ -1,0 +1,33 @@
+{
+  "wave_id": "wave-09",
+  "runtime_wave_id": "wave-09",
+  "base_commit": "37b61bb7ab8b2be5b8daac1344046fd144b04c17",
+  "integration_branch": "integration/phase25-wave9",
+  "status": "implementation-authorized",
+  "objective": "Build the Autonomous Application Factory on completed Wave-8 provider execution.",
+  "task_manifest_dir": "config/agents/wave-09/tasks",
+  "canonical_handoff_dir": "docs/handoffs/wave-09",
+  "handoff_template": "docs/handoffs/wave-09/task-handoff-template.md",
+  "local_run_dir": ".agent-runs/wave-09",
+  "shared_docs": "docs/workplans/parallel/wave-09/objective.md",
+  "readiness_metadata": "config/agents/wave-09/readiness.json",
+  "integration_queue": "config/agents/wave-09/integration-queue.json",
+  "lanes": ["technology-profile", "blueprint-compiler", "factory-lifecycle", "repository-bootstrap", "candidate-review", "application-integration", "evaluation", "integration"],
+  "specialist_lanes": ["technology-profile", "blueprint-compiler", "factory-lifecycle", "repository-bootstrap", "candidate-review", "application-integration", "evaluation"],
+  "integration_order": ["technology-profile", "blueprint-compiler", "factory-lifecycle", "repository-bootstrap", "candidate-review", "application-integration", "evaluation", "integration"],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "technology-profile": "SF_WT_TECH_PROFILE",
+    "blueprint-compiler": "SF_WT_BLUEPRINT_COMPILER",
+    "factory-lifecycle": "SF_WT_FACTORY_LIFECYCLE",
+    "repository-bootstrap": "SF_WT_REPOSITORY_BOOTSTRAP",
+    "candidate-review": "SF_WT_CANDIDATE_REVIEW",
+    "application-integration": "SF_WT_APPLICATION_INTEGRATION",
+    "evaluation": "SF_WT_EVALUATION"
+  },
+  "implementation_authorized": true,
+  "wave_08_foundation": "completed",
+  "frozen_contracts": ["packages/servicefabric_application_factory_contracts", "packages/servicefabric_agentic_contracts", "packages/servicefabric_agent_provider_contracts"],
+  "operational_policies": {"contracts_freeze_required_before_specialists": true, "candidate_commits_allowed": true, "automatic_merger": false, "specialists_may_merge_or_pull_feature_branches": false},
+  "verification_gates": ["make verify-wave-09", "make verify-current", "git diff --check"]
+}

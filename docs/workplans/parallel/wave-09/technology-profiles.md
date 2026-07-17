@@ -14,6 +14,4 @@ The selection accepts only primitive-compatible reviewed kits with the lifecycle
 
 `ApplicationIntent.constraints` and `requested_capabilities` are declarative selection inputs. They must not become provider arguments, environment values, model settings, credentials, or arbitrary request metadata.
 
-## Wave-8-dependent assumptions
-
-**Wave-8-dependent assumption:** provider eligibility and execution limits can be referenced through a completed and enforced `ProviderPolicy`. A profile must not infer that a reviewed kit authorizes provider invocation, resource provisioning, or a process runtime. Secret-free metadata and name-only environment entries remain mandatory at the provider boundary.
+`TechnologyProfile` references the completed Wave-8 `ProviderPolicy` only by role. It never installs dependencies, provisions resources, executes providers, or converts declarative intent constraints into provider arguments, environment values, models, credentials, or arbitrary metadata.

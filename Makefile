@@ -199,6 +199,9 @@ WAVE07_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $
 WAVE08_PYTHON ?= $(if $(VIRTUAL_ENV),$(VIRTUAL_ENV)/bin/python,$(WAVE07_PYTHON))
 WAVE08_PYTHONPATH := $(WAVE07_PYTHONPATH):$(CURDIR)/packages/servicefabric_agent_provider_contracts/src:$(CURDIR)/packages/servicefabric_agent_provider_runtime/src:$(CURDIR)/packages/servicefabric_langgraph_orchestration/src:$(CURDIR)/packages/servicefabric_pi_harness/src:$(CURDIR)/packages/servicefabric_codex_adapter/src:$(CURDIR)/packages/servicefabric_claude_code_adapter/src:$(CURDIR)/packages/servicefabric_gemini_cli_adapter/src:$(CURDIR)/clients/python
 WAVE08_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE08_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE08_PYTHONPATH)"
+WAVE09_PYTHON ?= $(WAVE08_PYTHON)
+WAVE09_PYTHONPATH := $(WAVE08_PYTHONPATH):$(CURDIR)/packages/servicefabric_application_factory_contracts/src:$(CURDIR)/packages/servicefabric_technology_profiles/src:$(CURDIR)/packages/servicefabric_engineering_blueprints/src:$(CURDIR)/packages/servicefabric_application_factory_state/src:$(CURDIR)/packages/servicefabric_application_factory_bootstrap/src:$(CURDIR)/packages/servicefabric_application_candidate_review/src:$(CURDIR)/packages/servicefabric_application_integration/src
+WAVE09_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE09_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE09_PYTHONPATH)"
 
 verify-wave-07:
 	$(WAVE07_ENV) $(WAVE07_PYTHON) integration/phase25-wave7/verify_boundaries.py
@@ -226,6 +229,24 @@ verify-wave-08:
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest tests.wave_07.test_framework_journey -v
 	$(WAVE08_ENV) $(WAVE08_PYTHON) scripts/dependencies/check_python_locks.py
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m compileall packages/servicefabric_agent_provider_contracts packages/servicefabric_agent_provider_runtime packages/servicefabric_langgraph_orchestration packages/servicefabric_pi_harness packages/servicefabric_codex_adapter packages/servicefabric_claude_code_adapter packages/servicefabric_gemini_cli_adapter clients/python/servicefabric_client/agent_providers.py clients/python/servicefabric_client/provider_execution.py integration/phase25-wave8 tests/agent_provider_contracts tests/wave_08
+	git diff --check
+
+verify-wave-09:
+	# Wave-9 is intentionally focused; do not recursively invoke earlier wave gates.
+	$(WAVE09_ENV) $(WAVE09_PYTHON) integration/phase25-wave9/verify_boundaries.py
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/application_factory_contracts -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/technology_profiles -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/engineering_blueprints -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/application_factory_state -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/application_factory_bootstrap -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/application_candidate_review -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/application_integration -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest discover -s tests/wave_09 -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest integration.phase25-wave8.test_provider_execution.ProviderExecutionCompositionTests.test_executes_ready_task_persists_result_and_redacts_event_credentials -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest tests.application_generator.test_generator.GeneratorTests.test_materialization_is_deterministic_and_generates_source tests.blueprints.test_blueprint_catalog.TestBlueprintCatalog.test_resolve_requires_exact_blueprint_version -v
+	$(WAVE09_ENV) $(WAVE09_PYTHON) scripts/dependencies/check_python_locks.py
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m pip check
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m compileall packages/servicefabric_application_factory_contracts packages/servicefabric_technology_profiles packages/servicefabric_engineering_blueprints packages/servicefabric_application_factory_state packages/servicefabric_application_factory_bootstrap packages/servicefabric_application_candidate_review packages/servicefabric_application_integration integration/phase25-wave9 tests/application_factory_contracts tests/wave_09
 	git diff --check
 
 verify-wave-06:
