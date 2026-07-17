@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib
 import dataclasses
 import json
 import os
@@ -73,7 +74,6 @@ from servicefabric_workspace import (
 from .capsules import CapsuleClient
 from .governance import GovernanceClient
 from .mcp import McpGatewayClient
-from .capability_projections import CapabilityProjectionComposition
 from .wave3 import Wave3ApplicationService
 from .development import ResearchNotesDevelopmentService
 
@@ -81,6 +81,13 @@ from .development import ResearchNotesDevelopmentService
 VERSION = "0.1.0a1"
 POLICY_DIGEST = "sha256:" + "a" * 64
 MCP_PROFILE = "2025-11-25"
+KNOWN_PROVIDER_IDS = ("claude", "codex", "gemini", "pi")
+PROVIDER_ADAPTER_MODULES = {
+    "claude": ("servicefabric_claude_code_adapter", "ClaudeCodeAdapter"),
+    "codex": ("servicefabric_codex_adapter", "CodexAdapter"),
+    "gemini": ("servicefabric_gemini_cli_adapter", "GeminiCliAdapter"),
+    "pi": ("servicefabric_pi_harness", "PiHarnessAdapter"),
+}
 
 
 class CliUsageError(ValueError):
@@ -135,6 +142,31 @@ def _display_workspace(home: Path) -> str:
         return str(home.relative_to(Path.cwd()))
     except ValueError:
         return str(home)
+
+
+def _provider_list() -> tuple[dict[str, object], ...]:
+    return tuple({"provider_id": provider_id, "available": True} for provider_id in KNOWN_PROVIDER_IDS)
+
+
+def _provider_doctor(provider_id: str | None = None) -> tuple[dict[str, object], ...]:
+    targets = (provider_id,) if provider_id else KNOWN_PROVIDER_IDS
+    result: list[dict[str, object]] = []
+    for identifier in targets:
+        module_name, class_name = PROVIDER_ADAPTER_MODULES[identifier]
+        try:
+            module = importlib.import_module(module_name)
+            adapter = getattr(module, class_name)()
+            probe = adapter.probe()
+            result.append({"provider_id": identifier, "available": True, "probe": probe})
+        except Exception as error:
+            result.append(
+                {
+                    "provider_id": identifier,
+                    "available": False,
+                    "probe": {"error": str(error)},
+                }
+            )
+    return tuple(result)
 
 
 class LocalRuntime:
@@ -235,11 +267,7 @@ class LocalRuntime:
                 artifact_store_root=context.layout.artifacts,
             )
         )
-        self.capability_projections = CapabilityProjectionComposition.for_workspace(context.layout)
-        self.capability_facade = self.capability_projections.facade
-        self.capability_client = self.capability_projections.capability_client
-        self.agent_capability_adapter = self.capability_projections.agent_adapter
-        self.capability_rest_gateway = self.capability_projections.rest_gateway
+        self._capability_projections = None
         candidate = ProjectionCandidate(
             canonical_tool_id="math.calculate",
             revision_ref="1.0.0",
@@ -275,6 +303,16 @@ class LocalRuntime:
                 operations=self.governance,
             )
         )
+
+    @property
+    def capability_rest_gateway(self):
+        if self._capability_projections is None:
+            from .capability_projections import CapabilityProjectionComposition
+
+            self._capability_projections = CapabilityProjectionComposition.for_workspace(
+                self.context.layout
+            )
+        return self._capability_projections.rest_gateway
 
     def invoke_application(self, tool_id: str, arguments: dict[str, object]):
         capability = self.host.describe_capability(tool_id)
@@ -644,6 +682,13 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
     args = parser().parse_args(selected)
 
     if args.command == "agents":
+        if args.agents_action == "providers":
+            if args.provider_action == "list":
+                return 0, "agents-providers-list", {"providers": _provider_list()}
+            return 0, "agents-providers-doctor", {
+                "providers": _provider_doctor(getattr(args, "provider", None)),
+            }
+
         from .agentic import dispatch_agents
         return dispatch_agents(args)
 

@@ -501,7 +501,6 @@ def _tool_failed(summary: str) -> AgentToolResult:
 def dispatch_agents(args: object) -> tuple[int, str, object]:
     """Compatibility dispatcher retained while the CLI surface is composed."""
 
-    service = AgenticApplicationService.for_current_environment()
     command = getattr(args, "agents_action")
     if command == "providers":
         from .agent_providers import default_provider_registry
@@ -512,6 +511,8 @@ def dispatch_agents(args: object) -> tuple[int, str, object]:
         return 0, "agents-providers-doctor", {
             "providers": registry.doctor(getattr(args, "provider", None)),
         }
+
+    service = AgenticApplicationService.for_current_environment()
     if command in {"execute", "events", "resume", "cancel"}:
         from .agent_providers import default_provider_registry
         from .provider_execution import ProviderExecutionService
