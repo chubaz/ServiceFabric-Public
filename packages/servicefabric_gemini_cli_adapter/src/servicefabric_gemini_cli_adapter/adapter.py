@@ -24,7 +24,7 @@ class GeminiCliAdapter:
 
     @property
     def provider_id(self) -> str:
-        return "gemini-cli"
+        return "gemini"
 
     def probe(self) -> dict[str, Any]:
         """Describe this projection without inspecting or launching the provider."""

@@ -17,13 +17,13 @@ class GeminiCliAdapterTests(unittest.TestCase):
         self.request = ProviderExecutionRequest(
             run_id="run-1",
             task_id="task-1",
-            provider_id="gemini-cli",
+            provider_id="gemini",
             repository="/workspace",
             prompt="Update the focused package.",
             timeout_seconds=60,
         )
         self.handle = ProviderRunHandle(
-            provider_id="gemini-cli",
+            provider_id="gemini",
             run_id="run-1",
             task_id="task-1",
             state="running",
