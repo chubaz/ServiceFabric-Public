@@ -2,7 +2,8 @@
   "wave_id": "wave-08",
   "base_commit": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
   "contractsStatus": "frozen",
-  "overall": "integration-active",
+  "overall": "complete",
+  "final_head": "1a898c35b2dc72f8ee42a1fc92a75fd8f676b428",
   "accepted_candidate_commits": {
     "provider-runtime": "bef2e1666fdd7bf93a8bc6bfe274d77d91c1dc3f",
     "pi": "b7162d61e0fd7660f63b2eb1a0821e6df3ee1259",
@@ -88,9 +89,11 @@
       "reason": "The black-box journey uses fake local executables and recorded fixtures; no provider call occurs."
     },
     "integration": {
-      "state": "active",
+      "state": "complete",
       "contracts_status": "frozen",
-      "candidate_review_status": "all seven specialist candidates accepted; completion not recorded"
+      "candidate_review_status": "all seven specialist candidates accepted and integrated",
+      "wave_completion_status": "complete",
+      "final_verification_status": "passed"
     }
   }
 }

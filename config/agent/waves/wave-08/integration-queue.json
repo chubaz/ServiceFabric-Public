@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-08",
-  "overall": "READY FOR COMPLETION INTEGRATION",
+  "overall": "WAVE COMPLETE",
   "contractsStatus": "frozen",
   "dependency_order": [
     "provider-runtime",
@@ -19,7 +19,7 @@
     "gemini": "integrated",
     "langgraph": "integrated",
     "evaluation": "integrated",
-    "integration": "authority"
+    "integration": "complete"
   },
-  "next_action": "Run the separate completion integration when explicitly directed; do not mark WAVE COMPLETE yet."
+  "next_action": "Wave-8 is complete on integration/phase25-wave8. Do not merge this branch into main as part of this closure."
 }
