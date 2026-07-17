@@ -56,6 +56,8 @@ class ProviderExecutionService:
                 )
                 self._agents.record_result(run_id, task_id, task_result)
                 self._append_usage(run_id, task_id, result)
+                if self._has_contract_change(run_id, task_id):
+                    return self._interrupt(run_id, "contract_change_request")
                 if result.status not in {"success", "cancelled"}:
                     return self._interrupt(run_id, "provider_failure")
             if policy.maximum_total_cost is not None and spent > policy.maximum_total_cost:
@@ -67,12 +69,21 @@ class ProviderExecutionService:
 
     def resume(self, run_id: str, decision_path: str | Path) -> dict[str, object]:
         decision = json.loads(Path(decision_path).read_text(encoding="utf-8"))
-        if not isinstance(decision, dict) or decision.get("action") != "continue":
-            raise ValueError("decision must be an object with action 'continue'")
+        if not isinstance(decision, dict) or decision.get("action") not in {"continue", "retry"}:
+            raise ValueError("decision action must be 'continue' or 'retry'")
         cursor = self._load_cursor(run_id)
         policy_value = cursor.get("policy")
         if not isinstance(policy_value, dict):
             raise ValueError("run has no persisted provider policy")
+        if decision["action"] == "retry":
+            plan, state = self._agents._load(run_id)
+            targets = decision.get("task_ids") or tuple(state["results"])
+            if not isinstance(targets, (list, tuple)):
+                raise ValueError("retry task_ids must be an array")
+            for task_id in targets:
+                if not isinstance(task_id, str) or task_id not in {task.task_id for task in plan.tasks}:
+                    raise ValueError("retry task_ids must belong to the run")
+                self._agents.store.clear_result(run_id, task_id)
         self._save_cursor(run_id, {"run_id": run_id, "interrupt": None, "policy": policy_value})
         return self._execute_with_policy(run_id, ProviderPolicy.model_validate(policy_value))
 
@@ -118,6 +129,12 @@ class ProviderExecutionService:
         path = self._usage_path(run_id)
         if not path.exists(): return 0.0
         return sum(float(json.loads(line)["usage"]["estimated_cost"]) for line in path.read_text(encoding="utf-8").splitlines() if line)
+
+    def _has_contract_change(self, run_id: str, task_id: str) -> bool:
+        return any(
+            event.get("task_id") == task_id and isinstance(event.get("payload"), dict) and event["payload"].get("contract_change_requested") is True
+            for event in self.events(run_id)
+        )
 
     def _load_cursor(self, run_id: str) -> dict[str, object]:
         path = self._cursor_path(run_id)
