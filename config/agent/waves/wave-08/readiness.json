@@ -8,14 +8,16 @@
     "pi": "b7162d61e0fd7660f63b2eb1a0821e6df3ee1259",
     "codex": "b7b40e670451413944639afb4362930aef28b7a2",
     "claude": "e9aaeabaa12761fb487fb7c242b34c463a4b1417",
-    "gemini": "a5d2528db810693155a953bf582b0339ffc571ac"
+    "gemini": "a5d2528db810693155a953bf582b0339ffc571ac",
+    "langgraph": "f007c34815719c38f10d88bdfc4b414d8e5ac839"
   },
   "integration_commits": {
     "provider-runtime": "3facb3f",
     "pi": "65fac53",
     "codex": "0e26c86",
     "claude": "18321b7",
-    "gemini": "a1a4b32"
+    "gemini": "a1a4b32",
+    "langgraph": "739a568"
   },
   "lanes": {
     "provider-runtime": {
@@ -65,11 +67,13 @@
     },
     "langgraph": {
       "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
-      "candidate_head": "dff82fa",
+      "candidate_head": "dbfc54c",
+      "accepted_commit": "f007c34815719c38f10d88bdfc4b414d8e5ac839",
+      "integration_commit": "739a568",
       "focused_verification": "passed",
-      "integration_decision": "returned",
-      "final_state": "awaiting-revision",
-      "reason": "Must consume the Wave-7 task pack and delegate readiness to ready_tasks; it must not render provider-specific prompts or derive task state."
+      "integration_decision": "accepted",
+      "final_state": "integrated",
+      "reason": "Replacement consumes the Wave-7 task pack and delegates readiness to ready_tasks without deriving task state."
     },
     "evaluation": {
       "integration_decision": "deferred",
@@ -78,7 +82,7 @@
     "integration": {
       "state": "active",
       "contracts_status": "frozen",
-      "candidate_review_status": "five accepted, LangGraph returned, evaluation deferred"
+      "candidate_review_status": "six accepted, evaluation deferred"
     }
   }
 }

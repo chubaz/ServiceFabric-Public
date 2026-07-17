@@ -25,7 +25,7 @@
 | codex | `b7b40e6` | accepted; argv/event/result translation only | `0e26c86` |
 | claude | `e9aaeab` | accepted; argv/event/result translation only | `18321b7` |
 | gemini | `3dadd52`, `a5d2528` | accepted after its provider ID was corrected to `gemini` | `a26b7e5`, `a1a4b32` |
-| langgraph | `7185397` | returned; it renders provider-specific prompts and computes readiness locally instead of consuming the Wave-7 task pack and delegating to `ready_tasks` | not integrated |
+| langgraph | `f007c34` | accepted replacement; consumes the Wave-7 task pack, reads `FileRunStore`, and delegates readiness to `ready_tasks` | `739a568` |
 
-Focused tests passed for every reviewed candidate, including the returned
-LangGraph candidate. No provider call occurred. Evaluation remains deferred.
+Focused tests passed for every accepted candidate. No provider call occurred.
+Evaluation remains deferred.

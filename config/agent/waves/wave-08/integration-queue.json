@@ -17,9 +17,9 @@
     "codex": "integrated",
     "claude": "integrated",
     "gemini": "integrated",
-    "langgraph": "returned",
+    "langgraph": "integrated",
     "evaluation": "deferred",
     "integration": "authority"
   },
-  "next_action": "Return LangGraph to consume the Wave-7 task pack and delegate readiness to ready_tasks. Do not launch evaluation."
+  "next_action": "Evaluation remains deferred. Do not launch it until explicitly directed."
 }
