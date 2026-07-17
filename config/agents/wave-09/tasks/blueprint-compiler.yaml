@@ -1,0 +1,6 @@
+lane: blueprint-compiler
+branch: agent/w9-blueprint-compiler
+objective: Compile intent, blueprint, and profile into disjoint EngineeringBlueprint lanes and AgentRunPlan; do not create repositories or invoke providers.
+allowed_paths: [packages/servicefabric_engineering_blueprints, tests/engineering_blueprints, docs/handoffs/wave-09/blueprint-compiler.md]
+required_context_files: [docs/workplans/parallel/wave-09/objective.md, docs/workplans/parallel/wave-09/engineering-blueprint.md]
+maximum_tests: 3

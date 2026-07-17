@@ -1,0 +1,25 @@
+wave_id: wave-09
+status: implementation-authorized
+objective: Build the Autonomous Application Factory on completed Wave-8 provider execution.
+task_manifest_dir: config/agents/wave-09/tasks
+shared_docs: docs/workplans/parallel/wave-09/objective.md
+lanes:
+  - technology-profile
+  - blueprint-compiler
+  - factory-lifecycle
+  - repository-bootstrap
+  - candidate-review
+  - application-integration
+  - evaluation
+  - integration
+integration_order:
+  - technology-profile
+  - blueprint-compiler
+  - factory-lifecycle
+  - repository-bootstrap
+  - candidate-review
+  - application-integration
+  - evaluation
+  - integration
+implementation_authorized: true
+wave_08_foundation: completed

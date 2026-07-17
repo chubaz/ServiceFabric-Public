@@ -1,0 +1,6 @@
+lane: candidate-review
+branch: agent/w9-candidate-review
+objective: Inspect task results, commit diffs, paths, and evidence using read-only Git; emit CandidateReviewDecision only.
+allowed_paths: [packages/servicefabric_application_candidate_review, tests/application_candidate_review, docs/handoffs/wave-09/candidate-review.md]
+required_context_files: [docs/workplans/parallel/wave-09/engineering-blueprint.md]
+maximum_tests: 4

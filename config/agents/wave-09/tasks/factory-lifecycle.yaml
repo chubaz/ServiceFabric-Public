@@ -1,0 +1,6 @@
+lane: factory-lifecycle
+branch: agent/w9-factory-lifecycle
+objective: Persist factory-specific approvals, review decisions, unmet requirements, and handoff references only.
+allowed_paths: [packages/servicefabric_application_factory_state, tests/application_factory_state, docs/handoffs/wave-09/factory-lifecycle.md]
+required_context_files: [docs/workplans/parallel/wave-09/application-factory-lifecycle.md]
+maximum_tests: 3

@@ -1,0 +1,6 @@
+lane: application-integration
+branch: agent/w9-application-integration
+objective: Apply accepted exact commits to the integration branch, run declared verification, and create final handoff without force/reset/push/main merge.
+allowed_paths: [packages/servicefabric_application_integration, tests/application_integration, docs/handoffs/wave-09/application-integration.md]
+required_context_files: [docs/workplans/parallel/wave-09/application-factory-lifecycle.md, docs/workplans/parallel/wave-09/engineering-blueprint.md]
+maximum_tests: 4

@@ -1,0 +1,6 @@
+lane: evaluation
+branch: agent/w9-evaluation
+objective: Write one contract-first black-box factory journey after contract freeze; it may remain pending until composition.
+allowed_paths: [tests/wave_09, tests/fixtures/wave_09, docs/handoffs/wave-09/evaluation.md]
+required_context_files: [docs/workplans/parallel/wave-09/objective.md]
+maximum_tests: 1

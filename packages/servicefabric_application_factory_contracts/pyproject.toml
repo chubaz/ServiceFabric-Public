@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-application-factory-contracts"
+version = "0.9.0a1"
+description = "Immutable shared contracts for the ServiceFabric application factory."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "pydantic>=2.13,<3",
+  "servicefabric-contracts==0.4.0a1",
+  "servicefabric-agentic-contracts==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

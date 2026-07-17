@@ -10,8 +10,6 @@
 | Application integration and closure | Required accepted candidates | Application integration authority | Return `AgentHandoff`; success means approved integrated application with no unresolved blockers | conflict, missing dependency, or closure decision cannot be resolved |
 | Requirement escalation | Any authority boundary | Product/application owner | Decision permits revision, retry, or closure | no authorized decision exists |
 
-Wave-9 will need lifecycle-owned records that reference—not replace—the canonical contracts: application identity mapping, blueprint/profile approval, candidate-review decision, escalation, and integration closure. Their storage and schema are intentionally not specified by this draft.
+Factory lifecycle state owns only approvals, candidate-review decisions, unmet requirements, and final-handoff references. It references Wave-7 run IDs and results through `FileRunStore`; it does not copy task, provider, event, usage, or generic run state.
 
-## Wave-8-dependent assumptions
-
-**Wave-8-dependent assumption:** a provider request produces a reliable normalized result, events can be collected and retained, recovery is invoked when required, policy limits are enforced across concurrent attempts, and timeout/cost/cancellation behavior has an operational definition. The current contracts expose envelopes for these behaviors; they do not provide lifecycle approval or review semantics.
+Provider execution is supplied by the completed Wave-8 runtime. Factory approval remains mandatory before repository bootstrap or candidate execution, and a candidate result remains evidence until an explicit review decision is recorded.

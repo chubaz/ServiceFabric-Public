@@ -1,0 +1,6 @@
+lane: technology-profile
+branch: agent/w9-technology-profile
+objective: Select exact reviewed kits and technique-policy references; report unresolved requirements without execution.
+allowed_paths: [packages/servicefabric_technology_profiles, tests/technology_profiles, docs/handoffs/wave-09/technology-profile.md]
+required_context_files: [docs/workplans/parallel/wave-09/objective.md, docs/workplans/parallel/wave-09/technology-profiles.md]
+maximum_tests: 3

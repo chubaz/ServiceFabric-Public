@@ -1,0 +1,5 @@
+lane: integration
+branch: integration/phase25-wave9
+objective: Own shared contracts, composition, CLI, locks, Makefile/CI, specialist integration, and closure.
+allowed_paths: [packages/servicefabric_application_factory_contracts, clients/python, Makefile, config/agents/wave-09, config/agent/waves/wave-09, integration/phase25-wave9, docs/workplans/parallel/wave-09, docs/handoffs/wave-09]
+required_context_files: [docs/workplans/parallel/wave-09/objective.md, docs/workplans/parallel/wave-09/ownership.md, docs/workplans/parallel/wave-09/integration-order.md]

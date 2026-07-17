@@ -1,0 +1,6 @@
+lane: repository-bootstrap
+branch: agent/w9-repository-bootstrap
+objective: Materialize the approved blueprint, validate Git, and create exact-base integration and lane worktrees without provider invocation or destructive Git actions.
+allowed_paths: [packages/servicefabric_application_factory_bootstrap, tests/application_factory_bootstrap, docs/handoffs/wave-09/repository-bootstrap.md]
+required_context_files: [docs/workplans/parallel/wave-09/engineering-blueprint.md]
+maximum_tests: 4
