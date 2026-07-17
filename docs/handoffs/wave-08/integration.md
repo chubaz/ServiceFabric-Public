@@ -29,3 +29,17 @@
 
 Focused tests passed for every accepted candidate. No provider call occurred.
 Evaluation remains deferred.
+
+## Provider execution composition
+
+The public `servicefabric agents` provider list, doctor, execute, events,
+resume, and cancel commands now compose the reviewed adapters, common provider
+runtime, LangGraph cursor, and Wave-7 `FileRunStore`. Execution uses argv-only
+provider runtime calls; task results remain authoritative in `FileRunStore`.
+Normalized events and usage are stored separately with secret-like payload
+fields redacted. The integration test uses a local fake executable only.
+
+The runtime now exposes an event sink and task-specific cancellation key; the
+LangGraph public API exposes an orchestration-only cursor; `FileRunStore` has a
+public result-clear operation for explicit retry decisions. These narrow public
+extensions were explicitly authorized for the composition.
