@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-technology-profiles"
+version = "0.9.0a1"
+description = "Reviewed, non-executing technology-profile selection for ServiceFabric."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-application-factory-contracts==0.9.0a1",
+  "servicefabric-agentic-contracts==0.7.0a1",
+  "servicefabric-agent-provider-contracts==0.8.0a1",
+  "servicefabric-blueprints==0.1.0a1",
+  "servicefabric-framework-kits==0.1.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
