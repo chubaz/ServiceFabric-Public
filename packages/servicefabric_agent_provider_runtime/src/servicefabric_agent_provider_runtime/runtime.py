@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import os
 import subprocess
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from threading import RLock
 
 from servicefabric_agent_provider_contracts import (
@@ -37,10 +37,15 @@ class ProviderRuntime:
         if len(identifiers) != len(set(identifiers)):
             raise ValueError("provider adapter IDs must be unique")
         self._adapters = {adapter.provider_id: adapter for adapter in values}
-        self._processes: dict[str, subprocess.Popen[str]] = {}
+        self._processes: dict[tuple[str, str], subprocess.Popen[str]] = {}
         self._lock = RLock()
 
-    def execute(self, request: ProviderExecutionRequest) -> ProviderExecutionResult:
+    def execute(
+        self,
+        request: ProviderExecutionRequest,
+        *,
+        event_sink: Callable[[ProviderEvent], None] | None = None,
+    ) -> ProviderExecutionResult:
         """Execute one explicit adapter command within the request timeout."""
         adapter = self._adapter_for(request.provider_id)
         argv = adapter.build_argv(request)
@@ -70,15 +75,16 @@ class ProviderRuntime:
             state="running",
         )
         with self._lock:
-            if request.run_id in self._processes:
+            key = (request.run_id, request.task_id)
+            if key in self._processes:
                 process.terminate()
                 process.wait()
                 raise ProviderRuntimeError(f"provider run is already active: {request.run_id}")
-            self._processes[request.run_id] = process
+            self._processes[key] = process
 
         try:
             stdout, _stderr = process.communicate(timeout=request.timeout_seconds)
-            events = self._parse_events(adapter, stdout)
+            events = self._parse_events(adapter, stdout, event_sink)
             return adapter.recover_result(
                 handle.model_copy(update={"state": "success" if process.returncode == 0 else "failed"}),
                 events,
@@ -88,7 +94,7 @@ class ProviderRuntime:
         except subprocess.TimeoutExpired:
             process.kill()
             stdout, _stderr = process.communicate()
-            events = self._parse_events(adapter, stdout)
+            events = self._parse_events(adapter, stdout, event_sink)
             result = adapter.recover_result(
                 handle.model_copy(update={"state": "failed"}),
                 events,
@@ -98,12 +104,16 @@ class ProviderRuntime:
             return result.model_copy(update={"status": "timeout"})
         finally:
             with self._lock:
-                self._processes.pop(request.run_id, None)
+                self._processes.pop((request.run_id, request.task_id), None)
 
-    def cancel(self, run_id: str) -> bool:
+    def cancel(self, run_id: str, task_id: str | None = None) -> bool:
         """Terminate an active run and report whether it was known to the runtime."""
         with self._lock:
-            process = self._processes.get(run_id)
+            if task_id is None:
+                matches = [process for (active_run_id, _), process in self._processes.items() if active_run_id == run_id]
+                process = matches[0] if len(matches) == 1 else None
+            else:
+                process = self._processes.get((run_id, task_id))
         if process is None or process.poll() is not None:
             return False
         process.terminate()
@@ -112,7 +122,7 @@ class ProviderRuntime:
     def active_run_ids(self) -> tuple[str, ...]:
         """Return a stable snapshot of currently executing canonical run IDs."""
         with self._lock:
-            return tuple(sorted(self._processes))
+            return tuple(sorted({run_id for run_id, _ in self._processes}))
 
     def _adapter_for(self, provider_id: str) -> ExecutableHarnessAdapter:
         try:
@@ -131,11 +141,15 @@ class ProviderRuntime:
 
     @staticmethod
     def _parse_events(
-        adapter: ExecutableHarnessAdapter, stdout: str,
+        adapter: ExecutableHarnessAdapter,
+        stdout: str,
+        event_sink: Callable[[ProviderEvent], None] | None,
     ) -> tuple[ProviderEvent, ...]:
         events: list[ProviderEvent] = []
         for raw_event in stdout.splitlines():
             event = adapter.parse_event(raw_event, len(events))
             if event is not None:
                 events.append(event)
+                if event_sink is not None:
+                    event_sink(event)
         return tuple(events)

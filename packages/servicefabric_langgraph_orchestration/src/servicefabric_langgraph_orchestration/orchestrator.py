@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from dataclasses import dataclass
 
 from servicefabric_agent_harness import CodexPromptHarness
 from servicefabric_agent_provider_contracts import ProviderExecutionRequest, ProviderPolicy
@@ -10,11 +11,25 @@ from servicefabric_agentic_orchestrator import ready_tasks
 from servicefabric_agentic_run_store import FileRunStore
 
 
+@dataclass(frozen=True)
+class LangGraphExecutionCursor:
+    """Orchestration-only checkpoint; durable task state remains in FileRunStore."""
+
+    run_id: str
+    dispatched_task_ids: tuple[str, ...] = ()
+    interrupt: str | None = None
+
+
 class LangGraphOrchestrator:
     """Translate ready Wave-7 tasks to provider requests without execution."""
 
     def __init__(self, harness: CodexPromptHarness | None = None) -> None:
         self._harness = harness or CodexPromptHarness()
+
+    @staticmethod
+    def cursor(run_id: str, *, dispatched_task_ids: tuple[str, ...] = (), interrupt: str | None = None) -> LangGraphExecutionCursor:
+        """Create a serializable orchestration cursor without copying task state."""
+        return LangGraphExecutionCursor(run_id=run_id, dispatched_task_ids=dispatched_task_ids, interrupt=interrupt)
 
     def compile(
         self,
