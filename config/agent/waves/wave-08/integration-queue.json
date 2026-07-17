@@ -1,0 +1,25 @@
+{
+  "wave_id": "wave-08",
+  "overall": "WAVE COMPLETE",
+  "contractsStatus": "frozen",
+  "dependency_order": [
+    "provider-runtime",
+    "pi",
+    "codex",
+    "claude",
+    "gemini",
+    "langgraph",
+    "evaluation"
+  ],
+  "lanes": {
+    "provider-runtime": "integrated",
+    "pi": "integrated",
+    "codex": "integrated",
+    "claude": "integrated",
+    "gemini": "integrated",
+    "langgraph": "integrated",
+    "evaluation": "integrated",
+    "integration": "complete"
+  },
+  "next_action": "Wave-8 is complete on integration/phase25-wave8. Do not merge this branch into main as part of this closure."
+}

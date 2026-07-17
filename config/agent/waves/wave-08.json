@@ -1,0 +1,37 @@
+{
+  "wave_id": "wave-08",
+  "runtime_wave_id": "wave-08",
+  "base_commit": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+  "integration_branch": "integration/phase25-wave8",
+  "task_manifest_dir": "config/agent/waves/wave-08/tasks",
+  "canonical_handoff_dir": "docs/handoffs/wave-08",
+  "handoff_template": "docs/workplans/parallel/wave-07/task-handoff-template.md",
+  "local_run_dir": ".agent-runs/wave-08",
+  "readiness_metadata": "config/agent/waves/wave-08/readiness.json",
+  "integration_queue": "config/agent/waves/wave-08/integration-queue.json",
+  "lanes": ["integration", "provider-runtime", "langgraph", "pi", "codex", "claude", "gemini", "evaluation"],
+  "specialist_lanes": ["provider-runtime", "langgraph", "pi", "codex", "claude", "gemini", "evaluation"],
+  "integration_order": ["provider-runtime", "pi", "codex", "claude", "gemini", "langgraph", "evaluation", "integration"],
+  "worktree_env": {
+    "integration": "SF_WT_INTEGRATION",
+    "provider-runtime": "SF_WT_PROVIDER_RUNTIME",
+    "langgraph": "SF_WT_LANGGRAPH",
+    "pi": "SF_WT_PI",
+    "codex": "SF_WT_CODEX",
+    "claude": "SF_WT_CLAUDE",
+    "gemini": "SF_WT_GEMINI",
+    "evaluation": "SF_WT_EVALUATION"
+  },
+  "frozen_contracts": ["packages/servicefabric_agentic_contracts"],
+  "operational_policies": {
+    "contracts_freeze_required_before_specialists": true,
+    "candidate_commits_allowed": true,
+    "automatic_merger": false,
+    "specialists_may_merge_or_pull_feature_branches": false,
+    "integration_agent_launches_first": true,
+    "runtime_state_isolated_per_worktree": true,
+    "provider_calls_in_ci": false
+  },
+  "specialist_test_command_ceiling": {"provider-runtime": 4, "langgraph": 4, "pi": 3, "codex": 3, "claude": 3, "gemini": 3, "evaluation": 1},
+  "verification_gates": ["make verify-wave-08", "make verify-current", "git diff --check"]
+}

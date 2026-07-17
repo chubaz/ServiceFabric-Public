@@ -1,0 +1,1 @@
+{"task_id":"evaluation","branch":"agent/w8-evaluation","handoff_path":"docs/handoffs/wave-08/evaluation.md","allowed_paths":["tests/wave_08","tests/fixtures/wave_08","docs/handoffs/wave-08/evaluation.md"],"required_tests":["python3 -m unittest discover -s tests/wave_08 -v"]}

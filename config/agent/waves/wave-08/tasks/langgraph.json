@@ -1,0 +1,1 @@
+{"task_id":"langgraph","branch":"agent/w8-langgraph","handoff_path":"docs/handoffs/wave-08/langgraph.md","allowed_paths":["packages/servicefabric_langgraph_orchestration","tests/langgraph_orchestration","docs/handoffs/wave-08/langgraph.md"],"required_tests":["python3 -m unittest discover -s tests/langgraph_orchestration -v"]}

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-codex-adapter"
+version = "0.8.0a1"
+description = "Codex CLI translation adapter for the ServiceFabric provider runtime."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-agent-provider-contracts==0.8.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

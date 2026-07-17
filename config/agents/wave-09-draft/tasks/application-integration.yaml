@@ -1,0 +1,11 @@
+lane: application-integration
+status: draft-only
+objective: Define candidate acceptance, integration authority, and closure order; do not merge or integrate application code.
+allowed_paths:
+  - docs/workplans/parallel/wave-09-draft/integration-order.md
+forbidden_change_classes: [packages, services, clients, tests, dependencies, ci]
+required_context_files:
+  - docs/workplans/parallel/wave-09-draft/engineering-blueprint.md
+  - docs/workplans/parallel/wave-09-draft/application-factory-lifecycle.md
+  - docs/workplans/parallel/wave-09-draft/integration-order.md
+wave_08_dependent_assumption: Provider results cannot be accepted as integration inputs until Wave-8 result recovery and evaluation close.

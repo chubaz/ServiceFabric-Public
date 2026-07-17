@@ -1,0 +1,1 @@
+{"task_id":"integration","branch":"integration/phase25-wave8","handoff_path":"docs/handoffs/wave-08/integration.md","allowed_paths":["packages/servicefabric_agent_provider_contracts","clients/python","Makefile","config/agent/waves/wave-08","integration/phase25-wave8","docs/handoffs/wave-08"],"required_tests":["make verify-wave-08","make verify-current","git diff --check"]}

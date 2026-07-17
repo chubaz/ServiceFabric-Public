@@ -124,6 +124,7 @@ class WaveOperationalScriptTests(unittest.TestCase):
         self.assertIn('"$GENERATED_APPLICATION_RUNTIME"', content)
         self.assertIn('pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"', content)
         for package in (
+            "packages/servicefabric_agent_provider_contracts",
             "packages/servicefabric_capsules",
             "packages/servicefabric_operation_model",
             "packages/servicefabric_governance",

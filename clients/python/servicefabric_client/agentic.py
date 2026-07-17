@@ -501,8 +501,33 @@ def _tool_failed(summary: str) -> AgentToolResult:
 def dispatch_agents(args: object) -> tuple[int, str, object]:
     """Compatibility dispatcher retained while the CLI surface is composed."""
 
-    service = AgenticApplicationService.for_current_environment()
     command = getattr(args, "agents_action")
+    if command == "providers":
+        from .agent_providers import default_provider_registry
+
+        registry = default_provider_registry()
+        if getattr(args, "provider_action") == "list":
+            return 0, "agents-providers-list", {"providers": registry.list()}
+        return 0, "agents-providers-doctor", {
+            "providers": registry.doctor(getattr(args, "provider", None)),
+        }
+
+    service = AgenticApplicationService.for_current_environment()
+    if command in {"execute", "events", "resume", "cancel"}:
+        from .agent_providers import default_provider_registry
+        from .provider_execution import ProviderExecutionService
+
+        execution = ProviderExecutionService(service, default_provider_registry())
+        run_id = getattr(args, "run_id")
+        if command == "execute":
+            if getattr(args, "orchestrator") != "langgraph":
+                raise ValueError("only the langgraph orchestrator is available")
+            return 0, "agents-execute", execution.execute(run_id, getattr(args, "policy"))
+        if command == "events":
+            return 0, "agents-events", {"run_id": run_id, "events": execution.events(run_id, getattr(args, "task_id", None))}
+        if command == "resume":
+            return 0, "agents-resume", execution.resume(run_id, getattr(args, "decision"))
+        return 0, "agents-cancel", execution.cancel(run_id, getattr(args, "task_id", None))
     if command == "plan":
         raw = json.loads(Path(getattr(args, "intent")).read_text(encoding="utf-8"))
         intent = ApplicationIntent.model_validate(raw)

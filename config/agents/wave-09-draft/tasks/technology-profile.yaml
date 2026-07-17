@@ -1,0 +1,10 @@
+lane: technology-profile
+status: draft-only
+objective: Define reviewed-kit selection and compatibility gates; do not add or modify framework kits.
+allowed_paths:
+  - docs/workplans/parallel/wave-09-draft/technology-profiles.md
+forbidden_change_classes: [packages, services, clients, tests, dependencies, ci]
+required_context_files:
+  - docs/workplans/parallel/wave-09-draft/objective.md
+  - docs/workplans/parallel/wave-09-draft/technology-profiles.md
+wave_08_dependent_assumption: Provider-policy references are planning inputs only until Wave-8 policy enforcement is closed.

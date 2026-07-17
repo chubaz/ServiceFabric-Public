@@ -56,6 +56,15 @@ class FileRunStore:
             state["results"][result.task_id] = result.model_dump(mode="json")
             self._write(run_id, state)
 
+    def clear_result(self, run_id: str, task_id: str) -> None:
+        """Remove one durable result after an explicit integration retry decision."""
+        with self._locked(run_id):
+            state = self._load_state(run_id)
+            if task_id not in {task.task_id for task in AgentRunPlan.model_validate(state["plan"]).tasks}:
+                raise ValueError(f"task {task_id!r} does not belong to run {run_id!r}")
+            state["results"].pop(task_id, None)
+            self._write(run_id, state)
+
     def handoff(self, run_id: str) -> AgentHandoff:
         """Build a deterministic handoff snapshot from durable run state."""
         state = self._load_state(run_id)

@@ -1,0 +1,12 @@
+lane: integration
+status: draft-only
+objective: Reconcile and accept Wave-9 planning material; do not authorize or perform implementation.
+allowed_paths:
+  - docs/workplans/parallel/wave-09-draft
+  - config/agents/wave-09-draft
+forbidden_change_classes: [packages, services, clients, tests, dependencies, ci]
+required_context_files:
+  - docs/workplans/parallel/wave-09-draft/objective.md
+  - docs/workplans/parallel/wave-09-draft/ownership.md
+  - docs/workplans/parallel/wave-09-draft/transition-from-wave-08.md
+wave_08_dependent_assumption: Integration may plan against frozen Wave-8 contracts but may not claim Wave-8 operational closure.

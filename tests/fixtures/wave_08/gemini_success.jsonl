@@ -1,0 +1,4 @@
+{"type":"init","timestamp":"2030-01-01T00:04:00Z","session_id":"gemini-recorded"}
+{"type":"message","timestamp":"2030-01-01T00:04:01Z","message":"integrated"}
+{"type":"usage","timestamp":"2030-01-01T00:04:02Z","input_tokens":50,"output_tokens":20,"cached_tokens":5,"estimated_cost":0.3,"duration_ms":100}
+{"type":"result","timestamp":"2030-01-01T00:04:03Z","status":"success"}

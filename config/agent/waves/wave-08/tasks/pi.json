@@ -1,0 +1,1 @@
+{"task_id":"pi","branch":"agent/w8-pi","handoff_path":"docs/handoffs/wave-08/pi.md","allowed_paths":["packages/servicefabric_pi_harness","tests/pi_harness","docs/handoffs/wave-08/pi.md"],"required_tests":["python3 -m unittest discover -s tests/pi_harness -v"]}

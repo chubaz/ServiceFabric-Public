@@ -1,0 +1,20 @@
+{
+  "plan": {
+    "intent": {
+      "application_id": "research-notes",
+      "constraints": [],
+      "intent_id": "wave8-journey",
+      "mode": "modify",
+      "objective": "Exercise provider-neutral Wave-8 execution",
+      "requested_capabilities": []
+    },
+    "maximum_parallel_tasks": 2,
+    "run_id": "wave8-journey",
+    "tasks": [
+      {"allowed_paths": [], "dependencies": [], "expected_outputs": [], "forbidden_paths": [], "objective": "Review the change", "required_context": [], "role": "review", "task_id": "review", "verification_commands": []},
+      {"allowed_paths": [], "dependencies": [], "expected_outputs": [], "forbidden_paths": [], "objective": "Implement the change", "required_context": [], "role": "implementation", "task_id": "implementation", "verification_commands": []},
+      {"allowed_paths": [], "dependencies": ["review", "implementation"], "expected_outputs": [], "forbidden_paths": [], "objective": "Integrate successful work", "required_context": [], "role": "integration", "task_id": "integrate", "verification_commands": []}
+    ]
+  },
+  "results": {}
+}

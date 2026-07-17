@@ -1,0 +1,99 @@
+{
+  "wave_id": "wave-08",
+  "base_commit": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+  "contractsStatus": "frozen",
+  "overall": "complete",
+  "final_head": "1a898c35b2dc72f8ee42a1fc92a75fd8f676b428",
+  "accepted_candidate_commits": {
+    "provider-runtime": "bef2e1666fdd7bf93a8bc6bfe274d77d91c1dc3f",
+    "pi": "b7162d61e0fd7660f63b2eb1a0821e6df3ee1259",
+    "codex": "b7b40e670451413944639afb4362930aef28b7a2",
+    "claude": "e9aaeabaa12761fb487fb7c242b34c463a4b1417",
+    "gemini": "a5d2528db810693155a953bf582b0339ffc571ac",
+    "langgraph": "f007c34815719c38f10d88bdfc4b414d8e5ac839",
+    "evaluation": "efec8425a051010eb9e850b9c53d7f46a8131499"
+  },
+  "integration_commits": {
+    "provider-runtime": "3facb3f",
+    "pi": "65fac53",
+    "codex": "0e26c86",
+    "claude": "18321b7",
+    "gemini": "a1a4b32",
+    "langgraph": "739a568",
+    "evaluation": "a933a4f59f8ab235960140e33839355f17890483"
+  },
+  "lanes": {
+    "provider-runtime": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "c36bc93fbe312ca3d633301a44b58d9a4666046d",
+      "accepted_commit": "bef2e1666fdd7bf93a8bc6bfe274d77d91c1dc3f",
+      "integration_commit": "3facb3f",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "pi": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "2b218181544163ee664a15265261182c46777f8a",
+      "accepted_commit": "b7162d61e0fd7660f63b2eb1a0821e6df3ee1259",
+      "integration_commit": "65fac53",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "codex": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "e41a63cb268ecee8d11a66134673eeaded627053",
+      "accepted_commit": "b7b40e670451413944639afb4362930aef28b7a2",
+      "integration_commit": "0e26c86",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "claude": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "671656e386ee7aba3a0ce9d8fc64723ced90dd9d",
+      "accepted_commit": "e9aaeabaa12761fb487fb7c242b34c463a4b1417",
+      "integration_commit": "18321b7",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "gemini": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "fdd85c40518c98d81e5a90967d1941312fd045da",
+      "accepted_commit": "a5d2528db810693155a953bf582b0339ffc571ac",
+      "integration_commit": "a1a4b32",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "langgraph": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "dbfc54c",
+      "accepted_commit": "f007c34815719c38f10d88bdfc4b414d8e5ac839",
+      "integration_commit": "739a568",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated",
+      "reason": "Replacement consumes the Wave-7 task pack and delegates readiness to ready_tasks without deriving task state."
+    },
+    "evaluation": {
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "efec8425a051010eb9e850b9c53d7f46a8131499",
+      "accepted_commit": "efec8425a051010eb9e850b9c53d7f46a8131499",
+      "integration_commit": "a933a4f59f8ab235960140e33839355f17890483",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated",
+      "reason": "The black-box journey uses fake local executables and recorded fixtures; no provider call occurs."
+    },
+    "integration": {
+      "state": "complete",
+      "contracts_status": "frozen",
+      "candidate_review_status": "all seven specialist candidates accepted and integrated",
+      "wave_completion_status": "complete",
+      "final_verification_status": "passed"
+    }
+  }
+}

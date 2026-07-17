@@ -1,0 +1,10 @@
+lane: factory-bootstrap
+status: draft-only
+objective: Define lifecycle, approval, escalation, and bootstrap authority; do not create factory runtime state.
+allowed_paths:
+  - docs/workplans/parallel/wave-09-draft/application-factory-lifecycle.md
+forbidden_change_classes: [packages, services, clients, tests, dependencies, ci]
+required_context_files:
+  - docs/workplans/parallel/wave-09-draft/objective.md
+  - docs/workplans/parallel/wave-09-draft/application-factory-lifecycle.md
+wave_08_dependent_assumption: Candidate execution and recovery states remain design inputs until Wave-8 closure.

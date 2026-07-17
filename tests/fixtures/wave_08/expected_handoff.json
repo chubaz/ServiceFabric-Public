@@ -1,0 +1,10 @@
+{
+  "run_id": "wave8-journey",
+  "status": "success",
+  "task_results": [
+    {"blockers": [], "changed_paths": [], "commit_sha": null, "evidence": [], "status": "success", "task_id": "review"},
+    {"blockers": [], "changed_paths": [], "commit_sha": null, "evidence": [], "status": "success", "task_id": "implementation"},
+    {"blockers": [], "changed_paths": [], "commit_sha": null, "evidence": [], "status": "success", "task_id": "integrate"}
+  ],
+  "unresolved_blockers": []
+}
