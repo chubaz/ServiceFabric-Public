@@ -216,14 +216,16 @@ verify-wave-07:
 verify-wave-08:
 	$(WAVE08_ENV) $(WAVE08_PYTHON) integration/phase25-wave8/verify_boundaries.py
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/agent_provider_contracts -v
-	@for suite in tests/agent_provider_runtime tests/langgraph_orchestration tests/pi_harness tests/codex_adapter tests/claude_code_adapter tests/gemini_cli_adapter; do \
-		if [ -d $$suite ]; then $(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s $$suite -v; else echo "Wave-8 specialist suite pending: $$suite"; fi; \
-	done
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/agent_provider_runtime -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/langgraph_orchestration -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/pi_harness -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/codex_adapter -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/claude_code_adapter -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/gemini_cli_adapter -v
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/wave_08 -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest tests.wave_07.test_framework_journey -v
 	$(WAVE08_ENV) $(WAVE08_PYTHON) scripts/dependencies/check_python_locks.py
-	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE08_PYTHON)):$(PATH)" $(WAVE08_PYTHON) -m pip check
-	$(WAVE08_ENV) $(WAVE08_PYTHON) -m compileall packages/servicefabric_agent_provider_contracts clients/python/servicefabric_client/agent_providers.py integration/phase25-wave8 tests/agent_provider_contracts tests/wave_08
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m compileall packages/servicefabric_agent_provider_contracts packages/servicefabric_agent_provider_runtime packages/servicefabric_langgraph_orchestration packages/servicefabric_pi_harness packages/servicefabric_codex_adapter packages/servicefabric_claude_code_adapter packages/servicefabric_gemini_cli_adapter clients/python/servicefabric_client/agent_providers.py clients/python/servicefabric_client/provider_execution.py integration/phase25-wave8 tests/agent_provider_contracts tests/wave_08
 	git diff --check
 
 verify-wave-06:

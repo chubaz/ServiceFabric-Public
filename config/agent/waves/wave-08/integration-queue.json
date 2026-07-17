@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-08",
-  "overall": "INTEGRATION REQUIRED",
+  "overall": "READY FOR COMPLETION INTEGRATION",
   "contractsStatus": "frozen",
   "dependency_order": [
     "provider-runtime",
@@ -18,8 +18,8 @@
     "claude": "integrated",
     "gemini": "integrated",
     "langgraph": "integrated",
-    "evaluation": "deferred",
+    "evaluation": "integrated",
     "integration": "authority"
   },
-  "next_action": "Evaluation remains deferred. Do not launch it until explicitly directed."
+  "next_action": "Run the separate completion integration when explicitly directed; do not mark WAVE COMPLETE yet."
 }

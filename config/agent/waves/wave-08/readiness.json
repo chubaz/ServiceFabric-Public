@@ -9,7 +9,8 @@
     "codex": "b7b40e670451413944639afb4362930aef28b7a2",
     "claude": "e9aaeabaa12761fb487fb7c242b34c463a4b1417",
     "gemini": "a5d2528db810693155a953bf582b0339ffc571ac",
-    "langgraph": "f007c34815719c38f10d88bdfc4b414d8e5ac839"
+    "langgraph": "f007c34815719c38f10d88bdfc4b414d8e5ac839",
+    "evaluation": "efec8425a051010eb9e850b9c53d7f46a8131499"
   },
   "integration_commits": {
     "provider-runtime": "3facb3f",
@@ -17,7 +18,8 @@
     "codex": "0e26c86",
     "claude": "18321b7",
     "gemini": "a1a4b32",
-    "langgraph": "739a568"
+    "langgraph": "739a568",
+    "evaluation": "a933a4f59f8ab235960140e33839355f17890483"
   },
   "lanes": {
     "provider-runtime": {
@@ -76,13 +78,19 @@
       "reason": "Replacement consumes the Wave-7 task pack and delegates readiness to ready_tasks without deriving task state."
     },
     "evaluation": {
-      "integration_decision": "deferred",
-      "final_state": "not-launched"
+      "original_base_sha": "cd4e3a89b58c408fc3531f1ede1fd082d54c03a1",
+      "candidate_head": "efec8425a051010eb9e850b9c53d7f46a8131499",
+      "accepted_commit": "efec8425a051010eb9e850b9c53d7f46a8131499",
+      "integration_commit": "a933a4f59f8ab235960140e33839355f17890483",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated",
+      "reason": "The black-box journey uses fake local executables and recorded fixtures; no provider call occurs."
     },
     "integration": {
       "state": "active",
       "contracts_status": "frozen",
-      "candidate_review_status": "six accepted, evaluation deferred"
+      "candidate_review_status": "all seven specialist candidates accepted; completion not recorded"
     }
   }
 }

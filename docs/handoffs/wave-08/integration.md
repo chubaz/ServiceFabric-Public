@@ -26,9 +26,11 @@
 | claude | `e9aaeab` | accepted; argv/event/result translation only | `18321b7` |
 | gemini | `3dadd52`, `a5d2528` | accepted after its provider ID was corrected to `gemini` | `a26b7e5`, `a1a4b32` |
 | langgraph | `f007c34` | accepted replacement; consumes the Wave-7 task pack, reads `FileRunStore`, and delegates readiness to `ready_tasks` | `739a568` |
+| evaluation | `efec842` | accepted; black-box journey uses recorded fixtures and fake local executables only | `a933a4f` |
 
 Focused tests passed for every accepted candidate. No provider call occurred.
-Evaluation remains deferred.
+All specialist candidates are accepted. Wave completion remains intentionally
+unrecorded pending a separate completion-integration instruction.
 
 ## Provider execution composition
 
