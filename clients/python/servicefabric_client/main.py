@@ -49,7 +49,6 @@ from servicefabric_runtime import FilePortfolio, InvocationKernel
 from servicefabric_runtime.portfolio import __file__ as _portfolio_module
 from servicefabric_tool_runtime_service import ToolRuntimeService
 from servicefabric_application_host import LocalApplicationHost
-from servicefabric_capability_rest_gateway import LoopbackCapabilityRestServer
 
 from servicefabric_workspace import (
     WorkspaceLayout,
@@ -623,6 +622,11 @@ def _serve_capability_rest_gateway(
     wait: Callable[[], object] | None = None,
 ) -> str:
     """Run the composed REST gateway until interrupted."""
+
+    # The REST gateway is an optional local consumer projection. Import it only
+    # when the explicit serve command is used so the base client composition
+    # remains importable in runtimes that do not install that projection.
+    from servicefabric_capability_rest_gateway import LoopbackCapabilityRestServer
 
     if host != "127.0.0.1":
         raise CliUsageError("capability REST gateway only supports --host 127.0.0.1")

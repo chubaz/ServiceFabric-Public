@@ -1,5 +1,15 @@
 from datetime import datetime, timezone
+from pathlib import Path
+import sys
 import unittest
+
+ROOT = Path(__file__).resolve().parents[2]
+for source in reversed((
+    ROOT / "packages" / "servicefabric_contracts" / "src",
+    ROOT / "packages" / "servicefabric_agentic_contracts" / "src",
+    ROOT / "packages" / "servicefabric_agent_provider_contracts" / "src",
+)):
+    sys.path.insert(0, str(source))
 
 from pydantic import ValidationError
 from servicefabric_agent_provider_contracts import (
