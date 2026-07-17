@@ -1,0 +1,1 @@
+{"task_id":"gemini","branch":"agent/w8-gemini","handoff_path":"docs/handoffs/wave-08/gemini.md","allowed_paths":["packages/servicefabric_gemini_cli_adapter","tests/gemini_cli_adapter","docs/handoffs/wave-08/gemini.md"],"required_tests":["python3 -m unittest discover -s tests/gemini_cli_adapter -v"]}

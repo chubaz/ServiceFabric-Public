@@ -1,0 +1,1 @@
+{"task_id":"claude","branch":"agent/w8-claude","handoff_path":"docs/handoffs/wave-08/claude.md","allowed_paths":["packages/servicefabric_claude_code_adapter","tests/claude_code_adapter","docs/handoffs/wave-08/claude.md"],"required_tests":["python3 -m unittest discover -s tests/claude_code_adapter -v"]}

@@ -1,0 +1,1 @@
+{"task_id":"codex","branch":"agent/w8-codex","handoff_path":"docs/handoffs/wave-08/codex.md","allowed_paths":["packages/servicefabric_codex_adapter","tests/codex_adapter","docs/handoffs/wave-08/codex.md"],"required_tests":["python3 -m unittest discover -s tests/codex_adapter -v"]}

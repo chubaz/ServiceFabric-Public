@@ -1,0 +1,1 @@
+{"task_id":"provider-runtime","branch":"agent/w8-provider-runtime","handoff_path":"docs/handoffs/wave-08/provider-runtime.md","allowed_paths":["packages/servicefabric_agent_provider_runtime","tests/agent_provider_runtime","docs/handoffs/wave-08/provider-runtime.md"],"required_tests":["python3 -m unittest discover -s tests/agent_provider_runtime -v"]}
