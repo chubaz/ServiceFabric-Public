@@ -3,6 +3,7 @@
   "runtime_wave_id": "wave-09",
   "base_commit": "37b61bb7ab8b2be5b8daac1344046fd144b04c17",
   "integration_branch": "integration/phase25-wave9",
+  "contractsStatus": "frozen",
   "status": "implementation-authorized",
   "objective": "Build the Autonomous Application Factory on completed Wave-8 provider execution.",
   "task_manifest_dir": "config/agents/wave-09/tasks",
@@ -28,6 +29,18 @@
   "implementation_authorized": true,
   "wave_08_foundation": "completed",
   "frozen_contracts": ["packages/servicefabric_application_factory_contracts", "packages/servicefabric_agentic_contracts", "packages/servicefabric_agent_provider_contracts"],
-  "operational_policies": {"contracts_freeze_required_before_specialists": true, "candidate_commits_allowed": true, "automatic_merger": false, "specialists_may_merge_or_pull_feature_branches": false},
+  "operational_policies": {"contracts_freeze_required_before_specialists": true, "candidate_commits_allowed": true, "automatic_merger": false, "specialists_may_merge_or_pull_feature_branches": false, "lanes_may_merge_to_main": false, "candidate_review_read_only": true, "candidate_review_may_integrate_code": false, "repository_bootstrap_invokes_providers": false},
+  "boundary_freeze": {
+    "wave_03_generator_and_blueprint_apis": "authoritative",
+    "wave_07_intent_task_plan_result_evidence_handoff_contracts": "authoritative",
+    "wave_08_provider_runtime_and_execution_service": "authoritative",
+    "technology_profiles": "governance-and-planning-inputs-only",
+    "engineering_blueprint": "compiles-to-AgentRunPlan",
+    "repository_bootstrap": "does-not-invoke-providers",
+    "candidate_review": "read-only-no-code-integration",
+    "application_integration": "accepted-exact-commit-shas-only",
+    "unmet_requirement": "records-needs-without-modifying-ServiceFabric"
+  },
+  "specialist_test_command_ceiling": {"technology-profile": 2, "blueprint-compiler": 2, "factory-lifecycle": 2, "repository-bootstrap": 2, "candidate-review": 2, "application-integration": 2, "evaluation": 2},
   "verification_gates": ["make verify-wave-09", "make verify-current", "git diff --check"]
 }
