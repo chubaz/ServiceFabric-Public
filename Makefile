@@ -196,7 +196,7 @@ WAVE06_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $
 WAVE07_PYTHON ?= $(WAVE06_PYTHON)
 WAVE07_PYTHONPATH := $(WAVE06_PYTHONPATH):$(CURDIR)/packages/servicefabric_agentic_contracts/src:$(CURDIR)/packages/servicefabric_agentic_context/src:$(CURDIR)/packages/servicefabric_agentic_planner/src:$(CURDIR)/packages/servicefabric_agentic_run_store/src:$(CURDIR)/packages/servicefabric_agent_tools/src:$(CURDIR)/packages/servicefabric_agentic_orchestrator/src:$(CURDIR)/packages/servicefabric_agent_harness/src
 WAVE07_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE07_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE07_PYTHONPATH)"
-WAVE08_PYTHON ?= $(WAVE07_PYTHON)
+WAVE08_PYTHON ?= $(if $(VIRTUAL_ENV),$(VIRTUAL_ENV)/bin/python,$(WAVE07_PYTHON))
 WAVE08_PYTHONPATH := $(WAVE07_PYTHONPATH):$(CURDIR)/packages/servicefabric_agent_provider_contracts/src:$(CURDIR)/packages/servicefabric_agent_provider_runtime/src:$(CURDIR)/packages/servicefabric_langgraph_orchestration/src:$(CURDIR)/packages/servicefabric_pi_harness/src:$(CURDIR)/packages/servicefabric_codex_adapter/src:$(CURDIR)/packages/servicefabric_claude_code_adapter/src:$(CURDIR)/packages/servicefabric_gemini_cli_adapter/src:$(CURDIR)/clients/python
 WAVE08_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE08_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE08_PYTHONPATH)"
 
@@ -223,7 +223,7 @@ verify-wave-08:
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/claude_code_adapter -v
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/gemini_cli_adapter -v
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/wave_08 -v
-	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest tests.wave_07.test_framework_journey -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest tests.wave_07.test_framework_journey -v
 	$(WAVE08_ENV) $(WAVE08_PYTHON) scripts/dependencies/check_python_locks.py
 	$(WAVE08_ENV) $(WAVE08_PYTHON) -m compileall packages/servicefabric_agent_provider_contracts packages/servicefabric_agent_provider_runtime packages/servicefabric_langgraph_orchestration packages/servicefabric_pi_harness packages/servicefabric_codex_adapter packages/servicefabric_claude_code_adapter packages/servicefabric_gemini_cli_adapter clients/python/servicefabric_client/agent_providers.py clients/python/servicefabric_client/provider_execution.py integration/phase25-wave8 tests/agent_provider_contracts tests/wave_08
 	git diff --check
