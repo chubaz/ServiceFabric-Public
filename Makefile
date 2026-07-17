@@ -197,7 +197,7 @@ WAVE07_PYTHON ?= $(WAVE06_PYTHON)
 WAVE07_PYTHONPATH := $(WAVE06_PYTHONPATH):$(CURDIR)/packages/servicefabric_agentic_contracts/src:$(CURDIR)/packages/servicefabric_agentic_context/src:$(CURDIR)/packages/servicefabric_agentic_planner/src:$(CURDIR)/packages/servicefabric_agentic_run_store/src:$(CURDIR)/packages/servicefabric_agent_tools/src:$(CURDIR)/packages/servicefabric_agentic_orchestrator/src:$(CURDIR)/packages/servicefabric_agent_harness/src
 WAVE07_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE07_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE07_PYTHONPATH)"
 WAVE08_PYTHON ?= $(WAVE07_PYTHON)
-WAVE08_PYTHONPATH := $(WAVE07_PYTHONPATH):$(CURDIR)/packages/servicefabric_agent_provider_contracts/src:$(CURDIR)/clients/python
+WAVE08_PYTHONPATH := $(WAVE07_PYTHONPATH):$(CURDIR)/packages/servicefabric_agent_provider_contracts/src:$(CURDIR)/packages/servicefabric_agent_provider_runtime/src:$(CURDIR)/packages/servicefabric_langgraph_orchestration/src:$(CURDIR)/packages/servicefabric_pi_harness/src:$(CURDIR)/packages/servicefabric_codex_adapter/src:$(CURDIR)/packages/servicefabric_claude_code_adapter/src:$(CURDIR)/packages/servicefabric_gemini_cli_adapter/src:$(CURDIR)/clients/python
 WAVE08_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE08_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE08_PYTHONPATH)"
 
 verify-wave-07:

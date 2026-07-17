@@ -504,18 +504,29 @@ def dispatch_agents(args: object) -> tuple[int, str, object]:
     service = AgenticApplicationService.for_current_environment()
     command = getattr(args, "agents_action")
     if command == "providers":
-        from .agent_providers import ProviderRegistry
+        from .agent_providers import default_provider_registry
 
-        registry = ProviderRegistry()
+        registry = default_provider_registry()
         if getattr(args, "provider_action") == "list":
             return 0, "agents-providers-list", {"providers": registry.list()}
         return 0, "agents-providers-doctor", {
             "providers": registry.doctor(getattr(args, "provider", None)),
         }
     if command in {"execute", "events", "resume", "cancel"}:
-        # These commands intentionally retain the public CLI contract before the
-        # runtime and LangGraph specialist packages are composed into this branch.
-        raise ValueError("Wave-8 provider runtime composition is not installed")
+        from .agent_providers import default_provider_registry
+        from .provider_execution import ProviderExecutionService
+
+        execution = ProviderExecutionService(service, default_provider_registry())
+        run_id = getattr(args, "run_id")
+        if command == "execute":
+            if getattr(args, "orchestrator") != "langgraph":
+                raise ValueError("only the langgraph orchestrator is available")
+            return 0, "agents-execute", execution.execute(run_id, getattr(args, "policy"))
+        if command == "events":
+            return 0, "agents-events", {"run_id": run_id, "events": execution.events(run_id, getattr(args, "task_id", None))}
+        if command == "resume":
+            return 0, "agents-resume", execution.resume(run_id, getattr(args, "decision"))
+        return 0, "agents-cancel", execution.cancel(run_id, getattr(args, "task_id", None))
     if command == "plan":
         raw = json.loads(Path(getattr(args, "intent")).read_text(encoding="utf-8"))
         intent = ApplicationIntent.model_validate(raw)

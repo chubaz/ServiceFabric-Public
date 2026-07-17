@@ -12,6 +12,16 @@ from servicefabric_agent_provider_contracts import ExecutableHarnessAdapter, Pro
 KNOWN_PROVIDER_IDS = ("claude", "codex", "gemini", "pi")
 
 
+def default_provider_registry() -> "ProviderRegistry":
+    """Compose the reviewed adapters explicitly; no discovery or dynamic import."""
+    from servicefabric_claude_code_adapter import ClaudeCodeAdapter
+    from servicefabric_codex_adapter import CodexAdapter
+    from servicefabric_gemini_cli_adapter import GeminiCliAdapter
+    from servicefabric_pi_harness import PiHarnessAdapter
+
+    return ProviderRegistry((ClaudeCodeAdapter(), CodexAdapter(), GeminiCliAdapter(), PiHarnessAdapter()))
+
+
 class ProviderRegistry:
     """Explicit adapter registry that never imports optional providers dynamically."""
 
@@ -27,6 +37,10 @@ class ProviderRegistry:
             return self._adapters[provider_id]
         except KeyError as error:
             raise ValueError(f"provider adapter is unavailable: {provider_id}") from error
+
+    def adapters(self) -> tuple[ExecutableHarnessAdapter, ...]:
+        """Return the explicit adapter set for the common provider runtime."""
+        return tuple(self._adapters[provider_id] for provider_id in sorted(self._adapters))
 
     def list(self) -> tuple[dict[str, object], ...]:
         return tuple(
