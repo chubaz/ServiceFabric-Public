@@ -1,18 +1,17 @@
 # Wave-8 integration handoff
 
-## Bootstrap scope
-
-- Added `servicefabric_agent_provider_contracts`; it contains immutable data models
-  and `ExecutableHarnessAdapter` only.
-- Added a static integration registry and local JSON `ProviderPolicy` loader.
-- Reserved the public provider CLI surface without launching a provider.
-
-## Deferred composition
-
-The provider runtime, LangGraph orchestration, and four provider adapters are
-specialist-owned and are intentionally not represented by placeholder runtime
-implementations. `make verify-wave-08` detects their suites when integrated.
-
-## Validation
-
-Run `make verify-wave-08`. It does not make model-provider calls.
+- Task: integration bootstrap and Wave-8 contract freeze.
+- Commit: no candidate commits accepted; all specialist lanes remain at the
+  Wave-8 bootstrap head.
+- Validation: `wave_task_preflight`, Wave-8 boundary checks, provider-contract
+  tests, bootstrap tests, and the Wave-7 framework journey passed using the
+  lane virtual environment. `make verify-current` and `git diff --check`
+  passed. No provider call occurred. `make verify-wave-08` is blocked only at
+  its `pip check`: the lane environment has editable Wave-8 packages but does
+  not install their Wave-7 dependencies as distributions.
+- Blockers: provider runtime, LangGraph orchestration, Pi, Codex, Claude,
+  Gemini, and evaluation candidates have not been delivered. Their owned
+  paths remain untouched. `contractsStatus: frozen` is recorded in the Wave-8
+  control state.
+- Rollback: remove the Wave-8 integration bootstrap only; do not alter the
+  frozen Wave-7 contracts or any specialist-owned path.
