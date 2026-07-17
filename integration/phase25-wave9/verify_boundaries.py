@@ -6,8 +6,6 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-
-
 def load_json(path: Path) -> dict[str, object]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
