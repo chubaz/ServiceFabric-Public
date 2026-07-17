@@ -503,6 +503,19 @@ def dispatch_agents(args: object) -> tuple[int, str, object]:
 
     service = AgenticApplicationService.for_current_environment()
     command = getattr(args, "agents_action")
+    if command == "providers":
+        from .agent_providers import ProviderRegistry
+
+        registry = ProviderRegistry()
+        if getattr(args, "provider_action") == "list":
+            return 0, "agents-providers-list", {"providers": registry.list()}
+        return 0, "agents-providers-doctor", {
+            "providers": registry.doctor(getattr(args, "provider", None)),
+        }
+    if command in {"execute", "events", "resume", "cancel"}:
+        # These commands intentionally retain the public CLI contract before the
+        # runtime and LangGraph specialist packages are composed into this branch.
+        raise ValueError("Wave-8 provider runtime composition is not installed")
     if command == "plan":
         raw = json.loads(Path(getattr(args, "intent")).read_text(encoding="utf-8"))
         intent = ApplicationIntent.model_validate(raw)

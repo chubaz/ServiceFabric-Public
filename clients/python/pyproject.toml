@@ -14,6 +14,7 @@ dependencies = [
   "servicefabric-application-host==0.1.0a1",
   "servicefabric-application-model==0.1.0a1",
   "servicefabric-agent-harness==0.1.0a1",
+  "servicefabric-agent-provider-contracts==0.8.0a1",
   "servicefabric-agent-tools==0.1.0a1",
   "servicefabric-agentic-context==0.1.0a1",
   "servicefabric-agentic-contracts==0.1.0a1",

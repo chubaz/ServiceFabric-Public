@@ -545,6 +545,25 @@ def parser() -> ServiceFabricArgumentParser:
     agent_result.add_argument("run_id")
     agent_result.add_argument("task_id")
     agent_result.add_argument("--result", required=True, metavar="FILE")
+
+    providers = agent_actions.add_parser("providers", help="inspect configured coding-agent providers")
+    provider_actions = providers.add_subparsers(dest="provider_action", required=True)
+    provider_actions.add_parser("list", help="list known provider adapters")
+    provider_doctor = provider_actions.add_parser("doctor", help="probe installed provider adapters")
+    provider_doctor.add_argument("--provider", metavar="PROVIDER")
+    execute = agent_actions.add_parser("execute", help="execute a stored run through the selected orchestrator")
+    execute.add_argument("run_id", metavar="RUN_ID")
+    execute.add_argument("--policy", required=True, metavar="FILE")
+    execute.add_argument("--orchestrator", required=True, choices=("langgraph",))
+    events = agent_actions.add_parser("events", help="show stored provider events")
+    events.add_argument("run_id", metavar="RUN_ID")
+    events.add_argument("--task", dest="task_id", metavar="TASK_ID")
+    resume = agent_actions.add_parser("resume", help="resume a run after a durable decision")
+    resume.add_argument("run_id", metavar="RUN_ID")
+    resume.add_argument("--decision", required=True, metavar="FILE")
+    cancel = agent_actions.add_parser("cancel", help="request provider cancellation")
+    cancel.add_argument("run_id", metavar="RUN_ID")
+    cancel.add_argument("--task", dest="task_id", metavar="TASK_ID")
     return root
 
 

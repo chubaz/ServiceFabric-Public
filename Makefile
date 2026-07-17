@@ -196,6 +196,9 @@ WAVE06_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $
 WAVE07_PYTHON ?= $(WAVE06_PYTHON)
 WAVE07_PYTHONPATH := $(WAVE06_PYTHONPATH):$(CURDIR)/packages/servicefabric_agentic_contracts/src:$(CURDIR)/packages/servicefabric_agentic_context/src:$(CURDIR)/packages/servicefabric_agentic_planner/src:$(CURDIR)/packages/servicefabric_agentic_run_store/src:$(CURDIR)/packages/servicefabric_agent_tools/src:$(CURDIR)/packages/servicefabric_agentic_orchestrator/src:$(CURDIR)/packages/servicefabric_agent_harness/src
 WAVE07_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE07_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE07_PYTHONPATH)"
+WAVE08_PYTHON ?= $(WAVE07_PYTHON)
+WAVE08_PYTHONPATH := $(WAVE07_PYTHONPATH):$(CURDIR)/packages/servicefabric_agent_provider_contracts/src:$(CURDIR)/clients/python
+WAVE08_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE08_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE08_PYTHONPATH)"
 
 verify-wave-07:
 	$(WAVE07_ENV) $(WAVE07_PYTHON) integration/phase25-wave7/verify_boundaries.py
@@ -208,6 +211,19 @@ verify-wave-07:
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/agent_harness -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s tests/wave_07 -v
 	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest discover -s integration/phase25-wave7 -p 'test_*.py' -v
+	git diff --check
+
+verify-wave-08:
+	$(WAVE08_ENV) $(WAVE08_PYTHON) integration/phase25-wave8/verify_boundaries.py
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/agent_provider_contracts -v
+	@for suite in tests/agent_provider_runtime tests/langgraph_orchestration tests/pi_harness tests/codex_adapter tests/claude_code_adapter tests/gemini_cli_adapter; do \
+		if [ -d $$suite ]; then $(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s $$suite -v; else echo "Wave-8 specialist suite pending: $$suite"; fi; \
+	done
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m unittest discover -s tests/wave_08 -v
+	$(WAVE07_ENV) $(WAVE07_PYTHON) -m unittest tests.wave_07.test_framework_journey -v
+	$(WAVE08_ENV) $(WAVE08_PYTHON) scripts/dependencies/check_python_locks.py
+	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE08_PYTHON)):$(PATH)" $(WAVE08_PYTHON) -m pip check
+	$(WAVE08_ENV) $(WAVE08_PYTHON) -m compileall packages/servicefabric_agent_provider_contracts clients/python/servicefabric_client/agent_providers.py integration/phase25-wave8 tests/agent_provider_contracts tests/wave_08
 	git diff --check
 
 verify-wave-06:
