@@ -32,6 +32,13 @@
 - Returned repository-bootstrap correction `5f368ac96fd1c4cf933ef9ce66213f0dae888016` despite its passing three-test focused suite, canonical import, and package-source compileall. Its `pyproject.toml`, `src/` package, imports, minimal dependencies, local-Git-only behavior, and owned-path diff are correct. However, the commit renames and edits files introduced by superseded `2f705f5`, so applying only this exact SHA is impossible; its handoff also names the replacement only as `HEAD`.
 - Neither superseded candidate was accepted or integrated. Each lane must provide a standalone replacement commit from an approved base and a subsequent handoff that records that immutable replacement SHA.
 
+### Recovered standalone replacements — 2026-07-18
+
+- Accepted and integrated `blueprint-compiler` standalone implementation `132207d2814417c4ff187a9703b2770dcdb436a6` as `5d87eb7`; its documentation-only handoff `476cd42` names that exact implementation SHA.
+- Accepted and integrated `repository-bootstrap` standalone implementation `6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c` as `9ada09e`; its documentation-only handoff `6ec0456` names that exact implementation SHA.
+- Both replacements have owned-path diffs and focused validation. The repository-bootstrap suite passes through the canonical Wave-9 Makefile environment, whose `WAVE09_PYTHONPATH` includes `packages/servicefabric_application_factory_bootstrap/src`; its earlier plain `unittest` import failure was caused by the package source root not being installed or present in that active environment, not by the accepted candidate. No test-side import manipulation was retained.
+- The superseded candidates remain unaccepted and unintegrated. Downstream review proceeds with `candidate-review`, `application-integration`, and `evaluation`, followed by the defined pre-Order-12 readiness process.
+
 ## Rollback
 
 Revert this integration-only freeze record and boundary verifier; no provider, repository, or application state was changed.

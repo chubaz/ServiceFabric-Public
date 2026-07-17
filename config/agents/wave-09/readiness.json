@@ -5,11 +5,15 @@
   "overall": "in_progress",
   "accepted_candidate_commits": {
     "technology-profile": "25a80c9f658059f25de8c15bb765e4ccb3d7abcc",
-    "factory-lifecycle": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee"
+    "factory-lifecycle": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee",
+    "blueprint-compiler": "132207d2814417c4ff187a9703b2770dcdb436a6",
+    "repository-bootstrap": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c"
   },
   "integration_commits": {
     "technology-profile": "4075ff13a5655b447461e9934e616912b92a1576",
-    "factory-lifecycle": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf"
+    "factory-lifecycle": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
+    "blueprint-compiler": "5d87eb7",
+    "repository-bootstrap": "9ada09e"
   },
   "lanes": {
     "technology-profile": {
@@ -32,19 +36,21 @@
     },
     "blueprint-compiler": {
       "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
-      "candidate_head": "ed33fbf88f15f30ace1bbd097c1cf73bb5220cb6",
+      "candidate_head": "132207d2814417c4ff187a9703b2770dcdb436a6",
+      "accepted_commit": "132207d2814417c4ff187a9703b2770dcdb436a6",
+      "integration_commit": "5d87eb7",
       "focused_verification": "passed",
-      "integration_decision": "return",
-      "final_state": "returned",
-      "reason": "The hierarchical ownership correction and focused suite pass, but ed33fbf is a delta on the superseded candidate and cannot be integrated alone; its handoff records the replacement only as HEAD rather than an immutable SHA."
+      "integration_decision": "accepted",
+      "final_state": "integrated"
     },
     "repository-bootstrap": {
-      "original_base_sha": "f45f8cd9aa7bcbef982dd271d4a9df015702e24c",
-      "candidate_head": "5f368ac96fd1c4cf933ef9ce66213f0dae888016",
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
+      "accepted_commit": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
+      "integration_commit": "9ada09e",
       "focused_verification": "passed",
-      "integration_decision": "return",
-      "final_state": "returned",
-      "reason": "Canonical packaging, imports, focused tests, and compileall pass, but 5f368ac is a rename/edit delta on superseded 2f705f5 and cannot be integrated alone; its handoff records the replacement only as HEAD rather than an immutable SHA."
+      "integration_decision": "accepted",
+      "final_state": "integrated"
     },
     "candidate-review": {"final_state": "pending"},
     "application-integration": {"final_state": "pending"},
@@ -52,7 +58,7 @@
     "integration": {
       "state": "active",
       "contracts_status": "frozen",
-      "candidate_review_status": "technology-profile and factory-lifecycle accepted; blueprint-compiler and repository-bootstrap returned",
+      "candidate_review_status": "technology-profile, factory-lifecycle, blueprint-compiler, and repository-bootstrap accepted and integrated",
       "wave_completion_status": "in_progress",
       "final_verification_status": "pending"
     }

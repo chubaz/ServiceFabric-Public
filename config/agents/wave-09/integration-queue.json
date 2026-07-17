@@ -14,12 +14,12 @@
   "lanes": {
     "technology-profile": "integrated",
     "factory-lifecycle": "integrated",
-    "blueprint-compiler": "returned",
-    "repository-bootstrap": "returned",
+    "blueprint-compiler": "integrated",
+    "repository-bootstrap": "integrated",
     "candidate-review": "pending",
     "application-integration": "pending",
     "evaluation": "pending",
     "integration": "active"
   },
-  "next_action": "Request standalone replacement commits for blueprint-compiler and repository-bootstrap, based on an approved integration base, plus handoffs that name each immutable replacement SHA; do not integrate their superseded ancestors."
+  "next_action": "Review downstream candidate-review, application-integration, and evaluation candidates in integration order, then perform the defined pre-Order-12 readiness process."
 }
