@@ -1,0 +1,25 @@
+{
+  "wave_id": "wave-09",
+  "overall": "IN PROGRESS",
+  "contractsStatus": "frozen",
+  "dependency_order": [
+    "technology-profile",
+    "factory-lifecycle",
+    "blueprint-compiler",
+    "repository-bootstrap",
+    "candidate-review",
+    "application-integration",
+    "evaluation"
+  ],
+  "lanes": {
+    "technology-profile": "integrated",
+    "factory-lifecycle": "integrated",
+    "blueprint-compiler": "returned",
+    "repository-bootstrap": "pending",
+    "candidate-review": "pending",
+    "application-integration": "pending",
+    "evaluation": "pending",
+    "integration": "active"
+  },
+  "next_action": "Return the blueprint compiler for hierarchical allowed-path overlap validation; review the repository-bootstrap candidate when available."
+}

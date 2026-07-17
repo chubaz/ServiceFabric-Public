@@ -1,0 +1,53 @@
+{
+  "wave_id": "wave-09",
+  "base_commit": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+  "contractsStatus": "frozen",
+  "overall": "in_progress",
+  "accepted_candidate_commits": {
+    "technology-profile": "25a80c9f658059f25de8c15bb765e4ccb3d7abcc",
+    "factory-lifecycle": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee"
+  },
+  "integration_commits": {
+    "technology-profile": "4075ff13a5655b447461e9934e616912b92a1576",
+    "factory-lifecycle": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf"
+  },
+  "lanes": {
+    "technology-profile": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "663dd18697360b73c33c36c1052f06ef77a964fa",
+      "accepted_commit": "25a80c9f658059f25de8c15bb765e4ccb3d7abcc",
+      "integration_commit": "4075ff13a5655b447461e9934e616912b92a1576",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "factory-lifecycle": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "c7a8aec07109749ab6921a98dcb1461db3a56e9f",
+      "accepted_commit": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee",
+      "integration_commit": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "blueprint-compiler": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "57bfdf43c5a178ac08a21f575b86b80684c67366",
+      "focused_verification": "not_run",
+      "integration_decision": "return",
+      "final_state": "returned",
+      "reason": "Allowed-path validation rejects exact duplicates only and must also reject parent/child path overlap before lanes can be accepted."
+    },
+    "repository-bootstrap": {"final_state": "pending"},
+    "candidate-review": {"final_state": "pending"},
+    "application-integration": {"final_state": "pending"},
+    "evaluation": {"final_state": "pending"},
+    "integration": {
+      "state": "active",
+      "contracts_status": "frozen",
+      "candidate_review_status": "technology-profile and factory-lifecycle accepted; blueprint-compiler returned",
+      "wave_completion_status": "in_progress",
+      "final_verification_status": "pending"
+    }
+  }
+}
