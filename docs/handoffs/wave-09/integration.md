@@ -24,6 +24,7 @@
 - Accepted `technology-profile` candidate `25a80c9f658059f25de8c15bb765e4ccb3d7abcc`: canonical handoff, full owned-path diff, frozen-boundary inspection, and its five-test focused suite passed. Integrated as `4075ff13a5655b447461e9934e616912b92a1576`.
 - Accepted `factory-lifecycle` candidate `91e7c08aa11b9f68bda8c77bd8b302274dd670ee`: canonical handoff, full owned-path diff, factory-only store boundary inspection, and its four-test focused suite passed. Integrated as `dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf`.
 - Returned `blueprint-compiler` candidate `a7235a2`: its lane validation detects only identical allowed paths, not parent/child overlaps. It must enforce hierarchical disjointness before focused verification and acceptance.
+- Returned `repository-bootstrap` candidate `2f705f561fe2796f2c98866de41bdd571aa95c93`: its three-test focused suite and diff check pass, and the implementation remains local-Git-only, but the candidate has no `pyproject.toml` or `src/` package layout. The test inserts the package root into `sys.path`, masking that canonical Wave-9 composition cannot import the package through its declared `.../src` path.
 
 ## Rollback
 

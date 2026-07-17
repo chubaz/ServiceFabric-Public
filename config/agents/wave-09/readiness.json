@@ -38,14 +38,21 @@
       "final_state": "returned",
       "reason": "Allowed-path validation rejects exact duplicates only and must also reject parent/child path overlap before lanes can be accepted."
     },
-    "repository-bootstrap": {"final_state": "pending"},
+    "repository-bootstrap": {
+      "original_base_sha": "f45f8cd9aa7bcbef982dd271d4a9df015702e24c",
+      "candidate_head": "511ea4319c62486e6c18d2a3ecaf8b2682ae1810",
+      "focused_verification": "passed",
+      "integration_decision": "return",
+      "final_state": "returned",
+      "reason": "The focused suite passes only by injecting the package root into sys.path; the candidate lacks pyproject.toml and the src layout required by WAVE09_PYTHONPATH, so canonical composition cannot import it."
+    },
     "candidate-review": {"final_state": "pending"},
     "application-integration": {"final_state": "pending"},
     "evaluation": {"final_state": "pending"},
     "integration": {
       "state": "active",
       "contracts_status": "frozen",
-      "candidate_review_status": "technology-profile and factory-lifecycle accepted; blueprint-compiler returned",
+      "candidate_review_status": "technology-profile and factory-lifecycle accepted; blueprint-compiler and repository-bootstrap returned",
       "wave_completion_status": "in_progress",
       "final_verification_status": "pending"
     }

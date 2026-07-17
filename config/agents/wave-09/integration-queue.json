@@ -15,11 +15,11 @@
     "technology-profile": "integrated",
     "factory-lifecycle": "integrated",
     "blueprint-compiler": "returned",
-    "repository-bootstrap": "pending",
+    "repository-bootstrap": "returned",
     "candidate-review": "pending",
     "application-integration": "pending",
     "evaluation": "pending",
     "integration": "active"
   },
-  "next_action": "Return the blueprint compiler for hierarchical allowed-path overlap validation; review the repository-bootstrap candidate when available."
+  "next_action": "Await corrected blueprint-compiler hierarchical path validation and a repository-bootstrap package using the canonical pyproject.toml plus src layout."
 }
