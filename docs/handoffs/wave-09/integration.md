@@ -61,6 +61,57 @@ All six required implementation lanes are accepted and integrated. Their canonic
 Wave 9 is closed on the integration branch. It is ready for review and handoff;
 it has not been pushed or merged to `main`.
 
+## Final verification record
+
+- Audited closure HEAD: `a49b9682e7b671a43d8d8a969ab4af41f4762ad7`.
+- All seven specialist lanes are accepted and integrated; the integration lane is complete.
+- Formal `make verify-wave-09` passed 35 tests plus boundary, lock, compileall,
+  isolated `pip check`, and diff checks.
+- Isolated `pip check` returned `No broken requirements found.`
+- The subsequent `make verify-current` passed for
+  `ap-00-modular-framework-kits/readiness`.
+- The user-confirmed final audit passed at the audited closure HEAD.
+
+The evaluated technology profile selected `fastapi-service@1.0.0`, adapter
+`reviewed-fastapi-v1`, runtime family `python`, and one exact technique-policy
+reference for each of `api`, `data`, `jobs`, `security`, and `web`. Those five
+module lanes plus application integration and assurance form the seven-lane
+EngineeringBlueprint.
+
+The fake executable-provider journey produced seven canonical usage records and
+28 normalized events: 140 input tokens, 70 output tokens, 14 cached tokens,
+estimated cost 0.7, and 700 ms total duration. Factory state retains only the
+Wave-8-owned `provider-usage:<run-id>` reference.
+
+Review evidence includes explicit factory approval, an initial API-candidate
+`rework`, five exact replacement-candidate `accept` decisions, and rejection of
+mutable or superseded identities. No provider output supplied approval.
+
+Evaluation produced `unmet-resource-api-external-database` to prove the blocked
+resource path. It created no repository, worktree, or provider execution and is
+a deliberate negative fixture, not an unresolved Wave-9 deliverable.
+
+## Next authorized wave intake
+
+Wave 9 has no unresolved implementation item. Two non-blocking concerns are
+carried in `config/agent/waves/wave-09/integration-queue.json` for the next
+formally authorized wave:
+
+1. Decide whether future blueprints need separately declared bounded build and
+   development-smoke commands; never infer undeclared commands.
+2. Explicitly archive or discard the obsolete non-authoritative evaluation
+   worktree before reusing it; never integrate its invalid pre-recovery changes.
+
+No Wave-10 definition is created by this handoff.
+
+## Rollback order
+
+Revert closure, evaluation acceptance, packaging correction, final journey,
+CLI, and composition in that order, followed by application integration,
+candidate review, repository bootstrap, blueprint compiler, factory lifecycle,
+and technology profile. Exact reverse-order commit identities are recorded in
+`config/agent/waves/wave-09/readiness.json`.
+
 ## Rollback
 
 Revert this integration-only freeze record and boundary verifier; no provider, repository, or application state was changed.

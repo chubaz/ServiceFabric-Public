@@ -1,0 +1,113 @@
+{
+  "wave_id": "wave-09",
+  "overall": "WAVE COMPLETE",
+  "contractsStatus": "frozen",
+  "verified_head": "a49b9682e7b671a43d8d8a969ab4af41f4762ad7",
+  "accepted_candidate_commits": {
+    "technology-profile": "25a80c9f658059f25de8c15bb765e4ccb3d7abcc",
+    "blueprint-compiler": "132207d2814417c4ff187a9703b2770dcdb436a6",
+    "factory-lifecycle": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee",
+    "repository-bootstrap": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
+    "candidate-review": "66136e680270e620f278c9960c6291d8a2318eee",
+    "application-integration": "f755ecf0b550e72c8eb84a737ae643dfaccd22bf",
+    "evaluation": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf"
+  },
+  "integration_commits": {
+    "technology-profile": "4075ff13a5655b447461e9934e616912b92a1576",
+    "blueprint-compiler": "5d87eb7694adeae9cd402b1968db163d7fac1955",
+    "factory-lifecycle": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
+    "repository-bootstrap": "9ada09eb8358a46ec90f3db804f96f2083ca4fb5",
+    "candidate-review": "c80734165dbe527f93e101dabb2b4a6d3caf88ad",
+    "application-integration": "718232e926059e98fe017af656334601adb4bda0",
+    "composition": "b5368828d9df5a8c38653be29c4ff85222787f16",
+    "cli": "317a2331b6e23c8f8f09ac455847e2b0fecca24a",
+    "evaluation-journey": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf",
+    "packaging-correction": "6930121cc57cbd0bf7532d007e5b49c43090a383",
+    "evaluation-acceptance": "30a67d7906e2f5ea9b143ecde04031df25adf26c",
+    "closure": "a49b9682e7b671a43d8d8a969ab4af41f4762ad7"
+  },
+  "lanes": {
+    "technology-profile": "accepted/integrated",
+    "blueprint-compiler": "accepted/integrated",
+    "factory-lifecycle": "accepted/integrated",
+    "repository-bootstrap": "accepted/integrated",
+    "candidate-review": "accepted/integrated",
+    "application-integration": "accepted/integrated",
+    "evaluation": "accepted/integrated",
+    "integration": "accepted/integrated"
+  },
+  "technology_profile_selections": [
+    {"module_id": "api", "primitive": "service", "kit": "fastapi-service@1.0.0", "adapter_id": "reviewed-fastapi-v1", "runtime_family": "python", "technique_policy_ids": ["technique-api-v1"]},
+    {"module_id": "data", "primitive": "service", "kit": "fastapi-service@1.0.0", "adapter_id": "reviewed-fastapi-v1", "runtime_family": "python", "technique_policy_ids": ["technique-data-v1"]},
+    {"module_id": "jobs", "primitive": "service", "kit": "fastapi-service@1.0.0", "adapter_id": "reviewed-fastapi-v1", "runtime_family": "python", "technique_policy_ids": ["technique-jobs-v1"]},
+    {"module_id": "security", "primitive": "service", "kit": "fastapi-service@1.0.0", "adapter_id": "reviewed-fastapi-v1", "runtime_family": "python", "technique_policy_ids": ["technique-security-v1"]},
+    {"module_id": "web", "primitive": "service", "kit": "fastapi-service@1.0.0", "adapter_id": "reviewed-fastapi-v1", "runtime_family": "python", "technique_policy_ids": ["technique-web-v1"]}
+  ],
+  "application_factory_evaluation": {
+    "result": "accepted",
+    "engineering_lane_count": 7,
+    "journey_stages": ["plan", "approve", "bootstrap", "execute", "candidates", "review", "integrate", "status", "handoff"],
+    "fake_executable_provider": true,
+    "real_provider_invoked": false,
+    "exact_sha_integration": true,
+    "retry_and_supersession": true,
+    "handoff_deterministic": true
+  },
+  "provider_usage_summary": {
+    "authority": "Wave-8 ProviderExecutionService",
+    "reference_format": "provider-usage:<run-id>",
+    "provider_id": "codex-normalized-local-fake",
+    "task_records": 7,
+    "normalized_events": 28,
+    "input_tokens": 140,
+    "output_tokens": 70,
+    "cached_tokens": 14,
+    "estimated_cost": 0.7,
+    "duration_ms": 700,
+    "duplicated_in_factory_state": false
+  },
+  "review_decisions": {
+    "factory_approval": "approve-sample-factory: approve",
+    "initial_api_candidate": "return-initial-api: rework",
+    "replacement_candidates": ["accept-module-api", "accept-module-data", "accept-module-jobs", "accept-module-security", "accept-module-web"],
+    "specialist_lanes": "all accepted",
+    "superseded_candidates_integrated": false
+  },
+  "unmet_requirements_produced_during_evaluation": [
+    {
+      "requirement_id": "unmet-resource-api-external-database",
+      "required_behavior": "Resource 'external-database' for module 'api' is unresolved.",
+      "proposed_scope": "platform",
+      "urgency": "high",
+      "result": "blocked before repository creation, worktree creation, or provider execution",
+      "carry_forward": false,
+      "reason": "Deliberate negative-path evaluation fixture; not an unresolved ServiceFabric implementation requirement."
+    }
+  ],
+  "verification_evidence": {
+    "make verify-wave-09": "passed: 35 tests plus boundaries, locks, compileall, isolated pip check, and diff check",
+    "isolated pip check": "No broken requirements found.",
+    "make verify-current": "passed: ap-00-modular-framework-kits/readiness",
+    "git diff --check": "passed",
+    "final_audit": "user-confirmed passed at verified_head"
+  },
+  "known_limitations": [
+    "The evaluated generated Python application declared python3 -m unittest but no separate build or bounded development-smoke command; the factory correctly did not infer undeclared commands.",
+    "Provider accounting is deterministic fake-provider evaluation usage, not a real-provider cost report.",
+    "The obsolete non-authoritative evaluation worktree retains invalid pre-recovery changes and must not be integrated."
+  ],
+  "rollback_order": [
+    "a49b9682e7b671a43d8d8a969ab4af41f4762ad7",
+    "30a67d7906e2f5ea9b143ecde04031df25adf26c",
+    "6930121cc57cbd0bf7532d007e5b49c43090a383",
+    "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf",
+    "317a2331b6e23c8f8f09ac455847e2b0fecca24a",
+    "b5368828d9df5a8c38653be29c4ff85222787f16",
+    "718232e926059e98fe017af656334601adb4bda0",
+    "c80734165dbe527f93e101dabb2b4a6d3caf88ad",
+    "9ada09eb8358a46ec90f3db804f96f2083ca4fb5",
+    "5d87eb7694adeae9cd402b1968db163d7fac1955",
+    "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
+    "4075ff13a5655b447461e9934e616912b92a1576"
+  ]
+}
