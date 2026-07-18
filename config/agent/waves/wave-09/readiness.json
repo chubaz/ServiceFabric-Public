@@ -27,14 +27,76 @@
     "closure": "a49b9682e7b671a43d8d8a969ab4af41f4762ad7"
   },
   "lanes": {
-    "technology-profile": "accepted/integrated",
-    "blueprint-compiler": "accepted/integrated",
-    "factory-lifecycle": "accepted/integrated",
-    "repository-bootstrap": "accepted/integrated",
-    "candidate-review": "accepted/integrated",
-    "application-integration": "accepted/integrated",
-    "evaluation": "accepted/integrated",
-    "integration": "accepted/integrated"
+    "technology-profile": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "663dd18697360b73c33c36c1052f06ef77a964fa",
+      "accepted_commit": "25a80c9f658059f25de8c15bb765e4ccb3d7abcc",
+      "integration_commit": "4075ff13a5655b447461e9934e616912b92a1576",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "blueprint-compiler": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "132207d2814417c4ff187a9703b2770dcdb436a6",
+      "accepted_commit": "132207d2814417c4ff187a9703b2770dcdb436a6",
+      "integration_commit": "5d87eb7694adeae9cd402b1968db163d7fac1955",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "factory-lifecycle": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "c7a8aec07109749ab6921a98dcb1461db3a56e9f",
+      "accepted_commit": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee",
+      "integration_commit": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "repository-bootstrap": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
+      "accepted_commit": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
+      "integration_commit": "9ada09eb8358a46ec90f3db804f96f2083ca4fb5",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "candidate-review": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "66136e680270e620f278c9960c6291d8a2318eee",
+      "accepted_commit": "66136e680270e620f278c9960c6291d8a2318eee",
+      "integration_commit": "c80734165dbe527f93e101dabb2b4a6d3caf88ad",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "application-integration": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "f755ecf0b550e72c8eb84a737ae643dfaccd22bf",
+      "accepted_commit": "f755ecf0b550e72c8eb84a737ae643dfaccd22bf",
+      "integration_commit": "718232e926059e98fe017af656334601adb4bda0",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "evaluation": {
+      "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
+      "candidate_head": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf",
+      "accepted_commit": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf",
+      "integration_commit": "30a67d7906e2f5ea9b143ecde04031df25adf26c",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "final_state": "integrated"
+    },
+    "integration": {
+      "state": "complete",
+      "contracts_status": "frozen",
+      "candidate_review_status": "all seven specialist candidates accepted and integrated",
+      "wave_completion_status": "complete",
+      "final_verification_status": "passed"
+    }
   },
   "technology_profile_selections": [
     {"module_id": "api", "primitive": "service", "kit": "fastapi-service@1.0.0", "adapter_id": "reviewed-fastapi-v1", "runtime_family": "python", "technique_policy_ids": ["technique-api-v1"]},
