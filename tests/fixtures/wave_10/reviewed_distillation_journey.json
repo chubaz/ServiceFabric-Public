@@ -1,0 +1,28 @@
+{
+  "application_id": "sample-factory",
+  "repository_head": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+  "application_blueprint_id": "sample-blueprint",
+  "manifest_refs": [
+    "manifest:sample-factory"
+  ],
+  "review_decisions": {
+    "capability": "approve",
+    "technique_policy": "approve",
+    "engineering_pattern": "approve",
+    "blueprint_evolution": "reject",
+    "system_change": "reject"
+  },
+  "expected": {
+    "published_candidate_kinds": [
+      "capability",
+      "technique_policy",
+      "engineering_pattern"
+    ],
+    "unpublished_candidate_kinds": [
+      "blueprint_evolution",
+      "system_change"
+    ],
+    "idempotent_publication": true,
+    "deterministic_report": true
+  }
+}
