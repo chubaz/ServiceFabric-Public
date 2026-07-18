@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "release": "foundation-0.1",
+  "title": "ServiceFabric foundation release",
+  "minimum_python": "3.11",
+  "declared_packages": [
+    {"path": "packages/servicefabric_contracts", "project_name": "servicefabric-contracts"},
+    {"path": "packages/servicefabric_runtime", "project_name": "servicefabric-runtime"},
+    {"path": "packages/servicefabric_operations", "project_name": "servicefabric-operations"},
+    {"path": "packages/servicefabric_capability_model", "project_name": "servicefabric-capability-model"},
+    {"path": "packages/servicefabric_capability_registry", "project_name": "servicefabric-capability-registry"},
+    {"path": "packages/servicefabric_capability_runtime", "project_name": "servicefabric-capability-runtime"},
+    {"path": "packages/servicefabric_application_model", "project_name": "servicefabric-application-model"},
+    {"path": "packages/servicefabric_application_builder", "project_name": "servicefabric-application-builder"},
+    {"path": "packages/servicefabric_application_factory_contracts", "project_name": "servicefabric-application-factory-contracts"},
+    {"path": "packages/servicefabric_engineering_blueprints", "project_name": "servicefabric-engineering-blueprints"},
+    {"path": "packages/servicefabric_distillation_contracts", "project_name": "servicefabric-distillation-contracts"}
+  ],
+  "limitations": [
+    "The foundation release is a local, source-checkable integration surface; it is not a hosted control plane.",
+    "Doctor validates local prerequisites and declared package metadata only. It does not install dependencies, provision resources, access secrets, or contact remote inventories.",
+    "Distillation candidates require human review and approved-only publication."
+  ]
+}
