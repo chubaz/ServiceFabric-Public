@@ -1,0 +1,8 @@
+{
+  "wave_id": "wave-10",
+  "runtime_wave_id": "wave-10",
+  "integration_branch": "integration/phase25-wave10",
+  "contractsStatus": "frozen",
+  "status": "ready",
+  "verification_gates": ["make verify-wave-10", "make verify-current", "git diff --check"]
+}

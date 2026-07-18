@@ -1,0 +1,7 @@
+{
+  "wave_id": "wave-10",
+  "overall": "READY FOR SPECIALISTS",
+  "contractsStatus": "frozen",
+  "lanes": {"evidence":"pending","capability-distillation":"pending","technique-policies":"pending","engineering-distillation":"pending","evolution-proposals":"pending","release-readiness":"pending","evaluation":"pending","integration":"bootstrap-complete"},
+  "next_action": "Review and integrate exact specialist candidate commits in the declared integration order; do not merge to main automatically."
+}

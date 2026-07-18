@@ -202,6 +202,9 @@ WAVE08_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $
 WAVE09_PYTHON ?= $(WAVE08_PYTHON)
 WAVE09_PYTHONPATH := $(WAVE08_PYTHONPATH):$(CURDIR)/packages/servicefabric_application_factory_contracts/src:$(CURDIR)/packages/servicefabric_technology_profiles/src:$(CURDIR)/packages/servicefabric_engineering_blueprints/src:$(CURDIR)/packages/servicefabric_application_factory_state/src:$(CURDIR)/packages/servicefabric_application_factory_bootstrap/src:$(CURDIR)/packages/servicefabric_application_candidate_review/src:$(CURDIR)/packages/servicefabric_application_integration/src
 WAVE09_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE09_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE09_PYTHONPATH)"
+WAVE10_PYTHON ?= $(WAVE09_PYTHON)
+WAVE10_PYTHONPATH := $(WAVE09_PYTHONPATH):$(CURDIR)/packages/servicefabric_distillation_contracts/src:$(CURDIR)/packages/servicefabric_application_evidence/src:$(CURDIR)/packages/servicefabric_capability_distillation/src:$(CURDIR)/packages/servicefabric_technique_policies/src:$(CURDIR)/packages/servicefabric_engineering_distillation/src:$(CURDIR)/packages/servicefabric_evolution_proposals/src:$(CURDIR)/packages/servicefabric_release_readiness/src
+WAVE10_ENV := env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME PATH="$(dir $(WAVE10_PYTHON)):$(PATH)" PYTHONPATH="$(WAVE10_PYTHONPATH)"
 
 verify-wave-07:
 	$(WAVE07_ENV) $(WAVE07_PYTHON) integration/phase25-wave7/verify_boundaries.py
@@ -247,6 +250,25 @@ verify-wave-09:
 	$(WAVE09_ENV) $(WAVE09_PYTHON) scripts/dependencies/check_python_locks.py
 	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE09_PYTHON)):$(PATH)" $(WAVE09_PYTHON) -m pip check
 	$(WAVE09_ENV) $(WAVE09_PYTHON) -m compileall packages/servicefabric_application_factory_contracts packages/servicefabric_technology_profiles packages/servicefabric_engineering_blueprints packages/servicefabric_application_factory_state packages/servicefabric_application_factory_bootstrap packages/servicefabric_application_candidate_review packages/servicefabric_application_integration clients/python/servicefabric_client/application_factory.py clients/python/servicefabric_client/factory_cli.py clients/python/servicefabric_client/main.py clients/python/servicefabric_client/provider_execution.py integration/phase25-wave9 tests/application_factory_contracts tests/wave_09
+	git diff --check
+
+verify-wave-10:
+	# Wave-10 is intentionally focused; do not recursively invoke earlier wave gates.
+	$(WAVE10_ENV) $(WAVE10_PYTHON) integration/phase25-wave10/verify_boundaries.py
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/distillation_contracts -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/application_evidence -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/capability_distillation -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/technique_policies -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/engineering_distillation -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/evolution_proposals -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/release_readiness -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/wave_10 -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.wave_09.test_application_factory.ApplicationFactoryCompositionTests.test_fake_executable_provider_journey_retries_and_integrates_latest_shas -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.capability_registry.test_registry.CapabilityRegistryTests.test_identical_registration_is_idempotent -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.release_readiness.test_doctor.ReleaseDoctorTests.test_doctor_reports_foundation_prerequisites -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) scripts/dependencies/check_python_locks.py
+	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE10_PYTHON)):$(PATH)" $(WAVE10_PYTHON) -m pip check
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m compileall packages/servicefabric_distillation_contracts packages/servicefabric_application_evidence packages/servicefabric_capability_distillation packages/servicefabric_technique_policies packages/servicefabric_engineering_distillation packages/servicefabric_evolution_proposals packages/servicefabric_release_readiness clients/python/servicefabric_client/distillation.py clients/python/servicefabric_client/main.py integration/phase25-wave10 tests/distillation_contracts tests/application_evidence tests/capability_distillation tests/technique_policies tests/engineering_distillation tests/evolution_proposals tests/release_readiness tests/wave_10
 	git diff --check
 
 verify-wave-06:
