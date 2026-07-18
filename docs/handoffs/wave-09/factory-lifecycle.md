@@ -2,7 +2,7 @@
 
 - Lane: `factory-lifecycle`
 - Branch: `agent/w9-factory-lifecycle`
-- Candidate commit: `91e7c08`
+- Candidate commit: `91e7c08aa11b9f68bda8c77bd8b302274dd670ee`
 - Status: complete
 
 ## Delivered
@@ -21,4 +21,4 @@ The rendered prompt references `docs/handoffs/wave-09/task-handoff-template.md`,
 
 ## Rollback
 
-Revert commit `91e7c08`; no persistent application data migration is introduced.
+Revert commit `91e7c08aa11b9f68bda8c77bd8b302274dd670ee`; no persistent application data migration is introduced.

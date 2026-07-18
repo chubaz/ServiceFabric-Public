@@ -4,7 +4,7 @@
 - Standalone implementation: `f755ecf0b550e72c8eb84a737ae643dfaccd22bf`
 - Superseded implementation: `6076a55d73db97102ee1c1c9232d765582cd845f`
 - Superseded handoff: `f9c3efecc1ea700aebb8835837d8fddcc08143d3`
-- Backup branch: `backup/w9-application-integration-pre-recovery-f9c3efe`
+- Backup reference: preserved outside integration history
 - Owned paths: `packages/servicefabric_application_integration/**`, `tests/application_integration/**`
 
 ## Validation
@@ -19,4 +19,4 @@ candidate SHA, reviewed changed paths, declared verification, and exact apply.
 ## Integration instruction
 
 Integrate only `f755ecf0b550e72c8eb84a737ae643dfaccd22bf`, then this handoff.
-Do not integrate `6076a55` or `f9c3efe`.
+Do not integrate `6076a55d73db97102ee1c1c9232d765582cd845f` or `f9c3efecc1ea700aebb8835837d8fddcc08143d3`.

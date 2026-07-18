@@ -21,7 +21,7 @@ invokes providers, force-resets, deletes worktrees, pushes, or merges to `main`.
 ## Integration instruction
 
 Integrate only standalone implementation `6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c`.
-Do not integrate superseded candidates `2f705f5` or `5f368ac`.
+Do not integrate superseded candidates `2f705f561fe2796f2c98866de41bdd571aa95c93` or `5f368ac96fd1c4cf933ef9ce66213f0dae888016`.
 
 ## Rollback
 

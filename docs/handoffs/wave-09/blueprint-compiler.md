@@ -20,7 +20,7 @@ similar disjoint prefixes such as `modules/api` and `modules/api-client`.
 ## Integration instruction
 
 Integrate only standalone implementation `132207d2814417c4ff187a9703b2770dcdb436a6`.
-Do not integrate superseded candidates `a7235a2` or `ed33fbf`.
+Do not integrate superseded candidates `a7235a2ccbf24e8b957d02aa915eb83161caea72` or `ed33fbf88f15f30ace1bbd097c1cf73bb5220cb6`.
 
 ## Rollback
 
