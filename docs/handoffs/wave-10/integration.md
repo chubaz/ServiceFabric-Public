@@ -34,7 +34,7 @@ All reviewed diffs passed `git diff --check`. Directly dependent focused suites 
 
 ## Foundation closure — 2026-07-18
 
-Wave-10 is **WAVE COMPLETE** on `integration/phase25-wave10`. The formal gates passed at audited parent HEAD `52fa3a193f2f7af21ade1a63978a61a425268a15`; the final HEAD is the commit containing this closure record with subject `docs(integration): complete Wave-10 foundation closure`. The branch has not been pushed or merged to `main`.
+Wave-10 is **WAVE COMPLETE** on `integration/phase25-wave10`. The formal gates passed at audited parent HEAD `52fa3a193f2f7af21ade1a63978a61a425268a15` and were re-run after completion-record reconciliation. The completed integration ref is authoritative; the branch has not been pushed or merged to `main`.
 
 ### Commit inventory
 
@@ -44,7 +44,7 @@ Wave-10 is **WAVE COMPLETE** on `integration/phase25-wave10`. The formal gates p
 | capability-distillation | `45127669241b0865e1d01b8ded862af2f8c0779c` | `3419a806ad3d92ba36dca1266205b802070c29c8` |
 | technique-policies | `1b7b7c48dd7e5d95539d886c51c7cc0f920c3166`, `e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804` | `d9fce7b6d127bb10f2a94613d8ab2a6de0a5f234`, `22d33b461bae40764c5a3e3085c70b60a8804008` |
 | engineering-distillation | `e7e6701e6d0d0498a48f44adaa912dec6a746ef5`, `c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a` | `7f18d619deb452a2d770f5276229a5582cfcde72`, `5f447d84452015724710b67faee2e1ed32661807` |
-| evolution-proposals | `b4206219b8f4bd08363ecc89283bf7c453ed9aeb` | `5119ceb9d047cb893aa4f369ba615789152ce413` |
+| evolution-proposals | `b4206219b8f4bd08363ecc89283bf7c453ed9aeb`, `341c6d1fdc7fbabd1dee2de848312cc875c48b66` (handoff correction) | `5119ceb9d047cb893aa4f369ba615789152ce413` |
 | release-readiness | `42705f307c6701c8f1c30fbb327845c74ee89010`, `3da071349e2e1337afdb9b0db6f5b7ba0898f028` | `0c7cd942c52eb53ee8437e44e11dd99183a25887`, `31c146ac5431a0c31f3788344c5a778cc3c27421` |
 | evaluation | `336c0a675f3bf3427cd7b0695364b5af4d324aeb`, `6f74c4120f92c1f84debbb45bd9bea3663ce0a32`, `ff398ff863b70793c0440f81157217546344a5ee`, `5cb5ee38184518dbe66fe8822f721a401689fb09` | `be0ca631d1243ef1b179f7c6aad6c07137a9ad8e`, `52fa3a193f2f7af21ade1a63978a61a425268a15` |
 
@@ -55,6 +55,7 @@ Integration coordination and composition commits are `7556c4b1457dff5a2fac965a71
 - `make verify-wave-10` passed 33 tests plus the frozen-boundary verifier, dependency-lock validation, isolated `pip check` (`No broken requirements found`), Wave-10 compile coverage, and its diff check.
 - `make verify-current` passed `ap-00-modular-framework-kits/readiness`.
 - The subsequent standalone `git diff --check` passed.
+- `python3 scripts/agent/wave_completion.py --wave wave-10 --format json` passed with zero diagnostics after the completion records were synchronized.
 
 ### Distillation outputs
 

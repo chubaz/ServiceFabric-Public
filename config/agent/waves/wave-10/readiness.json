@@ -55,12 +55,12 @@
     },
     "evolution-proposals": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
-      "candidate_head": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb",
+      "candidate_head": "341c6d1fdc7fbabd1dee2de848312cc875c48b66",
       "accepted_commit": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb",
       "integration_commit": "5119ceb9d047cb893aa4f369ba615789152ce413",
       "focused_verification": "passed",
       "integration_decision": "accepted",
-      "candidate_commits": ["b4206219b8f4bd08363ecc89283bf7c453ed9aeb"],
+      "candidate_commits": ["b4206219b8f4bd08363ecc89283bf7c453ed9aeb", "341c6d1fdc7fbabd1dee2de848312cc875c48b66"],
       "integration_commits": ["5119ceb9d047cb893aa4f369ba615789152ce413"],
       "final_state": "integrated"
     },
