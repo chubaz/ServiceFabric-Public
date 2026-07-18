@@ -16,6 +16,16 @@
   "lanes": ["evidence", "capability-distillation", "technique-policies", "engineering-distillation", "evolution-proposals", "release-readiness", "evaluation", "integration"],
   "specialist_lanes": ["evidence", "capability-distillation", "technique-policies", "engineering-distillation", "evolution-proposals", "release-readiness", "evaluation"],
   "integration_order": ["evidence", "capability-distillation", "technique-policies", "engineering-distillation", "evolution-proposals", "release-readiness", "evaluation", "integration"],
+  "worktree_env": {
+    "evidence": "SF_WT_EVIDENCE",
+    "capability-distillation": "SF_WT_CAPABILITY_DISTILLATION",
+    "technique-policies": "SF_WT_TECHNIQUE_POLICIES",
+    "engineering-distillation": "SF_WT_ENGINEERING_DISTILLATION",
+    "evolution-proposals": "SF_WT_EVOLUTION_PROPOSALS",
+    "release-readiness": "SF_WT_RELEASE_READINESS",
+    "evaluation": "SF_WT_EVALUATION",
+    "integration": "SF_WT_INTEGRATION"
+  },
   "implementation_authorized": true,
   "wave_09_foundation": "completed",
   "frozen_contracts": ["packages/servicefabric_distillation_contracts", "packages/servicefabric_application_factory_contracts", "packages/servicefabric_agentic_contracts", "packages/servicefabric_agent_provider_contracts", "packages/servicefabric_capability_model"],

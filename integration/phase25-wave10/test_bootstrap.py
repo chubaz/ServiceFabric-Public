@@ -14,6 +14,7 @@ class WaveTenBootstrapTests(unittest.TestCase):
         manifest = json.loads((ROOT / "config/agents/wave-10/wave.yaml").read_text(encoding="utf-8"))
         self.assertEqual(len(manifest["specialist_lanes"]), 7)
         self.assertEqual(manifest["contractsStatus"], "frozen")
+        self.assertEqual(set(manifest["worktree_env"]), set(manifest["lanes"]))
         for lane in manifest["lanes"]:
             self.assertTrue((ROOT / f"config/agents/wave-10/tasks/{lane}.json").is_file(), lane)
             self.assertTrue((ROOT / f"docs/handoffs/wave-10/{lane}.md").is_file(), lane)
