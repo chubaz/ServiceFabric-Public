@@ -242,7 +242,20 @@ class DistillationService:
         )
         requirements = tuple(factory["unmet_requirements"]) + tuple(factory_handoff.unmet_requirements)
         requirement_refs = tuple(sorted({item.requirement_id for item in requirements}))
-        bundle = bundle.model_copy(update={"unmet_requirement_refs": requirement_refs})
+        review_refs = tuple(
+            sorted(
+                {
+                    *bundle.review_decision_refs,
+                    *(item.decision_id for item in factory["reviews"]),
+                }
+            )
+        )
+        bundle = bundle.model_copy(
+            update={
+                "review_decision_refs": review_refs,
+                "unmet_requirement_refs": requirement_refs,
+            }
+        )
         return CollectedEvidence(bundle, factory)
 
     def analyze(self, inputs: DistillationInputs) -> DistillationAnalysis:
@@ -490,20 +503,30 @@ def foundation_diagnostics(workspace: object) -> dict[str, object]:
     for path in state_paths:
         try:
             path.mkdir(parents=True, exist_ok=True)
-            writable = writable and os.access(path, os.W_OK)
+            descriptor, probe_path = tempfile.mkstemp(prefix=".doctor-write-", dir=path)
+            os.close(descriptor)
+            os.unlink(probe_path)
         except OSError:
             writable = False
     checks.append({"name": "writable-state-paths", "status": "pass" if writable else "fail"})
 
-    executables = tuple(
-        {
-            "provider_id": adapter.provider_id,
-            "executable": adapter.probe().get("executable"),
-            "available": shutil.which(str(adapter.probe().get("executable"))) is not None,
-        }
-        for adapter in providers.adapters()
-    )
-    checks.append({"name": "declared-executables", "status": "pass", "executables": executables})
+    executable_values: list[dict[str, object]] = []
+    for adapter in providers.adapters():
+        description = adapter.probe()
+        executable = description.get("executable")
+        executable_values.append(
+            {
+                "provider_id": adapter.provider_id,
+                "executable": executable,
+                "available": isinstance(executable, str) and shutil.which(executable) is not None,
+            }
+        )
+    executables = tuple(executable_values)
+    checks.append({
+        "name": "declared-executables",
+        "status": "pass" if all(item["available"] for item in executables) else "fail",
+        "executables": executables,
+    })
     return {"ok": all(item["status"] == "pass" for item in checks), "checks": tuple(checks)}
 
 

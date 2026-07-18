@@ -622,6 +622,22 @@ def parser() -> ServiceFabricArgumentParser:
     for name in ("integrate", "status", "handoff"):
         item = factory_actions.add_parser(name)
         item.add_argument("run_id", metavar="RUN_ID")
+
+    distillation = commands.add_parser(
+        "distill", help="collect, review, and publish bounded engineering knowledge"
+    )
+    distillation_actions = distillation.add_subparsers(
+        dest="distillation_action", required=True
+    )
+    for name in ("collect", "analyze", "candidates", "publish", "report"):
+        item = distillation_actions.add_parser(name)
+        item.add_argument("run_id", metavar="RUN_ID")
+        item.add_argument("--request", required=True, metavar="FILE")
+    distillation_decide = distillation_actions.add_parser(
+        "decide", help="record one immutable human distillation decision"
+    )
+    distillation_decide.add_argument("run_id", metavar="RUN_ID")
+    distillation_decide.add_argument("--decision", required=True, metavar="FILE")
     return root
 
 
@@ -724,6 +740,16 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
     context = resolve_workspace_for_cli(workspace_path_val)
     workspace_service = WorkspaceService(context)
 
+    if args.command == "distill":
+        from .distillation_cli import dispatch_distillation
+
+        code, command, value = dispatch_distillation(args, context)
+        if json_mode:
+            value = as_json_value(value)
+            assert isinstance(value, dict)
+            value["json_mode"] = True
+        return code, command, value
+
     if args.command == "workspace":
         if args.workspace_action == "init":
             init_context = context
@@ -802,6 +828,12 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
         return 0, "shell", {"json_mode": json_mode}
 
     require_workspace(context)
+    if args.command == "doctor":
+        from .distillation import foundation_diagnostics
+
+        value = foundation_diagnostics(context)
+        return (0 if value["ok"] else 1), "doctor", {**value, "json_mode": json_mode}
+
     runtime = LocalRuntime(context, workspace_service)
 
     if args.command == "status":
@@ -823,19 +855,6 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
             "operations": len(runtime.governance.list_operations()),
             "mcp_profile": MCP_PROFILE,
             "limitations": "Local only. No public transport or production identity.",
-            "json_mode": json_mode,
-        }
-    if args.command == "doctor":
-        return 0, "doctor", {
-            "checks": {
-                "Python": sys.version.split()[0],
-                "Workspace": "ready",
-                "Policy bundle": "available",
-                "Tool portfolio": "available",
-                "Operation store": "readable",
-                "Artifact store": "readable",
-                "MCP profile": MCP_PROFILE,
-            },
             "json_mode": json_mode,
         }
     if args.command == "tools":
@@ -1400,7 +1419,16 @@ def human_output(command: str, value: object) -> str:
         )
     if command == "doctor":
         checks = data["checks"]
-        return "\n".join(["Local environment checks", *[f"  OK  {name}: {value}" for name, value in checks.items()], ""])
+        return "\n".join(
+            [
+                "Foundation diagnostics",
+                *[
+                    f"  {'OK' if item['status'] == 'pass' else 'FAIL'}  {item['name']}"
+                    for item in checks
+                ],
+                "",
+            ]
+        )
     if command == "tools-list":
         lines = ["Available tools"]
         lines.extend(f"  {tool['tool_id']:<24} {tool['description']}" for tool in data["tools"])

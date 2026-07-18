@@ -1,7 +1,7 @@
 {
   "wave_id": "wave-10",
-  "overall": "IMPLEMENTATION CANDIDATES INTEGRATED",
+  "overall": "COMPOSITION COMPLETE; EVALUATION READY",
   "contractsStatus": "frozen",
-  "lanes": {"evidence":"accepted-integrated","capability-distillation":"accepted-integrated","technique-policies":"accepted-integrated","engineering-distillation":"accepted-integrated","evolution-proposals":"accepted-integrated","release-readiness":"accepted-integrated","evaluation":"pending-composition","integration":"composition-pending"},
-  "next_action": "Compose the integration-owned distillation service, CLI, and authoritative publication adapters; then activate and review the pending evaluation journey. Do not merge to main automatically."
+  "lanes": {"evidence":"accepted-integrated","capability-distillation":"accepted-integrated","technique-policies":"accepted-integrated","engineering-distillation":"accepted-integrated","evolution-proposals":"accepted-integrated","release-readiness":"accepted-integrated","evaluation":"ready-for-review","integration":"composition-complete"},
+  "next_action": "Review and activate the pending evaluation journey against the composed public service and CLI, then run Wave-10 closure verification. Do not merge to main automatically."
 }

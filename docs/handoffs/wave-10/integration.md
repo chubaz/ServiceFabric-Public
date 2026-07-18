@@ -17,3 +17,10 @@ Rollback: revert the single Wave-10 bootstrap commit; it creates contracts and c
 - Evaluation `336c0a675f3bf3427cd7b0695364b5af4d324aeb` remains pending composition. Its focused lane suite passed with its one journey deliberately skipped until the integration-owned service, CLI, and publication adapters exist.
 
 All reviewed diffs passed `git diff --check`. Directly dependent focused suites passed after each integration; full Wave-10 and current-milestone verification remain composition/closure work.
+
+## Composition — 2026-07-18
+
+- `6df2916` composes manifest-bounded collection, deterministic analysis, immutable human decisions, approved-only authoritative publication, and the canonical report through `DistillationService`.
+- The subsequent `feat(cli)` commit exposes `collect`, `analyze`, `candidates`, `decide`, `publish`, and `report` under `servicefabric distill`, and replaces the local doctor output with bounded foundation diagnostics that never launch providers or reveal credentials.
+- Four focused integration tests pass, including exact-file collection, deterministic five-type candidate ordering, immutable decisions, rejected/undecided non-publication, idempotent publication/reporting, and final CLI exposure. The directly dependent Wave-9 factory journey and Python compile checks pass.
+- Full Wave-10 and current-milestone verification remain pending evaluation synchronization and closure.
