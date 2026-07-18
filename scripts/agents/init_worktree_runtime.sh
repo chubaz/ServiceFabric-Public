@@ -37,9 +37,9 @@ if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
     GENERATED_APPLICATION_RUNTIME="$WORKTREE/5_core_services/fastapi_base/requirements/runtime.lock"
     "$VENV/bin/python" -m pip install --disable-pip-version-check --requirement "$CONTRACTS/requirements/test.lock"
     "$VENV/bin/python" -m pip install --disable-pip-version-check --requirement "$GENERATED_APPLICATION_RUNTIME"
-    "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"
 
     LOCAL_COMPOSITION_PACKAGES=(
+        "packages/servicefabric_contracts"
         "packages/servicefabric_application_assembly"
         "packages/servicefabric_application_builder"
         "packages/servicefabric_application_generator"
@@ -74,26 +74,40 @@ if [[ "${SF_AGENT_SKIP_VENV:-}" != "1" ]]; then
         "services/tool_runtime"
         "clients/python"
     )
-    for package in "${LOCAL_COMPOSITION_PACKAGES[@]}"; do
-        "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$WORKTREE/$package"
+
+    CUMULATIVE_WAVE_PACKAGES=(
+        "packages/servicefabric_agentic_contracts"
+        "packages/servicefabric_agentic_context"
+        "packages/servicefabric_agentic_planner"
+        "packages/servicefabric_agentic_run_store"
+        "packages/servicefabric_agent_tools"
+        "packages/servicefabric_agentic_orchestrator"
+        "packages/servicefabric_agent_harness"
+        "packages/servicefabric_agent_provider_runtime"
+        "packages/servicefabric_langgraph_orchestration"
+        "packages/servicefabric_pi_harness"
+        "packages/servicefabric_codex_adapter"
+        "packages/servicefabric_claude_code_adapter"
+        "packages/servicefabric_gemini_cli_adapter"
+        "packages/servicefabric_application_factory_contracts"
+        "packages/servicefabric_technology_profiles"
+        "packages/servicefabric_engineering_blueprints"
+        "packages/servicefabric_application_factory_state"
+        "packages/servicefabric_application_factory_bootstrap"
+        "packages/servicefabric_application_candidate_review"
+        "packages/servicefabric_application_integration"
+    )
+    for package in "${CUMULATIVE_WAVE_PACKAGES[@]}"; do
+        if [[ -f "$WORKTREE/$package/pyproject.toml" ]]; then
+            LOCAL_COMPOSITION_PACKAGES+=("$package")
+        fi
     done
 
-    if [[ "$WAVE_ID" == "wave-07" ]]; then
-        WAVE07_LOCAL_PACKAGES=(
-            "packages/servicefabric_agentic_contracts"
-            "packages/servicefabric_agentic_context"
-            "packages/servicefabric_agentic_planner"
-            "packages/servicefabric_agentic_run_store"
-            "packages/servicefabric_agent_tools"
-            "packages/servicefabric_agentic_orchestrator"
-            "packages/servicefabric_agent_harness"
-        )
-        for package in "${WAVE07_LOCAL_PACKAGES[@]}"; do
-            if [[ -f "$WORKTREE/$package/pyproject.toml" ]]; then
-                "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$WORKTREE/$package"
-            fi
-        done
-    fi
+    LOCAL_EDITABLE_ARGUMENTS=()
+    for package in "${LOCAL_COMPOSITION_PACKAGES[@]}"; do
+        LOCAL_EDITABLE_ARGUMENTS+=(--editable "$WORKTREE/$package")
+    done
+    "$VENV/bin/python" -m pip install --disable-pip-version-check --no-build-isolation "${LOCAL_EDITABLE_ARGUMENTS[@]}"
 fi
 
 cat > "$WORKTREE/.agent-runtime.env" <<EOF

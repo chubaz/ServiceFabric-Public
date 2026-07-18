@@ -122,7 +122,12 @@ class WaveOperationalScriptTests(unittest.TestCase):
         )
         self.assertIn('"$CONTRACTS/requirements/test.lock"', content)
         self.assertIn('"$GENERATED_APPLICATION_RUNTIME"', content)
-        self.assertIn('pip install --disable-pip-version-check --no-build-isolation --no-deps --editable "$CONTRACTS"', content)
+        self.assertNotIn("--no-deps", content)
+        self.assertIn('LOCAL_EDITABLE_ARGUMENTS+=(--editable "$WORKTREE/$package")', content)
+        self.assertIn(
+            'pip install --disable-pip-version-check --no-build-isolation "${LOCAL_EDITABLE_ARGUMENTS[@]}"',
+            content,
+        )
         for package in (
             "packages/servicefabric_agent_provider_contracts",
             "packages/servicefabric_capsules",
@@ -136,6 +141,10 @@ class WaveOperationalScriptTests(unittest.TestCase):
             "services/mcp_gateway",
             "services/tool_runtime",
             "clients/python",
+            "packages/servicefabric_agentic_contracts",
+            "packages/servicefabric_agent_provider_runtime",
+            "packages/servicefabric_application_factory_contracts",
+            "packages/servicefabric_application_integration",
         ):
             self.assertIn(f'"{package}"', content)
 
