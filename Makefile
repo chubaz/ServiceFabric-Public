@@ -265,10 +265,10 @@ verify-wave-10:
 	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest discover -s tests/wave_10 -v
 	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.wave_09.test_application_factory.ApplicationFactoryCompositionTests.test_fake_executable_provider_journey_retries_and_integrates_latest_shas -v
 	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.capability_registry.test_registry.CapabilityRegistryTests.test_identical_registration_is_idempotent -v
-	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.release_readiness.test_doctor.ReleaseDoctorTests.test_doctor_reports_foundation_prerequisites -v
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m unittest tests.release_readiness.test_doctor.DoctorTests.test_current_repository_passes_declared_checks -v
 	$(WAVE10_ENV) $(WAVE10_PYTHON) scripts/dependencies/check_python_locks.py
 	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE10_PYTHON)):$(PATH)" $(WAVE10_PYTHON) -m pip check
-	$(WAVE10_ENV) $(WAVE10_PYTHON) -m compileall packages/servicefabric_distillation_contracts packages/servicefabric_application_evidence packages/servicefabric_capability_distillation packages/servicefabric_technique_policies packages/servicefabric_engineering_distillation packages/servicefabric_evolution_proposals packages/servicefabric_release_readiness clients/python/servicefabric_client/distillation.py clients/python/servicefabric_client/main.py integration/phase25-wave10 tests/distillation_contracts tests/application_evidence tests/capability_distillation tests/technique_policies tests/engineering_distillation tests/evolution_proposals tests/release_readiness tests/wave_10
+	$(WAVE10_ENV) $(WAVE10_PYTHON) -m compileall packages/servicefabric_distillation_contracts packages/servicefabric_application_evidence packages/servicefabric_capability_distillation packages/servicefabric_technique_policies packages/servicefabric_engineering_distillation packages/servicefabric_evolution_proposals packages/servicefabric_release_readiness clients/python/servicefabric_client/application_factory.py clients/python/servicefabric_client/distillation.py clients/python/servicefabric_client/distillation_cli.py clients/python/servicefabric_client/main.py integration/phase25-wave10 tests/distillation_contracts tests/application_evidence tests/capability_distillation tests/technique_policies tests/engineering_distillation tests/evolution_proposals tests/release_readiness tests/wave_10
 	git diff --check
 
 verify-wave-06:

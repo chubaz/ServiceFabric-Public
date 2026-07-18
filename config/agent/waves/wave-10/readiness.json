@@ -2,7 +2,7 @@
   "wave_id": "wave-10",
   "base_commit": "5d0add1332d71e79fc138aad42c025a3607d8aef",
   "contractsStatus": "frozen",
-  "overall": "composition-complete-evaluation-ready",
+  "overall": "evaluation-accepted-closure-verification-pending",
   "lanes": {
     "evidence": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "2b8f64b674bdfe7e1d161313c1c12940e0914fc5", "integration_sha": "ae6710f", "final_state": "accepted-integrated"},
     "capability-distillation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "45127669241b0865e1d01b8ded862af2f8c0779c", "integration_sha": "3419a80", "final_state": "accepted-integrated"},
@@ -10,7 +10,7 @@
     "engineering-distillation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "e7e6701", "integration_sha": "7f18d61", "final_state": "accepted-integrated"},
     "evolution-proposals": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb", "integration_sha": "5119ceb", "final_state": "accepted-integrated"},
     "release-readiness": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "42705f3", "integration_sha": "0c7cd94", "final_state": "accepted-integrated"},
-    "evaluation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "336c0a675f3bf3427cd7b0695364b5af4d324aeb", "final_state": "ready-for-review"},
-    "integration": {"state": "composition-complete", "contracts_status": "frozen", "wave_completion_status": "pending-evaluation", "final_verification_status": "focused-passed-final-pending"}
+    "evaluation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "5cb5ee38184518dbe66fe8822f721a401689fb09", "integration_sha": "be0ca631d1243ef1b179f7c6aad6c07137a9ad8e", "final_state": "accepted-integrated"},
+    "integration": {"state": "evaluation-integrated", "contracts_status": "frozen", "wave_completion_status": "closure-verification-pending", "final_verification_status": "focused-evaluation-passed-aggregate-not-run"}
   }
 }

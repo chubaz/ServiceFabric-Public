@@ -1,7 +1,7 @@
 {
   "wave_id": "wave-10",
-  "overall": "COMPOSITION COMPLETE; EVALUATION READY",
+  "overall": "EVALUATION ACCEPTED; CLOSURE VERIFICATION PENDING",
   "contractsStatus": "frozen",
-  "lanes": {"evidence":"accepted-integrated","capability-distillation":"accepted-integrated","technique-policies":"accepted-integrated","engineering-distillation":"accepted-integrated","evolution-proposals":"accepted-integrated","release-readiness":"accepted-integrated","evaluation":"ready-for-review","integration":"composition-complete"},
-  "next_action": "Review and activate the pending evaluation journey against the composed public service and CLI, then run Wave-10 closure verification. Do not merge to main automatically."
+  "lanes": {"evidence":"accepted-integrated","capability-distillation":"accepted-integrated","technique-policies":"accepted-integrated","engineering-distillation":"accepted-integrated","evolution-proposals":"accepted-integrated","release-readiness":"accepted-integrated","evaluation":"accepted-integrated","integration":"closure-verification-pending"},
+  "next_action": "Run the finalized minimal make verify-wave-10 gate, then the separately authorized current-milestone closure checks. Wave-10 is not complete and must not be merged to main automatically."
 }
