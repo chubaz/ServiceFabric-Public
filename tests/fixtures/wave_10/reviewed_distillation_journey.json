@@ -1,0 +1,231 @@
+{
+  "run_id": "run-wave10-notes",
+  "application_id": "notes",
+  "application_blueprint_id": "notes-blueprint",
+  "application_blueprint_version": "1.0.0",
+  "undeclared_marker": "WAVE10-UNDECLARED-TRAP-9f73",
+  "repeated_verification_command": "python3 -m unittest discover -s tests",
+  "generated_application": {
+    "application.json": "{\"application_id\":\"notes\",\"blueprint\":\"notes-blueprint@1.0.0\"}\n",
+    "src/notes.py": "def search(query: str) -> list[str]:\n    return [query]\n",
+    "tests/test_notes.py": "# synthetic successful Wave-9 verification target\n",
+    "private/undeclared.txt": "WAVE10-UNDECLARED-TRAP-9f73\n"
+  },
+  "agent_run_plan": {
+    "run_id": "run-wave10-notes",
+    "intent": {
+      "intent_id": "wave10-notes",
+      "mode": "create",
+      "objective": "Generate the reviewed notes application.",
+      "application_id": "notes",
+      "requested_capabilities": ["notes.search"]
+    },
+    "tasks": [
+      {
+        "task_id": "api",
+        "role": "implementation",
+        "objective": "Implement the declared notes operation.",
+        "allowed_paths": ["src"],
+        "verification_commands": ["python3 -m unittest discover -s tests"]
+      },
+      {
+        "task_id": "integration",
+        "role": "integration",
+        "objective": "Integrate the generated application.",
+        "dependencies": ["api"],
+        "allowed_paths": ["src"],
+        "verification_commands": ["python3 -m unittest discover -s tests"]
+      },
+      {
+        "task_id": "assurance",
+        "role": "assurance",
+        "objective": "Verify the generated application.",
+        "dependencies": ["integration"],
+        "allowed_paths": ["tests"],
+        "verification_commands": ["python3 -m unittest discover -s tests"]
+      }
+    ],
+    "maximum_parallel_tasks": 2
+  },
+  "agent_task_results": [
+    {
+      "task_id": "api",
+      "status": "success",
+      "changed_paths": ["src/notes.py"],
+      "commit_sha": "1111111",
+      "evidence": [{
+        "command": "python3 -m unittest discover -s tests",
+        "exit_code": 0,
+        "summary": "API verification passed.",
+        "artifact_ref": "verification:acceptance:api"
+      }]
+    },
+    {
+      "task_id": "integration",
+      "status": "success",
+      "changed_paths": [],
+      "commit_sha": "2222222",
+      "evidence": [{
+        "command": "python3 -m unittest discover -s tests",
+        "exit_code": 0,
+        "summary": "Integration verification passed.",
+        "artifact_ref": "verification:acceptance:integration"
+      }]
+    },
+    {
+      "task_id": "assurance",
+      "status": "success",
+      "changed_paths": ["tests/test_notes.py"],
+      "commit_sha": "3333333",
+      "evidence": [{
+        "command": "python3 -m unittest discover -s tests",
+        "exit_code": 0,
+        "summary": "Assurance verification passed.",
+        "artifact_ref": "verification:acceptance:assurance"
+      }]
+    }
+  ],
+  "technology_profile": {
+    "profile_id": "profile-notes",
+    "application_blueprint_id": "notes-blueprint",
+    "application_blueprint_version": "1.0.0",
+    "module_selections": [{
+      "module_id": "api",
+      "primitive": "http-service",
+      "kit_reference": "fastapi-service@1.0.0",
+      "adapter_id": "fastapi-service",
+      "runtime_family": "python",
+      "lifecycle_requirements": ["development", "build", "runtime"],
+      "technique_policy_ids": ["python.web"],
+      "provider_role": "implementation"
+    }],
+    "approved": true
+  },
+  "engineering_blueprint": {
+    "blueprint_id": "engineering-notes",
+    "application_id": "notes",
+    "application_blueprint_id": "notes-blueprint",
+    "technology_profile_id": "profile-notes",
+    "lanes": [
+      {
+        "lane_id": "api",
+        "role": "implementation",
+        "module_ids": ["api"],
+        "allowed_paths": ["src"],
+        "verification_commands": ["python3 -m unittest discover -s tests"],
+        "provider_role": "implementation"
+      },
+      {
+        "lane_id": "integration",
+        "role": "integration",
+        "dependencies": ["api"],
+        "allowed_paths": ["src"],
+        "verification_commands": ["python3 -m unittest discover -s tests"],
+        "provider_role": "integration",
+        "integration_owned": true
+      },
+      {
+        "lane_id": "assurance",
+        "role": "assurance",
+        "dependencies": ["integration"],
+        "allowed_paths": ["tests"],
+        "verification_commands": ["python3 -m unittest discover -s tests"],
+        "provider_role": "assurance"
+      }
+    ],
+    "integration_lane_id": "integration",
+    "acceptance_lane_id": "assurance",
+    "maximum_parallel_tasks": 2
+  },
+  "unmet_requirement": {
+    "requirement_id": "unmet-repeated-verification",
+    "application_id": "notes",
+    "run_id": "run-wave10-notes",
+    "originating_task_id": "assurance",
+    "required_behavior": "Generated applications repeatedly need the same acceptance verification.",
+    "evidence_refs": [
+      "verification:acceptance:api",
+      "verification:acceptance:assurance"
+    ],
+    "proposed_scope": "platform",
+    "urgency": "high"
+  },
+  "factory_handoff": {
+    "run_id": "run-wave10-notes",
+    "application_id": "notes",
+    "status": "success",
+    "integration_commit": "abcdef0123456789",
+    "agent_handoff_ref": "agent:run-wave10-notes",
+    "review_decision_refs": ["review:factory-accepted"],
+    "verification_evidence": [
+      "provider-usage:run-wave10-notes",
+      "verification:factory-integration"
+    ]
+  },
+  "distillation_request": {
+    "manifests": [{
+      "ref": "manifest:notes",
+      "path": "application.json",
+      "source_paths": ["src", "tests"],
+      "operation_refs": ["notes.search"],
+      "capability_refs": ["notes.search"],
+      "documentation_refs": ["docs:notes"],
+      "verification_evidence_refs": ["verification:manifest-contract"]
+    }],
+    "operations": [{
+      "operation_id": "notes.search",
+      "version": "1.0.0",
+      "application_ref": "notes",
+      "module_ref": "api",
+      "interface_ref": "notes-api",
+      "bindings": [{
+        "binding_id": "notes-search",
+        "method": "GET",
+        "path": "/notes"
+      }]
+    }],
+    "capabilities": [{
+      "apiVersion": "servicefabric.local/v1",
+      "kind": "CapabilityDefinition",
+      "metadata": {
+        "id": "notes.search",
+        "title": "Search notes",
+        "domain": "notes"
+      },
+      "spec": {
+        "operationRef": "notes.search",
+        "objective": "Search the generated notes application.",
+        "capabilityClass": "retrieval",
+        "concepts": ["notes"],
+        "expectedInputs": ["query"],
+        "expectedOutputs": ["matches"],
+        "effects": {
+          "effects": [{
+            "effect_type": "external_read",
+            "target_category": "notes",
+            "scope": "notes",
+            "reversibility": "not_applicable",
+            "verification_required": false,
+            "approval_required": false,
+            "idempotency_required": false
+          }]
+        }
+      }
+    }],
+    "technique_policies": [{
+      "policy_id": "python.web",
+      "version": "1.0.0",
+      "applicable_kit_refs": ["fastapi-service@1.0.0"],
+      "approved_libraries": ["fastapi"],
+      "approved_techniques": ["dependency-injection"],
+      "verification_commands": ["python3 -m unittest discover -s tests"]
+    }],
+    "blueprint_categories": {
+      "unmet-repeated-verification": "verification"
+    },
+    "system_scopes": {
+      "unmet-repeated-verification": "platform"
+    },
+    "engineering_pattern_version": "1.0.0"
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "wave_id": "wave-10",
+  "base_commit": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+  "contractsStatus": "frozen",
+  "overall": "WAVE COMPLETE",
+  "final_head": {
+    "ref": "refs/heads/integration/phase25-wave10",
+    "audited_parent_sha": "52fa3a193f2f7af21ade1a63978a61a425268a15",
+    "closure_commit_subject": "docs(integration): complete Wave-10 foundation closure"
+  },
+  "lanes": {
+    "evidence": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "699774ab04e978f2b898902055cd939648469827",
+      "accepted_commit": "699774ab04e978f2b898902055cd939648469827",
+      "integration_commit": "7fd7e0a84e4f4fbcd856833dc3a1bd30a8034472",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["2b8f64b674bdfe7e1d161313c1c12940e0914fc5", "699774ab04e978f2b898902055cd939648469827"],
+      "integration_commits": ["ae6710f75119621a90fbf0b4abfdfa32b5aa7955", "7fd7e0a84e4f4fbcd856833dc3a1bd30a8034472"],
+      "final_state": "integrated"
+    },
+    "capability-distillation": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "45127669241b0865e1d01b8ded862af2f8c0779c",
+      "accepted_commit": "45127669241b0865e1d01b8ded862af2f8c0779c",
+      "integration_commit": "3419a806ad3d92ba36dca1266205b802070c29c8",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["45127669241b0865e1d01b8ded862af2f8c0779c"],
+      "integration_commits": ["3419a806ad3d92ba36dca1266205b802070c29c8"],
+      "final_state": "integrated"
+    },
+    "technique-policies": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804",
+      "accepted_commit": "e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804",
+      "integration_commit": "22d33b461bae40764c5a3e3085c70b60a8804008",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["1b7b7c48dd7e5d95539d886c51c7cc0f920c3166", "e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804"],
+      "integration_commits": ["d9fce7b6d127bb10f2a94613d8ab2a6de0a5f234", "22d33b461bae40764c5a3e3085c70b60a8804008"],
+      "final_state": "integrated"
+    },
+    "engineering-distillation": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a",
+      "accepted_commit": "c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a",
+      "integration_commit": "5f447d84452015724710b67faee2e1ed32661807",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["e7e6701e6d0d0498a48f44adaa912dec6a746ef5", "c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a"],
+      "integration_commits": ["7f18d619deb452a2d770f5276229a5582cfcde72", "5f447d84452015724710b67faee2e1ed32661807"],
+      "final_state": "integrated"
+    },
+    "evolution-proposals": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "341c6d1fdc7fbabd1dee2de848312cc875c48b66",
+      "accepted_commit": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb",
+      "integration_commit": "5119ceb9d047cb893aa4f369ba615789152ce413",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["b4206219b8f4bd08363ecc89283bf7c453ed9aeb", "341c6d1fdc7fbabd1dee2de848312cc875c48b66"],
+      "integration_commits": ["5119ceb9d047cb893aa4f369ba615789152ce413"],
+      "final_state": "integrated"
+    },
+    "release-readiness": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "3da071349e2e1337afdb9b0db6f5b7ba0898f028",
+      "accepted_commit": "3da071349e2e1337afdb9b0db6f5b7ba0898f028",
+      "integration_commit": "31c146ac5431a0c31f3788344c5a778cc3c27421",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["42705f307c6701c8f1c30fbb327845c74ee89010", "3da071349e2e1337afdb9b0db6f5b7ba0898f028"],
+      "integration_commits": ["0c7cd942c52eb53ee8437e44e11dd99183a25887", "31c146ac5431a0c31f3788344c5a778cc3c27421"],
+      "final_state": "integrated"
+    },
+    "evaluation": {
+      "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "5cb5ee38184518dbe66fe8822f721a401689fb09",
+      "accepted_commit": "5cb5ee38184518dbe66fe8822f721a401689fb09",
+      "integration_commit": "52fa3a193f2f7af21ade1a63978a61a425268a15",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
+      "candidate_commits": ["336c0a675f3bf3427cd7b0695364b5af4d324aeb", "6f74c4120f92c1f84debbb45bd9bea3663ce0a32", "ff398ff863b70793c0440f81157217546344a5ee", "5cb5ee38184518dbe66fe8822f721a401689fb09"],
+      "integration_commits": ["be0ca631d1243ef1b179f7c6aad6c07137a9ad8e", "52fa3a193f2f7af21ade1a63978a61a425268a15"],
+      "final_state": "integrated"
+    },
+    "integration": {
+      "commits": [
+        "7556c4b1457dff5a2fac965a718e6a1d6124146d",
+        "794d499d34b7cce4bc7ede1a0c5084a253c76b5a",
+        "ae6710f75119621a90fbf0b4abfdfa32b5aa7955",
+        "7fd7e0a84e4f4fbcd856833dc3a1bd30a8034472",
+        "d9fce7b6d127bb10f2a94613d8ab2a6de0a5f234",
+        "22d33b461bae40764c5a3e3085c70b60a8804008",
+        "3419a806ad3d92ba36dca1266205b802070c29c8",
+        "7f18d619deb452a2d770f5276229a5582cfcde72",
+        "5f447d84452015724710b67faee2e1ed32661807",
+        "5119ceb9d047cb893aa4f369ba615789152ce413",
+        "0c7cd942c52eb53ee8437e44e11dd99183a25887",
+        "31c146ac5431a0c31f3788344c5a778cc3c27421",
+        "50d0ee34cc1b7ddbe569b438a5b6cca28dd3201c",
+        "6df291658b21d18cd3928b203aafba47c6fb4e59",
+        "be0854d332a630e83153e575f33547731af436a9",
+        "be0ca631d1243ef1b179f7c6aad6c07137a9ad8e",
+        "52fa3a193f2f7af21ade1a63978a61a425268a15"
+      ],
+      "state": "complete",
+      "contracts_status": "frozen",
+      "wave_completion_status": "complete",
+      "final_verification_status": "passed",
+      "final_state": "accepted-integrated"
+    }
+  },
+  "verification_evidence": {
+    "audited_head": "52fa3a193f2f7af21ade1a63978a61a425268a15",
+    "make verify-wave-10": "passed: 33 tests plus boundaries, dependency locks, isolated pip check, compileall, and diff check",
+    "make verify-current": "passed: ap-00-modular-framework-kits/readiness",
+    "git diff --check": "passed"
+  },
+  "published_references": [
+    "capability:notes.search",
+    "technique-policy:python.web@1.0.0",
+    "engineering-pattern:engineering-pattern.engineering-notes@1.0.0"
+  ],
+  "blueprint_evolution_proposals": ["blueprint-evolution-c7e9617e599e1405b41e"],
+  "system_change_proposals": ["system-change-72c245f722fa03e5a455"],
+  "release_readiness": {
+    "release": "foundation-0.1",
+    "minimum_python": "3.11",
+    "declared_package_count": 11,
+    "focused_tests": "3 passed",
+    "repository_doctor": "passed all declared package metadata checks",
+    "foundation_diagnostics": "12 bounded checks; exit status transparently follows the ok field; no provider call"
+  },
+  "known_limitations": [
+    "The foundation release is local and source-checkable, not a hosted control plane or turnkey production deployment.",
+    "Blueprint evolution and system change outputs remain non-executable proposal records and are not applied.",
+    "Distillation publication remains human-review-gated; confidence and provider output cannot approve publication.",
+    "Provider CLI availability is environment-dependent, and final evaluation invokes no paid or real provider.",
+    "The release-readiness package is rooted directly under its package directory while the aggregate source path also names a src directory; diagnostics report importability honestly.",
+    "Production identity, deployment, observability, operational policy, and support remain adopting-environment responsibilities."
+  ],
+  "rollback_order": [
+    "docs(integration): complete Wave-10 foundation closure",
+    "52fa3a193f2f7af21ade1a63978a61a425268a15",
+    "be0ca631d1243ef1b179f7c6aad6c07137a9ad8e",
+    "be0854d332a630e83153e575f33547731af436a9",
+    "6df291658b21d18cd3928b203aafba47c6fb4e59",
+    "50d0ee34cc1b7ddbe569b438a5b6cca28dd3201c",
+    "31c146ac5431a0c31f3788344c5a778cc3c27421",
+    "0c7cd942c52eb53ee8437e44e11dd99183a25887",
+    "5119ceb9d047cb893aa4f369ba615789152ce413",
+    "5f447d84452015724710b67faee2e1ed32661807",
+    "7f18d619deb452a2d770f5276229a5582cfcde72",
+    "3419a806ad3d92ba36dca1266205b802070c29c8",
+    "22d33b461bae40764c5a3e3085c70b60a8804008",
+    "d9fce7b6d127bb10f2a94613d8ab2a6de0a5f234",
+    "7fd7e0a84e4f4fbcd856833dc3a1bd30a8034472",
+    "ae6710f75119621a90fbf0b4abfdfa32b5aa7955",
+    "794d499d34b7cce4bc7ede1a0c5084a253c76b5a",
+    "7556c4b1457dff5a2fac965a718e6a1d6124146d"
+  ]
+}

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-engineering-distillation"
+version = "0.10.0a1"
+description = "Exact-version file-backed engineering pattern catalog for ServiceFabric."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-distillation-contracts==0.10.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

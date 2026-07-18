@@ -20,6 +20,10 @@ for lane in $(sf_lanes); do
     [[ -f "$(sf_canonical_handoff_path "$lane")" ]] || { echo "$lane: missing canonical handoff" >&2; exit 2; }
     [[ -f "$(sf_readiness_path "$lane")" ]] && grep -q '"preflight": "pass"' "$(sf_readiness_path "$lane")" || { echo "$lane: missing passing readiness record" >&2; exit 2; }
 done
+runtime_env="$(sf_runtime_env integration)"
+[[ -f "$runtime_env" ]] || { echo "integration: runtime is not initialized" >&2; exit 2; }
+# shellcheck disable=SC1090
+source "$runtime_env"
 make "verify-$SF_WAVE_ID"
 git push -u origin "$(sf_lane_branch integration)"
 branch="$(sf_lane_branch integration)"
