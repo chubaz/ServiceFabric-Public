@@ -105,6 +105,11 @@ class ProviderExecutionService:
             if line
         )
 
+    @staticmethod
+    def usage_reference(run_id: str) -> str:
+        """Return the stable identity of canonical Wave-8 usage for one run."""
+        return f"provider-usage:{run_id}"
+
     def cancel(self, run_id: str, task_id: str | None = None) -> dict[str, object]:
         plan, _ = self._agents._load(run_id)
         targets = (task_id,) if task_id else tuple(task.task_id for task in plan.tasks)

@@ -69,6 +69,8 @@ class _ProviderExecution(Protocol):
 
     def usage(self, run_id: str) -> tuple[dict[str, object], ...]: ...
 
+    def usage_reference(self, run_id: str) -> str: ...
+
 
 class GitIntegrationRepository:
     """Non-destructive local-Git adapter for ``ApplicationIntegrationService``."""
@@ -203,6 +205,7 @@ class ApplicationFactoryService:
         blueprint_id: str,
         repository: str | Path,
         provider_policy: ProviderPolicy | str | Path,
+        technique_policy_ids: Mapping[str, tuple[str, ...]] | None = None,
     ) -> dict[str, object]:
         loaded_intent = self._load_intent(intent)
         run_id = f"run-{loaded_intent.intent_id}"
@@ -229,6 +232,7 @@ class ApplicationFactoryService:
                     intent=loaded_intent,
                     blueprint=blueprint,
                     lifecycle_requirements=lifecycle,
+                    technique_policy_ids=technique_policy_ids or {},
                     provider_roles={module.module_id: "implementation" for module in modules},
                 )
             )
@@ -299,6 +303,7 @@ class ApplicationFactoryService:
             "approval_subject_ref": subject_ref,
             "planning_state": "pending_approval",
             "bootstrap": None,
+            "superseded_candidate_shas": [],
         }
         self._write_record(run_id, record, create=True)
         return {
@@ -401,12 +406,16 @@ class ApplicationFactoryService:
             task_id: AgentTaskResult.model_validate(value)
             for task_id, value in state["results"].items()
         }
-        reviews = {decision.task_id: decision for decision in self._snapshot(run_id).reviews}
+        reviews = {
+            (decision.task_id, decision.commit_sha): decision
+            for decision in self._snapshot(run_id).reviews
+        }
         values = []
         for task in plan.tasks:
             result = results.get(task.task_id)
             if result is None:
                 continue
+            review = reviews.get((task.task_id, result.commit_sha))
             values.append(
                 {
                     "task_id": task.task_id,
@@ -414,10 +423,8 @@ class ApplicationFactoryService:
                     "commit_sha": result.commit_sha,
                     "changed_paths": result.changed_paths,
                     "evidence": result.evidence,
-                    "review": reviews.get(task.task_id),
-                    "review_state": reviews.get(task.task_id).decision
-                    if task.task_id in reviews
-                    else "pending",
+                    "review": review,
+                    "review_state": review.decision if review is not None else "pending",
                 }
             )
         return {"run_id": run_id, "candidates": tuple(values)}
@@ -465,6 +472,28 @@ class ApplicationFactoryService:
                 "reason": raw.get("reason", inspected.reason),
             }
         )
+        previous_reviews = tuple(
+            item for item in self._snapshot(run_id).reviews if item.task_id == task_id
+        )
+        same_candidate = tuple(
+            item for item in previous_reviews if item.commit_sha == recorded.commit_sha
+        )
+        if same_candidate and recorded not in same_candidate:
+            raise FactoryStateError("exact candidate already has a review decision")
+        superseded = {
+            str(item)
+            for item in record.get("superseded_candidate_shas", ())
+            if isinstance(item, str)
+        }
+        superseded.update(
+            item.commit_sha
+            for item in previous_reviews
+            if item.commit_sha != recorded.commit_sha
+        )
+        if superseded != set(record.get("superseded_candidate_shas", ())):
+            updated = dict(record)
+            updated["superseded_candidate_shas"] = sorted(superseded)
+            self._write_record(run_id, updated)
         self._lifecycle.record_review(recorded)
         return recorded
 
@@ -487,20 +516,43 @@ class ApplicationFactoryService:
                 for command in lane.verification_commands
             )
         )
+        current_results = {
+            task_id: AgentTaskResult.model_validate(value)
+            for task_id, value in self._agents.store.load(run_id)["results"].items()
+        }
+        current_reviews = tuple(
+            decision
+            for decision in self._snapshot(run_id).reviews
+            if decision.task_id in required
+            and decision.task_id in current_results
+            and decision.commit_sha == current_results[decision.task_id].commit_sha
+        )
         request = ApplicationIntegrationRequest(
             run_id=run_id,
             application_id=str(record["application_id"]),
             integration_branch=bootstrap["integration_branch"],
             required_task_ids=required,
-            review_decisions=self._snapshot(run_id).reviews,
+            review_decisions=current_reviews,
             verification_commands=declared_commands,
             allowed_verification_commands=declared_commands,
             expected_head=bootstrap["base_commit"],
             agent_handoff_ref=f"factory-runs/{run_id}/handoff",
+            superseded_candidate_shas=tuple(
+                sorted(str(item) for item in record.get("superseded_candidate_shas", ()))
+            ),
         )
         handoff = self._integration.integrate(
             request,
             GitIntegrationRepository(bootstrap["integration_worktree"]),
+        )
+        usage_reference = self._provider_usage_reference(run_id)
+        handoff = ApplicationFactoryHandoff.model_validate(
+            {
+                **handoff.model_dump(mode="json"),
+                "verification_evidence": tuple(
+                    dict.fromkeys((*handoff.verification_evidence, usage_reference))
+                ),
+            }
         )
         self._lifecycle.record_handoff(handoff)
         return handoff
@@ -539,6 +591,9 @@ class ApplicationFactoryService:
             else approval,
             "approval": approval,
             "reviews": snapshot.reviews,
+            "superseded_candidate_shas": tuple(
+                sorted(str(item) for item in record.get("superseded_candidate_shas", ()))
+            ),
             "usage": usage,
             "events": events,
             "blockers": blockers,
@@ -783,6 +838,9 @@ class ApplicationFactoryService:
                 self._agents, default_provider_registry()
             )
         return self._provider_execution
+
+    def _provider_usage_reference(self, run_id: str) -> str:
+        return self._execution().usage_reference(run_id)
 
     def _snapshot(self, run_id: str):
         try:
