@@ -2,7 +2,7 @@
   "wave_id": "wave-09",
   "base_commit": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
   "contractsStatus": "frozen",
-  "overall": "in_progress",
+  "overall": "complete",
   "accepted_candidate_commits": {
     "technology-profile": "25a80c9f658059f25de8c15bb765e4ccb3d7abcc",
     "factory-lifecycle": "91e7c08aa11b9f68bda8c77bd8b302274dd670ee",
@@ -17,7 +17,9 @@
     "blueprint-compiler": "5d87eb7",
     "repository-bootstrap": "9ada09e",
     "candidate-review": "c807341",
-    "application-integration": "718232e"
+    "application-integration": "718232e",
+    "evaluation": "b536882",
+    "factory-composition": "b536882"
   },
   "lanes": {
     "technology-profile": {
@@ -58,13 +60,13 @@
     },
     "candidate-review": {"accepted_commit": "66136e680270e620f278c9960c6291d8a2318eee", "integration_commit": "c807341", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
     "application-integration": {"accepted_commit": "f755ecf0b550e72c8eb84a737ae643dfaccd22bf", "integration_commit": "718232e", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
-    "evaluation": {"final_state": "pending"},
+    "evaluation": {"integration_commit": "b536882", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
     "integration": {
-      "state": "active",
+      "state": "complete",
       "contracts_status": "frozen",
-      "candidate_review_status": "six required implementation lanes accepted and integrated",
-      "wave_completion_status": "in_progress",
-      "final_verification_status": "pre-Order-12 gate passed"
+      "candidate_review_status": "all implementation and evaluation lanes accepted and integrated",
+      "wave_completion_status": "complete",
+      "final_verification_status": "make verify-wave-09 passed"
     }
   }
 }

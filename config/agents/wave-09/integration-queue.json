@@ -1,6 +1,6 @@
 {
   "wave_id": "wave-09",
-  "overall": "IN PROGRESS",
+  "overall": "COMPLETE",
   "contractsStatus": "frozen",
   "dependency_order": [
     "technology-profile",
@@ -18,8 +18,8 @@
     "repository-bootstrap": "integrated",
     "candidate-review": "integrated",
     "application-integration": "integrated",
-    "evaluation": "pending",
-    "integration": "active"
+    "evaluation": "integrated",
+    "integration": "complete"
   },
-  "next_action": "Proceed with Order-12 factory composition; evaluation remains pending post-composition synchronization."
+  "next_action": "Wave-9 is complete; retain the integration branch for review and do not merge to main automatically."
 }

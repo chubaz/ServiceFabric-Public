@@ -3,5 +3,6 @@
   "runtime_wave_id": "wave-09",
   "integration_branch": "integration/phase25-wave9",
   "contractsStatus": "frozen",
+  "status": "complete",
   "verification_gates": ["make verify-wave-09", "make verify-current", "git diff --check"]
 }

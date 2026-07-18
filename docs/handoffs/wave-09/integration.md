@@ -17,7 +17,7 @@
 - `integration/phase25-wave9/verify_boundaries.py` — passed.
 - `git diff --check` — passed.
 
-`make verify-wave-09` remains pending specialist delivery: it stops at the absent specialist-owned `tests/technology_profiles` suite. No specialist-owned paths were created or modified.
+`make verify-wave-09` passes after specialist integration and final factory composition.
 
 ## Candidate review — 2026-07-17
 
@@ -48,6 +48,14 @@
 ### Implementation readiness — 2026-07-18
 
 All six required implementation lanes are accepted and integrated. Their canonical package imports, the frozen Wave-9 boundary verifier, and `git diff --check` pass. Superseded downstream SHAs are not ancestors of this integration branch. Evaluation is a post-composition synchronization task, so the pre-Order-12 gate is passed and Order-12 factory composition may proceed.
+
+### Factory composition and closure — 2026-07-18
+
+- Composed the accepted Wave-3, Wave-7, Wave-8, and Wave-9 public APIs in `b536882` without introducing a second generator, run store, candidate reviewer, integration authority, or provider runtime.
+- Added exactly four focused factory journeys for plan/profile/engineering composition, bootstrap topology, Wave-8 delegation, and accepted-candidate integration/handoff.
+- Added the `servicefabric factory` plan, approve, bootstrap, execute, candidates, review, integrate, status, and handoff workflow.
+- Installed the accepted local package graph in the dedicated Wave-9 environment and corrected dependency metadata to the frozen Wave-7/8/9 versions.
+- `make verify-wave-09`, isolated `pip check`, package compile checks, and `git diff --check` pass. No provider was invoked by planning or bootstrap, and no application repository was pushed or merged to `main`.
 
 ## Rollback
 
