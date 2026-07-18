@@ -1,7 +1,26 @@
 {
   "wave_id": "wave-10",
-  "overall": "EVALUATION ACCEPTED; CLOSURE VERIFICATION PENDING",
+  "overall": "WAVE COMPLETE",
   "contractsStatus": "frozen",
-  "lanes": {"evidence":"accepted-integrated","capability-distillation":"accepted-integrated","technique-policies":"accepted-integrated","engineering-distillation":"accepted-integrated","evolution-proposals":"accepted-integrated","release-readiness":"accepted-integrated","evaluation":"accepted-integrated","integration":"closure-verification-pending"},
-  "next_action": "Run the finalized minimal make verify-wave-10 gate, then the separately authorized current-milestone closure checks. Wave-10 is not complete and must not be merged to main automatically."
+  "final_head": {
+    "ref": "refs/heads/integration/phase25-wave10",
+    "audited_parent_sha": "52fa3a193f2f7af21ade1a63978a61a425268a15",
+    "closure_commit_subject": "docs(integration): complete Wave-10 foundation closure"
+  },
+  "lanes": {
+    "evidence": "accepted-integrated",
+    "capability-distillation": "accepted-integrated",
+    "technique-policies": "accepted-integrated",
+    "engineering-distillation": "accepted-integrated",
+    "evolution-proposals": "accepted-integrated",
+    "release-readiness": "accepted-integrated",
+    "evaluation": "accepted-integrated",
+    "integration": "accepted-integrated"
+  },
+  "verification": {
+    "make verify-wave-10": "passed",
+    "make verify-current": "passed",
+    "git diff --check": "passed"
+  },
+  "next_action": "Wave-10 is closed on integration/phase25-wave10. Preserve this handoff for review; do not push or merge to main automatically."
 }
