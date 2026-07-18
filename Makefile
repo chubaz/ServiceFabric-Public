@@ -245,8 +245,8 @@ verify-wave-09:
 	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest integration.phase25-wave8.test_provider_execution.ProviderExecutionCompositionTests.test_executes_ready_task_persists_result_and_redacts_event_credentials -v
 	$(WAVE09_ENV) $(WAVE09_PYTHON) -m unittest tests.application_generator.test_generator.GeneratorTests.test_materialization_is_deterministic_and_generates_source tests.blueprints.test_blueprint_catalog.TestBlueprintCatalog.test_resolve_requires_exact_blueprint_version -v
 	$(WAVE09_ENV) $(WAVE09_PYTHON) scripts/dependencies/check_python_locks.py
-	$(WAVE09_ENV) $(WAVE09_PYTHON) -m pip check
-	$(WAVE09_ENV) $(WAVE09_PYTHON) -m compileall packages/servicefabric_application_factory_contracts packages/servicefabric_technology_profiles packages/servicefabric_engineering_blueprints packages/servicefabric_application_factory_state packages/servicefabric_application_factory_bootstrap packages/servicefabric_application_candidate_review packages/servicefabric_application_integration integration/phase25-wave9 tests/application_factory_contracts tests/wave_09
+	env -u SERVICEFABRIC_WORKSPACE -u SERVICEFABRIC_HOME -u PYTHONPATH PATH="$(dir $(WAVE09_PYTHON)):$(PATH)" $(WAVE09_PYTHON) -m pip check
+	$(WAVE09_ENV) $(WAVE09_PYTHON) -m compileall packages/servicefabric_application_factory_contracts packages/servicefabric_technology_profiles packages/servicefabric_engineering_blueprints packages/servicefabric_application_factory_state packages/servicefabric_application_factory_bootstrap packages/servicefabric_application_candidate_review packages/servicefabric_application_integration clients/python/servicefabric_client/application_factory.py clients/python/servicefabric_client/factory_cli.py clients/python/servicefabric_client/main.py clients/python/servicefabric_client/provider_execution.py integration/phase25-wave9 tests/application_factory_contracts tests/wave_09
 	git diff --check
 
 verify-wave-06:

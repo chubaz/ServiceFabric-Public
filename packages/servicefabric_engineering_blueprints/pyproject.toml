@@ -8,7 +8,7 @@ version = "0.9.0a1"
 description = "Deterministic compilation of reviewed application inputs into engineering lanes."
 requires-python = ">=3.11,<3.12"
 dependencies = [
-  "servicefabric-agentic-contracts==0.1.0a1",
+  "servicefabric-agentic-contracts==0.7.0a1",
   "servicefabric-agentic-planner==0.7.0a1",
   "servicefabric-application-factory-contracts==0.9.0a1",
   "servicefabric-blueprints==0.1.0a1",
