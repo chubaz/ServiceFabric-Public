@@ -2,15 +2,15 @@
   "wave_id": "wave-10",
   "base_commit": "5d0add1332d71e79fc138aad42c025a3607d8aef",
   "contractsStatus": "frozen",
-  "overall": "ready-for-specialists",
+  "overall": "implementation-candidates-integrated",
   "lanes": {
-    "evidence": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
-    "capability-distillation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
-    "technique-policies": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
-    "engineering-distillation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
-    "evolution-proposals": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
-    "release-readiness": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
-    "evaluation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "final_state": "pending"},
+    "evidence": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "2b8f64b674bdfe7e1d161313c1c12940e0914fc5", "integration_sha": "ae6710f", "final_state": "accepted-integrated"},
+    "capability-distillation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "45127669241b0865e1d01b8ded862af2f8c0779c", "integration_sha": "3419a80", "final_state": "accepted-integrated"},
+    "technique-policies": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "1b7b7c48dd7e5d95539d886c51c7cc0f920c3166", "integration_sha": "d9fce7b", "final_state": "accepted-integrated"},
+    "engineering-distillation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "e7e6701", "integration_sha": "7f18d61", "final_state": "accepted-integrated"},
+    "evolution-proposals": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb", "integration_sha": "5119ceb", "final_state": "accepted-integrated"},
+    "release-readiness": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "42705f3", "integration_sha": "0c7cd94", "final_state": "accepted-integrated"},
+    "evaluation": {"original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef", "candidate_sha": "336c0a675f3bf3427cd7b0695364b5af4d324aeb", "final_state": "pending-composition"},
     "integration": {"state": "bootstrap-complete", "contracts_status": "frozen", "wave_completion_status": "pending", "final_verification_status": "pending"}
   }
 }
