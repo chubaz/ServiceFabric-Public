@@ -73,7 +73,7 @@
       ],
       "state": "complete",
       "contracts_status": "frozen",
-      "wave_completion_status": "WAVE COMPLETE",
+      "wave_completion_status": "complete",
       "final_verification_status": "passed",
       "final_state": "accepted-integrated"
     }
