@@ -1,0 +1,39 @@
+{
+  "wave_id": "wave-09",
+  "overall": "COMPLETE",
+  "contractsStatus": "frozen",
+  "dependency_order": [
+    "technology-profile",
+    "factory-lifecycle",
+    "blueprint-compiler",
+    "repository-bootstrap",
+    "candidate-review",
+    "application-integration",
+    "evaluation"
+  ],
+  "lanes": {
+    "technology-profile": "integrated",
+    "factory-lifecycle": "integrated",
+    "blueprint-compiler": "integrated",
+    "repository-bootstrap": "integrated",
+    "candidate-review": "integrated",
+    "application-integration": "integrated",
+    "evaluation": "integrated",
+    "integration": "complete"
+  },
+  "immutable_integration_commits": {
+    "technology-profile": "4075ff13a5655b447461e9934e616912b92a1576",
+    "blueprint-compiler": "5d87eb7694adeae9cd402b1968db163d7fac1955",
+    "factory-lifecycle": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
+    "repository-bootstrap": "9ada09eb8358a46ec90f3db804f96f2083ca4fb5",
+    "candidate-review": "c80734165dbe527f93e101dabb2b4a6d3caf88ad",
+    "application-integration": "718232e926059e98fe017af656334601adb4bda0",
+    "composition": "b5368828d9df5a8c38653be29c4ff85222787f16",
+    "cli": "317a2331b6e23c8f8f09ac455847e2b0fecca24a",
+    "evaluation-journey": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf",
+    "evaluation-packaging": "6930121cc57cbd0bf7532d007e5b49c43090a383",
+    "evaluation-acceptance": "30a67d7906e2f5ea9b143ecde04031df25adf26c"
+  },
+  "unresolved_items": [],
+  "next_action": "Wave-9 is complete; retain the integration branch for review and do not merge to main automatically."
+}

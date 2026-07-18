@@ -94,6 +94,22 @@ class ProviderExecutionService:
         values = tuple(json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line)
         return tuple(value for value in values if task_id is None or value.get("task_id") == task_id)
 
+    def usage(self, run_id: str) -> tuple[dict[str, object], ...]:
+        """Return the authoritative persisted Wave-8 usage records unchanged."""
+        path = self._usage_path(run_id)
+        if not path.exists():
+            return ()
+        return tuple(
+            json.loads(line)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line
+        )
+
+    @staticmethod
+    def usage_reference(run_id: str) -> str:
+        """Return the stable identity of canonical Wave-8 usage for one run."""
+        return f"provider-usage:{run_id}"
+
     def cancel(self, run_id: str, task_id: str | None = None) -> dict[str, object]:
         plan, _ = self._agents._load(run_id)
         targets = (task_id,) if task_id else tuple(task.task_id for task in plan.tasks)

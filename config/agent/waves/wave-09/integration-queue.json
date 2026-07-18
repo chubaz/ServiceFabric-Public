@@ -1,0 +1,33 @@
+{
+  "wave_id": "wave-09",
+  "overall": "WAVE COMPLETE",
+  "lanes": {
+    "technology-profile": "accepted/integrated",
+    "blueprint-compiler": "accepted/integrated",
+    "factory-lifecycle": "accepted/integrated",
+    "repository-bootstrap": "accepted/integrated",
+    "candidate-review": "accepted/integrated",
+    "application-integration": "accepted/integrated",
+    "evaluation": "accepted/integrated",
+    "integration": "accepted/integrated"
+  },
+  "unresolved_wave_09_items": [],
+  "next_authorized_wave_intake": {
+    "status": "ready-for-intake",
+    "items": [
+      {
+        "id": "explicit-generated-application-build-and-smoke-declarations",
+        "classification": "non-blocking future planning decision",
+        "evidence": "The evaluated EngineeringBlueprint declared python3 -m unittest and no separate build or development-smoke command.",
+        "requested_disposition": "If a future application blueprint needs distinct build or smoke phases, declare bounded commands explicitly; never infer them from provider output."
+      },
+      {
+        "id": "obsolete-evaluation-worktree-disposition",
+        "classification": "non-authoritative workspace hygiene",
+        "evidence": "The preserved old evaluation worktree contains invalid pre-recovery changes and was excluded from integration history.",
+        "requested_disposition": "Inspect and explicitly archive or discard it before that physical worktree is reused; never integrate its changes."
+      }
+    ]
+  },
+  "next_action": "Hand this intake to the next formally authorized wave. Do not create an undeclared Wave-10, push, or merge to main as part of Wave-9 closure."
+}

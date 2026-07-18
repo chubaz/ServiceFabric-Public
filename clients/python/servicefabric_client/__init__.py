@@ -10,11 +10,20 @@ from .governance import GovernanceClient
 from .mcp import McpGatewayClient
 
 __all__ = [
+    "ApplicationFactoryService",
     "CapabilityClient",
     "InternalAgentCapabilityAdapter",
     "InternalAgentCapabilityReference",
     "ServiceFabricClient",
 ]
+
+
+def __getattr__(name: str):
+    if name == "ApplicationFactoryService":
+        from .application_factory import ApplicationFactoryService
+
+        return ApplicationFactoryService
+    raise AttributeError(name)
 
 
 class ServiceFabricClient:

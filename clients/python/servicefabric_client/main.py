@@ -601,6 +601,27 @@ def parser() -> ServiceFabricArgumentParser:
     cancel = agent_actions.add_parser("cancel", help="request provider cancellation")
     cancel.add_argument("run_id", metavar="RUN_ID")
     cancel.add_argument("--task", dest="task_id", metavar="TASK_ID")
+
+    factory = commands.add_parser("factory", help="compose the autonomous application factory")
+    factory_actions = factory.add_subparsers(dest="factory_action", required=True)
+    factory_plan = factory_actions.add_parser("plan", help="compile an approval-ready factory plan")
+    factory_plan.add_argument("--intent", required=True, metavar="FILE")
+    factory_plan.add_argument("--blueprint", required=True, metavar="BLUEPRINT_ID")
+    factory_plan.add_argument("--repository", required=True, metavar="PATH")
+    factory_plan.add_argument("--provider-policy", required=True, metavar="FILE")
+    factory_approve = factory_actions.add_parser("approve", help="record an explicit factory approval")
+    factory_approve.add_argument("run_id", metavar="RUN_ID")
+    factory_approve.add_argument("--decision", required=True, metavar="FILE")
+    for name in ("bootstrap", "execute", "candidates"):
+        item = factory_actions.add_parser(name)
+        item.add_argument("run_id", metavar="RUN_ID")
+    factory_review = factory_actions.add_parser("review", help="inspect and decide one exact candidate")
+    factory_review.add_argument("run_id", metavar="RUN_ID")
+    factory_review.add_argument("task_id", metavar="TASK_ID")
+    factory_review.add_argument("--decision", required=True, metavar="FILE")
+    for name in ("integrate", "status", "handoff"):
+        item = factory_actions.add_parser(name)
+        item.add_argument("run_id", metavar="RUN_ID")
     return root
 
 
@@ -691,6 +712,14 @@ def dispatch(argv: list[str]) -> tuple[int, str, object]:
 
         from .agentic import dispatch_agents
         return dispatch_agents(args)
+
+    if args.command == "factory":
+        from .factory_cli import dispatch_factory
+
+        code, command, value = dispatch_factory(args)
+        if isinstance(value, dict):
+            value = {**value, "json_mode": json_mode}
+        return code, command, value
 
     context = resolve_workspace_for_cli(workspace_path_val)
     workspace_service = WorkspaceService(context)
