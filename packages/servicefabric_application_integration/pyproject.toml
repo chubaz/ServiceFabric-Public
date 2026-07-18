@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "servicefabric-application-integration"
+version = "0.9.0a1"
+description = "Reviewed-candidate integration authority for ServiceFabric application factories."
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "servicefabric-application-factory-contracts==0.9.0a1",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
