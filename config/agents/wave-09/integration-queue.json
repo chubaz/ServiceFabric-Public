@@ -16,10 +16,10 @@
     "factory-lifecycle": "integrated",
     "blueprint-compiler": "integrated",
     "repository-bootstrap": "integrated",
-    "candidate-review": "pending",
-    "application-integration": "pending",
+    "candidate-review": "integrated",
+    "application-integration": "integrated",
     "evaluation": "pending",
     "integration": "active"
   },
-  "next_action": "Review downstream candidate-review, application-integration, and evaluation candidates in integration order, then perform the defined pre-Order-12 readiness process."
+  "next_action": "Run the six-lane pre-Order-12 readiness gate; evaluation remains pending post-composition synchronization."
 }

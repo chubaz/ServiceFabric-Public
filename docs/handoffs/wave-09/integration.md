@@ -39,6 +39,12 @@
 - Both replacements have owned-path diffs and focused validation. The repository-bootstrap suite passes through the canonical Wave-9 Makefile environment, whose `WAVE09_PYTHONPATH` includes `packages/servicefabric_application_factory_bootstrap/src`; its earlier plain `unittest` import failure was caused by the package source root not being installed or present in that active environment, not by the accepted candidate. No test-side import manipulation was retained.
 - The superseded candidates remain unaccepted and unintegrated. Downstream review proceeds with `candidate-review`, `application-integration`, and `evaluation`, followed by the defined pre-Order-12 readiness process.
 
+### Downstream safety corrections — 2026-07-18
+
+- Accepted `candidate-review` replacement `66136e680270e620f278c9960c6291d8a2318eee` as `c807341`, followed by documentation-only handoff `da97620`. Superseded `fa33c0b` remains unintegrated.
+- Accepted `application-integration` replacement `f755ecf0b550e72c8eb84a737ae643dfaccd22bf` as `718232e`, followed by documentation-only handoff `89deb6a`. Superseded `6076a55` and `f9c3efe` remain unintegrated.
+- Candidate-review focused verification passed 6 tests; application-integration focused verification passed 5 tests; both package compile checks and `git diff --check` passed after integration.
+
 ## Rollback
 
 Revert this integration-only freeze record and boundary verifier; no provider, repository, or application state was changed.
