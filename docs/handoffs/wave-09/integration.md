@@ -45,6 +45,10 @@
 - Accepted `application-integration` replacement `f755ecf0b550e72c8eb84a737ae643dfaccd22bf` as `718232e`, followed by documentation-only handoff `89deb6a`. Superseded `6076a55` and `f9c3efe` remain unintegrated.
 - Candidate-review focused verification passed 6 tests; application-integration focused verification passed 5 tests; both package compile checks and `git diff --check` passed after integration.
 
+### Implementation readiness — 2026-07-18
+
+All six required implementation lanes are accepted and integrated. Their canonical package imports, the frozen Wave-9 boundary verifier, and `git diff --check` pass. Superseded downstream SHAs are not ancestors of this integration branch. Evaluation is a post-composition synchronization task, so the pre-Order-12 gate is passed and Order-12 factory composition may proceed.
+
 ## Rollback
 
 Revert this integration-only freeze record and boundary verifier; no provider, repository, or application state was changed.
