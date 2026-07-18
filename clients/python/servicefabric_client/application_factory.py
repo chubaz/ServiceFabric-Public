@@ -614,6 +614,44 @@ class ApplicationFactoryService:
             raise FactoryStateError("factory run has no final handoff")
         return handoff
 
+    def distillation_inputs(self, run_id: str) -> dict[str, object]:
+        """Return the exact reviewed records exposed to Wave-10 composition.
+
+        This is a typed, read-only projection over the existing factory lifecycle
+        and agent run store. It creates no second factory or run-state authority.
+        """
+
+        record = self._load_record(run_id)
+        snapshot = self._snapshot(run_id)
+        if snapshot.handoff is None or snapshot.handoff.integration_commit is None:
+            raise FactoryStateError("factory run requires a final integrated handoff")
+        if "technology_profile" not in record or "engineering_blueprint" not in record:
+            raise FactoryStateError("factory run has no approved engineering inputs")
+        bootstrap = self._require_bootstrap(record)
+        agent_state = self._agents.store.load(run_id)
+        plan = AgentRunPlan.model_validate(agent_state["plan"])
+        results = tuple(
+            AgentTaskResult.model_validate(agent_state["results"][task.task_id])
+            for task in plan.tasks
+            if task.task_id in agent_state["results"]
+        )
+        return {
+            "run_id": run_id,
+            "application_id": str(record["application_id"]),
+            "repository_root": str(bootstrap["integration_worktree"]),
+            "repository_head": snapshot.handoff.integration_commit,
+            "application_blueprint_id": str(record["application_blueprint_id"]),
+            "application_blueprint_version": str(record["application_blueprint_version"]),
+            "technology_profile": TechnologyProfile.model_validate(record["technology_profile"]),
+            "engineering_blueprint": EngineeringBlueprint.model_validate(record["engineering_blueprint"]),
+            "agent_run_plan": plan,
+            "agent_task_results": results,
+            "agent_handoff": self._agents.store.handoff(run_id),
+            "reviews": snapshot.reviews,
+            "unmet_requirements": snapshot.unmet_requirements,
+            "factory_handoff": snapshot.handoff,
+        }
+
     def _selection_unmet(
         self,
         run_id: str,
