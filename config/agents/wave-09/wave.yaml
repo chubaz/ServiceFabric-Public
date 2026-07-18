@@ -1,7 +1,7 @@
 {
   "wave_id": "wave-09",
   "runtime_wave_id": "wave-09",
-  "base_commit": "37b61bb7ab8b2be5b8daac1344046fd144b04c17",
+  "base_commit": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
   "integration_branch": "integration/phase25-wave9",
   "contractsStatus": "frozen",
   "status": "complete",
@@ -42,5 +42,6 @@
     "unmet_requirement": "records-needs-without-modifying-ServiceFabric"
   },
   "specialist_test_command_ceiling": {"technology-profile": 2, "blueprint-compiler": 2, "factory-lifecycle": 2, "repository-bootstrap": 2, "candidate-review": 2, "application-integration": 2, "evaluation": 2},
-  "verification_gates": ["make verify-wave-09", "make verify-current", "git diff --check"]
+  "verification_gates": ["make verify-wave-09", "make verify-current", "git diff --check"],
+  "evaluation_acceptance_commit": "30a67d7906e2f5ea9b143ecde04031df25adf26c"
 }

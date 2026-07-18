@@ -54,8 +54,12 @@ All six required implementation lanes are accepted and integrated. Their canonic
 - Order-12 composition `b5368828d9df5a8c38653be29c4ff85222787f16` and CLI `317a2331b6e23c8f8f09ac455847e2b0fecca24a` supplied the complete public workflow, but their original journey did not satisfy the final evaluation manifest.
 - Final journey `7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf` adds the missing seven-lane, technique-policy, blocked-requirement, subprocess-provider, retry/supersession, candidates/status, and provider-usage-reference coverage.
 - Packaging correction `6930121cc57cbd0bf7532d007e5b49c43090a383` installs the declared cumulative Wave-7/8/9 local distributions in one resolver-enabled invocation. A from-scratch isolated environment reports `No broken requirements found.`
+- Evaluation acceptance `30a67d7906e2f5ea9b143ecde04031df25adf26c` records the new integration-authoritative handoff and immutable evaluation evidence.
 - `make verify-wave-09` passed 35 tests plus boundaries, locks, compileall, isolated `pip check`, and `git diff --check`. The subsequent single `make verify-current` run passed.
 - No real provider was invoked, no push occurred, and no merge to `main` occurred. The non-authoritative old evaluation changes remain outside integration history.
+
+Wave 9 is closed on the integration branch. It is ready for review and handoff;
+it has not been pushed or merged to `main`.
 
 ## Rollback
 

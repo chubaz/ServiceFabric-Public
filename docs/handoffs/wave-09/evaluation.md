@@ -8,6 +8,7 @@
 - Factory CLI: `317a2331b6e23c8f8f09ac455847e2b0fecca24a`
 - Final complete journey: `7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf`
 - Deterministic packaging correction: `6930121cc57cbd0bf7532d007e5b49c43090a383`
+- Evaluation acceptance: `30a67d7906e2f5ea9b143ecde04031df25adf26c`
 
 ## Evaluation decision
 

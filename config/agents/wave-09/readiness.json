@@ -14,12 +14,15 @@
   "integration_commits": {
     "technology-profile": "4075ff13a5655b447461e9934e616912b92a1576",
     "factory-lifecycle": "dbfa25b4dab2ed6b8fed7ea39e84545c848ab5cf",
-    "blueprint-compiler": "5d87eb7",
-    "repository-bootstrap": "9ada09e",
-    "candidate-review": "c807341",
-    "application-integration": "718232e",
-    "evaluation": "b536882",
-    "factory-composition": "b536882"
+    "blueprint-compiler": "5d87eb7694adeae9cd402b1968db163d7fac1955",
+    "repository-bootstrap": "9ada09eb8358a46ec90f3db804f96f2083ca4fb5",
+    "candidate-review": "c80734165dbe527f93e101dabb2b4a6d3caf88ad",
+    "application-integration": "718232e926059e98fe017af656334601adb4bda0",
+    "factory-composition": "b5368828d9df5a8c38653be29c4ff85222787f16",
+    "factory-cli": "317a2331b6e23c8f8f09ac455847e2b0fecca24a",
+    "evaluation-journey": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf",
+    "evaluation-packaging": "6930121cc57cbd0bf7532d007e5b49c43090a383",
+    "evaluation": "30a67d7906e2f5ea9b143ecde04031df25adf26c"
   },
   "lanes": {
     "technology-profile": {
@@ -44,7 +47,7 @@
       "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
       "candidate_head": "132207d2814417c4ff187a9703b2770dcdb436a6",
       "accepted_commit": "132207d2814417c4ff187a9703b2770dcdb436a6",
-      "integration_commit": "5d87eb7",
+      "integration_commit": "5d87eb7694adeae9cd402b1968db163d7fac1955",
       "focused_verification": "passed",
       "integration_decision": "accepted",
       "final_state": "integrated"
@@ -53,20 +56,22 @@
       "original_base_sha": "3bf95f971aa73ca5105e14e90e04e4a16511a0b0",
       "candidate_head": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
       "accepted_commit": "6a68fe92e7280d49a9de266cd0baca6ffcdf7c9c",
-      "integration_commit": "9ada09e",
+      "integration_commit": "9ada09eb8358a46ec90f3db804f96f2083ca4fb5",
       "focused_verification": "passed",
       "integration_decision": "accepted",
       "final_state": "integrated"
     },
-    "candidate-review": {"accepted_commit": "66136e680270e620f278c9960c6291d8a2318eee", "integration_commit": "c807341", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
-    "application-integration": {"accepted_commit": "f755ecf0b550e72c8eb84a737ae643dfaccd22bf", "integration_commit": "718232e", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
-    "evaluation": {"integration_commit": "b536882", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
+    "candidate-review": {"accepted_commit": "66136e680270e620f278c9960c6291d8a2318eee", "integration_commit": "c80734165dbe527f93e101dabb2b4a6d3caf88ad", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
+    "application-integration": {"accepted_commit": "f755ecf0b550e72c8eb84a737ae643dfaccd22bf", "integration_commit": "718232e926059e98fe017af656334601adb4bda0", "focused_verification": "passed", "integration_decision": "accepted", "final_state": "integrated"},
+    "composition": {"integration_commit": "b5368828d9df5a8c38653be29c4ff85222787f16", "final_state": "complete"},
+    "cli": {"integration_commit": "317a2331b6e23c8f8f09ac455847e2b0fecca24a", "final_state": "complete"},
+    "evaluation": {"journey_commit": "7d7195f07ae1b2e0980b022bfe9f9e309b3d9aaf", "packaging_commit": "6930121cc57cbd0bf7532d007e5b49c43090a383", "integration_commit": "30a67d7906e2f5ea9b143ecde04031df25adf26c", "focused_verification": "passed", "integration_decision": "accepted", "synchronization_state": "synchronized", "final_state": "integrated"},
     "integration": {
       "state": "complete",
       "contracts_status": "frozen",
       "candidate_review_status": "all implementation and evaluation lanes accepted and integrated",
       "wave_completion_status": "complete",
-      "final_verification_status": "make verify-wave-09 passed"
+      "final_verification_status": "make verify-wave-09 and the subsequent single make verify-current passed"
     }
   }
 }
