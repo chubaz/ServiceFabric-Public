@@ -11,45 +11,80 @@
   "lanes": {
     "evidence": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "699774ab04e978f2b898902055cd939648469827",
+      "accepted_commit": "699774ab04e978f2b898902055cd939648469827",
+      "integration_commit": "7fd7e0a84e4f4fbcd856833dc3a1bd30a8034472",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["2b8f64b674bdfe7e1d161313c1c12940e0914fc5", "699774ab04e978f2b898902055cd939648469827"],
       "integration_commits": ["ae6710f75119621a90fbf0b4abfdfa32b5aa7955", "7fd7e0a84e4f4fbcd856833dc3a1bd30a8034472"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "capability-distillation": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "45127669241b0865e1d01b8ded862af2f8c0779c",
+      "accepted_commit": "45127669241b0865e1d01b8ded862af2f8c0779c",
+      "integration_commit": "3419a806ad3d92ba36dca1266205b802070c29c8",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["45127669241b0865e1d01b8ded862af2f8c0779c"],
       "integration_commits": ["3419a806ad3d92ba36dca1266205b802070c29c8"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "technique-policies": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804",
+      "accepted_commit": "e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804",
+      "integration_commit": "22d33b461bae40764c5a3e3085c70b60a8804008",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["1b7b7c48dd7e5d95539d886c51c7cc0f920c3166", "e3c0621f8bfd54c0cec542c7d8b8b7b1a89cc804"],
       "integration_commits": ["d9fce7b6d127bb10f2a94613d8ab2a6de0a5f234", "22d33b461bae40764c5a3e3085c70b60a8804008"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "engineering-distillation": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a",
+      "accepted_commit": "c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a",
+      "integration_commit": "5f447d84452015724710b67faee2e1ed32661807",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["e7e6701e6d0d0498a48f44adaa912dec6a746ef5", "c42a596e4e2cf1612f2b1dd87de6dfd99d39a91a"],
       "integration_commits": ["7f18d619deb452a2d770f5276229a5582cfcde72", "5f447d84452015724710b67faee2e1ed32661807"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "evolution-proposals": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb",
+      "accepted_commit": "b4206219b8f4bd08363ecc89283bf7c453ed9aeb",
+      "integration_commit": "5119ceb9d047cb893aa4f369ba615789152ce413",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["b4206219b8f4bd08363ecc89283bf7c453ed9aeb"],
       "integration_commits": ["5119ceb9d047cb893aa4f369ba615789152ce413"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "release-readiness": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "3da071349e2e1337afdb9b0db6f5b7ba0898f028",
+      "accepted_commit": "3da071349e2e1337afdb9b0db6f5b7ba0898f028",
+      "integration_commit": "31c146ac5431a0c31f3788344c5a778cc3c27421",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["42705f307c6701c8f1c30fbb327845c74ee89010", "3da071349e2e1337afdb9b0db6f5b7ba0898f028"],
       "integration_commits": ["0c7cd942c52eb53ee8437e44e11dd99183a25887", "31c146ac5431a0c31f3788344c5a778cc3c27421"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "evaluation": {
       "original_base_sha": "5d0add1332d71e79fc138aad42c025a3607d8aef",
+      "candidate_head": "5cb5ee38184518dbe66fe8822f721a401689fb09",
+      "accepted_commit": "5cb5ee38184518dbe66fe8822f721a401689fb09",
+      "integration_commit": "52fa3a193f2f7af21ade1a63978a61a425268a15",
+      "focused_verification": "passed",
+      "integration_decision": "accepted",
       "candidate_commits": ["336c0a675f3bf3427cd7b0695364b5af4d324aeb", "6f74c4120f92c1f84debbb45bd9bea3663ce0a32", "ff398ff863b70793c0440f81157217546344a5ee", "5cb5ee38184518dbe66fe8822f721a401689fb09"],
       "integration_commits": ["be0ca631d1243ef1b179f7c6aad6c07137a9ad8e", "52fa3a193f2f7af21ade1a63978a61a425268a15"],
-      "final_state": "accepted-integrated"
+      "final_state": "integrated"
     },
     "integration": {
       "commits": [
