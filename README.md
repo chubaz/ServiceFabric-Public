@@ -1,40 +1,20 @@
-# 🚀 ServiceFabric
+# ServiceFabric
 
-ServiceFabric is a modular, AI-ready microservices architecture featuring a Django core, FastAPI AI orchestration, and dynamic Vite/React frontend rendering. 
+ServiceFabric is a canonical package and tool platform for composing, running, and governing application capabilities. The primary integration surface is its immutable package/tool definitions and canonical invocation and result contracts; consumer adapters, including MCP projections, do not own runtime behavior.
 
-## ⚡ Quickstart (Under 3 Minutes)
+## Start with the foundation release
 
-We have fully automated the setup process. You do not need to configure databases, run migrations manually, or generate secret keys.
+The current foundation release is a source-level engineering release. With Python 3.11 or newer, install and run its read-only local check:
 
-**1. Clone the repository:**
+```bash
+python3 -m pip install -e packages/servicefabric_release_readiness
+servicefabric doctor --repository-root .
+```
 
-git clone https://github.com/chubaz/ServiceFabric.git
+`servicefabric doctor` validates the Python prerequisite and package metadata declared by the [foundation-release manifest](packages/servicefabric_release_readiness/servicefabric_release_readiness/foundation_release.json). It does not install dependencies, provision infrastructure, access secrets, or contact remote services.
 
-cd ServiceFabric
+Continue with the [five-minute demonstration](docs/getting-started/foundation-release.md), [product overview](docs/architecture/product-overview.md), and [foundation capability reference](docs/reference/foundation-capabilities.md).
 
-**2. Run the interactive setup:**
+## Maturity and boundaries
 
-make setup
-
-*The installer will ask you for a proxy port, database passwords, and admin credentials. It will then generate a secure `.env` file, boot the Docker network, and automatically run all database migrations.*
-
-**3. Access the System:**
-* Main Application: `http://localhost:[YOUR_PROXY_PORT]`
-* Admin Panel: `http://localhost:[YOUR_PROXY_PORT]/admin`
-
----
-
-## 🛠️ Daily Developer Workflow
-
-This project uses a standard `Makefile` to manage the multi-container Docker environment easily.
-
-* **`make dev`**: Boot the system in local development mode (live-reloading enabled).
-* **`make prod`**: Boot the system using the production overrides.
-* **`make down`**: Safely spin down all containers.
-* **`make logs`**: View the live output of all running services.
-
-## 📦 Backups & Teardown
-
-To protect your generated applications and database state:
-* **`make backup`**: Automatically dumps your PostgreSQL database and archives your `6_service_catalog` into the `8_backups/` directory.
-* **`make teardown`**: Destroys all containers, wipes the database volumes, and cleans the generated apps directory (giving you a fresh slate).
+This release supports repository-local engineering and reviewable, deterministic workflows. It is not a hosted control plane or a turnkey production deployment. Distillation publication remains explicitly human-approved; legacy numbered services are compatibility context rather than the primary architecture.

@@ -11,6 +11,7 @@ from .mcp import McpGatewayClient
 
 __all__ = [
     "ApplicationFactoryService",
+    "DistillationService",
     "CapabilityClient",
     "InternalAgentCapabilityAdapter",
     "InternalAgentCapabilityReference",
@@ -23,6 +24,10 @@ def __getattr__(name: str):
         from .application_factory import ApplicationFactoryService
 
         return ApplicationFactoryService
+    if name == "DistillationService":
+        from .distillation import DistillationService
+
+        return DistillationService
     raise AttributeError(name)
 
 
