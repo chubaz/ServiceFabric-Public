@@ -15,6 +15,16 @@ servicefabric doctor --repository-root .
 
 Continue with the [five-minute demonstration](docs/getting-started/foundation-release.md), [product overview](docs/architecture/product-overview.md), and [foundation capability reference](docs/reference/foundation-capabilities.md).
 
+## Find your way around
+
+- `packages/` contains the canonical contracts and bounded implementation packages.
+- `clients/python/` provides the `servicefabric` command-line interface.
+- `docs/architecture/` explains the product model and recorded decisions; `docs/reference/` describes supported capabilities.
+- `examples/` contains reviewed reference applications and `tests/` holds their executable acceptance and architecture boundaries.
+- `config/agent/` and `docs/workplans/` record the active engineering scope and verification rules.
+
+Before contributing, read [AGENTS.md](AGENTS.md), then run `make agent-preflight` and `make agent-context`. Validate a completed change with `make verify-current` and prepare its handoff with `make agent-handoff`.
+
 ## Maturity and boundaries
 
 This release supports repository-local engineering and reviewable, deterministic workflows. It is not a hosted control plane or a turnkey production deployment. Distillation publication remains explicitly human-approved; legacy numbered services are compatibility context rather than the primary architecture.
